@@ -96,3 +96,5 @@ fuzz/crash-*
 cmake-build-*
 third-party/folly/
 .cache
+
+rocksdb-rs/target
