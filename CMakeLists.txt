@@ -982,7 +982,6 @@ target_link_libraries(${ROCKSDB_STATIC_LIB} PRIVATE
 
 set(ROCKSDB_LIB ${ROCKSDB_STATIC_LIB})
 
-option(WITH_JNI "build with JNI" OFF)
 # Tests are excluded from Release builds
 CMAKE_DEPENDENT_OPTION(WITH_TESTS "build with tests" ON
   "CMAKE_BUILD_TYPE STREQUAL Debug" OFF)
@@ -990,14 +989,8 @@ option(WITH_BENCHMARK_TOOLS "build with benchmarks" ON)
 option(WITH_CORE_TOOLS "build with ldb and sst_dump" ON)
 option(WITH_TOOLS "build with tools" ON)
 
-if(WITH_TESTS OR WITH_BENCHMARK_TOOLS OR WITH_TOOLS OR WITH_JNI OR JNI)
+if(WITH_TESTS OR WITH_BENCHMARK_TOOLS OR WITH_TOOLS)
   include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/third-party/gtest-1.8.1/fused-src)
-endif()
-if(WITH_JNI OR JNI)
-  message(STATUS "JNI library is enabled")
-  add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/java)
-else()
-  message(STATUS "JNI library is disabled")
 endif()
 
 option(WITH_ALL_TESTS "Build all test, rather than a small subset" ON)
