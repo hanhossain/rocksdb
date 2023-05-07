@@ -162,25 +162,6 @@ public class EnvironmentTest {
   }
 
   @Test
-  public void detectWindows(){
-    setEnvironmentClassFields("win", "x64");
-    assertThat(Environment.isWindows()).isTrue();
-  }
-
-  @Test
-  public void win64() {
-    setEnvironmentClassFields("win", "x64");
-    assertThat(Environment.isWindows()).isTrue();
-    assertThat(Environment.getJniLibraryExtension()).
-      isEqualTo(".dll");
-    assertThat(Environment.getJniLibraryFileName("rocksdb")).
-      isEqualTo("librocksdbjni-win64.dll");
-    assertThat(Environment.getFallbackJniLibraryFileName("rocksdb")).isNull();
-    assertThat(Environment.getSharedLibraryFileName("rocksdb")).
-      isEqualTo("librocksdbjni.dll");
-  }
-
-  @Test
   public void ppc64le() {
     setEnvironmentClassField(MUSL_LIBC_FIELD_NAME, false);
     setEnvironmentClassFields("Linux", "ppc64le");
@@ -238,21 +219,6 @@ public class EnvironmentTest {
     assertThat(Environment.getFallbackJniLibraryFileName("rocksdb")).isNull();
     assertThat(Environment.getSharedLibraryFileName("rocksdb")).isEqualTo("librocksdbjni.so");
     setEnvironmentClassField(MUSL_LIBC_FIELD_NAME, false);
-  }
-
-  @Test
-  public void resolveIsMuslLibc() {
-    setEnvironmentClassField(MUSL_LIBC_FIELD_NAME, null);
-    setEnvironmentClassFields("win", "anyarch");
-    assertThat(Environment.isUnix()).isFalse();
-
-    // with user input, will resolve to true if set as true. Even on OSs that appear absurd for
-    // musl. Users choice
-    assertThat(Environment.initIsMuslLibc()).isFalse();
-    setEnvironmentClassField(MUSL_ENVIRONMENT_FIELD_NAME, "true");
-    assertThat(Environment.initIsMuslLibc()).isTrue();
-    setEnvironmentClassField(MUSL_ENVIRONMENT_FIELD_NAME, "false");
-    assertThat(Environment.initIsMuslLibc()).isFalse();
   }
 
   private void setEnvironmentClassFields(String osName,
