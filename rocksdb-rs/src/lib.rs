@@ -1,4 +1,4 @@
-#[cxx::bridge]
+#[cxx::bridge(namespace = "rs")]
 mod ffi {
     extern "Rust" {
         fn hello_world();
