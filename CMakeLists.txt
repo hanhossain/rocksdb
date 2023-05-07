@@ -1,6 +1,7 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.19)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake/modules/")
+include(FetchContent)
 include(ReadVersion)
 include(GoogleTest)
 get_rocksdb_version(rocksdb_VERSION)
@@ -9,6 +10,14 @@ project(rocksdb
   DESCRIPTION "An embeddable persistent key-value store for fast storage"
   HOMEPAGE_URL https://rocksdb.org/
   LANGUAGES CXX C ASM)
+
+FetchContent_Declare(
+    Corrosion
+    GIT_REPOSITORY https://github.com/corrosion-rs/corrosion.git
+    GIT_TAG v0.3.5 # Optionally specify a commit hash, version tag or branch here
+)
+FetchContent_MakeAvailable(Corrosion)
+include(CorrosionCxx)
 
 if(POLICY CMP0042)
   cmake_policy(SET CMP0042 NEW)
@@ -977,8 +986,14 @@ set(BUILD_VERSION_CC ${CMAKE_BINARY_DIR}/build_version.cc)
 configure_file(util/build_version.cc.in ${BUILD_VERSION_CC} @ONLY)
 
 add_library(${ROCKSDB_STATIC_LIB} STATIC ${SOURCES} ${BUILD_VERSION_CC})
-target_link_libraries(${ROCKSDB_STATIC_LIB} PRIVATE
-  ${THIRDPARTY_LIBS} ${SYSTEM_LIBS})
+add_library_rust(PATH rocksdb-rs NAMESPACE rs)
+
+target_link_libraries(
+    ${ROCKSDB_STATIC_LIB}
+    PUBLIC rs::rocksdb-rs
+    PRIVATE ${THIRDPARTY_LIBS} ${SYSTEM_LIBS}
+)
+
 
 set(ROCKSDB_LIB ${ROCKSDB_STATIC_LIB})
 
