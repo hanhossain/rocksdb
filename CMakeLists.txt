@@ -1,37 +1,3 @@
-# Prerequisites for Windows:
-#     This cmake build is for Windows 64-bit only.
-#
-# Prerequisites:
-#     You must have at least Visual Studio 2019. Start the Developer Command Prompt window that is a part of Visual Studio installation.
-#     Run the build commands from within the Developer Command Prompt window to have paths to the compiler and runtime libraries set.
-#     You must have git.exe in your %PATH% environment variable.
-#
-# To build Rocksdb for Windows is as easy as 1-2-3-4-5:
-#
-# 1. Update paths to third-party libraries in thirdparty.inc file
-# 2. Create a new directory for build artifacts
-#        mkdir build
-#        cd build
-# 3. Run cmake to generate project files for Windows, add more options to enable required third-party libraries.
-#    See thirdparty.inc for more information.
-#        sample command: cmake -G "Visual Studio 16 2019" -DCMAKE_BUILD_TYPE=Release -DWITH_GFLAGS=1 -DWITH_SNAPPY=1 -DWITH_JEMALLOC=1 -DWITH_JNI=1 ..
-# 4. Then build the project in debug mode (you may want to add /m[:<N>] flag to run msbuild in <N> parallel threads
-#                                          or simply /m to use all avail cores)
-#        msbuild rocksdb.sln
-#
-#        rocksdb.sln build features exclusions of test only code in Release. If you build ALL_BUILD then everything
-#        will be attempted but test only code does not build in Release mode.
-#
-# 5. And release mode (/m[:<N>] is also supported)
-#        msbuild rocksdb.sln /p:Configuration=Release
-#
-# Linux:
-#
-# 1. Install a recent toolchain if you're on a older distro. C++17 required (GCC >= 7, Clang >= 5)
-# 2. mkdir build; cd build
-# 3. cmake ..
-# 4. make -j
-
 cmake_minimum_required(VERSION 3.10)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake/modules/")
@@ -70,10 +36,6 @@ option(WITH_SNAPPY "build with SNAPPY" OFF)
 option(WITH_LZ4 "build with lz4" OFF)
 option(WITH_ZLIB "build with zlib" OFF)
 option(WITH_ZSTD "build with zstd" OFF)
-option(WITH_WINDOWS_UTF8_FILENAMES "use UTF8 as characterset for opening files, regardles of the system code page" OFF)
-if (WITH_WINDOWS_UTF8_FILENAMES)
-  add_definitions(-DROCKSDB_WINDOWS_UTF8_FILENAMES)
-endif()
 option(ROCKSDB_BUILD_SHARED "Build shared versions of the RocksDB libraries" ON)
 
 if ($ENV{CIRCLECI})
@@ -87,124 +49,100 @@ endif()
 
 include(CMakeDependentOption)
 
-if(MSVC)
+if(CMAKE_SYSTEM_NAME MATCHES "FreeBSD" AND NOT CMAKE_SYSTEM_NAME MATCHES "kFreeBSD")
+  # FreeBSD has jemalloc as default malloc
+  # but it does not have all the jemalloc files in include/...
+  set(WITH_JEMALLOC ON)
+else()
+  if(WITH_JEMALLOC)
+    find_package(JeMalloc REQUIRED)
+    add_definitions(-DROCKSDB_JEMALLOC -DJEMALLOC_NO_DEMANGLE)
+    list(APPEND THIRDPARTY_LIBS JeMalloc::JeMalloc)
+  endif()
+endif()
+
+if(MINGW)
   option(WITH_GFLAGS "build with GFlags" OFF)
-  option(WITH_XPRESS "build with windows built in compression" OFF)
-  option(ROCKSDB_SKIP_THIRDPARTY "skip thirdparty.inc" OFF)
-
-  if(NOT ROCKSDB_SKIP_THIRDPARTY)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/thirdparty.inc)
-  endif()
 else()
-  if(CMAKE_SYSTEM_NAME MATCHES "FreeBSD" AND NOT CMAKE_SYSTEM_NAME MATCHES "kFreeBSD")
-    # FreeBSD has jemalloc as default malloc
-    # but it does not have all the jemalloc files in include/...
-    set(WITH_JEMALLOC ON)
-  else()
-    if(WITH_JEMALLOC)
-      find_package(JeMalloc REQUIRED)
-      add_definitions(-DROCKSDB_JEMALLOC -DJEMALLOC_NO_DEMANGLE)
-      list(APPEND THIRDPARTY_LIBS JeMalloc::JeMalloc)
-    endif()
-  endif()
-
-  if(MINGW)
-    option(WITH_GFLAGS "build with GFlags" OFF)
-  else()
-    option(WITH_GFLAGS "build with GFlags" ON)
-  endif()
-  set(GFLAGS_LIB)
-  if(WITH_GFLAGS)
-    # Config with namespace available since gflags 2.2.2
-    option(GFLAGS_USE_TARGET_NAMESPACE "Use gflags import target with namespace." ON)
-    find_package(gflags CONFIG)
-    if(gflags_FOUND)
-      if(TARGET ${GFLAGS_TARGET})
-        # Config with GFLAGS_TARGET available since gflags 2.2.0
-        set(GFLAGS_LIB ${GFLAGS_TARGET})
-      else()
-        # Config with GFLAGS_LIBRARIES available since gflags 2.1.0
-        set(GFLAGS_LIB ${gflags_LIBRARIES})
-      endif()
+  option(WITH_GFLAGS "build with GFlags" ON)
+endif()
+set(GFLAGS_LIB)
+if(WITH_GFLAGS)
+  # Config with namespace available since gflags 2.2.2
+  option(GFLAGS_USE_TARGET_NAMESPACE "Use gflags import target with namespace." ON)
+  find_package(gflags CONFIG)
+  if(gflags_FOUND)
+    if(TARGET ${GFLAGS_TARGET})
+      # Config with GFLAGS_TARGET available since gflags 2.2.0
+      set(GFLAGS_LIB ${GFLAGS_TARGET})
     else()
-      find_package(gflags REQUIRED)
-      set(GFLAGS_LIB gflags::gflags)
+      # Config with GFLAGS_LIBRARIES available since gflags 2.1.0
+      set(GFLAGS_LIB ${gflags_LIBRARIES})
     endif()
-    include_directories(${GFLAGS_INCLUDE_DIR})
-    list(APPEND THIRDPARTY_LIBS ${GFLAGS_LIB})
-    add_definitions(-DGFLAGS=1)
+  else()
+    find_package(gflags REQUIRED)
+    set(GFLAGS_LIB gflags::gflags)
   endif()
-
-  if(WITH_SNAPPY)
-    find_package(Snappy CONFIG)
-    if(NOT Snappy_FOUND)
-      find_package(Snappy REQUIRED)
-    endif()
-    add_definitions(-DSNAPPY)
-    list(APPEND THIRDPARTY_LIBS Snappy::snappy)
-  endif()
-
-  if(WITH_ZLIB)
-    find_package(ZLIB REQUIRED)
-    add_definitions(-DZLIB)
-    list(APPEND THIRDPARTY_LIBS ZLIB::ZLIB)
-  endif()
-
-  option(WITH_BZ2 "build with bzip2" OFF)
-  if(WITH_BZ2)
-    find_package(BZip2 REQUIRED)
-    add_definitions(-DBZIP2)
-    if(BZIP2_INCLUDE_DIRS)
-      include_directories(${BZIP2_INCLUDE_DIRS})
-    else()
-      include_directories(${BZIP2_INCLUDE_DIR})
-    endif()
-    list(APPEND THIRDPARTY_LIBS ${BZIP2_LIBRARIES})
-  endif()
-
-  if(WITH_LZ4)
-    find_package(lz4 REQUIRED)
-    add_definitions(-DLZ4)
-    list(APPEND THIRDPARTY_LIBS lz4::lz4)
-  endif()
-
-  if(WITH_ZSTD)
-    find_package(zstd REQUIRED)
-    add_definitions(-DZSTD)
-    include_directories(${ZSTD_INCLUDE_DIR})
-    list(APPEND THIRDPARTY_LIBS zstd::zstd)
-  endif()
+  include_directories(${GFLAGS_INCLUDE_DIR})
+  list(APPEND THIRDPARTY_LIBS ${GFLAGS_LIB})
+  add_definitions(-DGFLAGS=1)
 endif()
 
-option(WITH_MD_LIBRARY "build with MD" ON)
-if(WIN32 AND MSVC)
-  if(WITH_MD_LIBRARY)
-    set(RUNTIME_LIBRARY "MD")
-  else()
-    set(RUNTIME_LIBRARY "MT")
+if(WITH_SNAPPY)
+  find_package(Snappy CONFIG)
+  if(NOT Snappy_FOUND)
+    find_package(Snappy REQUIRED)
   endif()
+  add_definitions(-DSNAPPY)
+  list(APPEND THIRDPARTY_LIBS Snappy::snappy)
 endif()
 
-if(MSVC)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi /nologo /EHsc /GS /Gd /GR /GF /fp:precise /Zc:wchar_t /Zc:forScope /errorReport:queue")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /FC /d2Zi+ /W4 /wd4127 /wd4800 /wd4996 /wd4351 /wd4100 /wd4204 /wd4324")
-else()
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wextra -Wall -pthread")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wsign-compare -Wshadow -Wno-unused-parameter -Wno-unused-variable -Woverloaded-virtual -Wnon-virtual-dtor -Wno-missing-field-initializers -Wno-strict-aliasing -Wno-invalid-offsetof")
-  if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wstrict-prototypes")
+if(WITH_ZLIB)
+  find_package(ZLIB REQUIRED)
+  add_definitions(-DZLIB)
+  list(APPEND THIRDPARTY_LIBS ZLIB::ZLIB)
+endif()
+
+option(WITH_BZ2 "build with bzip2" OFF)
+if(WITH_BZ2)
+  find_package(BZip2 REQUIRED)
+  add_definitions(-DBZIP2)
+  if(BZIP2_INCLUDE_DIRS)
+    include_directories(${BZIP2_INCLUDE_DIRS})
+  else()
+    include_directories(${BZIP2_INCLUDE_DIR})
   endif()
-  if(MINGW)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-format")
-    add_definitions(-D_POSIX_C_SOURCE=1)
-  endif()
-  if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer")
-    include(CheckCXXCompilerFlag)
-    CHECK_CXX_COMPILER_FLAG("-momit-leaf-frame-pointer" HAVE_OMIT_LEAF_FRAME_POINTER)
-    if(HAVE_OMIT_LEAF_FRAME_POINTER)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -momit-leaf-frame-pointer")
-    endif()
+  list(APPEND THIRDPARTY_LIBS ${BZIP2_LIBRARIES})
+endif()
+
+if(WITH_LZ4)
+  find_package(lz4 REQUIRED)
+  add_definitions(-DLZ4)
+  list(APPEND THIRDPARTY_LIBS lz4::lz4)
+endif()
+
+if(WITH_ZSTD)
+  find_package(zstd REQUIRED)
+  add_definitions(-DZSTD)
+  include_directories(${ZSTD_INCLUDE_DIR})
+  list(APPEND THIRDPARTY_LIBS zstd::zstd)
+endif()
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wextra -Wall -pthread")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wsign-compare -Wshadow -Wno-unused-parameter -Wno-unused-variable -Woverloaded-virtual -Wnon-virtual-dtor -Wno-missing-field-initializers -Wno-strict-aliasing -Wno-invalid-offsetof")
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wstrict-prototypes")
+endif()
+if(MINGW)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-format")
+  add_definitions(-D_POSIX_C_SOURCE=1)
+endif()
+if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer")
+  include(CheckCXXCompilerFlag)
+  CHECK_CXX_COMPILER_FLAG("-momit-leaf-frame-pointer" HAVE_OMIT_LEAF_FRAME_POINTER)
+  if(HAVE_OMIT_LEAF_FRAME_POINTER)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -momit-leaf-frame-pointer")
   endif()
 endif()
 
@@ -260,50 +198,32 @@ option(FORCE_AVX2 "force building with AVX2, even when PORTABLE=ON" OFF)
 if(PORTABLE)
   add_definitions(-DROCKSDB_PORTABLE)
 
-  # MSVC does not need a separate compiler flag to enable SSE4.2; if nmmintrin.h
-  # is available, it is available by default.
-  if(FORCE_SSE42 AND NOT MSVC)
+  if(FORCE_SSE42)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse4.2 -mpclmul")
   endif()
-  if(MSVC)
-    if(FORCE_AVX)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:AVX")
-    endif()
-    # MSVC automatically enables BMI / lzcnt with AVX2.
-    if(FORCE_AVX2)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:AVX2")
-    endif()
-  else()
-    if(FORCE_AVX)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx")
-    endif()
-    if(FORCE_AVX2)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx2 -mbmi -mlzcnt")
-    endif()
-    if(CMAKE_SYSTEM_PROCESSOR MATCHES "^s390x")
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=z196")
-    endif()
-    if(CMAKE_SYSTEM_PROCESSOR MATCHES "^loongarch64")
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=loongarch64")
-    endif()
+  if(FORCE_AVX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx")
+  endif()
+  if(FORCE_AVX2)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx2 -mbmi -mlzcnt")
+  endif()
+  if(CMAKE_SYSTEM_PROCESSOR MATCHES "^s390x")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=z196")
+  endif()
+  if(CMAKE_SYSTEM_PROCESSOR MATCHES "^loongarch64")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=loongarch64")
   endif()
 else()
-  if(MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:AVX2")
-  else()
-    if(CMAKE_SYSTEM_PROCESSOR MATCHES "^s390x" AND NOT HAS_S390X_MARCH_NATIVE)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=z196")
-    elseif(NOT CMAKE_SYSTEM_PROCESSOR MATCHES "^(powerpc|ppc)64" AND NOT HAS_ARMV8_CRC)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
-    endif()
+  if(CMAKE_SYSTEM_PROCESSOR MATCHES "^s390x" AND NOT HAS_S390X_MARCH_NATIVE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=z196")
+  elseif(NOT CMAKE_SYSTEM_PROCESSOR MATCHES "^(powerpc|ppc)64" AND NOT HAS_ARMV8_CRC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
   endif()
 endif()
 
 include(CheckCXXSourceCompiles)
 set(OLD_CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
-if(NOT MSVC)
-  set(CMAKE_REQUIRED_FLAGS "-msse4.2 -mpclmul")
-endif()
+set(CMAKE_REQUIRED_FLAGS "-msse4.2 -mpclmul")
 
 CHECK_CXX_SOURCE_COMPILES("
 #include <cstdint>
@@ -325,9 +245,8 @@ elseif(FORCE_SSE42)
 endif()
 
 # Check if -latomic is required or not
-if (NOT MSVC)
-  set(CMAKE_REQUIRED_FLAGS "--std=c++17")
-  CHECK_CXX_SOURCE_COMPILES("
+set(CMAKE_REQUIRED_FLAGS "--std=c++17")
+CHECK_CXX_SOURCE_COMPILES("
 #include <atomic>
 std::atomic<uint64_t> x(0);
 int main() {
@@ -336,10 +255,9 @@ int main() {
   return 0;
 }
 " BUILTIN_ATOMIC)
-  if (NOT BUILTIN_ATOMIC)
-    #TODO: Check if -latomic exists
-    list(APPEND THIRDPARTY_LIBS atomic)
-  endif()
+if (NOT BUILTIN_ATOMIC)
+  #TODO: Check if -latomic exists
+  list(APPEND THIRDPARTY_LIBS atomic)
 endif()
 
 if (WITH_LIBURING)
@@ -365,11 +283,7 @@ endif()
 
 option(FAIL_ON_WARNINGS "Treat compile warnings as errors" ON)
 if(FAIL_ON_WARNINGS)
-  if(MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX")
-  else() # assume GCC
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
-  endif()
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
 endif()
 
 option(WITH_ASAN "build with ASAN" OFF)
@@ -442,63 +356,25 @@ set_property(CACHE USE_RTTI PROPERTY STRINGS AUTO ON OFF)
 if(USE_RTTI STREQUAL "AUTO")
   message(STATUS "Enabling RTTI in Debug builds only (default)")
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DROCKSDB_USE_RTTI")
-  if(MSVC)
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /GR-")
-  else()
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fno-rtti")
-  endif()
+  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fno-rtti")
 elseif(USE_RTTI)
   message(STATUS "Enabling RTTI in all builds")
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DROCKSDB_USE_RTTI")
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DROCKSDB_USE_RTTI")
 else()
-  if(MSVC)
-    message(STATUS "Disabling RTTI in Release builds. Always on in Debug.")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DROCKSDB_USE_RTTI")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /GR-")
-  else()
-    message(STATUS "Disabling RTTI in all builds")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-rtti")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fno-rtti")
-  endif()
+  message(STATUS "Disabling RTTI in all builds")
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-rtti")
+  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fno-rtti")
 endif()
 
 # Used to run CI build and tests so we can run faster
-option(OPTDBG "Build optimized debug build with MSVC" OFF)
 option(WITH_RUNTIME_DEBUG "build with debug version of runtime library" ON)
-if(MSVC)
-  if(OPTDBG)
-    message(STATUS "Debug optimization is enabled")
-    set(CMAKE_CXX_FLAGS_DEBUG "/Oxt")
-  else()
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /Od /RTC1")
-
-    # Minimal Build is deprecated after MSVC 2015
-    if( MSVC_VERSION GREATER 1900 )
-      set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /Gm-")
-    else()
-      set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /Gm")
-    endif()
-
-  endif()
-  if(WITH_RUNTIME_DEBUG)
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /${RUNTIME_LIBRARY}d")
-  else()
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /${RUNTIME_LIBRARY}")
-  endif()
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Oxt /Zp8 /Gm- /Gy /${RUNTIME_LIBRARY}")
-
-  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /DEBUG")
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DEBUG")
-endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-builtin-memcmp")
 endif()
 
-if(CMAKE_SYSTEM_NAME MATCHES "Cygwin")
-  add_definitions(-fno-builtin-memcmp -DCYGWIN)
-elseif(CMAKE_SYSTEM_NAME MATCHES "Darwin")
+if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
   add_definitions(-DOS_MACOSX)
 elseif(CMAKE_SYSTEM_NAME MATCHES "Linux")
   add_definitions(-DOS_LINUX)
@@ -516,16 +392,9 @@ elseif(CMAKE_SYSTEM_NAME MATCHES "DragonFly")
   add_definitions(-DOS_DRAGONFLYBSD)
 elseif(CMAKE_SYSTEM_NAME MATCHES "Android")
   add_definitions(-DOS_ANDROID)
-elseif(CMAKE_SYSTEM_NAME MATCHES "Windows")
-  add_definitions(-DWIN32 -DOS_WIN -D_MBCS -DWIN64 -DNOMINMAX)
-  if(MINGW)
-    add_definitions(-D_WIN32_WINNT=_WIN32_WINNT_VISTA)
-  endif()
 endif()
 
-if(NOT WIN32)
-  add_definitions(-DROCKSDB_PLATFORM_POSIX -DROCKSDB_LIB_IO_POSIX)
-endif()
+add_definitions(-DROCKSDB_PLATFORM_POSIX -DROCKSDB_LIB_IO_POSIX)
 
 option(WITH_FALLOCATE "build with fallocate" ON)
 if(WITH_FALLOCATE)
@@ -1010,7 +879,7 @@ if ( ROCKSDB_PLUGINS )
   endforeach()
 endif()
 
-if(HAVE_SSE42 AND NOT MSVC)
+if(HAVE_SSE42)
   set_source_files_properties(
     util/crc32c.cc
     PROPERTIES COMPILE_FLAGS "-msse4.2 -mpclmul")
@@ -1027,31 +896,11 @@ if(HAS_ARMV8_CRC)
     util/crc32c_arm64.cc)
 endif(HAS_ARMV8_CRC)
 
-if(WIN32)
-  list(APPEND SOURCES
-    port/win/io_win.cc
-    port/win/env_win.cc
-    port/win/env_default.cc
-    port/win/port_win.cc
-    port/win/win_logger.cc
-    port/win/win_thread.cc)
-if(WITH_XPRESS)
-  list(APPEND SOURCES
-    port/win/xpress_win.cc)
-endif()
-
-if(WITH_JEMALLOC)
-  list(APPEND SOURCES
-    port/win/win_jemalloc.cc)
-endif()
-
-else()
-  list(APPEND SOURCES
+list(APPEND SOURCES
     port/port_posix.cc
     env/env_posix.cc
     env/fs_posix.cc
     env/io_posix.cc)
-endif()
 
 if(USE_FOLLY_LITE)
   list(APPEND SOURCES
@@ -1072,11 +921,7 @@ set(ROCKSDB_STATIC_LIB rocksdb${ARTIFACT_SUFFIX})
 set(ROCKSDB_SHARED_LIB rocksdb-shared${ARTIFACT_SUFFIX})
 
 
-if(WIN32)
-  set(SYSTEM_LIBS ${SYSTEM_LIBS} shlwapi.lib rpcrt4.lib)
-else()
-  set(SYSTEM_LIBS ${CMAKE_THREAD_LIBS_INIT})
-endif()
+set(SYSTEM_LIBS ${CMAKE_THREAD_LIBS_INIT})
 
 set(ROCKSDB_PLUGIN_EXTERNS "")
 set(ROCKSDB_PLUGIN_BUILTINS "")
@@ -1146,25 +991,14 @@ if(ROCKSDB_BUILD_SHARED)
   target_link_libraries(${ROCKSDB_SHARED_LIB} PRIVATE
     ${THIRDPARTY_LIBS} ${SYSTEM_LIBS})
 
-  if(WIN32)
-    set_target_properties(${ROCKSDB_SHARED_LIB} PROPERTIES
-      COMPILE_DEFINITIONS "ROCKSDB_DLL;ROCKSDB_LIBRARY_EXPORTS")
-    if(MSVC)
-      set_target_properties(${ROCKSDB_STATIC_LIB} PROPERTIES
-        COMPILE_FLAGS "/Fd${CMAKE_CFG_INTDIR}/${ROCKSDB_STATIC_LIB}.pdb")
-      set_target_properties(${ROCKSDB_SHARED_LIB} PROPERTIES
-        COMPILE_FLAGS "/Fd${CMAKE_CFG_INTDIR}/${ROCKSDB_SHARED_LIB}.pdb")
-    endif()
-  else()
-    set_target_properties(${ROCKSDB_SHARED_LIB} PROPERTIES
-                          LINKER_LANGUAGE CXX
-                          VERSION ${rocksdb_VERSION}
-                          SOVERSION ${rocksdb_VERSION_MAJOR}
-                          OUTPUT_NAME "rocksdb${ARTIFACT_SUFFIX}")
-  endif()
+  set_target_properties(${ROCKSDB_SHARED_LIB} PROPERTIES
+                        LINKER_LANGUAGE CXX
+                        VERSION ${rocksdb_VERSION}
+                        SOVERSION ${rocksdb_VERSION_MAJOR}
+                        OUTPUT_NAME "rocksdb${ARTIFACT_SUFFIX}")
 endif()
 
-if(ROCKSDB_BUILD_SHARED AND NOT WIN32)
+if(ROCKSDB_BUILD_SHARED)
   set(ROCKSDB_LIB ${ROCKSDB_SHARED_LIB})
 else()
   set(ROCKSDB_LIB ${ROCKSDB_STATIC_LIB})
@@ -1418,9 +1252,6 @@ if(WITH_TESTS)
   set(TESTUTILLIB testutillib${ARTIFACT_SUFFIX})
   add_library(${TESTUTILLIB} STATIC ${TESTUTIL_SOURCE})
   target_link_libraries(${TESTUTILLIB} ${ROCKSDB_LIB} ${FOLLY_LIBS})
-  if(MSVC)
-    set_target_properties(${TESTUTILLIB} PROPERTIES COMPILE_FLAGS "/Fd${CMAKE_CFG_INTDIR}/testutillib${ARTIFACT_SUFFIX}.pdb")
-  endif()
   set_target_properties(${TESTUTILLIB}
         PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD_RELEASE 1
         EXCLUDE_FROM_DEFAULT_BUILD_MINRELEASE 1
@@ -1443,16 +1274,7 @@ if(WITH_TESTS)
       endif()
   endforeach(sourcefile ${TESTS})
 
-  if(WIN32)
-    # C executables must link to a shared object
-    if(ROCKSDB_BUILD_SHARED)
-      set(ROCKSDB_LIB_FOR_C ${ROCKSDB_SHARED_LIB})
-    else()
-      set(ROCKSDB_LIB_FOR_C OFF)
-    endif()
-  else()
-    set(ROCKSDB_LIB_FOR_C ${ROCKSDB_LIB})
-  endif()
+  set(ROCKSDB_LIB_FOR_C ${ROCKSDB_LIB})
 
   if(ROCKSDB_LIB_FOR_C)
     set(C_TESTS db/c_test.c)
