@@ -36,7 +36,6 @@ option(WITH_SNAPPY "build with SNAPPY" OFF)
 option(WITH_LZ4 "build with lz4" OFF)
 option(WITH_ZLIB "build with zlib" OFF)
 option(WITH_ZSTD "build with zstd" OFF)
-option(ROCKSDB_BUILD_SHARED "Build shared versions of the RocksDB libraries" ON)
 
 if ($ENV{CIRCLECI})
   message(STATUS "Build for CircieCI env, a few tests may be disabled")
@@ -478,10 +477,6 @@ if(USE_FOLLY)
   if(USE_FOLLY_LITE)
     message(FATAL_ERROR "Please specify one of USE_FOLLY or USE_FOLLY_LITE")
   endif()
-  if(ROCKSDB_BUILD_SHARED)
-    message(FATAL_ERROR "Cannot build RocksDB shared library with folly")
-  endif()
-  set(ROCKSDB_BUILD_SHARED OFF)
   set(GFLAGS_SHARED FALSE)
   find_package(folly)
   # If cmake could not find the folly-config.cmake file, fall back
@@ -918,7 +913,6 @@ if(USE_FOLLY_LITE)
 endif()
 
 set(ROCKSDB_STATIC_LIB rocksdb${ARTIFACT_SUFFIX})
-set(ROCKSDB_SHARED_LIB rocksdb-shared${ARTIFACT_SUFFIX})
 
 
 set(SYSTEM_LIBS ${CMAKE_THREAD_LIBS_INIT})
@@ -986,23 +980,7 @@ add_library(${ROCKSDB_STATIC_LIB} STATIC ${SOURCES} ${BUILD_VERSION_CC})
 target_link_libraries(${ROCKSDB_STATIC_LIB} PRIVATE
   ${THIRDPARTY_LIBS} ${SYSTEM_LIBS})
 
-if(ROCKSDB_BUILD_SHARED)
-  add_library(${ROCKSDB_SHARED_LIB} SHARED ${SOURCES} ${BUILD_VERSION_CC})
-  target_link_libraries(${ROCKSDB_SHARED_LIB} PRIVATE
-    ${THIRDPARTY_LIBS} ${SYSTEM_LIBS})
-
-  set_target_properties(${ROCKSDB_SHARED_LIB} PROPERTIES
-                        LINKER_LANGUAGE CXX
-                        VERSION ${rocksdb_VERSION}
-                        SOVERSION ${rocksdb_VERSION_MAJOR}
-                        OUTPUT_NAME "rocksdb${ARTIFACT_SUFFIX}")
-endif()
-
-if(ROCKSDB_BUILD_SHARED)
-  set(ROCKSDB_LIB ${ROCKSDB_SHARED_LIB})
-else()
-  set(ROCKSDB_LIB ${ROCKSDB_STATIC_LIB})
-endif()
+set(ROCKSDB_LIB ${ROCKSDB_STATIC_LIB})
 
 option(WITH_JNI "build with JNI" OFF)
 # Tests are excluded from Release builds
