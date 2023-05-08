@@ -45,6 +45,7 @@
 #include "rocksdb/utilities/transaction_db.h"
 #include "rocksdb/utilities/write_batch_with_index.h"
 #include "rocksdb/write_batch.h"
+#include "rocksdb-rs/src/lib.rs.h"
 #include "utilities/merge_operators.h"
 
 using ROCKSDB_NAMESPACE::BackupEngine;
@@ -119,11 +120,12 @@ using ROCKSDB_NAMESPACE::TransactionDB;
 using ROCKSDB_NAMESPACE::TransactionDBOptions;
 using ROCKSDB_NAMESPACE::TransactionLogIterator;
 using ROCKSDB_NAMESPACE::TransactionOptions;
-using ROCKSDB_NAMESPACE::WALRecoveryMode;
 using ROCKSDB_NAMESPACE::WritableFile;
 using ROCKSDB_NAMESPACE::WriteBatch;
 using ROCKSDB_NAMESPACE::WriteBatchWithIndex;
 using ROCKSDB_NAMESPACE::WriteOptions;
+
+using rs::options::WALRecoveryMode;
 
 using std::unordered_set;
 using std::vector;

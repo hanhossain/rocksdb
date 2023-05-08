@@ -71,7 +71,7 @@ class Reader {
   // record.
   virtual bool ReadRecord(Slice* record, std::string* scratch,
                           WALRecoveryMode wal_recovery_mode =
-                              WALRecoveryMode::kTolerateCorruptedTailRecords,
+                              WALRecoveryMode::TolerateCorruptedTailRecords,
                           uint64_t* record_checksum = nullptr);
 
   // Returns the physical offset of the last record returned by ReadRecord.
@@ -203,7 +203,7 @@ class FragmentBufferedReader : public Reader {
   ~FragmentBufferedReader() override {}
   bool ReadRecord(Slice* record, std::string* scratch,
                   WALRecoveryMode wal_recovery_mode =
-                      WALRecoveryMode::kTolerateCorruptedTailRecords,
+                      WALRecoveryMode::TolerateCorruptedTailRecords,
                   uint64_t* record_checksum = nullptr) override;
   void UnmarkEOF() override;
 

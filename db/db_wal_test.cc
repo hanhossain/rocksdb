@@ -1419,10 +1419,10 @@ INSTANTIATE_TEST_CASE_P(
                          RecoveryTestHelper::kWALFileOffset +
                              RecoveryTestHelper::kWALFilesCount,
                          1),
-        ::testing::Values(WALRecoveryMode::kTolerateCorruptedTailRecords,
-                          WALRecoveryMode::kAbsoluteConsistency,
-                          WALRecoveryMode::kPointInTimeRecovery,
-                          WALRecoveryMode::kSkipAnyCorruptedRecords),
+        ::testing::Values(WALRecoveryMode::TolerateCorruptedTailRecords,
+                          WALRecoveryMode::AbsoluteConsistency,
+                          WALRecoveryMode::PointInTimeRecovery,
+                          WALRecoveryMode::SkipAnyCorruptedRecords),
         ::testing::Values(CompressionType::kNoCompression,
                           CompressionType::kZSTD)));
 
@@ -1443,7 +1443,7 @@ TEST_P(DBWALTestWithParams, kTolerateCorruptedTailRecords) {
   RecoveryTestHelper::CorruptWAL(this, options, corrupt_offset * .3,
                                  /*len%=*/.1, wal_file_id, trunc);
 
-  options.wal_recovery_mode = WALRecoveryMode::kTolerateCorruptedTailRecords;
+  options.wal_recovery_mode = WALRecoveryMode::TolerateCorruptedTailRecords;
   if (trunc) {
     options.create_if_missing = false;
     ASSERT_OK(TryReopen(options));
@@ -1484,7 +1484,7 @@ TEST_P(DBWALTestWithParams, kAbsoluteConsistency) {
   RecoveryTestHelper::CorruptWAL(this, options, corrupt_offset * .33,
                                  /*len%=*/.1, wal_file_id, trunc);
   // verify
-  options.wal_recovery_mode = WALRecoveryMode::kAbsoluteConsistency;
+  options.wal_recovery_mode = WALRecoveryMode::AbsoluteConsistency;
   options.create_if_missing = false;
   ASSERT_NOK(TryReopen(options));
 }
@@ -1518,7 +1518,7 @@ TEST_F(DBWALTest, kPointInTimeRecoveryCFConsistency) {
   ASSERT_OK(Flush(2));
 
   // PIT recovery & verify
-  options.wal_recovery_mode = WALRecoveryMode::kPointInTimeRecovery;
+  options.wal_recovery_mode = WALRecoveryMode::PointInTimeRecovery;
   ASSERT_NOK(TryReopenWithColumnFamilies({"default", "one", "two"}, options));
 }
 
@@ -1723,7 +1723,7 @@ TEST_P(DBWALTestWithParams, kPointInTimeRecovery) {
                                  /*len%=*/.1, wal_file_id, trunc);
 
   // Verify
-  options.wal_recovery_mode = WALRecoveryMode::kPointInTimeRecovery;
+  options.wal_recovery_mode = WALRecoveryMode::PointInTimeRecovery;
   options.create_if_missing = false;
   ASSERT_OK(TryReopen(options));
 
@@ -1777,7 +1777,7 @@ TEST_P(DBWALTestWithParams, kSkipAnyCorruptedRecords) {
                                  /*len%=*/.1, wal_file_id, trunc);
 
   // Verify behavior
-  options.wal_recovery_mode = WALRecoveryMode::kSkipAnyCorruptedRecords;
+  options.wal_recovery_mode = WALRecoveryMode::SkipAnyCorruptedRecords;
   options.create_if_missing = false;
   ASSERT_OK(TryReopen(options));
 
@@ -2005,9 +2005,9 @@ TEST_P(DBWALTestWithParamsVaryingRecoveryMode,
   // Skip the test if DB won't open.
   if (!TryReopen(options).ok()) {
     ASSERT_TRUE(options.wal_recovery_mode ==
-                    WALRecoveryMode::kAbsoluteConsistency ||
+                    WALRecoveryMode::AbsoluteConsistency ||
                 (!trunc && options.wal_recovery_mode ==
-                               WALRecoveryMode::kTolerateCorruptedTailRecords));
+                               WALRecoveryMode::TolerateCorruptedTailRecords));
     return;
   }
   ASSERT_OK(TryReopen(options));
@@ -2290,7 +2290,7 @@ TEST_F(DBWALTest, ReadOnlyRecoveryNoTruncate) {
 TEST_F(DBWALTest, WalInManifestButNotInSortedWals) {
   Options options = CurrentOptions();
   options.track_and_verify_wals_in_manifest = true;
-  options.wal_recovery_mode = WALRecoveryMode::kAbsoluteConsistency;
+  options.wal_recovery_mode = WALRecoveryMode::AbsoluteConsistency;
 
   // Build a way to make wal files selectively go missing
   bool wals_go_missing = false;
@@ -2371,7 +2371,7 @@ TEST_F(DBWALTest, GetCompressedWalsAfterSync) {
     return;
   }
   Options options = GetDefaultOptions();
-  options.wal_recovery_mode = WALRecoveryMode::kPointInTimeRecovery;
+  options.wal_recovery_mode = WALRecoveryMode::PointInTimeRecovery;
   options.create_if_missing = true;
   options.env = env_;
   options.avoid_flush_during_recovery = true;

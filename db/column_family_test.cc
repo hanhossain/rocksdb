@@ -3213,7 +3213,7 @@ TEST_P(ColumnFamilyTest, DISABLED_LogTruncationTest) {
   ASSERT_OK(env_->DeleteFile(fpath));
   ASSERT_OK(env_->RenameFile(t_fpath, fpath));
 
-  db_options_.wal_recovery_mode = WALRecoveryMode::kPointInTimeRecovery;
+  db_options_.wal_recovery_mode = WALRecoveryMode::PointInTimeRecovery;
 
   OpenReadOnly(names_save);
 

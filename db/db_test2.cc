@@ -5733,7 +5733,7 @@ TEST_F(DBTest2, CrashInRecoveryMultipleCF) {
     // First destroy original db to ensure a clean start.
     DestroyAndReopen(options);
     options.create_if_missing = true;
-    options.wal_recovery_mode = WALRecoveryMode::kPointInTimeRecovery;
+    options.wal_recovery_mode = WALRecoveryMode::PointInTimeRecovery;
     CreateAndReopenWithCF({"pikachu"}, options);
     ASSERT_OK(Put("foo", "bar"));
     ASSERT_OK(Flush());
@@ -7154,7 +7154,7 @@ TEST_F(DBTest2, FileTemperatureManifestFixup) {
   Close();
 }
 
-// WAL recovery mode is WALRecoveryMode::kPointInTimeRecovery.
+// WAL recovery mode is WALRecoveryMode::PointInTimeRecovery.
 TEST_F(DBTest2, PointInTimeRecoveryWithIOErrorWhileReadingWal) {
   Options options = CurrentOptions();
   DestroyAndReopen(options);
@@ -7175,7 +7175,7 @@ TEST_F(DBTest2, PointInTimeRecoveryWithIOErrorWhileReadingWal) {
       });
   SyncPoint::GetInstance()->EnableProcessing();
   options.avoid_flush_during_recovery = true;
-  options.wal_recovery_mode = WALRecoveryMode::kPointInTimeRecovery;
+  options.wal_recovery_mode = WALRecoveryMode::PointInTimeRecovery;
   Status s = TryReopen(options);
   ASSERT_TRUE(s.IsIOError());
 }
@@ -7204,7 +7204,7 @@ TEST_F(DBTest2, PointInTimeRecoveryWithSyncFailureInCFCreation) {
 
   // Reopening the DB should not corrupt anything
   Options options = CurrentOptions();
-  options.wal_recovery_mode = WALRecoveryMode::kPointInTimeRecovery;
+  options.wal_recovery_mode = WALRecoveryMode::PointInTimeRecovery;
   ReopenWithColumnFamilies({"default", "test1", "test2"}, options);
 }
 

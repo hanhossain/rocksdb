@@ -100,9 +100,9 @@ DBOptions SanitizeOptions(const std::string& dbname, const DBOptions& src,
 
   if (result.recycle_log_file_num &&
       (result.wal_recovery_mode ==
-           WALRecoveryMode::kTolerateCorruptedTailRecords ||
-       result.wal_recovery_mode == WALRecoveryMode::kPointInTimeRecovery ||
-       result.wal_recovery_mode == WALRecoveryMode::kAbsoluteConsistency)) {
+           WALRecoveryMode::TolerateCorruptedTailRecords ||
+       result.wal_recovery_mode == WALRecoveryMode::PointInTimeRecovery ||
+       result.wal_recovery_mode == WALRecoveryMode::AbsoluteConsistency)) {
     // - kTolerateCorruptedTailRecords is inconsistent with recycle log file
     //   feature. WAL recycling expects recovery success upon encountering a
     //   corrupt record at the point where new data ends and recycled data
@@ -1168,7 +1168,7 @@ Status DBImpl::RecoverLogFiles(const std::vector<uint64_t>& wal_numbers,
     reporter.fname = fname.c_str();
     if (!immutable_db_options_.paranoid_checks ||
         immutable_db_options_.wal_recovery_mode ==
-            WALRecoveryMode::kSkipAnyCorruptedRecords) {
+            WALRecoveryMode::SkipAnyCorruptedRecords) {
       reporter.status = nullptr;
     } else {
       reporter.status = &status;
@@ -1221,7 +1221,7 @@ Status DBImpl::RecoverLogFiles(const std::vector<uint64_t>& wal_numbers,
       SequenceNumber sequence = WriteBatchInternal::Sequence(&batch);
 
       if (immutable_db_options_.wal_recovery_mode ==
-          WALRecoveryMode::kPointInTimeRecovery) {
+          WALRecoveryMode::PointInTimeRecovery) {
         // In point-in-time recovery mode, if sequence id of log files are
         // consecutive, we continue recovery despite corruption. This could
         // happen when we open and write to a corrupted DB, where sequence id
@@ -1297,11 +1297,11 @@ Status DBImpl::RecoverLogFiles(const std::vector<uint64_t>& wal_numbers,
         return status;
       }
       if (immutable_db_options_.wal_recovery_mode ==
-          WALRecoveryMode::kSkipAnyCorruptedRecords) {
+          WALRecoveryMode::SkipAnyCorruptedRecords) {
         // We should ignore all errors unconditionally
         status = Status::OK();
       } else if (immutable_db_options_.wal_recovery_mode ==
-                 WALRecoveryMode::kPointInTimeRecovery) {
+                 WALRecoveryMode::PointInTimeRecovery) {
         if (status.IsIOError()) {
           ROCKS_LOG_ERROR(immutable_db_options_.info_log,
                           "IOError during point-in-time reading log #%" PRIu64
@@ -1325,9 +1325,9 @@ Status DBImpl::RecoverLogFiles(const std::vector<uint64_t>& wal_numbers,
                        wal_number, *next_sequence);
       } else {
         assert(immutable_db_options_.wal_recovery_mode ==
-                   WALRecoveryMode::kTolerateCorruptedTailRecords ||
+                   WALRecoveryMode::TolerateCorruptedTailRecords ||
                immutable_db_options_.wal_recovery_mode ==
-                   WALRecoveryMode::kAbsoluteConsistency);
+                   WALRecoveryMode::AbsoluteConsistency);
         return status;
       }
     }
@@ -1352,9 +1352,9 @@ Status DBImpl::RecoverLogFiles(const std::vector<uint64_t>& wal_numbers,
   // don't reset stop_replay_for_corruption.
   if (stop_replay_for_corruption == true &&
       (immutable_db_options_.wal_recovery_mode ==
-           WALRecoveryMode::kPointInTimeRecovery ||
+           WALRecoveryMode::PointInTimeRecovery ||
        immutable_db_options_.wal_recovery_mode ==
-           WALRecoveryMode::kTolerateCorruptedTailRecords)) {
+           WALRecoveryMode::TolerateCorruptedTailRecords)) {
     for (auto cfd : *versions_->GetColumnFamilySet()) {
       // One special case cause cfd->GetLogNumber() > corrupted_wal_number but
       // the CF is still consistent: If a new column family is created during

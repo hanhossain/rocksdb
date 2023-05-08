@@ -322,7 +322,7 @@ Options DBTestBase::GetDefaultOptions() const {
   options.target_file_size_base = 2 * 1024 * 1024;
   options.max_bytes_for_level_base = 10 * 1024 * 1024;
   options.max_open_files = 5000;
-  options.wal_recovery_mode = WALRecoveryMode::kTolerateCorruptedTailRecords;
+  options.wal_recovery_mode = WALRecoveryMode::TolerateCorruptedTailRecords;
   options.compaction_pri = CompactionPri::kByCompensatedSize;
   options.env = env_;
   if (!env_->skip_fsync_) {

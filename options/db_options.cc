@@ -29,11 +29,11 @@ namespace ROCKSDB_NAMESPACE {
 static std::unordered_map<std::string, WALRecoveryMode>
     wal_recovery_mode_string_map = {
         {"kTolerateCorruptedTailRecords",
-         WALRecoveryMode::kTolerateCorruptedTailRecords},
-        {"kAbsoluteConsistency", WALRecoveryMode::kAbsoluteConsistency},
-        {"kPointInTimeRecovery", WALRecoveryMode::kPointInTimeRecovery},
+         WALRecoveryMode::TolerateCorruptedTailRecords},
+        {"kAbsoluteConsistency", WALRecoveryMode::AbsoluteConsistency},
+        {"kPointInTimeRecovery", WALRecoveryMode::PointInTimeRecovery},
         {"kSkipAnyCorruptedRecords",
-         WALRecoveryMode::kSkipAnyCorruptedRecords}};
+         WALRecoveryMode::SkipAnyCorruptedRecords}};
 
 static std::unordered_map<std::string, DBOptions::AccessHint>
     access_hint_string_map = {{"NONE", DBOptions::AccessHint::NONE},

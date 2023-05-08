@@ -6302,7 +6302,7 @@ TEST_P(TransactionTest, ReseekOptimization) {
 TEST_P(TransactionTest, DoubleCrashInRecovery) {
   for (const bool manual_wal_flush : {false, true}) {
     for (const bool write_after_recovery : {false, true}) {
-      options.wal_recovery_mode = WALRecoveryMode::kPointInTimeRecovery;
+      options.wal_recovery_mode = WALRecoveryMode::PointInTimeRecovery;
       options.manual_wal_flush = manual_wal_flush;
       ASSERT_OK(ReOpen());
       std::string cf_name = "two";

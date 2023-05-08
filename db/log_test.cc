@@ -188,7 +188,7 @@ class LogTest
   size_t WrittenBytes() const { return dest_contents().size(); }
 
   std::string Read(const WALRecoveryMode wal_recovery_mode =
-                       WALRecoveryMode::kTolerateCorruptedTailRecords) {
+                       WALRecoveryMode::TolerateCorruptedTailRecords) {
     std::string scratch;
     Slice record;
     bool ret = false;
@@ -398,7 +398,7 @@ TEST_P(LogTest, TruncatedTrailingRecordIsNotIgnored) {
   }
   Write("foo");
   ShrinkSize(4);  // Drop all payload as well as a header byte
-  ASSERT_EQ("EOF", Read(WALRecoveryMode::kAbsoluteConsistency));
+  ASSERT_EQ("EOF", Read(WALRecoveryMode::AbsoluteConsistency));
   // Truncated last record is ignored, not treated as an error
   ASSERT_GT(DroppedBytes(), 0U);
   ASSERT_EQ("OK", MatchError("Corruption: truncated header"));
@@ -450,7 +450,7 @@ TEST_P(LogTest, BadLengthAtEndIsNotIgnored) {
   }
   Write("foo");
   ShrinkSize(1);
-  ASSERT_EQ("EOF", Read(WALRecoveryMode::kAbsoluteConsistency));
+  ASSERT_EQ("EOF", Read(WALRecoveryMode::AbsoluteConsistency));
   ASSERT_GT(DroppedBytes(), 0U);
   ASSERT_EQ("OK", MatchError("Corruption: truncated record body"));
 }
@@ -535,7 +535,7 @@ TEST_P(LogTest, MissingLastIsNotIgnored) {
   Write(BigString("bar", kBlockSize));
   // Remove the LAST block, including header.
   ShrinkSize(14);
-  ASSERT_EQ("EOF", Read(WALRecoveryMode::kAbsoluteConsistency));
+  ASSERT_EQ("EOF", Read(WALRecoveryMode::AbsoluteConsistency));
   ASSERT_GT(DroppedBytes(), 0U);
   ASSERT_EQ("OK", MatchError("Corruption: error reading trailing data"));
 }
@@ -558,7 +558,7 @@ TEST_P(LogTest, PartialLastIsNotIgnored) {
   Write(BigString("bar", kBlockSize));
   // Cause a bad record length in the LAST block.
   ShrinkSize(1);
-  ASSERT_EQ("EOF", Read(WALRecoveryMode::kAbsoluteConsistency));
+  ASSERT_EQ("EOF", Read(WALRecoveryMode::AbsoluteConsistency));
   ASSERT_GT(DroppedBytes(), 0U);
   ASSERT_EQ("OK", MatchError("Corruption: truncated record body"));
 }
