@@ -30,10 +30,13 @@
 #include "rocksdb/universal_compaction.h"
 #include "rocksdb/version.h"
 #include "rocksdb/write_buffer_manager.h"
+#include "rocksdb-rs/src/lib.rs.h"
 
 #ifdef max
 #undef max
 #endif
+
+using rs::options::CompactionServiceJobStatus;
 
 namespace ROCKSDB_NAMESPACE {
 
@@ -388,12 +391,6 @@ struct DbPath {
 
 extern const char* kHostnameForDbHostId;
 
-enum class CompactionServiceJobStatus : char {
-  kSuccess,
-  kFailure,
-  kUseLocal,
-};
-
 struct CompactionServiceJobInfo {
   std::string db_name;
   std::string db_id;
@@ -431,14 +428,14 @@ class CompactionService : public Customizable {
   virtual CompactionServiceJobStatus StartV2(
       const CompactionServiceJobInfo& /*info*/,
       const std::string& /*compaction_service_input*/) {
-    return CompactionServiceJobStatus::kUseLocal;
+    return CompactionServiceJobStatus::UseLocal;
   }
 
   // Wait for remote compaction to finish.
   virtual CompactionServiceJobStatus WaitForCompleteV2(
       const CompactionServiceJobInfo& /*info*/,
       std::string* /*compaction_service_result*/) {
-    return CompactionServiceJobStatus::kUseLocal;
+    return CompactionServiceJobStatus::UseLocal;
   }
 
   ~CompactionService() override = default;

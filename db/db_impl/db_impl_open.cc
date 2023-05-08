@@ -23,7 +23,6 @@
 #include "options/options_helper.h"
 #include "rocksdb/table.h"
 #include "rocksdb/wal_filter.h"
-#include "rocksdb-rs/src/lib.rs.h"
 #include "test_util/sync_point.h"
 #include "util/rate_limiter.h"
 
@@ -1712,7 +1711,6 @@ Status DBImpl::WriteLevel0TableForRecovery(int job_id, ColumnFamilyData* cfd,
 }
 
 Status DB::Open(const Options& options, const std::string& dbname, DB** dbptr) {
-  rs::hello_world();
   DBOptions db_options(options);
   ColumnFamilyOptions cf_options(options);
   std::vector<ColumnFamilyDescriptor> column_families;

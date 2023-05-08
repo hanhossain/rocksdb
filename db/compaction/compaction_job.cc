@@ -1038,12 +1038,12 @@ void CompactionJob::ProcessKeyValueCompaction(SubcompactionState* sub_compact) {
   if (db_options_.compaction_service) {
     CompactionServiceJobStatus comp_status =
         ProcessKeyValueCompactionWithCompactionService(sub_compact);
-    if (comp_status == CompactionServiceJobStatus::kSuccess ||
-        comp_status == CompactionServiceJobStatus::kFailure) {
+    if (comp_status == CompactionServiceJobStatus::Success ||
+        comp_status == CompactionServiceJobStatus::Failure) {
       return;
     }
     // fallback to local compaction
-    assert(comp_status == CompactionServiceJobStatus::kUseLocal);
+    assert(comp_status == CompactionServiceJobStatus::UseLocal);
   }
 
   uint64_t prev_cpu_micros = db_options_.clock->CPUMicros();
