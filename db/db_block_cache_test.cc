@@ -539,7 +539,7 @@ TEST_P(DBBlockCacheTest1, WarmCacheWithBlocksDuringFlush) {
   // Verify compaction not counted
   CompactRangeOptions cro;
   // Ensure files are rewritten, not just trivially moved.
-  cro.bottommost_level_compaction = BottommostLevelCompaction::kForceOptimized;
+  cro.bottommost_level_compaction = BottommostLevelCompaction::ForceOptimized;
   ASSERT_OK(db_->CompactRange(cro, /*begin=*/nullptr, /*end=*/nullptr));
   EXPECT_EQ(kNumBlocks,
             options.statistics->getTickerCount(BLOCK_CACHE_DATA_ADD));
@@ -1868,7 +1868,7 @@ TEST_P(DBBlockCachePinningTest, TwoLevelDB) {
       // Prevent trivial move so file will be rewritten with dictionary and
       // reopened with L1's pinning settings.
       CompactRangeOptions cro;
-      cro.bottommost_level_compaction = BottommostLevelCompaction::kForce;
+      cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
       ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
     }
   }

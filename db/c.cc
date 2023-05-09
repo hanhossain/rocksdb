@@ -55,7 +55,6 @@ using ROCKSDB_NAMESPACE::BackupID;
 using ROCKSDB_NAMESPACE::BackupInfo;
 using ROCKSDB_NAMESPACE::BatchResult;
 using ROCKSDB_NAMESPACE::BlockBasedTableOptions;
-using ROCKSDB_NAMESPACE::BottommostLevelCompaction;
 using ROCKSDB_NAMESPACE::BytewiseComparator;
 using ROCKSDB_NAMESPACE::Cache;
 using ROCKSDB_NAMESPACE::Checkpoint;
@@ -126,6 +125,7 @@ using ROCKSDB_NAMESPACE::WriteBatch;
 using ROCKSDB_NAMESPACE::WriteBatchWithIndex;
 using ROCKSDB_NAMESPACE::WriteOptions;
 
+using rs::options::BottommostLevelCompaction;
 using rs::options::WALRecoveryMode;
 
 using std::unordered_set;

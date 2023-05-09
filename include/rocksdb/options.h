@@ -36,8 +36,11 @@
 #undef max
 #endif
 
+using rs::options::BlobGarbageCollectionPolicy;
+using rs::options::BottommostLevelCompaction;
 using rs::options::CompactionServiceJobStatus;
 using rs::options::ReadTier;
+using rs::options::TraceFilterType;
 using rs::options::WALRecoveryMode;
 
 namespace ROCKSDB_NAMESPACE {
@@ -1776,32 +1779,6 @@ struct CompactionOptions {
         max_subcompactions(0) {}
 };
 
-// For level based compaction, we can configure if we want to skip/force
-// bottommost level compaction.
-enum class BottommostLevelCompaction {
-  // Skip bottommost level compaction
-  kSkip,
-  // Only compact bottommost level if there is a compaction filter
-  // This is the default option
-  kIfHaveCompactionFilter,
-  // Always compact bottommost level
-  kForce,
-  // Always compact bottommost level but in bottommost level avoid
-  // double-compacting files created in the same compaction
-  kForceOptimized,
-};
-
-// For manual compaction, we can configure if we want to skip/force garbage
-// collection of blob files.
-enum class BlobGarbageCollectionPolicy {
-  // Force blob file garbage collection.
-  kForce,
-  // Skip blob file garbage collection.
-  kDisable,
-  // Inherit blob file garbage collection policy from ColumnFamilyOptions.
-  kUseDefault,
-};
-
 // CompactRangeOptions is used by CompactRange() call.
 struct CompactRangeOptions {
   // If true, no other compaction will run at the same time as this
@@ -1822,7 +1799,7 @@ struct CompactRangeOptions {
   // By default level based compaction will only compact the bottommost level
   // if there is a compaction filter
   BottommostLevelCompaction bottommost_level_compaction =
-      BottommostLevelCompaction::kIfHaveCompactionFilter;
+      BottommostLevelCompaction::IfHaveCompactionFilter;
   // If true, will execute immediately even if doing so would cause the DB to
   // enter write stall mode. Otherwise, it'll sleep until load is low enough.
   bool allow_write_stall = false;
@@ -1850,7 +1827,7 @@ struct CompactRangeOptions {
   // kUseDefault leaves the setting in effect. This enables customers to both
   // force-enable and force-disable GC when calling CompactRange.
   BlobGarbageCollectionPolicy blob_garbage_collection_policy =
-      BlobGarbageCollectionPolicy::kUseDefault;
+      BlobGarbageCollectionPolicy::UseDefault;
 
   // If set to < 0 or > 1, RocksDB leaves blob_garbage_collection_age_cutoff
   // from ColumnFamilyOptions in effect. Otherwise, it will override the
@@ -1934,21 +1911,6 @@ struct IngestExternalFileOptions {
   bool fail_if_not_bottommost_level = false;
 };
 
-enum TraceFilterType : uint64_t {
-  // Trace all the operations
-  kTraceFilterNone = 0x0,
-  // Do not trace the get operations
-  kTraceFilterGet = 0x1 << 0,
-  // Do not trace the write operations
-  kTraceFilterWrite = 0x1 << 1,
-  // Do not trace the `Iterator::Seek()` operations
-  kTraceFilterIteratorSeek = 0x1 << 2,
-  // Do not trace the `Iterator::SeekForPrev()` operations
-  kTraceFilterIteratorSeekForPrev = 0x1 << 3,
-  // Do not trace the `MultiGet()` operations
-  kTraceFilterMultiGet = 0x1 << 4,
-};
-
 // TraceOptions is used for StartTrace
 struct TraceOptions {
   // To avoid the trace file size grows large than the storage space,
@@ -1958,7 +1920,7 @@ struct TraceOptions {
   // Default to 1 (capture every request).
   uint64_t sampling_frequency = 1;
   // Note: The filtering happens before sampling.
-  uint64_t filter = kTraceFilterNone;
+  uint64_t filter = (uint64_t)TraceFilterType::TraceFilterNone;
   // When true, the order of write records in the trace will match the order of
   // the corresponding write records in the WAL and applied to the DB. There may
   // be a performance penalty associated with preserving this ordering.

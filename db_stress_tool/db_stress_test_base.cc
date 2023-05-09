@@ -2203,19 +2203,19 @@ void StressTest::TestCompactRange(ThreadState* thread, int64_t rand_key,
   cro.exclusive_manual_compaction = static_cast<bool>(thread->rand.Next() % 2);
   cro.change_level = static_cast<bool>(thread->rand.Next() % 2);
   std::vector<BottommostLevelCompaction> bottom_level_styles = {
-      BottommostLevelCompaction::kSkip,
-      BottommostLevelCompaction::kIfHaveCompactionFilter,
-      BottommostLevelCompaction::kForce,
-      BottommostLevelCompaction::kForceOptimized};
+      BottommostLevelCompaction::Skip,
+      BottommostLevelCompaction::IfHaveCompactionFilter,
+      BottommostLevelCompaction::Force,
+      BottommostLevelCompaction::ForceOptimized};
   cro.bottommost_level_compaction =
       bottom_level_styles[thread->rand.Next() %
                           static_cast<uint32_t>(bottom_level_styles.size())];
   cro.allow_write_stall = static_cast<bool>(thread->rand.Next() % 2);
   cro.max_subcompactions = static_cast<uint32_t>(thread->rand.Next() % 4);
   std::vector<BlobGarbageCollectionPolicy> blob_gc_policies = {
-      BlobGarbageCollectionPolicy::kForce,
-      BlobGarbageCollectionPolicy::kDisable,
-      BlobGarbageCollectionPolicy::kUseDefault};
+      BlobGarbageCollectionPolicy::Force,
+      BlobGarbageCollectionPolicy::Disable,
+      BlobGarbageCollectionPolicy::UseDefault};
   cro.blob_garbage_collection_policy =
       blob_gc_policies[thread->rand.Next() %
                        static_cast<uint32_t>(blob_gc_policies.size())];

@@ -254,10 +254,10 @@ Compaction::Compaction(
       compaction_reason_(_compaction_reason),
       notify_on_compaction_completion_(false),
       enable_blob_garbage_collection_(
-          _blob_garbage_collection_policy == BlobGarbageCollectionPolicy::kForce
+          _blob_garbage_collection_policy == BlobGarbageCollectionPolicy::Force
               ? true
               : (_blob_garbage_collection_policy ==
-                         BlobGarbageCollectionPolicy::kDisable
+                         BlobGarbageCollectionPolicy::Disable
                      ? false
                      : mutable_cf_options()->enable_blob_garbage_collection)),
       blob_garbage_collection_age_cutoff_(

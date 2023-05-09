@@ -132,7 +132,7 @@ TEST_F(SeqnoTimeTest, TemperatureBasicUniversal) {
   }
 
   CompactRangeOptions cro;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::kForce;
+  cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   uint64_t hot_data_size = GetSstSizeHelper(Temperature::kUnknown);
   uint64_t cold_data_size = GetSstSizeHelper(Temperature::kCold);
@@ -206,7 +206,7 @@ TEST_F(SeqnoTimeTest, TemperatureBasicLevel) {
   }
 
   CompactRangeOptions cro;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::kForce;
+  cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
 
   // All data is hot, only output to penultimate level
@@ -758,7 +758,7 @@ TEST_P(SeqnoTimeTablePropTest, SeqnoToTimeMappingUniversal) {
 
   // compact to the last level
   CompactRangeOptions cro;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::kForce;
+  cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   // make sure the data is all compacted to penultimate level if the feature is
   // on, otherwise, compacted to the last level.

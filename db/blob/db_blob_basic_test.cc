@@ -697,7 +697,7 @@ TEST_F(DBBlobBasicTest, MultiGetWithDirectIO) {
     Slice begin = Slice(second_key);
     Slice end = Slice(second_key);
     CompactRangeOptions cro;
-    cro.bottommost_level_compaction = BottommostLevelCompaction::kForce;
+    cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
     ASSERT_OK(db_->CompactRange(cro, &begin, &end));
   }
 

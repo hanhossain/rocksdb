@@ -1199,7 +1199,7 @@ void CompactorCommand::DoCommand() {
   }
 
   CompactRangeOptions cro;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::kForceOptimized;
+  cro.bottommost_level_compaction = BottommostLevelCompaction::ForceOptimized;
 
   Status s = db_->CompactRange(cro, GetCfHandle(), begin, end);
   if (!s.ok()) {

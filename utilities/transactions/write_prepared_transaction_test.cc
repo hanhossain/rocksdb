@@ -3990,7 +3990,7 @@ TEST_P(WritePreparedTransactionTest, BasicRollbackDeletionTypeCb) {
       CompactRangeOptions cro;
       cro.change_level = true;
       cro.target_level = options.num_levels - 1;
-      cro.bottommost_level_compaction = BottommostLevelCompaction::kForce;
+      cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
       ASSERT_OK(db->CompactRange(cro, /*begin=*/nullptr, /*end=*/nullptr));
     }
 
@@ -4009,7 +4009,7 @@ TEST_P(WritePreparedTransactionTest, BasicRollbackDeletionTypeCb) {
 
     {
       CompactRangeOptions cro;
-      cro.bottommost_level_compaction = BottommostLevelCompaction::kForce;
+      cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
       ASSERT_OK(db->CompactRange(cro, /*begin=*/nullptr, /*end=*/nullptr));
     }
 

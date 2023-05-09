@@ -1195,7 +1195,7 @@ TEST_F(DBOptionsTest, BottommostCompressionOptsWithFallbackType) {
   compression_used = CompressionType::kDisableCompressionOption;
   compression_opt_used = CompressionOptions();
   CompactRangeOptions cro;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::kForceOptimized;
+  cro.bottommost_level_compaction = BottommostLevelCompaction::ForceOptimized;
   ASSERT_OK(dbfull()->CompactRange(cro, nullptr, nullptr));
 
   ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();

@@ -62,4 +62,45 @@ mod ffi {
         /// Data in memtable. Used for memtable-only iterators.
         MemtableTier = 0x3,
     }
+
+    /// For level based compaction, we can configure if we want to skip/force
+    /// bottommost level compaction.
+    enum BottommostLevelCompaction {
+        /// Skip bottommost level compaction
+        Skip,
+        /// Only compact bottommost level if there is a compaction filter .This is the default
+        /// option.
+        IfHaveCompactionFilter,
+        /// Always compact bottommost level
+        Force,
+        /// Always compact bottommost level but in bottommost level avoid double-compacting files
+        /// created in the same compaction
+        ForceOptimized,
+    }
+
+    /// For manual compaction, we can configure if we want to skip/force garbage collection of blob
+    /// files.
+    enum BlobGarbageCollectionPolicy {
+        /// Force blob file garbage collection.
+        Force,
+        /// Skip blob file garbage collection.
+        Disable,
+        /// Inherit blob file garbage collection policy from ColumnFamilyOptions.
+        UseDefault,
+    }
+
+    enum TraceFilterType {
+        /// Trace all the operations
+        TraceFilterNone = 0x0,
+        /// Do not trace the get operations
+        TraceFilterGet = 0x1,
+        /// Do not trace the write operations
+        TraceFilterWrite = 0x2,
+        /// Do not trace the `Iterator::Seek()` operations
+        TraceFilterIteratorSeek = 0x4,
+        /// Do not trace the `Iterator::SeekForPrev()` operations
+        TraceFilterIteratorSeekForPrev = 0x8,
+        /// Do not trace the `MultiGet()` operations
+        TraceFilterMultiGet = 0x10,
+    }
 }

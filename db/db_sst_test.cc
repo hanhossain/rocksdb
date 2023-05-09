@@ -813,7 +813,7 @@ TEST_F(DBSSTTest, RateLimitedWALDelete) {
   // Compaction will move the 4 files in L0 to trash and create 1 L1 file.
   // Use kForceOptimized to not rewrite the new L1 file.
   CompactRangeOptions cro;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::kForceOptimized;
+  cro.bottommost_level_compaction = BottommostLevelCompaction::ForceOptimized;
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   ASSERT_OK(dbfull()->TEST_WaitForCompact(true));
   ASSERT_EQ("0,1", FilesPerLevel(0));
@@ -1031,7 +1031,7 @@ TEST_F(DBSSTTest, DeleteSchedulerMultipleDBPaths) {
   // Compaction will delete both files and regenerate a file in L1 in second
   // db path. The deleted files should still be cleaned up via delete scheduler.
   compact_options.bottommost_level_compaction =
-      BottommostLevelCompaction::kForceOptimized;
+      BottommostLevelCompaction::ForceOptimized;
   ASSERT_OK(db_->CompactRange(compact_options, nullptr, nullptr));
   ASSERT_EQ("0,1", FilesPerLevel(0));
 

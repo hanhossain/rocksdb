@@ -3158,7 +3158,7 @@ TEST_F(DBRangeDelTest, SingleKeyFile) {
 
   ASSERT_EQ(NumTableFilesAtLevel(0), 3);
   CompactRangeOptions co;
-  co.bottommost_level_compaction = BottommostLevelCompaction::kForce;
+  co.bottommost_level_compaction = BottommostLevelCompaction::Force;
 
   ASSERT_OK(dbfull()->RunManualCompaction(
       static_cast_with_check<ColumnFamilyHandleImpl>(db_->DefaultColumnFamily())
