@@ -7,6 +7,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 #include <limits>
+#include <rocksdb-rs-cxx/advanced_options.h>
 #include <string>
 #include <unordered_map>
 
@@ -22,6 +23,8 @@
 #include "test_util/sync_point.h"
 #include "test_util/testutil.h"
 #include "util/random.h"
+
+using rs::advanced_options::CompactionStyle;
 
 namespace ROCKSDB_NAMESPACE {
 
@@ -831,7 +834,7 @@ TEST_F(DBOptionsTest, SanitizeDelayedWriteRate) {
 TEST_F(DBOptionsTest, SanitizeUniversalTTLCompaction) {
   Options options;
   options.env = CurrentOptions().env;
-  options.compaction_style = kCompactionStyleUniversal;
+  options.compaction_style = CompactionStyle::Universal;
 
   options.ttl = 0;
   options.periodic_compaction_seconds = 0;
@@ -864,7 +867,7 @@ TEST_F(DBOptionsTest, SanitizeTtlDefault) {
   Reopen(options);
   ASSERT_EQ(30 * 24 * 60 * 60, dbfull()->GetOptions().ttl);
 
-  options.compaction_style = kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.ttl = 0;
   Reopen(options);
   ASSERT_EQ(0, dbfull()->GetOptions().ttl);
@@ -876,7 +879,7 @@ TEST_F(DBOptionsTest, SanitizeTtlDefault) {
 
 TEST_F(DBOptionsTest, SanitizeFIFOPeriodicCompaction) {
   Options options;
-  options.compaction_style = kCompactionStyleFIFO;
+  options.compaction_style = CompactionStyle::FIFO;
   options.env = CurrentOptions().env;
   options.ttl = 0;
   Reopen(options);
@@ -904,7 +907,7 @@ TEST_F(DBOptionsTest, SanitizeFIFOPeriodicCompaction) {
 TEST_F(DBOptionsTest, SetFIFOCompactionOptions) {
   Options options;
   options.env = CurrentOptions().env;
-  options.compaction_style = kCompactionStyleFIFO;
+  options.compaction_style = CompactionStyle::FIFO;
   options.write_buffer_size = 10 << 10;  // 10KB
   options.arena_block_size = 4096;
   options.compression = kNoCompression;
@@ -1039,7 +1042,7 @@ TEST_F(DBOptionsTest, CompactionReadaheadSizeChange) {
 
 TEST_F(DBOptionsTest, FIFOTtlBackwardCompatible) {
   Options options;
-  options.compaction_style = kCompactionStyleFIFO;
+  options.compaction_style = CompactionStyle::FIFO;
   options.write_buffer_size = 10 << 10;  // 10KB
   options.create_if_missing = true;
   options.env = CurrentOptions().env;

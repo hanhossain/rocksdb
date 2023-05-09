@@ -571,7 +571,7 @@ TEST_F(DBTest, LevelReopenWithFIFO) {
     ASSERT_TRUE(total_sst_files_size > 0);
 
     Options fifo_options(options);
-    fifo_options.compaction_style = kCompactionStyleFIFO;
+    fifo_options.compaction_style = CompactionStyle::FIFO;
     options.create_if_missing = false;
     fifo_options.max_open_files = -1;
     fifo_options.disable_auto_compactions = false;
@@ -633,7 +633,7 @@ TEST_F(DBTest, ReadFromPersistedTier) {
 
       // Read directly from persited data.
       ReadOptions ropt;
-      ropt.read_tier = kPersistedTier;
+      ropt.read_tier = ReadTier::PersistedTier;
       std::string value;
       if (wopt.disableWAL) {
         // as data has not yet being flushed, we expect not found.
@@ -3736,7 +3736,7 @@ TEST_P(DBTestWithParam, FIFOCompactionTest) {
     // first iteration -- auto compaction
     // second iteration -- manual compaction
     Options options;
-    options.compaction_style = kCompactionStyleFIFO;
+    options.compaction_style = CompactionStyle::FIFO;
     options.write_buffer_size = 100 << 10;  // 100KB
     options.arena_block_size = 4096;
     options.compaction_options_fifo.max_table_files_size = 500 << 10;  // 500KB
@@ -3775,7 +3775,7 @@ TEST_P(DBTestWithParam, FIFOCompactionTest) {
 
 TEST_F(DBTest, FIFOCompactionTestWithCompaction) {
   Options options;
-  options.compaction_style = kCompactionStyleFIFO;
+  options.compaction_style = CompactionStyle::FIFO;
   options.write_buffer_size = 20 << 10;  // 20K
   options.arena_block_size = 4096;
   options.compaction_options_fifo.max_table_files_size = 1500 << 10;  // 1MB
@@ -3817,7 +3817,7 @@ TEST_F(DBTest, FIFOCompactionTestWithCompaction) {
 
 TEST_F(DBTest, FIFOCompactionStyleWithCompactionAndDelete) {
   Options options;
-  options.compaction_style = kCompactionStyleFIFO;
+  options.compaction_style = CompactionStyle::FIFO;
   options.write_buffer_size = 20 << 10;  // 20K
   options.arena_block_size = 4096;
   options.compaction_options_fifo.max_table_files_size = 1500 << 10;  // 1MB
@@ -3859,7 +3859,7 @@ TEST_F(DBTest, FIFOCompactionStyleWithCompactionAndDelete) {
 // Github issue #8014
 TEST_F(DBTest, FIFOCompactionWithTTLAndMaxOpenFilesTest) {
   Options options = CurrentOptions();
-  options.compaction_style = kCompactionStyleFIFO;
+  options.compaction_style = CompactionStyle::FIFO;
   options.create_if_missing = true;
   options.ttl = 600;  // seconds
 
@@ -3878,7 +3878,7 @@ TEST_F(DBTest, FIFOCompactionWithTTLAndMaxOpenFilesTest) {
 // Check that FIFO-with-TTL is supported only with BlockBasedTableFactory.
 TEST_F(DBTest, FIFOCompactionWithTTLAndVariousTableFormatsTest) {
   Options options;
-  options.compaction_style = kCompactionStyleFIFO;
+  options.compaction_style = CompactionStyle::FIFO;
   options.create_if_missing = true;
   options.ttl = 600;  // seconds
 
@@ -3897,7 +3897,7 @@ TEST_F(DBTest, FIFOCompactionWithTTLAndVariousTableFormatsTest) {
 
 TEST_F(DBTest, FIFOCompactionWithTTLTest) {
   Options options;
-  options.compaction_style = kCompactionStyleFIFO;
+  options.compaction_style = CompactionStyle::FIFO;
   options.write_buffer_size = 10 << 10;  // 10KB
   options.arena_block_size = 4096;
   options.compression = kNoCompression;
@@ -4737,7 +4737,7 @@ TEST_P(DBTestWithParam, ThreadStatusSingleCompaction) {
   Options options;
   options.create_if_missing = true;
   options.write_buffer_size = kEntrySize * kEntriesPerBuffer;
-  options.compaction_style = kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.target_file_size_base = options.write_buffer_size;
   options.max_bytes_for_level_base = options.target_file_size_base * 2;
   options.max_bytes_for_level_multiplier = 2;
@@ -4875,7 +4875,7 @@ TEST_P(DBTestWithParam, PreShutdownMultipleCompaction) {
   Options options;
   options.create_if_missing = true;
   options.write_buffer_size = kEntrySize * kEntriesPerBuffer;
-  options.compaction_style = kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.target_file_size_base = options.write_buffer_size;
   options.max_bytes_for_level_base =
       options.target_file_size_base * kNumL0Files;
@@ -4964,7 +4964,7 @@ TEST_P(DBTestWithParam, PreShutdownCompactionMiddle) {
   Options options;
   options.create_if_missing = true;
   options.write_buffer_size = kEntrySize * kEntriesPerBuffer;
-  options.compaction_style = kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.target_file_size_base = options.write_buffer_size;
   options.max_bytes_for_level_base =
       options.target_file_size_base * kNumL0Files;
@@ -5838,7 +5838,7 @@ TEST_F(DBTest, EncodeDecompressedBlockSizeTest) {
 
 TEST_F(DBTest, CloseSpeedup) {
   Options options = CurrentOptions();
-  options.compaction_style = kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.write_buffer_size = 110 << 10;  // 110KB
   options.arena_block_size = 4 << 10;
   options.level0_file_num_compaction_trigger = 2;
@@ -6075,7 +6075,7 @@ TEST_F(DBTest, SuggestCompactRangeTest) {
   Options options = CurrentOptions();
   options.memtable_factory.reset(test::NewSpecialSkipListFactory(
       DBTestBase::kNumKeysByGenerateNewRandomFile));
-  options.compaction_style = kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.compaction_filter_factory.reset(
       new CompactionFilterFactoryGetContext());
   options.write_buffer_size = 200 << 10;
@@ -6142,7 +6142,7 @@ TEST_F(DBTest, SuggestCompactRangeUniversal) {
   Options options = CurrentOptions();
   options.memtable_factory.reset(test::NewSpecialSkipListFactory(
       DBTestBase::kNumKeysByGenerateNewRandomFile));
-  options.compaction_style = kCompactionStyleUniversal;
+  options.compaction_style = CompactionStyle::Universal;
   options.write_buffer_size = 200 << 10;
   options.arena_block_size = 4 << 10;
   options.level0_file_num_compaction_trigger = 4;
@@ -6437,9 +6437,9 @@ TEST_F(DBTest, FlushesInParallelWithCompactRange) {
   for (int iter = 0; iter < 3; ++iter) {
     Options options = CurrentOptions();
     if (iter < 2) {
-      options.compaction_style = kCompactionStyleLevel;
+      options.compaction_style = CompactionStyle::Level;
     } else {
-      options.compaction_style = kCompactionStyleUniversal;
+      options.compaction_style = CompactionStyle::Universal;
     }
     options.write_buffer_size = 110 << 10;
     options.level0_file_num_compaction_trigger = 4;

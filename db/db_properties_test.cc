@@ -771,7 +771,7 @@ TEST_F(DBPropertiesTest, DISABLED_GetProperty) {
   Options options = CurrentOptions();
   WriteOptions writeOpt = WriteOptions();
   writeOpt.disableWAL = true;
-  options.compaction_style = kCompactionStyleUniversal;
+  options.compaction_style = CompactionStyle::Universal;
   options.level0_file_num_compaction_trigger = 1;
   options.compaction_options_universal.size_ratio = 50;
   options.max_background_compactions = 1;
@@ -1025,7 +1025,7 @@ TEST_F(DBPropertiesTest, EstimatePendingCompBytes) {
   Options options = CurrentOptions();
   WriteOptions writeOpt = WriteOptions();
   writeOpt.disableWAL = true;
-  options.compaction_style = kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.level0_file_num_compaction_trigger = 2;
   options.max_background_compactions = 1;
   options.max_background_flushes = 1;
@@ -1641,8 +1641,8 @@ TEST_F(DBPropertiesTest, EstimateOldestKeyTime) {
   SetTimeElapseOnlySleepOnReopen(&options);
 
   // "rocksdb.estimate-oldest-key-time" only available to fifo compaction.
-  for (auto compaction : {kCompactionStyleLevel, kCompactionStyleUniversal,
-                          kCompactionStyleNone}) {
+  for (auto compaction : {CompactionStyle::Level, CompactionStyle::Universal,
+                          CompactionStyle::None}) {
     options.compaction_style = compaction;
     options.create_if_missing = true;
     DestroyAndReopen(options);
@@ -1654,7 +1654,7 @@ TEST_F(DBPropertiesTest, EstimateOldestKeyTime) {
   int64_t mock_start_time;
   ASSERT_OK(env_->GetCurrentTime(&mock_start_time));
 
-  options.compaction_style = kCompactionStyleFIFO;
+  options.compaction_style = CompactionStyle::FIFO;
   options.ttl = 300;
   options.max_open_files = -1;
   options.compaction_options_fifo.allow_compaction = false;

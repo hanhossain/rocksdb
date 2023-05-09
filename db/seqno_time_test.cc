@@ -70,7 +70,7 @@ TEST_F(SeqnoTimeTest, TemperatureBasicUniversal) {
   const int kKeyPerSec = 10;
 
   Options options = CurrentOptions();
-  options.compaction_style = kCompactionStyleUniversal;
+  options.compaction_style = CompactionStyle::Universal;
   options.preclude_last_level_data_seconds = 10000;
   options.env = mock_env_.get();
   options.bottommost_temperature = Temperature::kCold;
@@ -700,7 +700,7 @@ TEST_P(SeqnoTimeTablePropTest, SeqnoToTimeMappingUniversal) {
 
   Options options = CurrentOptions();
   SetTrackTimeDurationOptions(10000, options);
-  options.compaction_style = kCompactionStyleUniversal;
+  options.compaction_style = CompactionStyle::Universal;
   options.num_levels = kNumLevels;
   options.env = mock_env_.get();
 

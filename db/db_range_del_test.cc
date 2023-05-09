@@ -451,7 +451,7 @@ TEST_F(DBRangeDelTest, ValidUniversalSubcompactionBoundaries) {
   options.compaction_options_universal.min_merge_width = kFilesPerLevel;
   options.compaction_options_universal.max_merge_width = kFilesPerLevel;
   options.compaction_options_universal.size_ratio = 10;
-  options.compaction_style = kCompactionStyleUniversal;
+  options.compaction_style = CompactionStyle::Universal;
   options.level0_file_num_compaction_trigger = kFilesPerLevel;
   options.max_subcompactions = 4;
   options.memtable_factory.reset(test::NewSpecialSkipListFactory(kNumPerFile));
@@ -2958,7 +2958,7 @@ TEST_F(DBRangeDelTest, RefreshMemtableIter) {
   ASSERT_OK(
       db_->DeleteRange(WriteOptions(), db_->DefaultColumnFamily(), "a", "z"));
   ReadOptions ro;
-  ro.read_tier = kMemtableTier;
+  ro.read_tier = ReadTier::MemtableTier;
   std::unique_ptr<Iterator> iter{db_->NewIterator(ro)};
   ASSERT_OK(Flush());
   // First refresh reinits iter, which had a bug where

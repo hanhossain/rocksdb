@@ -2684,7 +2684,7 @@ TEST_P(BlockBasedTableTest, IndexSeekOptimizationIncomplete) {
 
   auto reader = c.GetTableReader();
   ReadOptions ropt;
-  ropt.read_tier = ReadTier::kBlockCacheTier;
+  ropt.read_tier = ReadTier::BlockCacheTier;
   std::unique_ptr<InternalIterator> iter(reader->NewIterator(
       ropt, /*prefix_extractor=*/nullptr, /*arena=*/nullptr,
       /*skip_filters=*/false, TableReaderCaller::kUncategorized));
@@ -4678,7 +4678,7 @@ class TestPrefixExtractor : public ROCKSDB_NAMESPACE::SliceTransform {
 
 TEST_F(PrefixTest, PrefixAndWholeKeyTest) {
   ROCKSDB_NAMESPACE::Options options;
-  options.compaction_style = ROCKSDB_NAMESPACE::kCompactionStyleUniversal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.num_levels = 20;
   options.create_if_missing = true;
   options.optimize_filters_for_hits = false;

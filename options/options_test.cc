@@ -241,7 +241,7 @@ TEST_F(OptionsTest, GetOptionsFromMapTest) {
   ASSERT_EQ(new_cf_opt.hard_pending_compaction_bytes_limit, 211);
   ASSERT_EQ(new_cf_opt.arena_block_size, 22U);
   ASSERT_EQ(new_cf_opt.disable_auto_compactions, true);
-  ASSERT_EQ(new_cf_opt.compaction_style, kCompactionStyleLevel);
+  ASSERT_EQ(new_cf_opt.compaction_style, CompactionStyle::Level);
   ASSERT_EQ(new_cf_opt.compaction_pri, CompactionPri::OldestSmallestSeqFirst);
   ASSERT_EQ(new_cf_opt.compaction_options_fifo.max_table_files_size,
             static_cast<uint64_t>(23));
@@ -2433,7 +2433,7 @@ TEST_F(OptionsOldApiTest, GetOptionsFromMapTest) {
   ASSERT_EQ(new_cf_opt.hard_pending_compaction_bytes_limit, 211);
   ASSERT_EQ(new_cf_opt.arena_block_size, 22U);
   ASSERT_EQ(new_cf_opt.disable_auto_compactions, true);
-  ASSERT_EQ(new_cf_opt.compaction_style, kCompactionStyleLevel);
+  ASSERT_EQ(new_cf_opt.compaction_style, CompactionStyle::Level);
   ASSERT_EQ(new_cf_opt.compaction_pri, CompactionPri::OldestSmallestSeqFirst);
   ASSERT_EQ(new_cf_opt.compaction_options_fifo.max_table_files_size,
             static_cast<uint64_t>(23));

@@ -340,7 +340,7 @@ TEST_P(DBCompactionTestWithParam, CompactionDeletionTrigger) {
       options.skip_stats_update_on_db_open = true;
     } else if (tid == 2) {
       // third pass with universal compaction
-      options.compaction_style = kCompactionStyleUniversal;
+      options.compaction_style = CompactionStyle::Universal;
       options.num_levels = 1;
     }
 
@@ -364,7 +364,7 @@ TEST_P(DBCompactionTestWithParam, CompactionDeletionTrigger) {
     ASSERT_OK(dbfull()->TEST_WaitForCompact());
     ASSERT_OK(Size(Key(0), Key(kTestSize - 1), &db_size[1]));
 
-    if (options.compaction_style == kCompactionStyleUniversal) {
+    if (options.compaction_style == CompactionStyle::Universal) {
       // Claim: in universal compaction none of the original data will remain
       // once compactions settle.
       //
@@ -545,7 +545,7 @@ TEST_P(DBCompactionTestWithParam, CompactionDeletionTriggerReopen) {
 
     if (tid == 1) {
       // second pass with universal compaction
-      options.compaction_style = kCompactionStyleUniversal;
+      options.compaction_style = CompactionStyle::Universal;
       options.num_levels = 1;
     }
 
@@ -932,7 +932,7 @@ TEST_F(DBCompactionTest, MinorCompactionsHappen) {
 
 TEST_F(DBCompactionTest, UserKeyCrossFile1) {
   Options options = CurrentOptions();
-  options.compaction_style = kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.level0_file_num_compaction_trigger = 3;
 
   DestroyAndReopen(options);
@@ -965,7 +965,7 @@ TEST_F(DBCompactionTest, UserKeyCrossFile1) {
 
 TEST_F(DBCompactionTest, UserKeyCrossFile2) {
   Options options = CurrentOptions();
-  options.compaction_style = kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.level0_file_num_compaction_trigger = 3;
 
   DestroyAndReopen(options);
@@ -998,7 +998,7 @@ TEST_F(DBCompactionTest, UserKeyCrossFile2) {
 
 TEST_F(DBCompactionTest, CompactionSstPartitioner) {
   Options options = CurrentOptions();
-  options.compaction_style = kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.level0_file_num_compaction_trigger = 3;
   std::shared_ptr<SstPartitionerFactory> factory(
       NewSstPartitionerFixedPrefixFactory(4));
@@ -1028,7 +1028,7 @@ TEST_F(DBCompactionTest, CompactionSstPartitioner) {
 
 TEST_F(DBCompactionTest, CompactionSstPartitionWithManualCompaction) {
   Options options = CurrentOptions();
-  options.compaction_style = kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.level0_file_num_compaction_trigger = 3;
 
   DestroyAndReopen(options);
@@ -1092,7 +1092,7 @@ TEST_F(DBCompactionTest, CompactionSstPartitionWithManualCompaction) {
 
 TEST_F(DBCompactionTest, CompactionSstPartitionerNonTrivial) {
   Options options = CurrentOptions();
-  options.compaction_style = kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.level0_file_num_compaction_trigger = 1;
   std::shared_ptr<SstPartitionerFactory> factory(
       NewSstPartitionerFixedPrefixFactory(4));
@@ -1116,7 +1116,7 @@ TEST_F(DBCompactionTest, CompactionSstPartitionerNonTrivial) {
 
 TEST_F(DBCompactionTest, ZeroSeqIdCompaction) {
   Options options = CurrentOptions();
-  options.compaction_style = kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.level0_file_num_compaction_trigger = 3;
 
   FlushedFileCollector* collector = new FlushedFileCollector();
@@ -1172,7 +1172,7 @@ TEST_F(DBCompactionTest, ZeroSeqIdCompaction) {
 TEST_F(DBCompactionTest, ManualCompactionUnknownOutputSize) {
   // github issue #2249
   Options options = CurrentOptions();
-  options.compaction_style = kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.level0_file_num_compaction_trigger = 3;
   DestroyAndReopen(options);
 
@@ -2167,7 +2167,7 @@ TEST_P(DBCompactionTestWithParam, LevelCompactionThirdPath) {
   options.db_paths.emplace_back(dbname_ + "_3", 1024 * 1024 * 1024);
   options.memtable_factory.reset(
       test::NewSpecialSkipListFactory(KNumKeysByGenerateNewFile - 1));
-  options.compaction_style = kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.write_buffer_size = 110 << 10;  // 110KB
   options.arena_block_size = 4 << 10;
   options.level0_file_num_compaction_trigger = 2;
@@ -2276,7 +2276,7 @@ TEST_P(DBCompactionTestWithParam, LevelCompactionPathUse) {
   options.db_paths.emplace_back(dbname_ + "_3", 1024 * 1024 * 1024);
   options.memtable_factory.reset(
       test::NewSpecialSkipListFactory(KNumKeysByGenerateNewFile - 1));
-  options.compaction_style = kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.write_buffer_size = 110 << 10;  // 110KB
   options.arena_block_size = 4 << 10;
   options.level0_file_num_compaction_trigger = 2;
@@ -2386,7 +2386,7 @@ TEST_P(DBCompactionTestWithParam, LevelCompactionCFPathUse) {
   options.db_paths.emplace_back(dbname_ + "_3", 1024 * 1024 * 1024);
   options.memtable_factory.reset(
       test::NewSpecialSkipListFactory(KNumKeysByGenerateNewFile - 1));
-  options.compaction_style = kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.write_buffer_size = 110 << 10;  // 110KB
   options.arena_block_size = 4 << 10;
   options.level0_file_num_compaction_trigger = 2;
@@ -2559,7 +2559,7 @@ TEST_P(DBCompactionTestWithParam, ConvertCompactionStyle) {
 
   // Stage 2: reopen with universal compaction - should fail
   options = CurrentOptions();
-  options.compaction_style = kCompactionStyleUniversal;
+  options.compaction_style = CompactionStyle::Universal;
   options.num_levels = 1;
   options = CurrentOptions(options);
   Status s = TryReopenWithColumnFamilies({"default", "pikachu"}, options);
@@ -2592,7 +2592,7 @@ TEST_P(DBCompactionTestWithParam, ConvertCompactionStyle) {
 
   // Stage 4: re-open in universal compaction style and do some db operations
   options = CurrentOptions();
-  options.compaction_style = kCompactionStyleUniversal;
+  options.compaction_style = CompactionStyle::Universal;
   options.num_levels = 4;
   options.write_buffer_size = 110 << 10;  // 110KB
   options.arena_block_size = 4 << 10;
@@ -2890,7 +2890,7 @@ TEST_P(DBCompactionTestWithParam, DISABLED_CompactFilesOnLevelCompaction) {
   Options options;
   options.create_if_missing = true;
   options.write_buffer_size = kEntrySize * kEntriesPerBuffer;
-  options.compaction_style = kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.target_file_size_base = options.write_buffer_size;
   options.max_bytes_for_level_base = options.target_file_size_base * 2;
   options.level0_stop_writes_trigger = 2;
@@ -3106,7 +3106,7 @@ TEST_P(DBCompactionTestWithParam, CompressLevelCompaction) {
   Options options = CurrentOptions();
   options.memtable_factory.reset(
       test::NewSpecialSkipListFactory(KNumKeysByGenerateNewFile - 1));
-  options.compaction_style = kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.write_buffer_size = 110 << 10;  // 110KB
   options.arena_block_size = 4 << 10;
   options.level0_file_num_compaction_trigger = 2;
@@ -3235,7 +3235,7 @@ TEST_F(DBCompactionTest, SanitizeCompactionOptionsTest) {
 // running parallel L0-L1 compactions
 TEST_F(DBCompactionTest, SuggestCompactRangeNoTwoLevel0Compactions) {
   Options options = CurrentOptions();
-  options.compaction_style = kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.write_buffer_size = 110 << 10;
   options.arena_block_size = 4 << 10;
   options.level0_file_num_compaction_trigger = 4;
@@ -3549,9 +3549,9 @@ TEST_P(DBCompactionTestWithParam, FullCompactionInBottomPriThreadPool) {
   for (bool use_universal_compaction : {false, true}) {
     Options options = CurrentOptions();
     if (use_universal_compaction) {
-      options.compaction_style = kCompactionStyleUniversal;
+      options.compaction_style = CompactionStyle::Universal;
     } else {
-      options.compaction_style = kCompactionStyleLevel;
+      options.compaction_style = CompactionStyle::Level;
       options.level_compaction_dynamic_level_bytes = true;
     }
     options.num_levels = 4;
@@ -3597,7 +3597,7 @@ TEST_F(DBCompactionTest, CancelCompactionWaitingOnConflict) {
   const int kNumSortedRuns = 4;
 
   Options options = CurrentOptions();
-  options.compaction_style = kCompactionStyleUniversal;
+  options.compaction_style = CompactionStyle::Universal;
   options.level0_file_num_compaction_trigger = kNumSortedRuns;
   options.memtable_factory.reset(
       test::NewSpecialSkipListFactory(KNumKeysByGenerateNewFile - 1));
@@ -7343,7 +7343,7 @@ TEST_P(DBCompactionTestL0FilesMisorderCorruptionWithParam,
 TEST_F(DBCompactionTest, SingleLevelUniveresal) {
   // Tests that manual compaction works with single level universal compaction.
   Options options = CurrentOptions();
-  options.compaction_style = kCompactionStyleUniversal;
+  options.compaction_style = CompactionStyle::Universal;
   options.disable_auto_compactions = true;
   options.num_levels = 1;
   DestroyAndReopen(options);
@@ -7505,7 +7505,7 @@ TEST_F(DBCompactionTest, UpdateLevelSubCompactionTest) {
 TEST_F(DBCompactionTest, UpdateUniversalSubCompactionTest) {
   Options options = CurrentOptions();
   options.max_subcompactions = 10;
-  options.compaction_style = kCompactionStyleUniversal;
+  options.compaction_style = CompactionStyle::Universal;
   options.target_file_size_base = 1 << 10;  // 1KB
   DestroyAndReopen(options);
 
@@ -8595,7 +8595,7 @@ TEST_F(DBCompactionTest, CompactionWithChecksumHandoffManifest2) {
 
 TEST_F(DBCompactionTest, FIFOWarm) {
   Options options = CurrentOptions();
-  options.compaction_style = kCompactionStyleFIFO;
+  options.compaction_style = CompactionStyle::FIFO;
   options.num_levels = 1;
   options.max_open_files = -1;
   options.level0_file_num_compaction_trigger = 2;
@@ -9152,7 +9152,7 @@ TEST_F(DBCompactionTest, BottommostFileCompactionAllowIngestBehind) {
   // compaction loop with reason kBottommostFiles.
   Options options = CurrentOptions();
   options.env = env_;
-  options.compaction_style = kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.allow_ingest_behind = true;
   options.comparator = BytewiseComparator();
   DestroyAndReopen(options);
@@ -9185,7 +9185,7 @@ TEST_F(DBCompactionTest, BottommostFileCompactionAllowIngestBehind) {
 
 TEST_F(DBCompactionTest, TurnOnLevelCompactionDynamicLevelBytes) {
   Options options = CurrentOptions();
-  options.compaction_style = kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.allow_ingest_behind = false;
   options.level_compaction_dynamic_level_bytes = false;
   options.num_levels = 6;

@@ -208,10 +208,10 @@ DEFINE_int32(
     "compressed_cache_numshardbits. Negative value means default settings. "
     "This is applied only if compressed_cache_size is greater than 0.");
 
-DEFINE_int32(compaction_style, ROCKSDB_NAMESPACE::Options().compaction_style,
+DEFINE_int32(compaction_style, (int)ROCKSDB_NAMESPACE::Options().compaction_style,
              "");
 
-DEFINE_int32(compaction_pri, ROCKSDB_NAMESPACE::Options().compaction_pri,
+DEFINE_int32(compaction_pri, (int)ROCKSDB_NAMESPACE::Options().compaction_pri,
              "Which file from a level should be picked to merge to the next "
              "level in level-based compaction");
 

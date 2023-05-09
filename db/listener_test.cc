@@ -159,7 +159,7 @@ TEST_F(EventListenerTest, OnSingleDBCompactionTest) {
   options.env = CurrentOptions().env;
   options.create_if_missing = true;
   options.write_buffer_size = kEntrySize * kEntriesPerBuffer;
-  options.compaction_style = kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.target_file_size_base = options.write_buffer_size;
   options.max_bytes_for_level_base = options.target_file_size_base * 2;
   options.max_bytes_for_level_multiplier = 2;
@@ -512,7 +512,7 @@ TEST_F(EventListenerTest, DisableBGCompaction) {
   options.listeners.emplace_back(listener);
   // BG compaction is disabled.  Number of L0 files will simply keeps
   // increasing in this test.
-  options.compaction_style = kCompactionStyleNone;
+  options.compaction_style = CompactionStyle::None;
   options.compression = kNoCompression;
   options.write_buffer_size = 100000;  // Small write buffer
   options.table_properties_collector_factories.push_back(
@@ -560,7 +560,7 @@ TEST_F(EventListenerTest, CompactionReasonLevel) {
   options.listeners.emplace_back(listener);
 
   options.level0_file_num_compaction_trigger = 4;
-  options.compaction_style = kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
 
   DestroyAndReopen(options);
   Random rnd(301);
@@ -625,7 +625,7 @@ TEST_F(EventListenerTest, CompactionReasonUniversal) {
   TestCompactionReasonListener* listener = new TestCompactionReasonListener();
   options.listeners.emplace_back(listener);
 
-  options.compaction_style = kCompactionStyleUniversal;
+  options.compaction_style = CompactionStyle::Universal;
 
   Random rnd(301);
 
@@ -688,7 +688,7 @@ TEST_F(EventListenerTest, CompactionReasonFIFO) {
   options.listeners.emplace_back(listener);
 
   options.level0_file_num_compaction_trigger = 4;
-  options.compaction_style = kCompactionStyleFIFO;
+  options.compaction_style = CompactionStyle::FIFO;
   options.compaction_options_fifo.max_table_files_size = 1;
 
   DestroyAndReopen(options);

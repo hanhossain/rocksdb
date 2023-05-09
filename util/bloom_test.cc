@@ -1110,8 +1110,8 @@ TEST(RibbonTest, RibbonTestLevelThreshold) {
   BlockBasedTableOptions opts;
   FilterBuildingContext ctx(opts);
   // A few settings
-  for (CompactionStyle cs : {kCompactionStyleLevel, kCompactionStyleUniversal,
-                             kCompactionStyleFIFO, kCompactionStyleNone}) {
+  for (CompactionStyle cs : {CompactionStyle::Level, CompactionStyle::Universal,
+                             CompactionStyle::FIFO, CompactionStyle::None}) {
     ctx.compaction_style = cs;
     for (int bloom_before_level : {-1, 0, 1, 10}) {
       std::vector<std::unique_ptr<const FilterPolicy> > policies;
@@ -1138,7 +1138,7 @@ TEST(RibbonTest, RibbonTestLevelThreshold) {
 
           builder.reset(policy->GetBuilderWithContext(ctx));
 
-          if (cs == kCompactionStyleLevel || cs == kCompactionStyleUniversal) {
+          if (cs == CompactionStyle::Level || cs == CompactionStyle::Universal) {
             // Level is considered.
             // Must be Bloom (~ 10 bits per key)
             ASSERT_GT(GetEffectiveBitsPerKey(builder.get()), 9);

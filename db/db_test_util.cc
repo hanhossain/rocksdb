@@ -453,11 +453,11 @@ Options DBTestBase::GetOptions(
       // TODO(3.13) -- test more options
       break;
     case kUniversalCompaction:
-      options.compaction_style = kCompactionStyleUniversal;
+      options.compaction_style = CompactionStyle::Universal;
       options.num_levels = 1;
       break;
     case kUniversalCompactionMultiLevel:
-      options.compaction_style = kCompactionStyleUniversal;
+      options.compaction_style = CompactionStyle::Universal;
       options.num_levels = 8;
       break;
     case kInfiniteMaxOpenFiles:
@@ -472,7 +472,7 @@ Options DBTestBase::GetOptions(
       break;
     }
     case kFIFOCompaction: {
-      options.compaction_style = kCompactionStyleFIFO;
+      options.compaction_style = CompactionStyle::FIFO;
       options.max_open_files = -1;
       break;
     }
@@ -531,7 +531,7 @@ Options DBTestBase::GetOptions(
       break;
     }
     case kUniversalSubcompactions: {
-      options.compaction_style = kCompactionStyleUniversal;
+      options.compaction_style = CompactionStyle::Universal;
       options.num_levels = 8;
       options.max_subcompactions = 4;
       break;
@@ -949,7 +949,7 @@ void DBTestBase::CheckAllEntriesWithFifoReopen(
   cfs_plus_default.insert(cfs_plus_default.begin(), kDefaultColumnFamilyName);
 
   Options fifo_options(options);
-  fifo_options.compaction_style = kCompactionStyleFIFO;
+  fifo_options.compaction_style = CompactionStyle::FIFO;
   fifo_options.max_open_files = -1;
   fifo_options.disable_auto_compactions = true;
   ASSERT_OK(TryReopenWithColumnFamilies(cfs_plus_default, fifo_options));

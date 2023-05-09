@@ -698,7 +698,7 @@ struct AdvancedColumnFamilyOptions {
   // The compaction style. Default: CompactionStyle::Level
   CompactionStyle compaction_style = CompactionStyle::Level;
 
-  // If level compaction_style = kCompactionStyleLevel, for each level,
+  // If level compaction_style = CompactionStyle::Level, for each level,
   // which files are prioritized to be picked to compact.
   // Default: CompactionPri::MinOverlappingRatio
   CompactionPri compaction_pri = CompactionPri::MinOverlappingRatio;

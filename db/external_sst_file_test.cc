@@ -2150,7 +2150,7 @@ TEST_F(ExternalSSTFileTest, SnapshotInconsistencyBug) {
 
 TEST_P(ExternalSSTFileTest, IngestBehind) {
   Options options = CurrentOptions();
-  options.compaction_style = kCompactionStyleUniversal;
+  options.compaction_style = CompactionStyle::Universal;
   options.num_levels = 3;
   options.disable_auto_compactions = false;
   DestroyAndReopen(options);

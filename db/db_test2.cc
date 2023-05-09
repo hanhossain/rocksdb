@@ -2281,7 +2281,7 @@ TEST_F(DBTest2, MaxCompactionBytesTest) {
   Options options = CurrentOptions();
   options.memtable_factory.reset(test::NewSpecialSkipListFactory(
       DBTestBase::kNumKeysByGenerateNewRandomFile));
-  options.compaction_style = kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.write_buffer_size = 200 << 10;
   options.arena_block_size = 4 << 10;
   options.level0_file_num_compaction_trigger = 4;
@@ -3513,7 +3513,7 @@ TEST_F(DBTest2, CompactionOnBottomPriorityWithListener) {
   env_->SetBackgroundThreads(0, Env::Priority::LOW);
   env_->SetBackgroundThreads(1, Env::Priority::BOTTOM);
   options.env = env_;
-  options.compaction_style = kCompactionStyleUniversal;
+  options.compaction_style = CompactionStyle::Universal;
   options.num_levels = num_levels;
   options.write_buffer_size = 100 << 10;     // 100KB
   options.target_file_size_base = 32 << 10;  // 32KB
@@ -3781,7 +3781,7 @@ TEST_F(DBTest2, MemtableOnlyIterator) {
   ASSERT_OK(Put(1, "bar", "second"));
 
   ReadOptions ropt;
-  ropt.read_tier = kMemtableTier;
+  ropt.read_tier = ReadTier::MemtableTier;
   std::string value;
   Iterator* it = nullptr;
 
@@ -4977,7 +4977,7 @@ TEST_F(DBTest2, TraceWithFilter) {
   Random rnd(301);
   Iterator* single_iter = nullptr;
 
-  trace_opts.filter = TraceFilterType::Type::TraceFilterWrite;
+  trace_opts.filter = (uint64_t)TraceFilterType::Write;
 
   std::string trace_filename = dbname_ + "/rocksdb.trace";
   std::unique_ptr<TraceWriter> trace_writer;
@@ -5099,7 +5099,7 @@ TEST_F(DBTest2, TraceWithFilter) {
   ASSERT_TRUE(db3->Get(ro, handles[0], "g", &value).IsNotFound());
 
   // The tracer will not record the READ ops.
-  trace_opts.filter = TraceFilterType::Type::TraceFilterGet;
+  trace_opts.filter = (uint64_t)TraceFilterType::Get;
   std::string trace_filename3 = dbname_ + "/rocksdb.trace_3";
   std::unique_ptr<TraceWriter> trace_writer3;
   ASSERT_OK(
@@ -6778,7 +6778,7 @@ TEST_F(DBTest2, LastLevelTemperatureUniversal) {
   const int kNumLevels = 5;
   const int kBottommostLevel = kNumLevels - 1;
   Options options = CurrentOptions();
-  options.compaction_style = kCompactionStyleUniversal;
+  options.compaction_style = CompactionStyle::Universal;
   options.level0_file_num_compaction_trigger = kTriggerNum;
   options.num_levels = kNumLevels;
   options.statistics = CreateDBStatistics();
@@ -7211,7 +7211,7 @@ TEST_F(DBTest2, PointInTimeRecoveryWithSyncFailureInCFCreation) {
 TEST_F(DBTest2, SortL0FilesByEpochNumber) {
   Options options = CurrentOptions();
   options.num_levels = 1;
-  options.compaction_style = kCompactionStyleUniversal;
+  options.compaction_style = CompactionStyle::Universal;
   DestroyAndReopen(options);
 
   // Set up L0 files to be sorted by their epoch_number
@@ -7309,7 +7309,7 @@ TEST_F(DBTest2, RecoverEpochNumber) {
     Options options = CurrentOptions();
     options.allow_ingest_behind = allow_ingest_behind;
     options.num_levels = 7;
-    options.compaction_style = kCompactionStyleLevel;
+    options.compaction_style = CompactionStyle::Level;
     options.disable_auto_compactions = true;
     DestroyAndReopen(options);
     CreateAndReopenWithCF({"cf1"}, options);

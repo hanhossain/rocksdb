@@ -242,7 +242,7 @@ TEST_P(DBTestTailingIterator, TailingIteratorTrimSeekToNext) {
   table_options.no_block_cache = true;
   options.table_factory.reset(NewBlockBasedTableFactory(table_options));
   ReopenWithColumnFamilies({"default", "pikachu"}, options);
-  read_options.read_tier = kBlockCacheTier;
+  read_options.read_tier = ReadTier::BlockCacheTier;
   std::unique_ptr<Iterator> iteri(db_->NewIterator(read_options, handles_[1]));
   ASSERT_OK(iteri->status());
   char buf5[32];
@@ -252,7 +252,7 @@ TEST_P(DBTestTailingIterator, TailingIteratorTrimSeekToNext) {
   ASSERT_TRUE(iteri->status().IsIncomplete());
   iteri = nullptr;
 
-  read_options.read_tier = kReadAllTier;
+  read_options.read_tier = ReadTier::ReadAllTier;
   options.table_factory.reset(NewBlockBasedTableFactory());
   ReopenWithColumnFamilies({"default", "pikachu"}, options);
   iter.reset(db_->NewIterator(read_options, handles_[1]));
@@ -363,7 +363,7 @@ TEST_P(DBTestTailingIterator, TailingIteratorIncomplete) {
   if (GetParam()) {
     read_options.async_io = true;
   }
-  read_options.read_tier = kBlockCacheTier;
+  read_options.read_tier = ReadTier::BlockCacheTier;
 
   std::string key("key");
   std::string value("value");
@@ -384,7 +384,7 @@ TEST_P(DBTestTailingIterator, TailingIteratorIncomplete) {
 
 TEST_P(DBTestTailingIterator, TailingIteratorSeekToSame) {
   Options options = CurrentOptions();
-  options.compaction_style = kCompactionStyleUniversal;
+  options.compaction_style = CompactionStyle::Universal;
   options.write_buffer_size = 1000;
   CreateAndReopenWithCF({"pikachu"}, options);
 

@@ -1594,7 +1594,7 @@ class LevelAndStyleCustomFilterPolicy : public FilterPolicy {
 
   FilterBitsBuilder* GetBuilderWithContext(
       const FilterBuildingContext& context) const override {
-    if (context.compaction_style == kCompactionStyleFIFO) {
+    if (context.compaction_style == CompactionStyle::FIFO) {
       return policy_fifo_->GetBuilderWithContext(context);
     } else if (context.level_at_creation == 0) {
       return policy_l0_other_->GetBuilderWithContext(context);
@@ -1670,7 +1670,7 @@ TEST_F(DBBloomFilterTest, ContextCustomFilterPolicy) {
     options.max_open_files = fifo ? -1 : options.max_open_files;
     options.statistics = ROCKSDB_NAMESPACE::CreateDBStatistics();
     options.compaction_style =
-        fifo ? kCompactionStyleFIFO : kCompactionStyleLevel;
+        fifo ? CompactionStyle::FIFO : CompactionStyle::Level;
 
     BlockBasedTableOptions table_options;
     table_options.filter_policy = policy;
@@ -2451,7 +2451,7 @@ TEST_F(DBBloomFilterTest, OptimizeFiltersForHits) {
   options.max_background_compactions = 8;
   options.max_background_flushes = 8;
   options.compression = kNoCompression;
-  options.compaction_style = kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.level_compaction_dynamic_level_bytes = true;
   BlockBasedTableOptions bbto;
   bbto.cache_index_and_filter_blocks = true;

@@ -3387,7 +3387,7 @@ Iterator* DBImpl::NewIterator(const ReadOptions& read_options,
   Iterator* result = nullptr;
   if (read_options.read_tier == ReadTier::PersistedTier) {
     return NewErrorIterator(Status::NotSupported(
-        "ReadTier::kPersistedData is not yet supported in iterators."));
+        "ReadTier::PersistedData is not yet supported in iterators."));
   }
   if (read_options.io_activity != Env::IOActivity::kUnknown) {
     return NewErrorIterator(Status::InvalidArgument(
@@ -3527,7 +3527,7 @@ Status DBImpl::NewIterators(
   }
   if (read_options.read_tier == ReadTier::PersistedTier) {
     return Status::NotSupported(
-        "ReadTier::kPersistedData is not yet supported in iterators.");
+        "ReadTier::PersistedData is not yet supported in iterators.");
   }
   if (read_options.io_activity != Env::IOActivity::kUnknown) {
     return Status::InvalidArgument(
