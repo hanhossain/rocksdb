@@ -45,8 +45,10 @@
 #include "rocksdb/utilities/transaction_db.h"
 #include "rocksdb/utilities/write_batch_with_index.h"
 #include "rocksdb/write_batch.h"
-#include "rocksdb-rs/src/lib.rs.h"
 #include "utilities/merge_operators.h"
+
+#include <rocksdb-rs-cxx/lib.h>
+
 
 using ROCKSDB_NAMESPACE::BackupEngine;
 using ROCKSDB_NAMESPACE::BackupEngineOptions;

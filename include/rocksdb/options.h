@@ -13,6 +13,7 @@
 
 #include <limits>
 #include <memory>
+#include <rocksdb-rs-cxx/lib.h>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -30,7 +31,6 @@
 #include "rocksdb/universal_compaction.h"
 #include "rocksdb/version.h"
 #include "rocksdb/write_buffer_manager.h"
-#include "rocksdb-rs/src/lib.rs.h"
 
 #ifdef max
 #undef max

@@ -14,10 +14,8 @@ project(rocksdb
 FetchContent_Declare(
     Corrosion
     GIT_REPOSITORY https://github.com/corrosion-rs/corrosion.git
-    GIT_TAG v0.3.5 # Optionally specify a commit hash, version tag or branch here
 )
 FetchContent_MakeAvailable(Corrosion)
-include(CorrosionCxx)
 
 if(POLICY CMP0042)
   cmake_policy(SET CMP0042 NEW)
@@ -985,12 +983,13 @@ string(REGEX REPLACE "[^0-9: /-]+" "" GIT_DATE "${GIT_DATE}")
 set(BUILD_VERSION_CC ${CMAKE_BINARY_DIR}/build_version.cc)
 configure_file(util/build_version.cc.in ${BUILD_VERSION_CC} @ONLY)
 
-add_library(${ROCKSDB_STATIC_LIB} STATIC ${SOURCES} ${BUILD_VERSION_CC})
-add_library_rust(PATH rocksdb-rs NAMESPACE rs)
+corrosion_import_crate(MANIFEST_PATH rocksdb-rs/Cargo.toml)
+corrosion_add_cxxbridge(rocksdb-rs-cxx CRATE rocksdb-rs FILES lib.rs)
 
+add_library(${ROCKSDB_STATIC_LIB} STATIC ${SOURCES} ${BUILD_VERSION_CC})
 target_link_libraries(
     ${ROCKSDB_STATIC_LIB}
-    PUBLIC rs::rocksdb-rs
+    PUBLIC rocksdb-rs-cxx
     PRIVATE ${THIRDPARTY_LIBS} ${SYSTEM_LIBS}
 )
 
