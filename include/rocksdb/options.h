@@ -13,7 +13,7 @@
 
 #include <limits>
 #include <memory>
-#include <rocksdb-rs-cxx/lib.h>
+#include <rocksdb-rs-cxx/options.h>
 #include <string>
 #include <unordered_map>
 #include <vector>
