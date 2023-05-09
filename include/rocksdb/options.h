@@ -1920,7 +1920,7 @@ struct TraceOptions {
   // Default to 1 (capture every request).
   uint64_t sampling_frequency = 1;
   // Note: The filtering happens before sampling.
-  uint64_t filter = (uint64_t)TraceFilterType::TraceFilterNone;
+  uint64_t filter = (uint64_t)TraceFilterType::None;
   // When true, the order of write records in the trace will match the order of
   // the corresponding write records in the WAL and applied to the DB. There may
   // be a performance penalty associated with preserving this ordering.

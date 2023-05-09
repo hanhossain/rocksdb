@@ -533,24 +533,24 @@ bool Tracer::ShouldSkipTrace(const TraceType& trace_type) {
     return true;
   }
 
-  TraceFilterType filter_mask = TraceFilterType::TraceFilterNone;
+  TraceFilterType filter_mask = TraceFilterType::None;
   switch (trace_type) {
     case kTraceNone:
     case kTraceBegin:
     case kTraceEnd:
-      filter_mask = TraceFilterType::TraceFilterNone;
+      filter_mask = TraceFilterType::None;
       break;
     case kTraceWrite:
-      filter_mask = TraceFilterType::TraceFilterWrite;
+      filter_mask = TraceFilterType::Write;
       break;
     case kTraceGet:
-      filter_mask = TraceFilterType::TraceFilterGet;
+      filter_mask = TraceFilterType::Get;
       break;
     case kTraceIteratorSeek:
-      filter_mask = TraceFilterType::TraceFilterIteratorSeek;
+      filter_mask = TraceFilterType::IteratorSeek;
       break;
     case kTraceIteratorSeekForPrev:
-      filter_mask = TraceFilterType::TraceFilterIteratorSeekForPrev;
+      filter_mask = TraceFilterType::IteratorSeekForPrev;
       break;
     case kBlockTraceIndexBlock:
     case kBlockTraceFilterBlock:
@@ -558,17 +558,17 @@ bool Tracer::ShouldSkipTrace(const TraceType& trace_type) {
     case kBlockTraceUncompressionDictBlock:
     case kBlockTraceRangeDeletionBlock:
     case kIOTracer:
-      filter_mask = TraceFilterType::TraceFilterNone;
+      filter_mask = TraceFilterType::None;
       break;
     case kTraceMultiGet:
-      filter_mask = TraceFilterType::TraceFilterMultiGet;
+      filter_mask = TraceFilterType::MultiGet;
       break;
     case kTraceMax:
       assert(false);
-      filter_mask = TraceFilterType::TraceFilterNone;
+      filter_mask = TraceFilterType::None;
       break;
   }
-  if (filter_mask != TraceFilterType::TraceFilterNone && trace_options_.filter & (uint64_t)filter_mask) {
+  if (filter_mask != TraceFilterType::None && trace_options_.filter & (uint64_t)filter_mask) {
     return true;
   }
 

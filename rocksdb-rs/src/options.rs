@@ -91,16 +91,16 @@ mod ffi {
 
     enum TraceFilterType {
         /// Trace all the operations
-        TraceFilterNone = 0x0,
+        None = 0x0,
         /// Do not trace the get operations
-        TraceFilterGet = 0x1,
+        Get = 0x1,
         /// Do not trace the write operations
-        TraceFilterWrite = 0x2,
+        Write = 0x2,
         /// Do not trace the `Iterator::Seek()` operations
-        TraceFilterIteratorSeek = 0x4,
+        IteratorSeek = 0x4,
         /// Do not trace the `Iterator::SeekForPrev()` operations
-        TraceFilterIteratorSeekForPrev = 0x8,
+        IteratorSeekForPrev = 0x8,
         /// Do not trace the `MultiGet()` operations
-        TraceFilterMultiGet = 0x10,
+        MultiGet = 0x10,
     }
 }
