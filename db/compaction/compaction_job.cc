@@ -473,7 +473,7 @@ void CompactionJob::GenSubcompactionBoundaries() {
   const ReadOptions read_options(Env::IOActivity::kCompaction);
   auto* c = compact_->compaction;
   if (c->max_subcompactions() <= 1 &&
-      !(c->immutable_options()->compaction_pri == kRoundRobin &&
+      !(c->immutable_options()->compaction_pri == CompactionPri::RoundRobin &&
         c->immutable_options()->compaction_style == CompactionStyle::Level)) {
     return;
   }
@@ -545,7 +545,7 @@ void CompactionJob::GenSubcompactionBoundaries() {
   // Get the number of planned subcompactions, may update reserve threads
   // and update extra_num_subcompaction_threads_reserved_ for round-robin
   uint64_t num_planned_subcompactions;
-  if (c->immutable_options()->compaction_pri == kRoundRobin &&
+  if (c->immutable_options()->compaction_pri == CompactionPri::RoundRobin &&
       c->immutable_options()->compaction_style == CompactionStyle::Level) {
     // For round-robin compaction prioity, we need to employ more
     // subcompactions (may exceed the max_subcompaction limit). The extra
@@ -1710,7 +1710,7 @@ Status CompactionJob::InstallCompactionResults(
   if ((compaction->compaction_reason() ==
            CompactionReason::kLevelMaxLevelSize ||
        compaction->compaction_reason() == CompactionReason::kRoundRobinTtl) &&
-      compaction->immutable_options()->compaction_pri == kRoundRobin) {
+      compaction->immutable_options()->compaction_pri == CompactionPri::RoundRobin) {
     int start_level = compaction->start_level();
     if (start_level > 0) {
       auto vstorage = compaction->input_version()->storage_info();

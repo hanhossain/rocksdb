@@ -325,11 +325,11 @@ std::map<CompactionStyle, std::string>
         {CompactionStyle::None, "kCompactionStyleNone"}};
 
 std::map<CompactionPri, std::string> OptionsHelper::compaction_pri_to_string = {
-    {kByCompensatedSize, "kByCompensatedSize"},
-    {kOldestLargestSeqFirst, "kOldestLargestSeqFirst"},
-    {kOldestSmallestSeqFirst, "kOldestSmallestSeqFirst"},
-    {kMinOverlappingRatio, "kMinOverlappingRatio"},
-    {kRoundRobin, "kRoundRobin"}};
+    {CompactionPri::ByCompensatedSize, "kByCompensatedSize"},
+    {CompactionPri::OldestLargestSeqFirst, "kOldestLargestSeqFirst"},
+    {CompactionPri::OldestSmallestSeqFirst, "kOldestSmallestSeqFirst"},
+    {CompactionPri::MinOverlappingRatio, "kMinOverlappingRatio"},
+    {CompactionPri::RoundRobin, "kRoundRobin"}};
 
 std::map<CompactionStopStyle, std::string>
     OptionsHelper::compaction_stop_style_to_string = {
@@ -789,11 +789,11 @@ std::unordered_map<std::string, CompactionStyle>
 
 std::unordered_map<std::string, CompactionPri>
     OptionsHelper::compaction_pri_string_map = {
-        {"kByCompensatedSize", kByCompensatedSize},
-        {"kOldestLargestSeqFirst", kOldestLargestSeqFirst},
-        {"kOldestSmallestSeqFirst", kOldestSmallestSeqFirst},
-        {"kMinOverlappingRatio", kMinOverlappingRatio},
-        {"kRoundRobin", kRoundRobin}};
+        {"kByCompensatedSize", CompactionPri::ByCompensatedSize},
+        {"kOldestLargestSeqFirst", CompactionPri::OldestLargestSeqFirst},
+        {"kOldestSmallestSeqFirst", CompactionPri::OldestSmallestSeqFirst},
+        {"kMinOverlappingRatio", CompactionPri::MinOverlappingRatio},
+        {"kRoundRobin", CompactionPri::RoundRobin}};
 
 std::unordered_map<std::string, CompactionStopStyle>
     OptionsHelper::compaction_stop_style_string_map = {

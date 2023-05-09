@@ -3933,7 +3933,7 @@ TEST_F(DBCompactionTest, RoundRobinTtlCompactionNormal) {
   options.compression = kNoCompression;
   options.level0_file_num_compaction_trigger = 20;
   options.ttl = 24 * 60 * 60;  // 24 hours
-  options.compaction_pri = kRoundRobin;
+  options.compaction_pri = CompactionPri::RoundRobin;
   env_->now_cpu_count_.store(0);
   env_->SetMockSleep();
   options.env = env_;
@@ -4086,7 +4086,7 @@ TEST_F(DBCompactionTest, RoundRobinTtlCompactionUnsortedTime) {
   options.compression = kNoCompression;
   options.level0_file_num_compaction_trigger = 20;
   options.ttl = 24 * 60 * 60;  // 24 hours
-  options.compaction_pri = kRoundRobin;
+  options.compaction_pri = CompactionPri::RoundRobin;
   env_->now_cpu_count_.store(0);
   env_->SetMockSleep();
   options.env = env_;
@@ -4283,7 +4283,7 @@ TEST_F(DBCompactionTest, LevelTtlCompactionOutputCuttingIteractingWithOther) {
   options.compression = kNoCompression;
   options.ttl = 24 * 60 * 60;  // 24 hours
   options.max_open_files = -1;
-  options.compaction_pri = kMinOverlappingRatio;
+  options.compaction_pri = CompactionPri::MinOverlappingRatio;
   env_->SetMockSleep();
   options.env = env_;
   options.target_file_size_base = 4 << 10;
@@ -4766,7 +4766,7 @@ TEST_F(DBCompactionTest, LevelTtlBooster) {
   options.level0_file_num_compaction_trigger = 2;
   options.max_bytes_for_level_base = 5 * uint64_t{kNumKeysPerFile * kValueSize};
   options.max_open_files = -1;  // needed for both periodic and ttl compactions
-  options.compaction_pri = CompactionPri::kMinOverlappingRatio;
+  options.compaction_pri = CompactionPri::MinOverlappingRatio;
   env_->SetMockSleep();
   options.env = env_;
 
@@ -5666,11 +5666,11 @@ TEST_P(CompactionPriTest, Test) {
 
 INSTANTIATE_TEST_CASE_P(
     CompactionPriTest, CompactionPriTest,
-    ::testing::Values(CompactionPri::kByCompensatedSize,
-                      CompactionPri::kOldestLargestSeqFirst,
-                      CompactionPri::kOldestSmallestSeqFirst,
-                      CompactionPri::kMinOverlappingRatio,
-                      CompactionPri::kRoundRobin));
+    ::testing::Values(CompactionPri::ByCompensatedSize,
+                      CompactionPri::OldestLargestSeqFirst,
+                      CompactionPri::OldestSmallestSeqFirst,
+                      CompactionPri::MinOverlappingRatio,
+                      CompactionPri::RoundRobin));
 
 TEST_F(DBCompactionTest, PersistRoundRobinCompactCursor) {
   Options options = CurrentOptions();
@@ -5678,7 +5678,7 @@ TEST_F(DBCompactionTest, PersistRoundRobinCompactCursor) {
   options.max_bytes_for_level_base = 128 * 1024;
   options.target_file_size_base = 64 * 1024;
   options.level0_file_num_compaction_trigger = 4;
-  options.compaction_pri = CompactionPri::kRoundRobin;
+  options.compaction_pri = CompactionPri::RoundRobin;
   options.max_bytes_for_level_multiplier = 4;
   options.num_levels = 3;
   options.compression = kNoCompression;
@@ -5749,7 +5749,7 @@ TEST_P(RoundRobinSubcompactionsAgainstPressureToken, PressureTokenTest) {
   options.max_bytes_for_level_multiplier = 2;
   options.level0_file_num_compaction_trigger = 4;
   options.target_file_size_base = kKeysPerBuffer * 1024;
-  options.compaction_pri = CompactionPri::kRoundRobin;
+  options.compaction_pri = CompactionPri::RoundRobin;
   options.max_bytes_for_level_base = 8 * kKeysPerBuffer * 1024;
   options.disable_auto_compactions = true;
   // Setup 7 threads but limited subcompactions so that
@@ -5834,7 +5834,7 @@ TEST_P(RoundRobinSubcompactionsAgainstResources, SubcompactionsUsingResources) {
   options.num_levels = 4;
   options.level0_file_num_compaction_trigger = 3;
   options.target_file_size_base = kKeysPerBuffer * 1024;
-  options.compaction_pri = CompactionPri::kRoundRobin;
+  options.compaction_pri = CompactionPri::RoundRobin;
   options.max_bytes_for_level_base = 30 * kKeysPerBuffer * 1024;
   options.disable_auto_compactions = true;
   options.max_subcompactions = 1;
@@ -5929,7 +5929,7 @@ TEST_P(DBCompactionTestWithParam, RoundRobinWithoutAdditionalResources) {
   options.num_levels = 4;
   options.level0_file_num_compaction_trigger = 3;
   options.target_file_size_base = kKeysPerBuffer * 1024;
-  options.compaction_pri = CompactionPri::kRoundRobin;
+  options.compaction_pri = CompactionPri::RoundRobin;
   options.max_bytes_for_level_base = 30 * kKeysPerBuffer * 1024;
   options.disable_auto_compactions = true;
   options.max_subcompactions = max_subcompactions_;
@@ -5999,7 +5999,7 @@ TEST_F(DBCompactionTest, RoundRobinCutOutputAtCompactCursor) {
   options.max_bytes_for_level_base = 64 * 1024;
   options.max_bytes_for_level_multiplier = 4;
   options.level0_file_num_compaction_trigger = 4;
-  options.compaction_pri = CompactionPri::kRoundRobin;
+  options.compaction_pri = CompactionPri::RoundRobin;
 
   DestroyAndReopen(options);
 

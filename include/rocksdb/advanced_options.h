@@ -16,6 +16,7 @@
 #include "rocksdb/memtablerep.h"
 #include "rocksdb/universal_compaction.h"
 
+using rs::advanced_options::CompactionPri;
 using rs::advanced_options::CompactionStyle;
 
 namespace ROCKSDB_NAMESPACE {
@@ -25,30 +26,6 @@ class SliceTransform;
 class TablePropertiesCollectorFactory;
 class TableFactory;
 struct Options;
-
-// In Level-based compaction, it Determines which file from a level to be
-// picked to merge to the next level. We suggest people try
-// kMinOverlappingRatio first when you tune your database.
-enum CompactionPri : char {
-  // Slightly prioritize larger files by size compensated by #deletes
-  kByCompensatedSize = 0x0,
-  // First compact files whose data's latest update time is oldest.
-  // Try this if you only update some hot keys in small ranges.
-  kOldestLargestSeqFirst = 0x1,
-  // First compact files whose range hasn't been compacted to the next level
-  // for the longest. If your updates are random across the key space,
-  // write amplification is slightly better with this option.
-  kOldestSmallestSeqFirst = 0x2,
-  // First compact files whose ratio between overlapping size in next level
-  // and its size is the smallest. It in many cases can optimize write
-  // amplification.
-  kMinOverlappingRatio = 0x3,
-  // Keeps a cursor(s) of the successor of the file (key range) was/were
-  // compacted before, and always picks the next files (key range) in that
-  // level. The file picking process will cycle through all the files in a
-  // round-robin manner.
-  kRoundRobin = 0x4,
-};
 
 struct CompactionOptionsFIFO {
   // once the total sum of table files reaches this, we will delete the oldest
@@ -723,8 +700,8 @@ struct AdvancedColumnFamilyOptions {
 
   // If level compaction_style = kCompactionStyleLevel, for each level,
   // which files are prioritized to be picked to compact.
-  // Default: kMinOverlappingRatio
-  CompactionPri compaction_pri = kMinOverlappingRatio;
+  // Default: CompactionPri::MinOverlappingRatio
+  CompactionPri compaction_pri = CompactionPri::MinOverlappingRatio;
 
   // The options needed to support Universal Style compactions
   //

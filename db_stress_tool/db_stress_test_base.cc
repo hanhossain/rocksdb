@@ -2428,19 +2428,19 @@ void StressTest::PrintEnv() const {
           FLAGS_compaction_ttl);
   const char* compaction_pri = "";
   switch (FLAGS_compaction_pri) {
-    case kByCompensatedSize:
+    case CompactionPri::ByCompensatedSize:
       compaction_pri = "kByCompensatedSize";
       break;
-    case kOldestLargestSeqFirst:
+    case CompactionPri::OldestLargestSeqFirst:
       compaction_pri = "kOldestLargestSeqFirst";
       break;
-    case kOldestSmallestSeqFirst:
+    case CompactionPri::OldestSmallestSeqFirst:
       compaction_pri = "kOldestSmallestSeqFirst";
       break;
-    case kMinOverlappingRatio:
+    case CompactionPri::MinOverlappingRatio:
       compaction_pri = "kMinOverlappingRatio";
       break;
-    case kRoundRobin:
+    case CompactionPri::RoundRobin:
       compaction_pri = "kRoundRobin";
       break;
   }

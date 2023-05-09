@@ -242,7 +242,7 @@ TEST_F(OptionsTest, GetOptionsFromMapTest) {
   ASSERT_EQ(new_cf_opt.arena_block_size, 22U);
   ASSERT_EQ(new_cf_opt.disable_auto_compactions, true);
   ASSERT_EQ(new_cf_opt.compaction_style, kCompactionStyleLevel);
-  ASSERT_EQ(new_cf_opt.compaction_pri, kOldestSmallestSeqFirst);
+  ASSERT_EQ(new_cf_opt.compaction_pri, CompactionPri::OldestSmallestSeqFirst);
   ASSERT_EQ(new_cf_opt.compaction_options_fifo.max_table_files_size,
             static_cast<uint64_t>(23));
   ASSERT_EQ(new_cf_opt.max_sequential_skip_in_iterations,
@@ -2434,7 +2434,7 @@ TEST_F(OptionsOldApiTest, GetOptionsFromMapTest) {
   ASSERT_EQ(new_cf_opt.arena_block_size, 22U);
   ASSERT_EQ(new_cf_opt.disable_auto_compactions, true);
   ASSERT_EQ(new_cf_opt.compaction_style, kCompactionStyleLevel);
-  ASSERT_EQ(new_cf_opt.compaction_pri, kOldestSmallestSeqFirst);
+  ASSERT_EQ(new_cf_opt.compaction_pri, CompactionPri::OldestSmallestSeqFirst);
   ASSERT_EQ(new_cf_opt.compaction_options_fifo.max_table_files_size,
             static_cast<uint64_t>(23));
   ASSERT_EQ(new_cf_opt.max_sequential_skip_in_iterations,
@@ -3761,7 +3761,7 @@ TEST_F(OptionsParserTest, DifferentDefault) {
   const std::string kOptionsFileName = "test-persisted-options.ini";
 
   ColumnFamilyOptions cf_level_opts;
-  ASSERT_EQ(CompactionPri::kMinOverlappingRatio, cf_level_opts.compaction_pri);
+  ASSERT_EQ(CompactionPri::MinOverlappingRatio, cf_level_opts.compaction_pri);
   cf_level_opts.OptimizeLevelStyleCompaction();
 
   ColumnFamilyOptions cf_univ_opts;
@@ -3806,21 +3806,21 @@ TEST_F(OptionsParserTest, DifferentDefault) {
     ASSERT_EQ(2 * 1048576, old_default_cf_opts.target_file_size_base);
     ASSERT_EQ(0, old_default_cf_opts.soft_pending_compaction_bytes_limit);
     ASSERT_EQ(0, old_default_cf_opts.hard_pending_compaction_bytes_limit);
-    ASSERT_EQ(CompactionPri::kByCompensatedSize,
+    ASSERT_EQ(CompactionPri::ByCompensatedSize,
               old_default_cf_opts.compaction_pri);
   }
   {
     ColumnFamilyOptions old_default_cf_opts;
     old_default_cf_opts.OldDefaults(4, 6);
     ASSERT_EQ(2 * 1048576, old_default_cf_opts.target_file_size_base);
-    ASSERT_EQ(CompactionPri::kByCompensatedSize,
+    ASSERT_EQ(CompactionPri::ByCompensatedSize,
               old_default_cf_opts.compaction_pri);
   }
   {
     ColumnFamilyOptions old_default_cf_opts;
     old_default_cf_opts.OldDefaults(4, 7);
     ASSERT_NE(2 * 1048576, old_default_cf_opts.target_file_size_base);
-    ASSERT_EQ(CompactionPri::kByCompensatedSize,
+    ASSERT_EQ(CompactionPri::ByCompensatedSize,
               old_default_cf_opts.compaction_pri);
   }
   {
@@ -3833,13 +3833,13 @@ TEST_F(OptionsParserTest, DifferentDefault) {
     old_default_opts.OldDefaults(5, 2);
     ASSERT_EQ(16 * 1024U * 1024U, old_default_opts.delayed_write_rate);
     ASSERT_TRUE(old_default_opts.compaction_pri ==
-                CompactionPri::kByCompensatedSize);
+                CompactionPri::ByCompensatedSize);
   }
   {
     Options old_default_opts;
     old_default_opts.OldDefaults(5, 18);
     ASSERT_TRUE(old_default_opts.compaction_pri ==
-                CompactionPri::kByCompensatedSize);
+                CompactionPri::ByCompensatedSize);
   }
 
   Options small_opts;

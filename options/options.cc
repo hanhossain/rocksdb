@@ -322,7 +322,7 @@ void ColumnFamilyOptions::Dump(Logger* log) const {
     std::string str_compaction_pri;
     if (it_compaction_pri == compaction_pri_to_string.end()) {
       assert(false);
-      str_compaction_pri = "unknown_" + std::to_string(compaction_pri);
+      str_compaction_pri = "unknown_" + std::to_string((char)compaction_pri);
     } else {
       str_compaction_pri = it_compaction_pri->second;
     }
@@ -559,7 +559,7 @@ ColumnFamilyOptions* ColumnFamilyOptions::OldDefaults(
     int rocksdb_major_version, int rocksdb_minor_version) {
   if (rocksdb_major_version < 5 ||
       (rocksdb_major_version == 5 && rocksdb_minor_version <= 18)) {
-    compaction_pri = CompactionPri::kByCompensatedSize;
+    compaction_pri = CompactionPri::ByCompensatedSize;
   }
   if (rocksdb_major_version < 4 ||
       (rocksdb_major_version == 4 && rocksdb_minor_version < 7)) {
