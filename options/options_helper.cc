@@ -319,10 +319,10 @@ void UpdateColumnFamilyOptions(const ImmutableCFOptions& ioptions,
 
 std::map<CompactionStyle, std::string>
     OptionsHelper::compaction_style_to_string = {
-        {kCompactionStyleLevel, "kCompactionStyleLevel"},
-        {kCompactionStyleUniversal, "kCompactionStyleUniversal"},
-        {kCompactionStyleFIFO, "kCompactionStyleFIFO"},
-        {kCompactionStyleNone, "kCompactionStyleNone"}};
+        {CompactionStyle::Level, "kCompactionStyleLevel"},
+        {CompactionStyle::Universal, "kCompactionStyleUniversal"},
+        {CompactionStyle::FIFO, "kCompactionStyleFIFO"},
+        {CompactionStyle::None, "kCompactionStyleNone"}};
 
 std::map<CompactionPri, std::string> OptionsHelper::compaction_pri_to_string = {
     {kByCompensatedSize, "kByCompensatedSize"},
@@ -782,10 +782,10 @@ std::unordered_map<std::string, EncodingType>
 
 std::unordered_map<std::string, CompactionStyle>
     OptionsHelper::compaction_style_string_map = {
-        {"kCompactionStyleLevel", kCompactionStyleLevel},
-        {"kCompactionStyleUniversal", kCompactionStyleUniversal},
-        {"kCompactionStyleFIFO", kCompactionStyleFIFO},
-        {"kCompactionStyleNone", kCompactionStyleNone}};
+        {"kCompactionStyleLevel", CompactionStyle::Level},
+        {"kCompactionStyleUniversal", CompactionStyle::Universal},
+        {"kCompactionStyleFIFO", CompactionStyle::FIFO},
+        {"kCompactionStyleNone", CompactionStyle::None}};
 
 std::unordered_map<std::string, CompactionPri>
     OptionsHelper::compaction_pri_string_map = {

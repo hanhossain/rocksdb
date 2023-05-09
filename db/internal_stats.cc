@@ -1455,7 +1455,7 @@ bool InternalStats::HandleEstimateOldestKeyTime(uint64_t* value, DBImpl* /*db*/,
   // TODO(yiwu): The property is currently available for fifo compaction
   // with allow_compaction = false. This is because we don't propagate
   // oldest_key_time on compaction.
-  if (cfd_->ioptions()->compaction_style != kCompactionStyleFIFO ||
+  if (cfd_->ioptions()->compaction_style != CompactionStyle::FIFO ||
       cfd_->GetCurrentMutableCFOptions()
           ->compaction_options_fifo.allow_compaction) {
     return false;
@@ -1729,7 +1729,7 @@ void InternalStats::DumpCFMapStats(
   assert(vstorage);
 
   int num_levels_to_check =
-      (cfd_->ioptions()->compaction_style != kCompactionStyleFIFO)
+      (cfd_->ioptions()->compaction_style != CompactionStyle::FIFO)
           ? vstorage->num_levels() - 1
           : 1;
 

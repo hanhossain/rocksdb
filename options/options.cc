@@ -309,7 +309,7 @@ void ColumnFamilyOptions::Dump(Logger* log) const {
     std::string str_compaction_style;
     if (it_compaction_style == compaction_style_to_string.end()) {
       assert(false);
-      str_compaction_style = "unknown_" + std::to_string(compaction_style);
+      str_compaction_style = "unknown_" + std::to_string((char)compaction_style);
     } else {
       str_compaction_style = it_compaction_style->second;
     }
@@ -645,7 +645,7 @@ ColumnFamilyOptions* ColumnFamilyOptions::OptimizeLevelStyleCompaction(
   max_bytes_for_level_base = memtable_memory_budget;
 
   // level style compaction
-  compaction_style = kCompactionStyleLevel;
+  compaction_style = CompactionStyle::Level;
 
   // only compress levels >= 2
   compression_per_level.resize(num_levels);
@@ -671,7 +671,7 @@ ColumnFamilyOptions* ColumnFamilyOptions::OptimizeUniversalStyleCompaction(
   // write stalls.
   max_write_buffer_number = 6;
   // universal style compaction
-  compaction_style = kCompactionStyleUniversal;
+  compaction_style = CompactionStyle::Universal;
   compaction_options_universal.compression_size_percent = 80;
   return this;
 }

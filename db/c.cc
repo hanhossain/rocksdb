@@ -11,6 +11,7 @@
 
 #include <cstdlib>
 #include <map>
+#include <rocksdb-rs-cxx/advanced_options.h>
 #include <rocksdb-rs-cxx/options.h>
 #include <unordered_set>
 #include <vector>
@@ -3805,11 +3806,11 @@ unsigned char rocksdb_options_get_report_bg_io_stats(rocksdb_options_t* opt) {
 
 void rocksdb_options_set_compaction_style(rocksdb_options_t* opt, int style) {
   opt->rep.compaction_style =
-      static_cast<ROCKSDB_NAMESPACE::CompactionStyle>(style);
+      static_cast<rs::advanced_options::CompactionStyle>(style);
 }
 
 int rocksdb_options_get_compaction_style(rocksdb_options_t* opt) {
-  return opt->rep.compaction_style;
+  return (int)opt->rep.compaction_style;
 }
 
 void rocksdb_options_set_universal_compaction_options(

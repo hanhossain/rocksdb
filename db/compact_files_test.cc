@@ -396,9 +396,9 @@ TEST_F(CompactFilesTest, SentinelCompressionType) {
   }
   // Check that passing `CompressionType::kDisableCompressionOption` to
   // `CompactFiles` causes it to use the column family compression options.
-  for (auto compaction_style : {CompactionStyle::kCompactionStyleLevel,
-                                CompactionStyle::kCompactionStyleUniversal,
-                                CompactionStyle::kCompactionStyleNone}) {
+  for (auto compaction_style : {CompactionStyle::Level,
+                                CompactionStyle::Universal,
+                                CompactionStyle::None}) {
     ASSERT_OK(DestroyDB(db_name_, Options()));
     Options options;
     options.compaction_style = compaction_style;

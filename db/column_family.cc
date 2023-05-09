@@ -179,8 +179,8 @@ Status CheckCFPathsSupported(const DBOptions& db_options,
   // and level compaction styles. This function also checks the case
   // in which cf_paths is not specified, which results in db_paths
   // being used.
-  if ((cf_options.compaction_style != kCompactionStyleUniversal) &&
-      (cf_options.compaction_style != kCompactionStyleLevel)) {
+  if ((cf_options.compaction_style != CompactionStyle::Universal) &&
+      (cf_options.compaction_style != CompactionStyle::Level)) {
     if (cf_options.cf_paths.size() > 1) {
       return Status::NotSupported(
           "More than one CF paths are only supported in "
@@ -243,12 +243,12 @@ ColumnFamilyOptions SanitizeOptions(const ImmutableDBOptions& db_options,
   if (result.num_levels < 1) {
     result.num_levels = 1;
   }
-  if (result.compaction_style == kCompactionStyleLevel &&
+  if (result.compaction_style == CompactionStyle::Level &&
       result.num_levels < 2) {
     result.num_levels = 2;
   }
 
-  if (result.compaction_style == kCompactionStyleUniversal &&
+  if (result.compaction_style == CompactionStyle::Universal &&
       db_options.allow_ingest_behind && result.num_levels < 3) {
     result.num_levels = 3;
   }
@@ -282,7 +282,7 @@ ColumnFamilyOptions SanitizeOptions(const ImmutableDBOptions& db_options,
     }
   }
 
-  if (result.compaction_style == kCompactionStyleFIFO) {
+  if (result.compaction_style == CompactionStyle::FIFO) {
     // since we delete level0 files in FIFO compaction when there are too many
     // of them, these options don't really mean anything
     result.level0_slowdown_writes_trigger = std::numeric_limits<int>::max();
@@ -357,7 +357,7 @@ ColumnFamilyOptions SanitizeOptions(const ImmutableDBOptions& db_options,
   }
 
   if (result.level_compaction_dynamic_level_bytes) {
-    if (result.compaction_style != kCompactionStyleLevel) {
+    if (result.compaction_style != CompactionStyle::Level) {
       ROCKS_LOG_WARN(db_options.info_log.get(),
                      "level_compaction_dynamic_level_bytes only makes sense"
                      "for level-based compaction");
@@ -383,7 +383,7 @@ ColumnFamilyOptions SanitizeOptions(const ImmutableDBOptions& db_options,
   const uint64_t kAdjustedTtl = 30 * 24 * 60 * 60;
   if (result.ttl == kDefaultTtl) {
     if (is_block_based_table &&
-        result.compaction_style != kCompactionStyleFIFO) {
+        result.compaction_style != CompactionStyle::FIFO) {
       result.ttl = kAdjustedTtl;
     } else {
       result.ttl = 0;
@@ -395,7 +395,7 @@ ColumnFamilyOptions SanitizeOptions(const ImmutableDBOptions& db_options,
   // Turn on periodic compactions and set them to occur once every 30 days if
   // compaction filters are used and periodic_compaction_seconds is set to the
   // default value.
-  if (result.compaction_style != kCompactionStyleFIFO) {
+  if (result.compaction_style != CompactionStyle::FIFO) {
     if ((result.compaction_filter != nullptr ||
          result.compaction_filter_factory != nullptr) &&
         result.periodic_compaction_seconds == kDefaultPeriodicCompSecs &&
@@ -419,7 +419,7 @@ ColumnFamilyOptions SanitizeOptions(const ImmutableDBOptions& db_options,
   // TTL compactions would work similar to Periodic Compactions in Universal in
   // most of the cases. So, if ttl is set, execute the periodic compaction
   // codepath.
-  if (result.compaction_style == kCompactionStyleUniversal && result.ttl != 0) {
+  if (result.compaction_style == CompactionStyle::Universal && result.ttl != 0) {
     if (result.periodic_compaction_seconds != 0) {
       result.periodic_compaction_seconds =
           std::min(result.ttl, result.periodic_compaction_seconds);
@@ -590,16 +590,16 @@ ColumnFamilyData::ColumnFamilyData(
     blob_source_.reset(new BlobSource(ioptions(), db_id, db_session_id,
                                       blob_file_cache_.get()));
 
-    if (ioptions_.compaction_style == kCompactionStyleLevel) {
+    if (ioptions_.compaction_style == CompactionStyle::Level) {
       compaction_picker_.reset(
           new LevelCompactionPicker(ioptions_, &internal_comparator_));
-    } else if (ioptions_.compaction_style == kCompactionStyleUniversal) {
+    } else if (ioptions_.compaction_style == CompactionStyle::Universal) {
       compaction_picker_.reset(
           new UniversalCompactionPicker(ioptions_, &internal_comparator_));
-    } else if (ioptions_.compaction_style == kCompactionStyleFIFO) {
+    } else if (ioptions_.compaction_style == CompactionStyle::FIFO) {
       compaction_picker_.reset(
           new FIFOCompactionPicker(ioptions_, &internal_comparator_));
-    } else if (ioptions_.compaction_style == kCompactionStyleNone) {
+    } else if (ioptions_.compaction_style == CompactionStyle::None) {
       compaction_picker_.reset(
           new NullCompactionPicker(ioptions_, &internal_comparator_));
       ROCKS_LOG_WARN(ioptions_.logger,
@@ -610,7 +610,7 @@ ColumnFamilyData::ColumnFamilyData(
       ROCKS_LOG_ERROR(ioptions_.logger,
                       "Unable to recognize the specified compaction style %d. "
                       "Column family %s will use kCompactionStyleLevel.\n",
-                      ioptions_.compaction_style, GetName().c_str());
+                      (char)ioptions_.compaction_style, GetName().c_str());
       compaction_picker_.reset(
           new LevelCompactionPicker(ioptions_, &internal_comparator_));
     }
@@ -1414,7 +1414,7 @@ Status ColumnFamilyData::ValidateOptions(
     }
   }
 
-  if (cf_options.compaction_style == kCompactionStyleFIFO &&
+  if (cf_options.compaction_style == CompactionStyle::FIFO &&
       db_options.max_open_files != -1 && cf_options.ttl > 0) {
     return Status::NotSupported(
         "FIFO compaction only supported with max_open_files = -1.");
@@ -1458,7 +1458,7 @@ Status ColumnFamilyData::SetOptions(
 
 // REQUIRES: DB mutex held
 Env::WriteLifeTimeHint ColumnFamilyData::CalculateSSTWriteHint(int level) {
-  if (initial_cf_options_.compaction_style != kCompactionStyleLevel) {
+  if (initial_cf_options_.compaction_style != CompactionStyle::Level) {
     return Env::WLTH_NOT_SET;
   }
   if (level == 0) {

@@ -3038,7 +3038,7 @@ void InitializeOptionsFromFlags(
   options.compaction_style =
       static_cast<ROCKSDB_NAMESPACE::CompactionStyle>(FLAGS_compaction_style);
   if (options.compaction_style ==
-      ROCKSDB_NAMESPACE::CompactionStyle::kCompactionStyleFIFO) {
+      ROCKSDB_NAMESPACE::CompactionStyle::FIFO) {
     options.compaction_options_fifo.allow_compaction =
         FLAGS_fifo_allow_compaction;
   }

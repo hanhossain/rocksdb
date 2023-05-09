@@ -973,7 +973,7 @@ uint64_t MaxFileSizeForLevel(const MutableCFOptions& cf_options,
     int level, CompactionStyle compaction_style, int base_level,
     bool level_compaction_dynamic_level_bytes) {
   if (!level_compaction_dynamic_level_bytes || level < base_level ||
-      compaction_style != kCompactionStyleLevel) {
+      compaction_style != CompactionStyle::Level) {
     assert(level >= 0);
     assert(level < (int)cf_options.max_file_size.size());
     return cf_options.max_file_size[level];
@@ -1000,7 +1000,7 @@ void MutableCFOptions::RefreshDerivedOptions(int num_levels,
                                              CompactionStyle compaction_style) {
   max_file_size.resize(num_levels);
   for (int i = 0; i < num_levels; ++i) {
-    if (i == 0 && compaction_style == kCompactionStyleUniversal) {
+    if (i == 0 && compaction_style == CompactionStyle::Universal) {
       max_file_size[i] = ULLONG_MAX;
     } else if (i > 1) {
       max_file_size[i] = MultiplyCheckOverflow(max_file_size[i - 1],

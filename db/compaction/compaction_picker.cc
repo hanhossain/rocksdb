@@ -301,7 +301,7 @@ bool CompactionPicker::FilesRangeOverlapWithCompaction(
   InternalKey smallest, largest;
   GetRange(inputs, &smallest, &largest, Compaction::kInvalidLevel);
   if (penultimate_level != Compaction::kInvalidLevel) {
-    if (ioptions_.compaction_style == kCompactionStyleUniversal) {
+    if (ioptions_.compaction_style == CompactionStyle::Universal) {
       if (RangeOverlapWithCompaction(smallest.user_key(), largest.user_key(),
                                      penultimate_level)) {
         return true;
@@ -360,7 +360,7 @@ Compaction* CompactionPicker::CompactFiles(
   CompressionType compression_type;
   if (compact_options.compression == kDisableCompressionOption) {
     int base_level;
-    if (ioptions_.compaction_style == kCompactionStyleLevel) {
+    if (ioptions_.compaction_style == CompactionStyle::Level) {
       base_level = vstorage->base_level();
     } else {
       base_level = 1;
@@ -603,10 +603,10 @@ Compaction* CompactionPicker::CompactRange(
     const InternalKey* end, InternalKey** compaction_end, bool* manual_conflict,
     uint64_t max_file_num_to_ignore, const std::string& trim_ts) {
   // CompactionPickerFIFO has its own implementation of compact range
-  assert(ioptions_.compaction_style != kCompactionStyleFIFO);
+  assert(ioptions_.compaction_style != CompactionStyle::FIFO);
 
   if (input_level == ColumnFamilyData::kCompactAllLevels) {
-    assert(ioptions_.compaction_style == kCompactionStyleUniversal);
+    assert(ioptions_.compaction_style == CompactionStyle::Universal);
 
     // Universal compaction with more than one level always compacts all the
     // files together to the last level.
@@ -690,7 +690,7 @@ Compaction* CompactionPicker::CompactRange(
 
   // All files are 'overlapping' in universal style compaction.
   // We have to compact the entire range in one shot.
-  if (ioptions_.compaction_style == kCompactionStyleUniversal) {
+  if (ioptions_.compaction_style == CompactionStyle::Universal) {
     begin = nullptr;
     end = nullptr;
   }
@@ -1120,7 +1120,7 @@ void CompactionPicker::RegisterCompaction(Compaction* c) {
   if (c == nullptr) {
     return;
   }
-  assert(ioptions_.compaction_style != kCompactionStyleLevel ||
+  assert(ioptions_.compaction_style != CompactionStyle::Level ||
          c->output_level() == 0 ||
          !FilesRangeOverlapWithCompaction(*c->inputs(), c->output_level(),
                                           c->GetPenultimateLevel()));
@@ -1129,7 +1129,7 @@ void CompactionPicker::RegisterCompaction(Compaction* c) {
   // an input level like other compactions
   if ((c->start_level() == 0 &&
        c->compaction_reason() != CompactionReason::kExternalSstIngestion) ||
-      ioptions_.compaction_style == kCompactionStyleUniversal) {
+      ioptions_.compaction_style == CompactionStyle::Universal) {
     level0_compactions_in_progress_.insert(c);
   }
   compactions_in_progress_.insert(c);
@@ -1142,7 +1142,7 @@ void CompactionPicker::UnregisterCompaction(Compaction* c) {
     return;
   }
   if (c->start_level() == 0 ||
-      ioptions_.compaction_style == kCompactionStyleUniversal) {
+      ioptions_.compaction_style == CompactionStyle::Universal) {
     level0_compactions_in_progress_.erase(c);
   }
   compactions_in_progress_.erase(c);

@@ -1,3 +1,4 @@
+pub mod advanced_options;
 pub mod options;
 
 #[cxx::bridge(namespace = "rs")]

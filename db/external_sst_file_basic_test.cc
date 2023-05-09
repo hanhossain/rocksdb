@@ -1886,7 +1886,7 @@ TEST_F(ExternalSSTFileBasicTest, FailIfNotBottommostLevel) {
 
   // Test universal compaction + ingest with snapshot consistency
   options.create_if_missing = true;
-  options.compaction_style = CompactionStyle::kCompactionStyleUniversal;
+  options.compaction_style = CompactionStyle::Universal;
   DestroyAndReopen(options);
   {
     const Snapshot* snapshot = db_->GetSnapshot();
@@ -1899,7 +1899,7 @@ TEST_F(ExternalSSTFileBasicTest, FailIfNotBottommostLevel) {
   }
 
   // Test level compaction
-  options.compaction_style = CompactionStyle::kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.num_levels = 2;
   DestroyAndReopen(options);
   ASSERT_OK(db_->Put(WriteOptions(), "a", "dontcare"));

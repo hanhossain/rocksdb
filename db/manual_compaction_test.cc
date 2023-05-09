@@ -102,9 +102,9 @@ TEST_F(ManualCompactionTest, CompactTouchesAllKeys) {
     Options options;
     if (iter == 0) {  // level compaction
       options.num_levels = 3;
-      options.compaction_style = CompactionStyle::kCompactionStyleLevel;
+      options.compaction_style = CompactionStyle::Level;
     } else {  // universal compaction
-      options.compaction_style = CompactionStyle::kCompactionStyleUniversal;
+      options.compaction_style = CompactionStyle::Universal;
     }
     options.create_if_missing = true;
     options.compression = CompressionType::kNoCompression;
@@ -193,7 +193,7 @@ TEST_F(ManualCompactionTest, SkipLevel) {
   options.num_levels = 3;
   // Initially, flushed L0 files won't exceed 100.
   options.level0_file_num_compaction_trigger = 100;
-  options.compaction_style = CompactionStyle::kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.create_if_missing = true;
   options.compression = CompressionType::kNoCompression;
   LogCompactionFilter* filter = new LogCompactionFilter();

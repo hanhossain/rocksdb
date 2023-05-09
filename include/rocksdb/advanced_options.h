@@ -9,11 +9,14 @@
 #pragma once
 
 #include <memory>
+#include <rocksdb-rs-cxx/advanced_options.h>
 
 #include "rocksdb/cache.h"
 #include "rocksdb/compression_type.h"
 #include "rocksdb/memtablerep.h"
 #include "rocksdb/universal_compaction.h"
+
+using rs::advanced_options::CompactionStyle;
 
 namespace ROCKSDB_NAMESPACE {
 
@@ -22,18 +25,6 @@ class SliceTransform;
 class TablePropertiesCollectorFactory;
 class TableFactory;
 struct Options;
-
-enum CompactionStyle : char {
-  // level based compaction style
-  kCompactionStyleLevel = 0x0,
-  // Universal compaction style
-  kCompactionStyleUniversal = 0x1,
-  // FIFO compaction style
-  kCompactionStyleFIFO = 0x2,
-  // Disable background compaction. Compaction jobs are submitted
-  // via CompactFiles().
-  kCompactionStyleNone = 0x3,
-};
 
 // In Level-based compaction, it Determines which file from a level to be
 // picked to merge to the next level. We suggest people try
@@ -727,8 +718,8 @@ struct AdvancedColumnFamilyOptions {
   // Dynamically changeable through SetOptions() API
   uint64_t hard_pending_compaction_bytes_limit = 256 * 1073741824ull;
 
-  // The compaction style. Default: kCompactionStyleLevel
-  CompactionStyle compaction_style = kCompactionStyleLevel;
+  // The compaction style. Default: CompactionStyle::Level
+  CompactionStyle compaction_style = CompactionStyle::Level;
 
   // If level compaction_style = kCompactionStyleLevel, for each level,
   // which files are prioritized to be picked to compact.

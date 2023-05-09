@@ -316,7 +316,7 @@ bool CompactionOutputs::ShouldStopBefore(const CompactionIterator& c_iter) {
     const size_t num_skippable_boundaries_crossed =
         being_grandparent_gap_ ? 2 : 3;
     if (compaction_->immutable_options()->compaction_style ==
-            kCompactionStyleLevel &&
+            CompactionStyle::Level &&
         compaction_->immutable_options()->level_compaction_dynamic_file_size &&
         num_grandparent_boundaries_crossed >=
             num_skippable_boundaries_crossed &&
@@ -338,7 +338,7 @@ bool CompactionOutputs::ShouldStopBefore(const CompactionIterator& c_iter) {
     // static threshold like 75% and has a similar write amplification
     // improvement.
     if (compaction_->immutable_options()->compaction_style ==
-            kCompactionStyleLevel &&
+            CompactionStyle::Level &&
         compaction_->immutable_options()->level_compaction_dynamic_file_size &&
         current_output_file_size_ >=
             ((compaction_->target_output_file_size() + 99) / 100) *
@@ -728,7 +728,7 @@ Status CompactionOutputs::AddRangeDels(
 
 void CompactionOutputs::FillFilesToCutForTtl() {
   if (compaction_->immutable_options()->compaction_style !=
-          kCompactionStyleLevel ||
+          CompactionStyle::Level ||
       compaction_->immutable_options()->compaction_pri !=
           kMinOverlappingRatio ||
       compaction_->mutable_cf_options()->ttl == 0 ||

@@ -279,7 +279,7 @@ Status BuildTable(
           meta->fd.largest_seqno, meta->file_creation_time);
       builder->SetSeqnoTimeTableProperties(
           seqno_time_mapping_str,
-          ioptions.compaction_style == CompactionStyle::kCompactionStyleFIFO
+          ioptions.compaction_style == CompactionStyle::FIFO
               ? meta->file_creation_time
               : meta->oldest_ancester_time);
       s = builder->Finish();

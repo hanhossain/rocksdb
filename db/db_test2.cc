@@ -7270,7 +7270,7 @@ TEST_F(DBTest2, SortL0FilesByEpochNumber) {
 TEST_F(DBTest2, SameEpochNumberAfterCompactRangeChangeLevel) {
   Options options = CurrentOptions();
   options.num_levels = 7;
-  options.compaction_style = CompactionStyle::kCompactionStyleLevel;
+  options.compaction_style = CompactionStyle::Level;
   options.disable_auto_compactions = true;
   DestroyAndReopen(options);
 

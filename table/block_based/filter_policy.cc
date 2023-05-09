@@ -1742,8 +1742,8 @@ FilterBitsBuilder* RibbonFilterPolicy::GetBuilderWithContext(
   int levelish = INT_MAX;
 
   switch (context.compaction_style) {
-    case kCompactionStyleLevel:
-    case kCompactionStyleUniversal: {
+    case CompactionStyle::Level:
+    case CompactionStyle::Universal: {
       if (context.reason == TableFileCreationReason::kFlush) {
         // Treat flush as level -1
         assert(context.level_at_creation == 0);
@@ -1756,8 +1756,8 @@ FilterBitsBuilder* RibbonFilterPolicy::GetBuilderWithContext(
       }
       break;
     }
-    case kCompactionStyleFIFO:
-    case kCompactionStyleNone:
+    case CompactionStyle::FIFO:
+    case CompactionStyle::None:
       // Treat as bottommost
       assert(levelish == INT_MAX);
       break;
