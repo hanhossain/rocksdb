@@ -446,7 +446,7 @@ Iterator* DBImplSecondary::NewIterator(const ReadOptions& read_options,
     return NewErrorIterator(
         Status::NotSupported("Managed iterator is not supported anymore."));
   }
-  if (read_options.read_tier == kPersistedTier) {
+  if (read_options.read_tier == ReadTier::PersistedTier) {
     return NewErrorIterator(Status::NotSupported(
         "ReadTier::kPersistedData is not yet supported in iterators."));
   }
@@ -517,7 +517,7 @@ Status DBImplSecondary::NewIterators(
   if (read_options.managed) {
     return Status::NotSupported("Managed iterator is not supported anymore.");
   }
-  if (read_options.read_tier == kPersistedTier) {
+  if (read_options.read_tier == ReadTier::PersistedTier) {
     return Status::NotSupported(
         "ReadTier::kPersistedData is not yet supported in iterators.");
   }

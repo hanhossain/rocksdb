@@ -67,7 +67,7 @@ DEFINE_SYNC_AND_ASYNC(Status, TableCache::MultiGet)
       assert(handle == nullptr);
       s = FindTable(options, file_options_, internal_comparator, file_meta,
                     &handle, block_protection_bytes_per_key, prefix_extractor,
-                    options.read_tier == kBlockCacheTier /* no_io */,
+                    options.read_tier == ReadTier::BlockCacheTier /* no_io */,
                     true /* record_read_stats */, file_read_hist, skip_filters,
                     level, true /* prefetch_index_and_filter_in_cache */,
                     0 /*max_file_size_for_l0_meta_pin*/, file_meta.temperature);
@@ -83,7 +83,7 @@ DEFINE_SYNC_AND_ASYNC(Status, TableCache::MultiGet)
     if (s.ok()) {
       CO_AWAIT(t->MultiGet)
       (options, &table_range, prefix_extractor.get(), skip_filters);
-    } else if (options.read_tier == kBlockCacheTier && s.IsIncomplete()) {
+    } else if (options.read_tier == ReadTier::BlockCacheTier && s.IsIncomplete()) {
       for (auto iter = table_range.begin(); iter != table_range.end(); ++iter) {
         Status* status = iter->s;
         if (status->IsIncomplete()) {

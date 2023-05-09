@@ -37,6 +37,7 @@
 #endif
 
 using rs::options::CompactionServiceJobStatus;
+using rs::options::ReadTier;
 using rs::options::WALRecoveryMode;
 
 namespace ROCKSDB_NAMESPACE {
@@ -1398,22 +1399,6 @@ struct Options : public DBOptions, public ColumnFamilyOptions {
   Options* DisableExtraChecks();
 };
 
-// An application can issue a read request (via Get/Iterators) and specify
-// if that read should process data that ALREADY resides on a specified cache
-// level. For example, if an application specifies kBlockCacheTier then the
-// Get call will process data that is already processed in the memtable or
-// the block cache. It will not page in data from the OS cache or data that
-// resides in storage.
-enum ReadTier {
-  kReadAllTier = 0x0,     // data in memtable, block cache, OS cache or storage
-  kBlockCacheTier = 0x1,  // data in memtable or block cache
-  kPersistedTier = 0x2,   // persisted data.  When WAL is disabled, this option
-                          // will skip data in memtable.
-                          // Note that this ReadTier currently only supports
-                          // Get and MultiGet and does not support iterators.
-  kMemtableTier = 0x3     // data in memtable. used for memtable-only iterators.
-};
-
 // Options that control read operations
 struct ReadOptions {
   // If "snapshot" is non-nullptr, read as of the supplied snapshot
@@ -1478,7 +1463,7 @@ struct ReadOptions {
   // Specify if this read request should process data that ALREADY
   // resides on a particular cache. If the required data is not
   // found at the specified cache, then Status::Incomplete is returned.
-  // Default: kReadAllTier
+  // Default: ReadAllTier
   ReadTier read_tier;
 
   // If true, all data read from underlying storage will be

@@ -47,7 +47,7 @@ InternalIteratorBase<IndexValue>* PartitionIndexReader::NewIterator(
     const ReadOptions& read_options, bool /* disable_prefix_seek */,
     IndexBlockIter* iter, GetContext* get_context,
     BlockCacheLookupContext* lookup_context) {
-  const bool no_io = (read_options.read_tier == kBlockCacheTier);
+  const bool no_io = (read_options.read_tier == ReadTier::BlockCacheTier);
   CachableEntry<Block> index_block;
   const Status s = GetOrReadIndexBlock(no_io, get_context, lookup_context,
                                        &index_block, read_options);

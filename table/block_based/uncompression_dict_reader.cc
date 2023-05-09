@@ -90,7 +90,7 @@ Status UncompressionDictReader::GetOrReadUncompressionDictionary(
 
   ReadOptions read_options;
   if (no_io) {
-    read_options.read_tier = kBlockCacheTier;
+    read_options.read_tier = ReadTier::BlockCacheTier;
   }
   read_options.verify_checksums = verify_checksums;
   read_options.io_activity = ro.io_activity;

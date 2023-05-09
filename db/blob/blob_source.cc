@@ -197,7 +197,7 @@ Status BlobSource::GetBlob(const ReadOptions& read_options,
 
   assert(blob_handle.IsEmpty());
 
-  const bool no_io = read_options.read_tier == kBlockCacheTier;
+  const bool no_io = read_options.read_tier == ReadTier::BlockCacheTier;
   if (no_io) {
     s = Status::Incomplete("Cannot read blob(s): no disk I/O allowed");
     return s;
@@ -346,7 +346,7 @@ void BlobSource::MultiGetBlobFromOneFile(const ReadOptions& read_options,
     }
   }
 
-  const bool no_io = read_options.read_tier == kBlockCacheTier;
+  const bool no_io = read_options.read_tier == ReadTier::BlockCacheTier;
   if (no_io) {
     for (size_t i = 0; i < num_blobs; ++i) {
       if (!(cache_hit_mask & (Mask{1} << i))) {

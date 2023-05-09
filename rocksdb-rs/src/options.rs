@@ -44,4 +44,22 @@ mod ffi {
         /// operate with low grade unrelated data
         SkipAnyCorruptedRecords = 0x03,
     }
+
+    /// An application can issue a read request (via Get/Iterators) and specify
+    /// if that read should process data that ALREADY resides on a specified cache
+    /// level. For example, if an application specifies kBlockCacheTier then the
+    /// Get call will process data that is already processed in the memtable or
+    /// the block cache. It will not page in data from the OS cache or data that
+    /// resides in storage.
+    enum ReadTier {
+        /// Data in memtable, block cache, OS cache or storage
+        ReadAllTier = 0x0,
+        /// Data in memtable or block cache
+        BlockCacheTier = 0x1,
+        /// Persisted data.  When WAL is disabled, this option will skip data in memtable. Note that
+        /// this ReadTier currently only supports Get and MultiGet and does not support iterators.
+        PersistedTier = 0x2,
+        /// Data in memtable. Used for memtable-only iterators.
+        MemtableTier = 0x3,
+    }
 }

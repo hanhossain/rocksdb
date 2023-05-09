@@ -1885,7 +1885,7 @@ InternalIterator* DBImpl::NewInternalIterator(
   TEST_SYNC_POINT_CALLBACK("DBImpl::NewInternalIterator:StatusCallback", &s);
   if (s.ok()) {
     // Collect iterators for files in L0 - Ln
-    if (read_options.read_tier != kMemtableTier) {
+    if (read_options.read_tier != ReadTier::MemtableTier) {
       super_version->current->AddIterators(read_options, file_options_,
                                            &merge_iter_builder,
                                            allow_unprepared_value);
@@ -2117,7 +2117,7 @@ Status DBImpl::GetImpl(const ReadOptions& read_options, const Slice& key,
   LookupKey lkey(key, snapshot, read_options.timestamp);
   PERF_TIMER_STOP(get_snapshot_time);
 
-  bool skip_memtable = (read_options.read_tier == kPersistedTier &&
+  bool skip_memtable = (read_options.read_tier == ReadTier::PersistedTier &&
                         has_unpersisted_data_.load(std::memory_order_relaxed));
   bool done = false;
   std::string* timestamp =
@@ -2413,7 +2413,7 @@ std::vector<Status> DBImpl::MultiGet(
     auto mgd = mgd_iter->second;
     auto super_version = mgd.super_version;
     bool skip_memtable =
-        (read_options.read_tier == kPersistedTier &&
+        (read_options.read_tier == ReadTier::PersistedTier &&
          has_unpersisted_data_.load(std::memory_order_relaxed));
     bool done = false;
     if (!skip_memtable) {
@@ -3002,7 +3002,7 @@ Status DBImpl::MultiGetImpl(
     }
 
     bool skip_memtable =
-        (read_options.read_tier == kPersistedTier &&
+        (read_options.read_tier == ReadTier::PersistedTier &&
          has_unpersisted_data_.load(std::memory_order_relaxed));
     if (!skip_memtable) {
       super_version->mem->MultiGet(read_options, &range, callback,
@@ -3362,7 +3362,7 @@ bool DBImpl::KeyMayExist(const ReadOptions& read_options,
   }
   // TODO: plumb Env::IOActivity
   ReadOptions roptions = read_options;
-  roptions.read_tier = kBlockCacheTier;  // read from block cache only
+  roptions.read_tier = ReadTier::BlockCacheTier;  // read from block cache only
   PinnableSlice pinnable_val;
   GetImplOptions get_impl_options;
   get_impl_options.column_family = column_family;
@@ -3385,7 +3385,7 @@ Iterator* DBImpl::NewIterator(const ReadOptions& read_options,
         Status::NotSupported("Managed iterator is not supported anymore."));
   }
   Iterator* result = nullptr;
-  if (read_options.read_tier == kPersistedTier) {
+  if (read_options.read_tier == ReadTier::PersistedTier) {
     return NewErrorIterator(Status::NotSupported(
         "ReadTier::kPersistedData is not yet supported in iterators."));
   }
@@ -3525,7 +3525,7 @@ Status DBImpl::NewIterators(
   if (read_options.managed) {
     return Status::NotSupported("Managed iterator is not supported anymore.");
   }
-  if (read_options.read_tier == kPersistedTier) {
+  if (read_options.read_tier == ReadTier::PersistedTier) {
     return Status::NotSupported(
         "ReadTier::kPersistedData is not yet supported in iterators.");
   }

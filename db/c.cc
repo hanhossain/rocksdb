@@ -4356,7 +4356,7 @@ void rocksdb_readoptions_set_iterate_lower_bound(rocksdb_readoptions_t* opt,
 }
 
 void rocksdb_readoptions_set_read_tier(rocksdb_readoptions_t* opt, int v) {
-  opt->rep.read_tier = static_cast<ROCKSDB_NAMESPACE::ReadTier>(v);
+  opt->rep.read_tier = static_cast<rs::options::ReadTier>(v);
 }
 
 int rocksdb_readoptions_get_read_tier(rocksdb_readoptions_t* opt) {

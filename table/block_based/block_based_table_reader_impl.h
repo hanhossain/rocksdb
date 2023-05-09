@@ -62,7 +62,7 @@ TBlockIter* BlockBasedTable::NewDataBlockIterator(
   CachableEntry<Block> block;
   if (rep_->uncompression_dict_reader && block_type == BlockType::kData) {
     CachableEntry<UncompressionDict> uncompression_dict;
-    const bool no_io = (ro.read_tier == kBlockCacheTier);
+    const bool no_io = (ro.read_tier == ReadTier::BlockCacheTier);
     // For async scans, don't use the prefetch buffer since an async prefetch
     // might already be under way and this would invalidate it. Also, the
     // uncompression dict is typically at the end of the file and would
