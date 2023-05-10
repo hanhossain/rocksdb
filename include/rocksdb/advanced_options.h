@@ -17,6 +17,7 @@
 #include "rocksdb/universal_compaction.h"
 
 using rs::advanced_options::CacheTier;
+using rs::advanced_options::CompactionOptionsFIFO;
 using rs::advanced_options::CompactionPri;
 using rs::advanced_options::CompactionStyle;
 using rs::advanced_options::PrepopulateBlobCache;
@@ -30,30 +31,6 @@ class SliceTransform;
 class TablePropertiesCollectorFactory;
 class TableFactory;
 struct Options;
-
-struct CompactionOptionsFIFO {
-  // once the total sum of table files reaches this, we will delete the oldest
-  // table file
-  // Default: 1GB
-  uint64_t max_table_files_size;
-
-  // If true, try to do compaction to compact smaller files into larger ones.
-  // Minimum files to compact follows options.level0_file_num_compaction_trigger
-  // and compaction won't trigger if average compact bytes per del file is
-  // larger than options.write_buffer_size. This is to protect large files
-  // from being compacted again.
-  // Default: false;
-  bool allow_compaction = false;
-
-  // When not 0, if the data in the file is older than this threshold, RocksDB
-  // will soon move the file to warm temperature.
-  uint64_t age_for_warm = 0;
-
-  CompactionOptionsFIFO() : max_table_files_size(1 * 1024 * 1024 * 1024) {}
-  CompactionOptionsFIFO(uint64_t _max_table_files_size, bool _allow_compaction)
-      : max_table_files_size(_max_table_files_size),
-        allow_compaction(_allow_compaction) {}
-};
 
 // Compression options for different compression algorithms like Zlib
 struct CompressionOptions {

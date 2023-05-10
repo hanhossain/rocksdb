@@ -1,3 +1,5 @@
+use crate::advanced_options::ffi::CompactionOptionsFIFO;
+
 #[cxx::bridge(namespace = "rs::advanced_options")]
 mod ffi {
     enum CompactionStyle {
@@ -69,4 +71,46 @@ mod ffi {
         // Prepopulate blobs during flush only
         FlushOnly = 0x1,
     }
+
+    struct CompactionOptionsFIFO {
+        /// Once the total sum of table files reaches this, we will delete the oldest table file.
+        /// Default: 1GB
+        max_table_files_size: u64,
+        /// If true, try to do compaction to compact smaller files into larger ones. Minimum files
+        /// to compact follows options.level0_file_num_compaction_trigger and compaction won't
+        /// trigger if average compact bytes per del file is larger than options.write_buffer_size.
+        /// This is to protect large files from being compacted again.
+        /// Default: false;
+        allow_compaction: bool,
+        /// When not 0, if the data in the file is older than this threshold, RocksDB will soon move
+        /// the file to warm temperature.
+        age_for_warm: u64,
+    }
+
+    extern "Rust" {
+        fn new_compaction_options_fifo() -> CompactionOptionsFIFO;
+
+        fn new_configurable_compaction_options_fifo(
+            max_table_files_size: u64,
+            allow_compaction: bool,
+        ) -> CompactionOptionsFIFO;
+    }
+}
+
+fn new_compaction_options_fifo() -> CompactionOptionsFIFO {
+    CompactionOptionsFIFO {
+        max_table_files_size: 1 * 1024 * 1024 * 1024,
+        allow_compaction: false,
+        age_for_warm: 0,
+    }
+}
+
+fn new_configurable_compaction_options_fifo(
+    max_table_files_size: u64,
+    allow_compaction: bool,
+) -> CompactionOptionsFIFO {
+    let mut compaction_options_fifo = new_compaction_options_fifo();
+    compaction_options_fifo.max_table_files_size = max_table_files_size;
+    compaction_options_fifo.allow_compaction = allow_compaction;
+    compaction_options_fifo
 }

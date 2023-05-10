@@ -4103,7 +4103,7 @@ class Benchmark {
     options.manual_wal_flush = FLAGS_manual_wal_flush;
     options.wal_compression = FLAGS_wal_compression_e;
     options.ttl = FLAGS_fifo_compaction_ttl;
-    options.compaction_options_fifo = CompactionOptionsFIFO(
+    options.compaction_options_fifo = rs::advanced_options::new_configurable_compaction_options_fifo(
         FLAGS_fifo_compaction_max_table_files_size_mb * 1024 * 1024,
         FLAGS_fifo_compaction_allow_compaction);
     options.compaction_options_fifo.age_for_warm = FLAGS_fifo_age_for_warm;
