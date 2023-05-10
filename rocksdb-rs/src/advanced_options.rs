@@ -44,4 +44,12 @@ mod ffi {
         Cold = 0x0C,
         LastTemperature,
     }
+
+    /// The control option of how the cache tiers will be used. Currently rocksdb
+    /// support block cache (volatile tier), secondary cache (non-volatile tier).
+    /// In the future, we may add more caching layers.
+    enum CacheTier {
+        VolatileTier = 0,
+        NonVolatileBlockTier = 0x01,
+    }
 }

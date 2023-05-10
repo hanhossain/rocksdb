@@ -19,6 +19,7 @@
 using rs::advanced_options::CompactionPri;
 using rs::advanced_options::CompactionStyle;
 using rs::advanced_options::Temperature;
+using rs::advanced_options::CacheTier;
 
 namespace ROCKSDB_NAMESPACE {
 
@@ -180,14 +181,6 @@ struct CompressionOptions {
   void SetMinRatio(double min_ratio) {
     max_compressed_bytes_per_kb = static_cast<int>(1024.0 / min_ratio + 0.5);
   }
-};
-
-// The control option of how the cache tiers will be used. Currently rocksdb
-// support block cache (volatile tier), secondary cache (non-volatile tier).
-// In the future, we may add more caching layers.
-enum class CacheTier : uint8_t {
-  kVolatileTier = 0,
-  kNonVolatileBlockTier = 0x01,
 };
 
 enum UpdateStatus {     // Return status For inplace update callback

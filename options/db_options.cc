@@ -42,8 +42,8 @@ static std::unordered_map<std::string, DBOptions::AccessHint>
                               {"WILLNEED", DBOptions::AccessHint::WILLNEED}};
 
 static std::unordered_map<std::string, CacheTier> cache_tier_string_map = {
-    {"kVolatileTier", CacheTier::kVolatileTier},
-    {"kNonVolatileBlockTier", CacheTier::kNonVolatileBlockTier}};
+    {"kVolatileTier", CacheTier::VolatileTier},
+    {"kNonVolatileBlockTier", CacheTier::NonVolatileBlockTier}};
 
 static std::unordered_map<std::string, InfoLogLevel> info_log_level_string_map =
     {{"DEBUG_LEVEL", InfoLogLevel::DEBUG_LEVEL},

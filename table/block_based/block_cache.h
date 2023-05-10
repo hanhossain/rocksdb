@@ -129,7 +129,7 @@ using BlockCacheTypedHandle =
 // Selects the right helper based on BlockType and CacheTier
 const Cache::CacheItemHelper* GetCacheItemHelper(
     BlockType block_type,
-    CacheTier lowest_used_cache_tier = CacheTier::kNonVolatileBlockTier);
+    CacheTier lowest_used_cache_tier = CacheTier::NonVolatileBlockTier);
 
 // For SFINAE check that a type is "blocklike" with a kCacheEntryRole member.
 // Can get difficult compiler/linker errors without a good check like this.

@@ -125,7 +125,7 @@ class BlobSourceTest : public DBTestBase {
     co.high_pri_pool_ratio = 0.2;
     co.low_pri_pool_ratio = 0.2;
     options_.blob_cache = NewLRUCache(co);
-    options_.lowest_used_cache_tier = CacheTier::kVolatileTier;
+    options_.lowest_used_cache_tier = CacheTier::VolatileTier;
 
     assert(db_->GetDbIdentity(db_id_).ok());
     assert(db_->GetDbSessionId(db_session_id_).ok());
@@ -1067,7 +1067,7 @@ class BlobSecondaryCacheTest : public DBTestBase {
         kDefaultCacheMetadataChargePolicy;
 
     // Read blobs from the secondary cache if they are not in the primary cache
-    options_.lowest_used_cache_tier = CacheTier::kNonVolatileBlockTier;
+    options_.lowest_used_cache_tier = CacheTier::NonVolatileBlockTier;
 
     assert(db_->GetDbIdentity(db_id_).ok());
     assert(db_->GetDbSessionId(db_session_id_).ok());
@@ -1341,7 +1341,7 @@ class BlobSourceCacheReservationTest : public DBTestBase {
     std::shared_ptr<Cache> block_cache = NewLRUCache(co);
 
     options_.blob_cache = blob_cache;
-    options_.lowest_used_cache_tier = CacheTier::kVolatileTier;
+    options_.lowest_used_cache_tier = CacheTier::VolatileTier;
 
     BlockBasedTableOptions block_based_options;
     block_based_options.no_block_cache = false;
