@@ -52,4 +52,14 @@ mod ffi {
         VolatileTier = 0,
         NonVolatileBlockTier = 0x01,
     }
+
+    /// Return status For inplace update callback
+    enum UpdateStatus {
+        /// Nothing to update
+        Failed = 0,
+        /// Value updated inplace
+        UpdatedInplace = 1,
+        /// No inplace update. Merged value set
+        Updated = 2,
+    }
 }

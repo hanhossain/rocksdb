@@ -2073,7 +2073,7 @@ class MemTableInserter : public WriteBatch::Handler {
                 nullptr /* existing_value */, nullptr /* existing_value_size */,
                 value, &merged_value);
           }
-          if (update_status == UpdateStatus::UPDATED_INPLACE) {
+          if (update_status == UpdateStatus::UpdatedInplace) {
             assert(get_status.ok());
             if (kv_prot_info != nullptr) {
               ProtectionInfoKVOS64 updated_kv_prot_info(*kv_prot_info);
@@ -2091,7 +2091,7 @@ class MemTableInserter : public WriteBatch::Handler {
             if (ret_status.ok()) {
               RecordTick(moptions->statistics, NUMBER_KEYS_WRITTEN);
             }
-          } else if (update_status == UpdateStatus::UPDATED) {
+          } else if (update_status == UpdateStatus::Updated) {
             if (kv_prot_info != nullptr) {
               ProtectionInfoKVOS64 updated_kv_prot_info(*kv_prot_info);
               updated_kv_prot_info.UpdateV(value, merged_value);

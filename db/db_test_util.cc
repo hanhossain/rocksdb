@@ -1397,12 +1397,12 @@ UpdateStatus DBTestBase::updateInPlaceSmallerSize(char* prevValue,
                                                   std::string* newValue) {
   if (prevValue == nullptr) {
     *newValue = std::string(delta.size(), 'c');
-    return UpdateStatus::UPDATED;
+    return UpdateStatus::Updated;
   } else {
     *prevSize = *prevSize - 1;
     std::string str_b = std::string(*prevSize, 'b');
     memcpy(prevValue, str_b.c_str(), str_b.size());
-    return UpdateStatus::UPDATED_INPLACE;
+    return UpdateStatus::UpdatedInplace;
   }
 }
 
@@ -1412,12 +1412,12 @@ UpdateStatus DBTestBase::updateInPlaceSmallerVarintSize(char* prevValue,
                                                         std::string* newValue) {
   if (prevValue == nullptr) {
     *newValue = std::string(delta.size(), 'c');
-    return UpdateStatus::UPDATED;
+    return UpdateStatus::Updated;
   } else {
     *prevSize = 1;
     std::string str_b = std::string(*prevSize, 'b');
     memcpy(prevValue, str_b.c_str(), str_b.size());
-    return UpdateStatus::UPDATED_INPLACE;
+    return UpdateStatus::UpdatedInplace;
   }
 }
 
@@ -1426,14 +1426,14 @@ UpdateStatus DBTestBase::updateInPlaceLargerSize(char* /*prevValue*/,
                                                  Slice delta,
                                                  std::string* newValue) {
   *newValue = std::string(delta.size(), 'c');
-  return UpdateStatus::UPDATED;
+  return UpdateStatus::Updated;
 }
 
 UpdateStatus DBTestBase::updateInPlaceNoAction(char* /*prevValue*/,
                                                uint32_t* /*prevSize*/,
                                                Slice /*delta*/,
                                                std::string* /*newValue*/) {
-  return UpdateStatus::UPDATE_FAILED;
+  return UpdateStatus::Failed;
 }
 
 // Utility method to test InplaceUpdate

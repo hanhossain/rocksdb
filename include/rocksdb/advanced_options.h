@@ -16,10 +16,11 @@
 #include "rocksdb/memtablerep.h"
 #include "rocksdb/universal_compaction.h"
 
+using rs::advanced_options::CacheTier;
 using rs::advanced_options::CompactionPri;
 using rs::advanced_options::CompactionStyle;
 using rs::advanced_options::Temperature;
-using rs::advanced_options::CacheTier;
+using rs::advanced_options::UpdateStatus;
 
 namespace ROCKSDB_NAMESPACE {
 
@@ -183,12 +184,6 @@ struct CompressionOptions {
   }
 };
 
-enum UpdateStatus {     // Return status For inplace update callback
-  UPDATE_FAILED = 0,    // Nothing to update
-  UPDATED_INPLACE = 1,  // Value updated inplace
-  UPDATED = 2,          // No inplace update. Merged value set
-};
-
 enum class PrepopulateBlobCache : uint8_t {
   kDisable = 0x0,    // Disable prepopulate blob cache
   kFlushOnly = 0x1,  // Prepopulate blobs during flush only
@@ -330,7 +325,7 @@ struct AdvancedColumnFamilyOptions {
   // If the merged value is smaller in size that the 'existing_value',
   // then this function can update the 'existing_value' buffer inplace and
   // the corresponding 'existing_value'_size pointer, if it wishes to.
-  // The callback should return UpdateStatus::UPDATED_INPLACE.
+  // The callback should return UpdateStatus::UpdatedInplace.
   // In this case. (In this case, the snapshot-semantics of the rocksdb
   // Iterator is not atomic anymore).
   //
@@ -338,11 +333,11 @@ struct AdvancedColumnFamilyOptions {
   // application does not wish to modify the 'existing_value' buffer inplace,
   // then the merged value should be returned via *merge_value. It is set by
   // merging the 'existing_value' and the Put 'delta_value'. The callback should
-  // return UpdateStatus::UPDATED in this case. This merged value will be added
+  // return UpdateStatus::Updated in this case. This merged value will be added
   // to the memtable.
   //
   // If merging fails or the application does not wish to take any action,
-  // then the callback should return UpdateStatus::UPDATE_FAILED.
+  // then the callback should return UpdateStatus::Failed.
   //
   // Please remember that the original call from the application is Put(key,
   // delta_value). So the transaction log (if enabled) will still contain (key,
