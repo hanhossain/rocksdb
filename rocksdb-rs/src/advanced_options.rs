@@ -62,4 +62,11 @@ mod ffi {
         /// No inplace update. Merged value set
         Updated = 2,
     }
+
+    enum PrepopulateBlobCache {
+        // Disable prepopulate blob cache
+        Disable = 0x0,
+        // Prepopulate blobs during flush only
+        FlushOnly = 0x1,
+    }
 }

@@ -4386,10 +4386,10 @@ class Benchmark {
         }
         switch (FLAGS_prepopulate_blob_cache) {
           case 0:
-            options.prepopulate_blob_cache = PrepopulateBlobCache::kDisable;
+            options.prepopulate_blob_cache = PrepopulateBlobCache::Disable;
             break;
           case 1:
-            options.prepopulate_blob_cache = PrepopulateBlobCache::kFlushOnly;
+            options.prepopulate_blob_cache = PrepopulateBlobCache::FlushOnly;
             break;
           default:
             fprintf(stderr, "Unknown prepopulate blob cache mode\n");

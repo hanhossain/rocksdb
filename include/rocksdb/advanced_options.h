@@ -19,6 +19,7 @@
 using rs::advanced_options::CacheTier;
 using rs::advanced_options::CompactionPri;
 using rs::advanced_options::CompactionStyle;
+using rs::advanced_options::PrepopulateBlobCache;
 using rs::advanced_options::Temperature;
 using rs::advanced_options::UpdateStatus;
 
@@ -182,11 +183,6 @@ struct CompressionOptions {
   void SetMinRatio(double min_ratio) {
     max_compressed_bytes_per_kb = static_cast<int>(1024.0 / min_ratio + 0.5);
   }
-};
-
-enum class PrepopulateBlobCache : uint8_t {
-  kDisable = 0x0,    // Disable prepopulate blob cache
-  kFlushOnly = 0x1,  // Prepopulate blobs during flush only
 };
 
 struct AdvancedColumnFamilyOptions {
@@ -1033,7 +1029,7 @@ struct AdvancedColumnFamilyOptions {
   // Default: disabled
   //
   // Dynamically changeable through the SetOptions() API
-  PrepopulateBlobCache prepopulate_blob_cache = PrepopulateBlobCache::kDisable;
+  PrepopulateBlobCache prepopulate_blob_cache = PrepopulateBlobCache::Disable;
 
   // Enable memtable per key-value checksum protection.
   //

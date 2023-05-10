@@ -444,8 +444,8 @@ void ColumnFamilyOptions::Dump(Logger* log) const {
                        blob_cache->GetPrintableOptions().c_str());
       ROCKS_LOG_HEADER(
           log, "                          blob_cache prepopulated: %s",
-          prepopulate_blob_cache == PrepopulateBlobCache::kFlushOnly
-              ? "flush only"
+          prepopulate_blob_cache == PrepopulateBlobCache::FlushOnly
+                           ? "flush only"
               : "disabled");
     }
     ROCKS_LOG_HEADER(log, "Options.experimental_mempurge_threshold: %f",

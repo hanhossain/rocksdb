@@ -101,7 +101,6 @@ using ROCKSDB_NAMESPACE::Options;
 using ROCKSDB_NAMESPACE::PerfContext;
 using ROCKSDB_NAMESPACE::PerfLevel;
 using ROCKSDB_NAMESPACE::PinnableSlice;
-using ROCKSDB_NAMESPACE::PrepopulateBlobCache;
 using ROCKSDB_NAMESPACE::RandomAccessFile;
 using ROCKSDB_NAMESPACE::Range;
 using ROCKSDB_NAMESPACE::RateLimiter;
@@ -126,6 +125,7 @@ using ROCKSDB_NAMESPACE::WriteBatch;
 using ROCKSDB_NAMESPACE::WriteBatchWithIndex;
 using ROCKSDB_NAMESPACE::WriteOptions;
 
+using rs::advanced_options::PrepopulateBlobCache;
 using rs::options::BottommostLevelCompaction;
 using rs::options::WALRecoveryMode;
 
