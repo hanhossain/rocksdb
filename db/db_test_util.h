@@ -714,7 +714,7 @@ class FileTemperatureTestFS : public FileSystemWrapper {
       MutexLock lock(&mu_);
       requested_sst_file_temperatures_.emplace_back(number, opts.temperature);
       if (s.ok()) {
-        if (opts.temperature != Temperature::kUnknown) {
+        if (opts.temperature != Temperature::Unknown) {
           // Be extra picky and don't open if a wrong non-unknown temperature is
           // provided
           auto e = current_sst_file_temperatures_.find(number);
@@ -743,7 +743,7 @@ class FileTemperatureTestFS : public FileSystemWrapper {
       MutexLock lock(&mu_);
       requested_sst_file_temperatures_.emplace_back(number, opts.temperature);
       if (s.ok()) {
-        if (opts.temperature != Temperature::kUnknown) {
+        if (opts.temperature != Temperature::Unknown) {
           // Be extra picky and don't open if a wrong non-unknown temperature is
           // provided
           auto e = current_sst_file_temperatures_.find(number);

@@ -381,7 +381,7 @@ class CompactionJobTestBase : public testing::Test {
     VersionEdit edit;
     edit.AddFile(
         level, file_number, 0, file_size, smallest_key, largest_key,
-        smallest_seqno, largest_seqno, false, Temperature::kUnknown,
+        smallest_seqno, largest_seqno, false, Temperature::Unknown,
         oldest_blob_file_number, kUnknownOldestAncesterTime,
         kUnknownFileCreationTime,
         versions_->GetColumnFamilySet()->GetDefault()->NewEpochNumber(),
@@ -642,7 +642,7 @@ class CompactionJobTestBase : public testing::Test {
         mutable_cf_options_.target_file_size_base,
         mutable_cf_options_.max_compaction_bytes, 0, kNoCompression,
         cfd->GetLatestMutableCFOptions()->compression_opts,
-        Temperature::kUnknown, max_subcompactions, grandparents, true);
+        Temperature::Unknown, max_subcompactions, grandparents, true);
     compaction.SetInputVersion(cfd->current());
 
     assert(db_options_.info_log);
@@ -1462,7 +1462,7 @@ TEST_F(CompactionJobTest, OldestBlobFileNumber) {
 }
 
 TEST_F(CompactionJobTest, VerifyPenultimateLevelOutput) {
-  cf_options_.bottommost_temperature = Temperature::kCold;
+  cf_options_.bottommost_temperature = Temperature::Cold;
   SyncPoint::GetInstance()->SetCallBack(
       "Compaction::SupportsPerKeyPlacement:Enabled", [&](void* arg) {
         auto supports_per_key_placement = static_cast<bool*>(arg);

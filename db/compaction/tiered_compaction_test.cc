@@ -127,9 +127,9 @@ class TieredCompactionTest : public DBTestBase,
   // of them should have the same effect.
   void SetColdTemperature(Options& options) {
     if (GetParam()) {
-      options.bottommost_temperature = Temperature::kCold;
+      options.bottommost_temperature = Temperature::Cold;
     } else {
-      options.last_level_temperature = Temperature::kCold;
+      options.last_level_temperature = Temperature::Cold;
     }
   }
 
@@ -214,8 +214,8 @@ TEST_P(TieredCompactionTest, SequenceBasedTieredStorageUniversal) {
   // the penultimate level file temperature is not cold, all data are output to
   // the penultimate level.
   ASSERT_EQ("0,0,0,0,0,1", FilesPerLevel());
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Cold), 0);
 
   // basic compaction stats are still counted to the last level
   expect_stats[kLastLevel].Add(kBasicCompStats);
@@ -231,8 +231,8 @@ TEST_P(TieredCompactionTest, SequenceBasedTieredStorageUniversal) {
   ASSERT_OK(db_->CompactRange(CompactRangeOptions(), nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,1,1", FilesPerLevel());
 
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 
   last_stats.Add(kBasicCompStats);
   last_stats.ResetCompactionReason(CompactionReason::kManualCompaction);
@@ -252,8 +252,8 @@ TEST_P(TieredCompactionTest, SequenceBasedTieredStorageUniversal) {
 
   ASSERT_OK(db_->CompactRange(CompactRangeOptions(), nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,1", FilesPerLevel());
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Cold), 0);
 
   last_stats.Add(kBasicCompStats);
   last_stats.ResetCompactionReason(CompactionReason::kManualCompaction);
@@ -276,8 +276,8 @@ TEST_P(TieredCompactionTest, SequenceBasedTieredStorageUniversal) {
 
   ASSERT_OK(db_->CompactRange(CompactRangeOptions(), nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,1,1", FilesPerLevel());
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 
   last_stats.Add(kBasicCompStats);
   last_stats.Add(kBasicPerLevelStats);
@@ -304,8 +304,8 @@ TEST_P(TieredCompactionTest, SequenceBasedTieredStorageUniversal) {
   ASSERT_OK(Flush());
   ASSERT_OK(db_->CompactRange(CompactRangeOptions(), nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,1,1", FilesPerLevel());
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 
   // no range del is dropped because of snapshot
   ASSERT_EQ(
@@ -316,8 +316,8 @@ TEST_P(TieredCompactionTest, SequenceBasedTieredStorageUniversal) {
   db_->ReleaseSnapshot(snap);
   ASSERT_OK(db_->CompactRange(CompactRangeOptions(), nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,0,1", FilesPerLevel());
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 
   // 2 range dels are dropped
   ASSERT_EQ(
@@ -330,8 +330,8 @@ TEST_P(TieredCompactionTest, SequenceBasedTieredStorageUniversal) {
   latest_cold_seq = seq_history[1];
   ASSERT_OK(db_->CompactRange(CompactRangeOptions(), nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,0,1", FilesPerLevel());
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 }
 
 TEST_P(TieredCompactionTest, RangeBasedTieredStorageUniversal) {
@@ -376,8 +376,8 @@ TEST_P(TieredCompactionTest, RangeBasedTieredStorageUniversal) {
   }
   ASSERT_OK(dbfull()->WaitForCompact(true));
   ASSERT_EQ("0,0,0,0,0,1,1", FilesPerLevel());
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 
   last_stats.Add(kBasicCompStats);
   last_stats.Add(kBasicPerLevelStats);
@@ -394,8 +394,8 @@ TEST_P(TieredCompactionTest, RangeBasedTieredStorageUniversal) {
   }
   ASSERT_OK(db_->CompactRange(CompactRangeOptions(), nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,0,1", FilesPerLevel());
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 
   last_stats.Add(kBasicCompStats);
   last_stats.ResetCompactionReason(CompactionReason::kManualCompaction);
@@ -427,8 +427,8 @@ TEST_P(TieredCompactionTest, RangeBasedTieredStorageUniversal) {
   ASSERT_OK(db_->CompactRange(CompactRangeOptions(), nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,1", FilesPerLevel());
 
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Cold), 0);
 
   // change to only 1 key cold, to test compaction could stop even it matches
   // size amp compaction threshold
@@ -448,21 +448,21 @@ TEST_P(TieredCompactionTest, RangeBasedTieredStorageUniversal) {
   ASSERT_OK(dbfull()->WaitForCompact(
       true));  // make sure the compaction is able to finish
   ASSERT_EQ("0,0,0,0,0,1,1", FilesPerLevel());
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
   auto opts = db_->GetOptions();
   auto max_size_amp =
       opts.compaction_options_universal.max_size_amplification_percent / 100;
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown),
-            GetSstSizeHelper(Temperature::kCold) * max_size_amp);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown),
+            GetSstSizeHelper(Temperature::Cold) * max_size_amp);
 
   // delete all cold data
   ASSERT_OK(Delete(Key(0)));
   ASSERT_OK(Flush());
   ASSERT_OK(db_->CompactRange(CompactRangeOptions(), nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,1", FilesPerLevel());
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Cold), 0);
 
   // range delete overlap with both hot/cold data, with a snapshot to make sure
   // the range del is saved
@@ -478,8 +478,8 @@ TEST_P(TieredCompactionTest, RangeBasedTieredStorageUniversal) {
   ASSERT_OK(Flush());
   ASSERT_OK(db_->CompactRange(CompactRangeOptions(), nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,1,1", FilesPerLevel());
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 
   // no range del is dropped until snapshot is released
   ASSERT_EQ(
@@ -499,8 +499,8 @@ TEST_P(TieredCompactionTest, RangeBasedTieredStorageUniversal) {
   db_->ReleaseSnapshot(snap);
   ASSERT_OK(db_->CompactRange(CompactRangeOptions(), nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,1,1", FilesPerLevel());
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 
   // range del is dropped
   ASSERT_EQ(
@@ -542,8 +542,8 @@ TEST_P(TieredCompactionTest, LevelColdRangeDelete) {
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   ASSERT_EQ("0,1",
             FilesPerLevel());  // bottommost but not last level file is hot
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Cold), 0);
 
   // explicitly move the data to the last level
   MoveFilesToLevel(kLastLevel);
@@ -645,8 +645,8 @@ TEST_P(TieredCompactionTest, LevelOutofBoundaryRangeDelete) {
   ASSERT_OK(Flush());
 
   MoveFilesToLevel(kNumLevels - 1);
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
   ASSERT_EQ("0,0,10", FilesPerLevel());
 
   auto snap = db_->GetSnapshot();
@@ -663,7 +663,7 @@ TEST_P(TieredCompactionTest, LevelOutofBoundaryRangeDelete) {
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
 
   // range tombstone is not in cold tier
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
   std::vector<std::vector<FileMetaData>> level_to_files;
   dbfull()->TEST_GetFilesMetaData(dbfull()->DefaultColumnFamily(),
                                   &level_to_files);
@@ -673,9 +673,9 @@ TEST_P(TieredCompactionTest, LevelOutofBoundaryRangeDelete) {
   ASSERT_EQ(level_to_files[penultimate_level][0].num_entries, 1);
   ASSERT_EQ(level_to_files[penultimate_level][0].num_deletions, 1);
   ASSERT_EQ(level_to_files[penultimate_level][0].temperature,
-            Temperature::kUnknown);
+            Temperature::Unknown);
 
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
   ASSERT_EQ("0,1,10",
             FilesPerLevel());  // one file is at the penultimate level which
                                // only contains a range delete
@@ -732,15 +732,15 @@ TEST_P(TieredCompactionTest, LevelOutofBoundaryRangeDelete) {
   latest_cold_seq = dbfull()->GetLatestSequenceNumber();
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   ASSERT_EQ("0,1,8", FilesPerLevel());
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 
   db_->ReleaseSnapshot(snap2);
 
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   ASSERT_EQ("0,0,8", FilesPerLevel());
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 }
 
 TEST_P(TieredCompactionTest, UniversalRangeDelete) {
@@ -780,15 +780,15 @@ TEST_P(TieredCompactionTest, UniversalRangeDelete) {
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
 
   ASSERT_EQ("0,0,0,0,0,10", FilesPerLevel());
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Cold), 0);
 
   // make all data cold
   latest_cold_seq = dbfull()->GetLatestSequenceNumber();
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,0,10", FilesPerLevel());
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 
   // range del which considered as hot data, but it will be merged and deleted
   // with the last level data
@@ -863,16 +863,16 @@ TEST_P(TieredCompactionTest, UniversalRangeDelete) {
   latest_cold_seq = dbfull()->GetLatestSequenceNumber();
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,1,7", FilesPerLevel());
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 
   db_->ReleaseSnapshot(snap2);
 
   // release snapshot, everything go to bottommost
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,0,7", FilesPerLevel());
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 }
 
 TEST_P(TieredCompactionTest, SequenceBasedTieredStorageLevel) {
@@ -915,8 +915,8 @@ TEST_P(TieredCompactionTest, SequenceBasedTieredStorageLevel) {
 
   // non last level is hot
   ASSERT_EQ("0,1", FilesPerLevel());
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Cold), 0);
 
   expect_stats[1].Add(kBasicCompStats);
   expect_stats[1].Add(kBasicPerLevelStats);
@@ -933,8 +933,8 @@ TEST_P(TieredCompactionTest, SequenceBasedTieredStorageLevel) {
   cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,0,1", FilesPerLevel());
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 
   last_stats.Add(kBasicCompStats);
   last_stats.Add(kBasicPerLevelStats);
@@ -956,16 +956,16 @@ TEST_P(TieredCompactionTest, SequenceBasedTieredStorageLevel) {
   }
   ASSERT_OK(dbfull()->WaitForCompact(true));
   ASSERT_EQ("0,1,0,0,0,0,1", FilesPerLevel());
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 
   ResetAllStats(expect_stats, expect_pl_stats);
 
   // after compaction, all data are hot
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,1", FilesPerLevel());
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Cold), 0);
 
   for (int level = 2; level < kNumLevels - 1; level++) {
     expect_stats[level].bytes_moved = kHasValue;
@@ -989,8 +989,8 @@ TEST_P(TieredCompactionTest, SequenceBasedTieredStorageLevel) {
   latest_cold_seq = seq_history[1];
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,1", FilesPerLevel());
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Cold), 0);
 
   seq_history.clear();
 
@@ -1010,8 +1010,8 @@ TEST_P(TieredCompactionTest, SequenceBasedTieredStorageLevel) {
   latest_cold_seq = seq_history[0];
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,1,1", FilesPerLevel());
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 
   // delete all cold data
   for (int i = 0; i < 10; i++) {
@@ -1020,8 +1020,8 @@ TEST_P(TieredCompactionTest, SequenceBasedTieredStorageLevel) {
   ASSERT_OK(Flush());
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,1", FilesPerLevel());
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Cold), 0);
 
   latest_cold_seq = seq_history[2];
 
@@ -1042,8 +1042,8 @@ TEST_P(TieredCompactionTest, SequenceBasedTieredStorageLevel) {
   ASSERT_OK(Flush());
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,1,1", FilesPerLevel());
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 
   // verify data
   std::string value;
@@ -1065,8 +1065,8 @@ TEST_P(TieredCompactionTest, SequenceBasedTieredStorageLevel) {
   ASSERT_OK(Flush());
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,1,1", FilesPerLevel());
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 
   // no range del is dropped because of snapshot
   ASSERT_EQ(
@@ -1077,8 +1077,8 @@ TEST_P(TieredCompactionTest, SequenceBasedTieredStorageLevel) {
 
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,1,1", FilesPerLevel());
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 
   // 3 range dels dropped, the first one is double counted as expected, which is
   // spread into 2 SST files
@@ -1095,8 +1095,8 @@ TEST_P(TieredCompactionTest, SequenceBasedTieredStorageLevel) {
   latest_cold_seq = seq_history[1];
   ASSERT_OK(db_->CompactRange(CompactRangeOptions(), nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,1,1", FilesPerLevel());
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 }
 
 TEST_P(TieredCompactionTest, RangeBasedTieredStorageLevel) {
@@ -1137,8 +1137,8 @@ TEST_P(TieredCompactionTest, RangeBasedTieredStorageLevel) {
   }
   ASSERT_OK(dbfull()->WaitForCompact(true));
   ASSERT_EQ("0,0,0,0,0,1,1", FilesPerLevel());
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 
   // change to all cold
   {
@@ -1150,8 +1150,8 @@ TEST_P(TieredCompactionTest, RangeBasedTieredStorageLevel) {
   cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,0,1", FilesPerLevel());
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 
   // change to all hot, but level compaction only support move cold to hot
   // within it's higher level input range.
@@ -1162,8 +1162,8 @@ TEST_P(TieredCompactionTest, RangeBasedTieredStorageLevel) {
   }
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,0,1", FilesPerLevel());
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 
   // with mixed hot/cold data
   {
@@ -1176,8 +1176,8 @@ TEST_P(TieredCompactionTest, RangeBasedTieredStorageLevel) {
   ASSERT_OK(Flush());
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,1,1", FilesPerLevel());
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 
   // delete all hot data, but with snapshot to keep the range del
   auto snap = db_->GetSnapshot();
@@ -1188,8 +1188,8 @@ TEST_P(TieredCompactionTest, RangeBasedTieredStorageLevel) {
   ASSERT_OK(Flush());
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,1,1", FilesPerLevel());
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 
   // no range del is dropped because of snapshot
   ASSERT_EQ(
@@ -1200,8 +1200,8 @@ TEST_P(TieredCompactionTest, RangeBasedTieredStorageLevel) {
   db_->ReleaseSnapshot(snap);
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,0,1", FilesPerLevel());
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 
   ASSERT_EQ(
       options.statistics->getTickerCount(COMPACTION_RANGE_DEL_DROP_OBSOLETE),
@@ -1272,12 +1272,12 @@ TEST_F(PrecludeLastLevelTest, MigrationFromPreserveTimeManualCompaction) {
 
   // enable preclude feature
   options.preclude_last_level_data_seconds = 10000;
-  options.last_level_temperature = Temperature::kCold;
+  options.last_level_temperature = Temperature::Cold;
   Reopen(options);
 
   // all data is hot, even they're in the last level
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kCold), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Cold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
 
   // Generate a sstable and trigger manual compaction
   ASSERT_OK(Put(Key(10), "value"));
@@ -1289,8 +1289,8 @@ TEST_F(PrecludeLastLevelTest, MigrationFromPreserveTimeManualCompaction) {
 
   // all data is moved up to the penultimate level
   ASSERT_EQ("0,0,0,0,0,1", FilesPerLevel());
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kCold), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Cold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
 
   // close explicitly, because the env is local variable which will be released
   // first.
@@ -1334,7 +1334,7 @@ TEST_F(PrecludeLastLevelTest, MigrationFromPreserveTimeAutoCompaction) {
 
   // enable preclude feature
   options.preclude_last_level_data_seconds = 10000;
-  options.last_level_temperature = Temperature::kCold;
+  options.last_level_temperature = Temperature::Cold;
   // make sure it won't trigger Size Amp compaction, unlike normal Size Amp
   // compaction which is typically a last level compaction, when tiered Storage
   // ("preclude_last_level") is enabled, size amp won't include the last level.
@@ -1344,8 +1344,8 @@ TEST_F(PrecludeLastLevelTest, MigrationFromPreserveTimeAutoCompaction) {
   Reopen(options);
 
   // all data is hot, even they're in the last level
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kCold), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Cold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
 
   // Write more data, but still all hot until the 10th SST, as:
   // write a key every 10 seconds, 100 keys per SST, each SST takes 1000 seconds
@@ -1365,8 +1365,8 @@ TEST_F(PrecludeLastLevelTest, MigrationFromPreserveTimeAutoCompaction) {
 
   // all data is moved up to the penultimate level
   ASSERT_EQ("0,0,0,0,0,1", FilesPerLevel());
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kCold), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Cold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
 
   // close explicitly, because the env is local variable which will be released
   // first.
@@ -1427,7 +1427,7 @@ TEST_F(PrecludeLastLevelTest, MigrationFromPreserveTimePartial) {
 
   // enable preclude feature
   options.preclude_last_level_data_seconds = 2000;
-  options.last_level_temperature = Temperature::kCold;
+  options.last_level_temperature = Temperature::Cold;
   Reopen(options);
 
   // Generate a sstable and trigger manual compaction
@@ -1440,8 +1440,8 @@ TEST_F(PrecludeLastLevelTest, MigrationFromPreserveTimePartial) {
 
   // some data are moved up, some are not
   ASSERT_EQ("0,0,0,0,0,1,1", FilesPerLevel());
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
 
   Close();
 }
@@ -1458,7 +1458,7 @@ TEST_F(PrecludeLastLevelTest, SmallPrecludeTime) {
   options.env = mock_env_.get();
   options.level0_file_num_compaction_trigger = kNumTrigger;
   options.num_levels = kNumLevels;
-  options.last_level_temperature = Temperature::kCold;
+  options.last_level_temperature = Temperature::Cold;
   DestroyAndReopen(options);
 
   Random rnd(301);
@@ -1494,8 +1494,8 @@ TEST_F(PrecludeLastLevelTest, SmallPrecludeTime) {
 
   ASSERT_OK(db_->CompactRange(CompactRangeOptions(), nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,0,1", FilesPerLevel());
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 
   Close();
 }
@@ -1537,7 +1537,7 @@ TEST_F(PrecludeLastLevelTest, LastLevelOnlyCompactionPartial) {
 
   // enable preclude feature
   options.preclude_last_level_data_seconds = 2000;
-  options.last_level_temperature = Temperature::kCold;
+  options.last_level_temperature = Temperature::Cold;
   Reopen(options);
 
   CompactRangeOptions cro;
@@ -1546,8 +1546,8 @@ TEST_F(PrecludeLastLevelTest, LastLevelOnlyCompactionPartial) {
 
   // some data are moved up, some are not
   ASSERT_EQ("0,0,0,0,0,1,1", FilesPerLevel());
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
 
   std::vector<KeyVersion> key_versions;
   ASSERT_OK(GetAllKeyVersions(db_, Slice(), Slice(),
@@ -1677,7 +1677,7 @@ TEST_P(PrecludeLastLevelTestWithParms, LastLevelOnlyCompactionNoPreclude) {
     options.preclude_last_level_data_seconds = 2000;
   }
   options.max_background_jobs = 8;
-  options.last_level_temperature = Temperature::kCold;
+  options.last_level_temperature = Temperature::Cold;
   Reopen(options);
 
   auto manual_compaction_thread = port::Thread([this]() {
@@ -1764,7 +1764,7 @@ TEST_P(PrecludeLastLevelTestWithParms, PeriodicCompactionToPenultimateLevel) {
     options.preclude_last_level_data_seconds = 20000;
   }
   options.max_background_jobs = 8;
-  options.last_level_temperature = Temperature::kCold;
+  options.last_level_temperature = Temperature::Cold;
   Reopen(options);
 
   std::atomic_bool is_size_ratio_compaction_running = false;
@@ -1948,7 +1948,7 @@ TEST_F(PrecludeLastLevelTest, PartialPenultimateLevelCompaction) {
 
   // enable tiered storage feature
   options.preclude_last_level_data_seconds = 10000;
-  options.last_level_temperature = Temperature::kCold;
+  options.last_level_temperature = Temperature::Cold;
   options.statistics = CreateDBStatistics();
   Reopen(options);
 
@@ -1970,23 +1970,23 @@ TEST_F(PrecludeLastLevelTest, PartialPenultimateLevelCompaction) {
   // is unsafe to move up, otherwise, they will be overlapped with the existing
   // files@L5.
   // The output should be:
-  //  L5: [0,19] [20,39] [40,299]    <-- Temperature::kUnknown
-  //  L6: [0,19] [20,39]             <-- Temperature::kCold
+  //  L5: [0,19] [20,39] [40,299]    <-- Temperature::Unknown
+  //  L6: [0,19] [20,39]             <-- Temperature::Cold
   // L6 file is split because of the customized partitioner
   ASSERT_EQ("0,0,0,0,0,3,2", FilesPerLevel());
 
   // even all the data is hot, but not all data are moved to the hot tier
-  ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
 
   db_->GetColumnFamilyMetaData(&meta);
   ASSERT_EQ(meta.levels[5].files.size(), 3);
   ASSERT_EQ(meta.levels[6].files.size(), 2);
   for (const auto& file : meta.levels[5].files) {
-    ASSERT_EQ(file.temperature, Temperature::kUnknown);
+    ASSERT_EQ(file.temperature, Temperature::Unknown);
   }
   for (const auto& file : meta.levels[6].files) {
-    ASSERT_EQ(file.temperature, Temperature::kCold);
+    ASSERT_EQ(file.temperature, Temperature::Cold);
   }
   ASSERT_EQ(meta.levels[6].files[0].smallestkey, Key(0));
   ASSERT_EQ(meta.levels[6].files[0].largestkey, Key(19));
@@ -2010,7 +2010,7 @@ TEST_F(PrecludeLastLevelTest, RangeDelsCauseFileEndpointsToOverlap) {
   Options options = CurrentOptions();
   options.compaction_style = CompactionStyle::Universal;
   options.env = mock_env_.get();
-  options.last_level_temperature = Temperature::kCold;
+  options.last_level_temperature = Temperature::Cold;
   options.preserve_internal_time_seconds = 600;
   options.preclude_last_level_data_seconds = 1;
   options.num_levels = kNumLevels;

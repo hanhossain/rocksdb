@@ -38,7 +38,7 @@ struct FileStorageInfo {
   uint64_t size = 0;
 
   // This feature is experimental and subject to change.
-  Temperature temperature = Temperature::kUnknown;
+  Temperature temperature = Temperature::Unknown;
 
   // The checksum of a SST file, the value is decided by the file content and
   // the checksum algorithm used for this SST file. The checksum function is

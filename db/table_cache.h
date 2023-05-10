@@ -175,7 +175,7 @@ class TableCache {
       HistogramImpl* file_read_hist = nullptr, bool skip_filters = false,
       int level = -1, bool prefetch_index_and_filter_in_cache = true,
       size_t max_file_size_for_l0_meta_pin = 0,
-      Temperature file_temperature = Temperature::kUnknown);
+      Temperature file_temperature = Temperature::Unknown);
 
   // Get the table properties of a given table.
   // @no_io: indicates if we should load table to the cache if it is not present
@@ -249,7 +249,7 @@ class TableCache {
       bool skip_filters = false, int level = -1,
       bool prefetch_index_and_filter_in_cache = true,
       size_t max_file_size_for_l0_meta_pin = 0,
-      Temperature file_temperature = Temperature::kUnknown);
+      Temperature file_temperature = Temperature::Unknown);
 
   // Update the max_covering_tombstone_seq in the GetContext for each key based
   // on the range deletions in the table

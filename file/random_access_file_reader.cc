@@ -40,21 +40,21 @@ inline void RecordIOStats(Statistics* stats, Temperature file_temperature,
   }
 
   // record for temperature file
-  if (file_temperature != Temperature::kUnknown) {
+  if (file_temperature != Temperature::Unknown) {
     switch (file_temperature) {
-      case Temperature::kHot:
+      case Temperature::Hot:
         IOSTATS_ADD(file_io_stats_by_temperature.hot_file_bytes_read, size);
         IOSTATS_ADD(file_io_stats_by_temperature.hot_file_read_count, 1);
         RecordTick(stats, HOT_FILE_READ_BYTES, size);
         RecordTick(stats, HOT_FILE_READ_COUNT, 1);
         break;
-      case Temperature::kWarm:
+      case Temperature::Warm:
         IOSTATS_ADD(file_io_stats_by_temperature.warm_file_bytes_read, size);
         IOSTATS_ADD(file_io_stats_by_temperature.warm_file_read_count, 1);
         RecordTick(stats, WARM_FILE_READ_BYTES, size);
         RecordTick(stats, WARM_FILE_READ_COUNT, 1);
         break;
-      case Temperature::kCold:
+      case Temperature::Cold:
         IOSTATS_ADD(file_io_stats_by_temperature.cold_file_bytes_read, size);
         IOSTATS_ADD(file_io_stats_by_temperature.cold_file_read_count, 1);
         RecordTick(stats, COLD_FILE_READ_BYTES, size);

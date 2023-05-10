@@ -4083,7 +4083,7 @@ TEST_F(BackupEngineTest, FileTemperatures) {
   SetEnvsFromFileSystems();
 
   // Use temperatures
-  options_.bottommost_temperature = Temperature::kWarm;
+  options_.bottommost_temperature = Temperature::Warm;
   options_.level0_file_num_compaction_trigger = 2;
   // set dynamic_level to true so the compaction would compact the data to the
   // last level directly which will have the last_level_temperature
@@ -4121,8 +4121,8 @@ TEST_F(BackupEngineTest, FileTemperatures) {
 
   // Verify expected manifest temperatures
   ASSERT_EQ(manifest_temp_counts.size(), 2);
-  ASSERT_EQ(manifest_temp_counts[Temperature::kWarm], 1);
-  ASSERT_EQ(manifest_temp_counts[Temperature::kUnknown], 1);
+  ASSERT_EQ(manifest_temp_counts[Temperature::Warm], 1);
+  ASSERT_EQ(manifest_temp_counts[Temperature::Unknown], 1);
 
   // Verify manifest temperatures match FS temperatures
   std::map<uint64_t, Temperature> current_temps;
@@ -4148,24 +4148,24 @@ TEST_F(BackupEngineTest, FileTemperatures) {
       OpenBackupEngine();
       for (const auto& manifest_temp : manifest_temps) {
         if (i <= 3) {
-          if (manifest_temp.second == Temperature::kWarm) {
+          if (manifest_temp.second == Temperature::Warm) {
             my_db_fs->OverrideSstFileTemperature(manifest_temp.first,
-                                                 Temperature::kCold);
+                                                 Temperature::Cold);
             if (use_current) {
-              expected_temps[manifest_temp.first] = Temperature::kCold;
+              expected_temps[manifest_temp.first] = Temperature::Cold;
             }
           }
         } else {
           assert(i <= 5);
-          if (manifest_temp.second == Temperature::kWarm) {
+          if (manifest_temp.second == Temperature::Warm) {
             my_db_fs->OverrideSstFileTemperature(manifest_temp.first,
-                                                 Temperature::kUnknown);
+                                                 Temperature::Unknown);
           } else {
-            ASSERT_EQ(manifest_temp.second, Temperature::kUnknown);
+            ASSERT_EQ(manifest_temp.second, Temperature::Unknown);
             my_db_fs->OverrideSstFileTemperature(manifest_temp.first,
-                                                 Temperature::kHot);
+                                                 Temperature::Hot);
             // regardless of use_current
-            expected_temps[manifest_temp.first] = Temperature::kHot;
+            expected_temps[manifest_temp.first] = Temperature::Hot;
           }
         }
       }
@@ -4185,8 +4185,8 @@ TEST_F(BackupEngineTest, FileTemperatures) {
       // Matching manifest temperatures, except allow retry request with
       // kUnknown
       auto manifest_temp = manifest_temps.at(requested_temp.first);
-      if (manifest_temp == Temperature::kUnknown ||
-          requested_temp.second != Temperature::kUnknown) {
+      if (manifest_temp == Temperature::Unknown ||
+          requested_temp.second != Temperature::Unknown) {
         ASSERT_EQ(manifest_temp, requested_temp.second);
       }
       distinct_requests.insert(requested_temp.first);

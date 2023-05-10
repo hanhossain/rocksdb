@@ -270,7 +270,7 @@ struct FileOperationInfo {
   FileOperationInfo(const FileOperationType _type, const std::string& _path,
                     const StartTimePoint& _start_ts,
                     const FinishTimePoint& _finish_ts, const Status& _status,
-                    const Temperature _temperature = Temperature::kUnknown)
+                    const Temperature _temperature = Temperature::Unknown)
       : type(_type),
         path(_path),
         temperature(_temperature),

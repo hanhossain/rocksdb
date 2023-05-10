@@ -70,7 +70,7 @@ struct IngestedFileInfo {
   // The name of checksum function that generate the checksum
   std::string file_checksum_func_name;
   // The temperature of the file to be ingested
-  Temperature file_temperature = Temperature::kUnknown;
+  Temperature file_temperature = Temperature::Unknown;
   // Unique id of the file to be ingested
   UniqueId64x2 unique_id{};
 };

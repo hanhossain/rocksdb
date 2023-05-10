@@ -34,4 +34,14 @@ mod ffi {
         /// round-robin manner.
         RoundRobin = 0x4,
     }
+
+    /// Temperature of a file. Used to pass to FileSystem for a different placement and/or coding.
+    /// Reserve some numbers in the middle, in case we need to insert new tier there.
+    enum Temperature {
+        Unknown = 0,
+        Hot = 0x04,
+        Warm = 0x08,
+        Cold = 0x0C,
+        LastTemperature,
+    }
 }

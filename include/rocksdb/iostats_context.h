@@ -18,17 +18,17 @@ namespace ROCKSDB_NAMESPACE {
 // EXPERIMENTAL: the IO statistics for tiered storage. It matches with each
 // item in Temperature class.
 struct FileIOByTemperature {
-  // the number of bytes read to Temperature::kHot file
+  // the number of bytes read to Temperature::Hot file
   uint64_t hot_file_bytes_read;
-  // the number of bytes read to Temperature::kWarm file
+  // the number of bytes read to Temperature::Warm file
   uint64_t warm_file_bytes_read;
-  // the number of bytes read to Temperature::kCold file
+  // the number of bytes read to Temperature::Cold file
   uint64_t cold_file_bytes_read;
-  // total number of reads to Temperature::kHot file
+  // total number of reads to Temperature::Hot file
   uint64_t hot_file_read_count;
-  // total number of reads to Temperature::kWarm file
+  // total number of reads to Temperature::Warm file
   uint64_t warm_file_read_count;
-  // total number of reads to Temperature::kCold file
+  // total number of reads to Temperature::Cold file
   uint64_t cold_file_read_count;
   // reset all the statistics to 0.
   void Reset() {

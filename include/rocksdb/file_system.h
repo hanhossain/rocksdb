@@ -161,7 +161,7 @@ struct FileOptions : EnvOptions {
   // When creating a new file, set the temperature of the file so that
   // underlying file systems can put it with appropriate storage media and/or
   // coding.
-  Temperature temperature = Temperature::kUnknown;
+  Temperature temperature = Temperature::Unknown;
 
   // The checksum type that is used to calculate the checksum value for
   // handoff during file writes.
@@ -754,7 +754,7 @@ class FSSequentialFile {
   // useful in case some outside process moves a file from one tier to another,
   // though the temperature is generally expected not to change while a file is
   // open.
-  virtual Temperature GetTemperature() const { return Temperature::kUnknown; }
+  virtual Temperature GetTemperature() const { return Temperature::Unknown; }
 
   // If you're adding methods here, remember to add them to
   // SequentialFileWrapper too.
@@ -923,7 +923,7 @@ class FSRandomAccessFile {
   // useful in case some outside process moves a file from one tier to another,
   // though the temperature is generally expected not to change while a file is
   // open.
-  virtual Temperature GetTemperature() const { return Temperature::kUnknown; }
+  virtual Temperature GetTemperature() const { return Temperature::Unknown; }
 
   // If you're adding methods here, remember to add them to
   // RandomAccessFileWrapper too.
@@ -1227,7 +1227,7 @@ class FSRandomRWFile {
   // useful in case some outside process moves a file from one tier to another,
   // though the temperature is generally expected not to change while a file is
   // open.
-  virtual Temperature GetTemperature() const { return Temperature::kUnknown; }
+  virtual Temperature GetTemperature() const { return Temperature::Unknown; }
 
   // If you're adding methods here, remember to add them to
   // RandomRWFileWrapper too.

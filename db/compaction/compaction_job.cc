@@ -1773,7 +1773,7 @@ Status CompactionJob::OpenCompactionOutputFile(SubcompactionState* sub_compact,
   Temperature temperature = sub_compact->compaction->output_temperature();
   // only set for the last level compaction and also it's not output to
   // penultimate level (when preclude_last_level feature is enabled)
-  if (temperature == Temperature::kUnknown &&
+  if (temperature == Temperature::Unknown &&
       sub_compact->compaction->is_last_level() &&
       !sub_compact->IsCurrentPenultimateLevel()) {
     temperature =

@@ -155,7 +155,7 @@ Status ExternalSstFileIngestionJob::Prepare(
       // CopyFile also sync the new file.
       status =
           CopyFile(fs_.get(), path_outside_db, path_inside_db, 0,
-                   db_options_.use_fsync, io_tracer_, Temperature::kUnknown);
+                   db_options_.use_fsync, io_tracer_, Temperature::Unknown);
     }
     TEST_SYNC_POINT("ExternalSstFileIngestionJob::Prepare:FileAdded");
     if (!status.ok()) {
@@ -523,7 +523,7 @@ void ExternalSstFileIngestionJob::CreateEquivalentFileIngestingCompactions() {
         ,
         LLONG_MAX /* max compaction bytes, not applicable */,
         0 /* output path ID, not applicable */, mutable_cf_options.compression,
-        mutable_cf_options.compression_opts, Temperature::kUnknown,
+        mutable_cf_options.compression_opts, Temperature::Unknown,
         0 /* max_subcompaction, not applicable */,
         {} /* grandparents, not applicable */, false /* is manual */,
         "" /* trim_ts */, -1 /* score, not applicable */,

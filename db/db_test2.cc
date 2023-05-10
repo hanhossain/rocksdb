@@ -6633,7 +6633,7 @@ TEST_F(DBTest2, LastLevelTemperature) {
   auto* listener = new TestListener();
 
   Options options = CurrentOptions();
-  options.bottommost_temperature = Temperature::kWarm;
+  options.bottommost_temperature = Temperature::Warm;
   options.level0_file_num_compaction_trigger = 2;
   options.level_compaction_dynamic_level_bytes = true;
   options.num_levels = kNumLevels;
@@ -6641,11 +6641,11 @@ TEST_F(DBTest2, LastLevelTemperature) {
   options.listeners.emplace_back(listener);
   Reopen(options);
 
-  auto size = GetSstSizeHelper(Temperature::kUnknown);
+  auto size = GetSstSizeHelper(Temperature::Unknown);
   ASSERT_EQ(size, 0);
-  size = GetSstSizeHelper(Temperature::kWarm);
+  size = GetSstSizeHelper(Temperature::Warm);
   ASSERT_EQ(size, 0);
-  size = GetSstSizeHelper(Temperature::kHot);
+  size = GetSstSizeHelper(Temperature::Hot);
   ASSERT_EQ(size, 0);
 
   ASSERT_OK(Put("foo", "bar"));
@@ -6663,15 +6663,15 @@ TEST_F(DBTest2, LastLevelTemperature) {
   db_->GetColumnFamilyMetaData(&metadata);
   ASSERT_EQ(1, metadata.file_count);
   SstFileMetaData meta = metadata.levels[kLastLevel].files[0];
-  ASSERT_EQ(Temperature::kWarm, meta.temperature);
+  ASSERT_EQ(Temperature::Warm, meta.temperature);
   uint64_t number;
   FileType type;
   ASSERT_TRUE(ParseFileName(meta.name, &number, &type));
   ASSERT_EQ(listener->file_temperatures.at(number), meta.temperature);
 
-  size = GetSstSizeHelper(Temperature::kUnknown);
+  size = GetSstSizeHelper(Temperature::Unknown);
   ASSERT_EQ(size, 0);
-  size = GetSstSizeHelper(Temperature::kWarm);
+  size = GetSstSizeHelper(Temperature::Warm);
   ASSERT_GT(size, 0);
   ASSERT_EQ(iostats->file_io_stats_by_temperature.hot_file_read_count, 0);
   ASSERT_EQ(iostats->file_io_stats_by_temperature.warm_file_read_count, 0);
@@ -6716,18 +6716,18 @@ TEST_F(DBTest2, LastLevelTemperature) {
   db_->GetColumnFamilyMetaData(&metadata);
   ASSERT_EQ(2, metadata.file_count);
   meta = metadata.levels[0].files[0];
-  ASSERT_EQ(Temperature::kUnknown, meta.temperature);
+  ASSERT_EQ(Temperature::Unknown, meta.temperature);
   ASSERT_TRUE(ParseFileName(meta.name, &number, &type));
   ASSERT_EQ(listener->file_temperatures.at(number), meta.temperature);
 
   meta = metadata.levels[kLastLevel].files[0];
-  ASSERT_EQ(Temperature::kWarm, meta.temperature);
+  ASSERT_EQ(Temperature::Warm, meta.temperature);
   ASSERT_TRUE(ParseFileName(meta.name, &number, &type));
   ASSERT_EQ(listener->file_temperatures.at(number), meta.temperature);
 
-  size = GetSstSizeHelper(Temperature::kUnknown);
+  size = GetSstSizeHelper(Temperature::Unknown);
   ASSERT_GT(size, 0);
-  size = GetSstSizeHelper(Temperature::kWarm);
+  size = GetSstSizeHelper(Temperature::Warm);
   ASSERT_GT(size, 0);
 
   // reopen and check the information is persisted
@@ -6735,23 +6735,23 @@ TEST_F(DBTest2, LastLevelTemperature) {
   db_->GetColumnFamilyMetaData(&metadata);
   ASSERT_EQ(2, metadata.file_count);
   meta = metadata.levels[0].files[0];
-  ASSERT_EQ(Temperature::kUnknown, meta.temperature);
+  ASSERT_EQ(Temperature::Unknown, meta.temperature);
   ASSERT_TRUE(ParseFileName(meta.name, &number, &type));
   ASSERT_EQ(listener->file_temperatures.at(number), meta.temperature);
 
   meta = metadata.levels[kLastLevel].files[0];
-  ASSERT_EQ(Temperature::kWarm, meta.temperature);
+  ASSERT_EQ(Temperature::Warm, meta.temperature);
   ASSERT_TRUE(ParseFileName(meta.name, &number, &type));
   ASSERT_EQ(listener->file_temperatures.at(number), meta.temperature);
-  size = GetSstSizeHelper(Temperature::kUnknown);
+  size = GetSstSizeHelper(Temperature::Unknown);
   ASSERT_GT(size, 0);
-  size = GetSstSizeHelper(Temperature::kWarm);
+  size = GetSstSizeHelper(Temperature::Warm);
   ASSERT_GT(size, 0);
 
   // check other non-exist temperatures
-  size = GetSstSizeHelper(Temperature::kHot);
+  size = GetSstSizeHelper(Temperature::Hot);
   ASSERT_EQ(size, 0);
-  size = GetSstSizeHelper(Temperature::kCold);
+  size = GetSstSizeHelper(Temperature::Cold);
   ASSERT_EQ(size, 0);
   std::string prop;
   ASSERT_TRUE(dbfull()->GetProperty(
@@ -6763,12 +6763,12 @@ TEST_F(DBTest2, LastLevelTemperature) {
   db_->GetColumnFamilyMetaData(&metadata);
   ASSERT_EQ(2, metadata.file_count);
   meta = metadata.levels[0].files[0];
-  ASSERT_EQ(Temperature::kUnknown, meta.temperature);
+  ASSERT_EQ(Temperature::Unknown, meta.temperature);
   ASSERT_TRUE(ParseFileName(meta.name, &number, &type));
   ASSERT_EQ(listener->file_temperatures.at(number), meta.temperature);
 
   meta = metadata.levels[kLastLevel].files[0];
-  ASSERT_EQ(Temperature::kWarm, meta.temperature);
+  ASSERT_EQ(Temperature::Warm, meta.temperature);
   ASSERT_TRUE(ParseFileName(meta.name, &number, &type));
   ASSERT_EQ(listener->file_temperatures.at(number), meta.temperature);
 }
@@ -6784,11 +6784,11 @@ TEST_F(DBTest2, LastLevelTemperatureUniversal) {
   options.statistics = CreateDBStatistics();
   DestroyAndReopen(options);
 
-  auto size = GetSstSizeHelper(Temperature::kUnknown);
+  auto size = GetSstSizeHelper(Temperature::Unknown);
   ASSERT_EQ(size, 0);
-  size = GetSstSizeHelper(Temperature::kWarm);
+  size = GetSstSizeHelper(Temperature::Warm);
   ASSERT_EQ(size, 0);
-  size = GetSstSizeHelper(Temperature::kHot);
+  size = GetSstSizeHelper(Temperature::Hot);
   ASSERT_EQ(size, 0);
   get_iostats_context()->Reset();
   IOStatsContext* iostats = get_iostats_context();
@@ -6803,11 +6803,11 @@ TEST_F(DBTest2, LastLevelTemperatureUniversal) {
   ColumnFamilyMetaData metadata;
   db_->GetColumnFamilyMetaData(&metadata);
   ASSERT_EQ(1, metadata.file_count);
-  ASSERT_EQ(Temperature::kUnknown,
+  ASSERT_EQ(Temperature::Unknown,
             metadata.levels[kBottommostLevel].files[0].temperature);
-  size = GetSstSizeHelper(Temperature::kUnknown);
+  size = GetSstSizeHelper(Temperature::Unknown);
   ASSERT_GT(size, 0);
-  size = GetSstSizeHelper(Temperature::kWarm);
+  size = GetSstSizeHelper(Temperature::Warm);
   ASSERT_EQ(size, 0);
   ASSERT_EQ(iostats->file_io_stats_by_temperature.hot_file_read_count, 0);
   ASSERT_EQ(iostats->file_io_stats_by_temperature.warm_file_read_count, 0);
@@ -6839,33 +6839,33 @@ TEST_F(DBTest2, LastLevelTemperatureUniversal) {
   ASSERT_OK(dbfull()->TEST_WaitForCompact());
   db_->GetColumnFamilyMetaData(&metadata);
   ASSERT_EQ(2, metadata.file_count);
-  ASSERT_EQ(Temperature::kUnknown, metadata.levels[0].files[0].temperature);
-  size = GetSstSizeHelper(Temperature::kUnknown);
+  ASSERT_EQ(Temperature::Unknown, metadata.levels[0].files[0].temperature);
+  size = GetSstSizeHelper(Temperature::Unknown);
   ASSERT_GT(size, 0);
-  size = GetSstSizeHelper(Temperature::kWarm);
+  size = GetSstSizeHelper(Temperature::Warm);
   ASSERT_EQ(size, 0);
 
   // Update bottommost temperature
-  options.bottommost_temperature = Temperature::kWarm;
+  options.bottommost_temperature = Temperature::Warm;
   Reopen(options);
   db_->GetColumnFamilyMetaData(&metadata);
   // Should not impact existing ones
-  ASSERT_EQ(Temperature::kUnknown,
+  ASSERT_EQ(Temperature::Unknown,
             metadata.levels[kBottommostLevel].files[0].temperature);
-  size = GetSstSizeHelper(Temperature::kUnknown);
+  size = GetSstSizeHelper(Temperature::Unknown);
   ASSERT_GT(size, 0);
-  size = GetSstSizeHelper(Temperature::kWarm);
+  size = GetSstSizeHelper(Temperature::Warm);
   ASSERT_EQ(size, 0);
 
   // new generated file should have the new settings
   ASSERT_OK(db_->CompactRange(CompactRangeOptions(), nullptr, nullptr));
   db_->GetColumnFamilyMetaData(&metadata);
   ASSERT_EQ(1, metadata.file_count);
-  ASSERT_EQ(Temperature::kWarm,
+  ASSERT_EQ(Temperature::Warm,
             metadata.levels[kBottommostLevel].files[0].temperature);
-  size = GetSstSizeHelper(Temperature::kUnknown);
+  size = GetSstSizeHelper(Temperature::Unknown);
   ASSERT_EQ(size, 0);
-  size = GetSstSizeHelper(Temperature::kWarm);
+  size = GetSstSizeHelper(Temperature::Warm);
   ASSERT_GT(size, 0);
   ASSERT_EQ(options.statistics->getTickerCount(HOT_FILE_READ_BYTES), 0);
   ASSERT_GT(options.statistics->getTickerCount(WARM_FILE_READ_BYTES), 0);
@@ -6881,16 +6881,16 @@ TEST_F(DBTest2, LastLevelTemperatureUniversal) {
   ASSERT_OK(dbfull()->TEST_WaitForCompact());
   db_->GetColumnFamilyMetaData(&metadata);
   ASSERT_EQ(2, metadata.file_count);
-  ASSERT_EQ(Temperature::kUnknown, metadata.levels[0].files[0].temperature);
-  size = GetSstSizeHelper(Temperature::kUnknown);
+  ASSERT_EQ(Temperature::Unknown, metadata.levels[0].files[0].temperature);
+  size = GetSstSizeHelper(Temperature::Unknown);
   ASSERT_GT(size, 0);
-  size = GetSstSizeHelper(Temperature::kWarm);
+  size = GetSstSizeHelper(Temperature::Warm);
   ASSERT_GT(size, 0);
 
   // check other non-exist temperatures
-  size = GetSstSizeHelper(Temperature::kHot);
+  size = GetSstSizeHelper(Temperature::Hot);
   ASSERT_EQ(size, 0);
-  size = GetSstSizeHelper(Temperature::kCold);
+  size = GetSstSizeHelper(Temperature::Cold);
   ASSERT_EQ(size, 0);
   std::string prop;
   ASSERT_TRUE(dbfull()->GetProperty(
@@ -6901,40 +6901,40 @@ TEST_F(DBTest2, LastLevelTemperatureUniversal) {
   // Update bottommost temperature dynamically with SetOptions
   auto s = db_->SetOptions({{"last_level_temperature", "kCold"}});
   ASSERT_OK(s);
-  ASSERT_EQ(db_->GetOptions().bottommost_temperature, Temperature::kCold);
+  ASSERT_EQ(db_->GetOptions().bottommost_temperature, Temperature::Cold);
   db_->GetColumnFamilyMetaData(&metadata);
   // Should not impact the existing files
-  ASSERT_EQ(Temperature::kWarm,
+  ASSERT_EQ(Temperature::Warm,
             metadata.levels[kBottommostLevel].files[0].temperature);
-  size = GetSstSizeHelper(Temperature::kUnknown);
+  size = GetSstSizeHelper(Temperature::Unknown);
   ASSERT_GT(size, 0);
-  size = GetSstSizeHelper(Temperature::kWarm);
+  size = GetSstSizeHelper(Temperature::Warm);
   ASSERT_GT(size, 0);
-  size = GetSstSizeHelper(Temperature::kCold);
+  size = GetSstSizeHelper(Temperature::Cold);
   ASSERT_EQ(size, 0);
 
   // new generated files should have the new settings
   ASSERT_OK(db_->CompactRange(CompactRangeOptions(), nullptr, nullptr));
   db_->GetColumnFamilyMetaData(&metadata);
   ASSERT_EQ(1, metadata.file_count);
-  ASSERT_EQ(Temperature::kCold,
+  ASSERT_EQ(Temperature::Cold,
             metadata.levels[kBottommostLevel].files[0].temperature);
-  size = GetSstSizeHelper(Temperature::kUnknown);
+  size = GetSstSizeHelper(Temperature::Unknown);
   ASSERT_EQ(size, 0);
-  size = GetSstSizeHelper(Temperature::kWarm);
+  size = GetSstSizeHelper(Temperature::Warm);
   ASSERT_EQ(size, 0);
-  size = GetSstSizeHelper(Temperature::kCold);
+  size = GetSstSizeHelper(Temperature::Cold);
   ASSERT_GT(size, 0);
 
   // kLastTemperature is an invalid temperature
-  options.bottommost_temperature = Temperature::kLastTemperature;
+  options.bottommost_temperature = Temperature::LastTemperature;
   s = TryReopen(options);
   ASSERT_TRUE(s.IsIOError());
 }
 
 TEST_F(DBTest2, LastLevelStatistics) {
   Options options = CurrentOptions();
-  options.bottommost_temperature = Temperature::kWarm;
+  options.bottommost_temperature = Temperature::Warm;
   options.level0_file_num_compaction_trigger = 2;
   options.level_compaction_dynamic_level_bytes = true;
   options.statistics = CreateDBStatistics();
@@ -6998,7 +6998,7 @@ TEST_F(DBTest2, CheckpointFileTemperature) {
   auto test_fs = std::make_shared<NoLinkTestFS>(env_->GetFileSystem());
   std::unique_ptr<Env> env(new CompositeEnvWrapper(env_, test_fs));
   Options options = CurrentOptions();
-  options.bottommost_temperature = Temperature::kWarm;
+  options.bottommost_temperature = Temperature::Warm;
   // set dynamic_level to true so the compaction would compact the data to the
   // last level directly which will have the last_level_temperature
   options.level_compaction_dynamic_level_bytes = true;
@@ -7017,7 +7017,7 @@ TEST_F(DBTest2, CheckpointFileTemperature) {
   ASSERT_OK(Put("foo", "bar"));
   ASSERT_OK(Put("bar", "bar"));
   ASSERT_OK(Flush());
-  auto size = GetSstSizeHelper(Temperature::kWarm);
+  auto size = GetSstSizeHelper(Temperature::Warm);
   ASSERT_GT(size, 0);
 
   std::map<uint64_t, Temperature> temperatures;
@@ -7057,7 +7057,7 @@ TEST_F(DBTest2, FileTemperatureManifestFixup) {
   auto test_fs = std::make_shared<FileTemperatureTestFS>(env_->GetFileSystem());
   std::unique_ptr<Env> env(new CompositeEnvWrapper(env_, test_fs));
   Options options = CurrentOptions();
-  options.bottommost_temperature = Temperature::kWarm;
+  options.bottommost_temperature = Temperature::Warm;
   // set dynamic_level to true so the compaction would compact the data to the
   // last level directly which will have the last_level_temperature
   options.level_compaction_dynamic_level_bytes = true;
@@ -7080,10 +7080,10 @@ TEST_F(DBTest2, FileTemperatureManifestFixup) {
   ASSERT_OK(dbfull()->TEST_WaitForCompact());
 
   // verify
-  ASSERT_GT(GetSstSizeHelper(Temperature::kWarm), 0);
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kCold), 0);
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kHot), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Warm), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Cold), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Hot), 0);
 
   // Generate a non-bottommost file in all CFs
   for (int cf = 0; cf < 3; ++cf) {
@@ -7092,22 +7092,22 @@ TEST_F(DBTest2, FileTemperatureManifestFixup) {
   }
 
   // re-verify
-  ASSERT_GT(GetSstSizeHelper(Temperature::kWarm), 0);
-  // Not supported: ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kCold), 0);
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kHot), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Warm), 0);
+  // Not supported: ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Cold), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Hot), 0);
 
   // Now change FS temperature on bottommost file(s) to kCold
   std::map<uint64_t, Temperature> current_temps;
   test_fs->CopyCurrentSstFileTemperatures(&current_temps);
   for (auto e : current_temps) {
-    if (e.second == Temperature::kWarm) {
-      test_fs->OverrideSstFileTemperature(e.first, Temperature::kCold);
+    if (e.second == Temperature::Warm) {
+      test_fs->OverrideSstFileTemperature(e.first, Temperature::Cold);
     }
   }
   // Metadata not yet updated
   ASSERT_EQ(Get("a"), "val");
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kCold), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Cold), 0);
 
   // Update with Close and UpdateManifestForFilesState, but first save cf
   // descriptors
@@ -7126,16 +7126,16 @@ TEST_F(DBTest2, FileTemperatureManifestFixup) {
 
   // Re-open and re-verify after update
   ReopenWithColumnFamilies(cfs, options);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
-  // Not supported: ASSERT_GT(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kWarm), 0);
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kHot), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
+  // Not supported: ASSERT_GT(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Warm), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Hot), 0);
 
   // Change kUnknown to kHot
   test_fs->CopyCurrentSstFileTemperatures(&current_temps);
   for (auto e : current_temps) {
-    if (e.second == Temperature::kUnknown) {
-      test_fs->OverrideSstFileTemperature(e.first, Temperature::kHot);
+    if (e.second == Temperature::Unknown) {
+      test_fs->OverrideSstFileTemperature(e.first, Temperature::Hot);
     }
   }
 
@@ -7146,10 +7146,10 @@ TEST_F(DBTest2, FileTemperatureManifestFixup) {
 
   // Re-open and re-verify after update
   ReopenWithColumnFamilies(cfs, options);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kCold), 0);
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kUnknown), 0);
-  ASSERT_EQ(GetSstSizeHelper(Temperature::kWarm), 0);
-  ASSERT_GT(GetSstSizeHelper(Temperature::kHot), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Cold), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Unknown), 0);
+  ASSERT_EQ(GetSstSizeHelper(Temperature::Warm), 0);
+  ASSERT_GT(GetSstSizeHelper(Temperature::Hot), 0);
 
   Close();
 }

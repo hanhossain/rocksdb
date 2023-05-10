@@ -482,14 +482,14 @@ TEST_F(ExternalSSTFileBasicTest, IngestFileWithFileChecksum) {
   ColumnFamilyMetaData metadata;
   db_->GetColumnFamilyMetaData(&metadata);
   ASSERT_EQ(1, metadata.file_count);
-  ASSERT_EQ(Temperature::kUnknown, metadata.levels[6].files[0].temperature);
-  auto size = GetSstSizeHelper(Temperature::kUnknown);
+  ASSERT_EQ(Temperature::Unknown, metadata.levels[6].files[0].temperature);
+  auto size = GetSstSizeHelper(Temperature::Unknown);
   ASSERT_GT(size, 0);
-  size = GetSstSizeHelper(Temperature::kWarm);
+  size = GetSstSizeHelper(Temperature::Warm);
   ASSERT_EQ(size, 0);
-  size = GetSstSizeHelper(Temperature::kHot);
+  size = GetSstSizeHelper(Temperature::Hot);
   ASSERT_EQ(size, 0);
-  size = GetSstSizeHelper(Temperature::kCold);
+  size = GetSstSizeHelper(Temperature::Cold);
   ASSERT_EQ(size, 0);
 
   // Reopen Db with checksum enabled
@@ -613,13 +613,13 @@ TEST_F(ExternalSSTFileBasicTest, IngestFileWithFileChecksum) {
   ASSERT_OK(s) << s.ToString();
   ASSERT_OK(env_->FileExists(file6));
   db_->GetColumnFamilyMetaData(&metadata);
-  size = GetSstSizeHelper(Temperature::kUnknown);
+  size = GetSstSizeHelper(Temperature::Unknown);
   ASSERT_GT(size, 0);
-  size = GetSstSizeHelper(Temperature::kWarm);
+  size = GetSstSizeHelper(Temperature::Warm);
   ASSERT_EQ(size, 0);
-  size = GetSstSizeHelper(Temperature::kHot);
+  size = GetSstSizeHelper(Temperature::Hot);
   ASSERT_EQ(size, 0);
-  size = GetSstSizeHelper(Temperature::kCold);
+  size = GetSstSizeHelper(Temperature::Cold);
   ASSERT_EQ(size, 0);
 }
 
@@ -1780,16 +1780,16 @@ TEST_F(ExternalSSTFileBasicTest, IngestFileAfterDBPut) {
 TEST_F(ExternalSSTFileBasicTest, IngestWithTemperature) {
   Options options = CurrentOptions();
   const ImmutableCFOptions ioptions(options);
-  options.bottommost_temperature = Temperature::kWarm;
+  options.bottommost_temperature = Temperature::Warm;
   SstFileWriter sst_file_writer(EnvOptions(), options);
   options.level0_file_num_compaction_trigger = 2;
   Reopen(options);
 
-  auto size = GetSstSizeHelper(Temperature::kUnknown);
+  auto size = GetSstSizeHelper(Temperature::Unknown);
   ASSERT_EQ(size, 0);
-  size = GetSstSizeHelper(Temperature::kWarm);
+  size = GetSstSizeHelper(Temperature::Warm);
   ASSERT_EQ(size, 0);
-  size = GetSstSizeHelper(Temperature::kHot);
+  size = GetSstSizeHelper(Temperature::Hot);
   ASSERT_EQ(size, 0);
 
   // create file01.sst (1000 => 1099) and ingest it
@@ -1809,7 +1809,7 @@ TEST_F(ExternalSSTFileBasicTest, IngestWithTemperature) {
   std::vector<std::string> files;
   std::vector<std::string> files_checksums;
   std::vector<std::string> files_checksum_func_names;
-  Temperature file_temperature = Temperature::kWarm;
+  Temperature file_temperature = Temperature::Warm;
 
   files.push_back(file1);
   IngestExternalFileOptions in_opts;
@@ -1833,10 +1833,10 @@ TEST_F(ExternalSSTFileBasicTest, IngestWithTemperature) {
   ColumnFamilyMetaData metadata;
   db_->GetColumnFamilyMetaData(&metadata);
   ASSERT_EQ(1, metadata.file_count);
-  ASSERT_EQ(Temperature::kWarm, metadata.levels[6].files[0].temperature);
-  size = GetSstSizeHelper(Temperature::kUnknown);
+  ASSERT_EQ(Temperature::Warm, metadata.levels[6].files[0].temperature);
+  size = GetSstSizeHelper(Temperature::Unknown);
   ASSERT_EQ(size, 0);
-  size = GetSstSizeHelper(Temperature::kWarm);
+  size = GetSstSizeHelper(Temperature::Warm);
   ASSERT_GT(size, 1);
 
   // non-bottommost file still has unknown temperature
@@ -1845,27 +1845,27 @@ TEST_F(ExternalSSTFileBasicTest, IngestWithTemperature) {
   ASSERT_OK(Flush());
   db_->GetColumnFamilyMetaData(&metadata);
   ASSERT_EQ(2, metadata.file_count);
-  ASSERT_EQ(Temperature::kUnknown, metadata.levels[0].files[0].temperature);
-  size = GetSstSizeHelper(Temperature::kUnknown);
+  ASSERT_EQ(Temperature::Unknown, metadata.levels[0].files[0].temperature);
+  size = GetSstSizeHelper(Temperature::Unknown);
   ASSERT_GT(size, 0);
-  size = GetSstSizeHelper(Temperature::kWarm);
+  size = GetSstSizeHelper(Temperature::Warm);
   ASSERT_GT(size, 0);
 
   // reopen and check the information is persisted
   Reopen(options);
   db_->GetColumnFamilyMetaData(&metadata);
   ASSERT_EQ(2, metadata.file_count);
-  ASSERT_EQ(Temperature::kUnknown, metadata.levels[0].files[0].temperature);
-  ASSERT_EQ(Temperature::kWarm, metadata.levels[6].files[0].temperature);
-  size = GetSstSizeHelper(Temperature::kUnknown);
+  ASSERT_EQ(Temperature::Unknown, metadata.levels[0].files[0].temperature);
+  ASSERT_EQ(Temperature::Warm, metadata.levels[6].files[0].temperature);
+  size = GetSstSizeHelper(Temperature::Unknown);
   ASSERT_GT(size, 0);
-  size = GetSstSizeHelper(Temperature::kWarm);
+  size = GetSstSizeHelper(Temperature::Warm);
   ASSERT_GT(size, 0);
 
   // check other non-exist temperatures
-  size = GetSstSizeHelper(Temperature::kHot);
+  size = GetSstSizeHelper(Temperature::Hot);
   ASSERT_EQ(size, 0);
-  size = GetSstSizeHelper(Temperature::kCold);
+  size = GetSstSizeHelper(Temperature::Cold);
   ASSERT_EQ(size, 0);
   std::string prop;
   ASSERT_TRUE(dbfull()->GetProperty(

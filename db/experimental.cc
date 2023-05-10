@@ -84,14 +84,14 @@ Status UpdateManifestForFilesState(
         FileOptions fopts;
         // Use kUnknown to signal the FileSystem to search all tiers for the
         // file.
-        fopts.temperature = Temperature::kUnknown;
+        fopts.temperature = Temperature::Unknown;
 
         IOStatus file_ios =
             fs->NewSequentialFile(fname, fopts, &f, /*dbg*/ nullptr);
         if (file_ios.ok()) {
           if (opts.update_temperatures) {
             Temperature temp = f->GetTemperature();
-            if (temp != Temperature::kUnknown && temp != lf->temperature) {
+            if (temp != Temperature::Unknown && temp != lf->temperature) {
               // Current state inconsistent with manifest
               ++files_updated;
               edit.DeleteFile(level, number);

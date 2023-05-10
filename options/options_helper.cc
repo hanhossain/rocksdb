@@ -337,10 +337,10 @@ std::map<CompactionStopStyle, std::string>
         {kCompactionStopStyleTotalSize, "kCompactionStopStyleTotalSize"}};
 
 std::map<Temperature, std::string> OptionsHelper::temperature_to_string = {
-    {Temperature::kUnknown, "kUnknown"},
-    {Temperature::kHot, "kHot"},
-    {Temperature::kWarm, "kWarm"},
-    {Temperature::kCold, "kCold"}};
+    {Temperature::Unknown, "kUnknown"},
+    {Temperature::Hot, "kHot"},
+    {Temperature::Warm, "kWarm"},
+    {Temperature::Cold, "kCold"}};
 
 std::unordered_map<std::string, ChecksumType>
     OptionsHelper::checksum_type_string_map = {{"kNoChecksum", kNoChecksum},
@@ -802,10 +802,10 @@ std::unordered_map<std::string, CompactionStopStyle>
 
 std::unordered_map<std::string, Temperature>
     OptionsHelper::temperature_string_map = {
-        {"kUnknown", Temperature::kUnknown},
-        {"kHot", Temperature::kHot},
-        {"kWarm", Temperature::kWarm},
-        {"kCold", Temperature::kCold}};
+        {"kUnknown", Temperature::Unknown},
+        {"kHot", Temperature::Hot},
+        {"kWarm", Temperature::Warm},
+        {"kCold", Temperature::Cold}};
 
 std::unordered_map<std::string, PrepopulateBlobCache>
     OptionsHelper::prepopulate_blob_cache_string_map = {

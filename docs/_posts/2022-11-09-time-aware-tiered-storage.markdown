@@ -30,7 +30,7 @@ It’s hard to predict the hot and cold data. The most frequently accessed data 
 ## User APIs
 Here are the 3 main tiered storage options:
 ```c++
-Temperature last_level_temperature = Temperature::kUnknown;
+Temperature last_level_temperature = Temperature::Unknown;
 uint64_t preclude_last_level_data_seconds = 0;
 uint64_t preserve_internal_time_seconds = 0;
 ```
@@ -61,17 +61,17 @@ NON_LAST_LEVEL_READ_COUNT,
 And more details from `IOStats`:
 ```c++
 struct FileIOByTemperature {
-// the number of bytes read to Temperature::kHot file
+// the number of bytes read to Temperature::Hot file
 uint64_t hot_file_bytes_read;
-// the number of bytes read to Temperature::kWarm file
+// the number of bytes read to Temperature::Warm file
 uint64_t warm_file_bytes_read;
-// the number of bytes read to Temperature::kCold file
+// the number of bytes read to Temperature::Cold file
 uint64_t cold_file_bytes_read;
-// total number of reads to Temperature::kHot file
+// total number of reads to Temperature::Hot file
 uint64_t hot_file_read_count;
-// total number of reads to Temperature::kWarm file
+// total number of reads to Temperature::Warm file
 uint64_t warm_file_read_count;
-// total number of reads to Temperature::kCold file
+// total number of reads to Temperature::Cold file
 uint64_t cold_file_read_count;
 ```
 

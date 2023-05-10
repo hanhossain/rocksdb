@@ -1543,9 +1543,9 @@ static void RandomAccessFileReaderRead(benchmark::State& state) {
     std::unique_ptr<FSRandomAccessFile> f;
     fs->NewRandomAccessFile(fname, FileOptions(), &f, nullptr);
     int rand_num = rand.Next() % 3;
-    auto temperature = rand_num == 0   ? Temperature::kUnknown
-                       : rand_num == 1 ? Temperature::kWarm
-                                       : Temperature::kCold;
+    auto temperature = rand_num == 0   ? Temperature::Unknown
+                       : rand_num == 1 ? Temperature::Warm
+                                       : Temperature::Cold;
     readers.emplace_back(new RandomAccessFileReader(
         std::move(f), fname, env->GetSystemClock().get(), nullptr, statistics,
         Histograms::HISTOGRAM_ENUM_MAX, nullptr, nullptr, {}, temperature,

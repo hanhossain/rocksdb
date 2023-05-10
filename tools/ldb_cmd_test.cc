@@ -1069,7 +1069,7 @@ TEST_F(LdbCmdTest, FileTemperatureUpdateManifest) {
   auto test_fs = std::make_shared<FileTemperatureTestFS>(FileSystem::Default());
   std::unique_ptr<Env> env(new CompositeEnvWrapper(Env::Default(), test_fs));
   Options opts;
-  opts.bottommost_temperature = Temperature::kWarm;
+  opts.bottommost_temperature = Temperature::Warm;
   opts.level0_file_num_compaction_trigger = 10;
   opts.create_if_missing = true;
   opts.env = env.get();
@@ -1080,8 +1080,8 @@ TEST_F(LdbCmdTest, FileTemperatureUpdateManifest) {
   ASSERT_OK(DB::Open(opts, dbname, &db));
 
   std::array<Temperature, 5> kTestTemps = {
-      Temperature::kCold, Temperature::kWarm, Temperature::kHot,
-      Temperature::kWarm, Temperature::kCold};
+      Temperature::Cold, Temperature::Warm, Temperature::Hot,
+      Temperature::Warm, Temperature::Cold};
   std::map<uint64_t, Temperature> number_to_temp;
   for (size_t i = 0; i < kTestTemps.size(); ++i) {
     ASSERT_OK(db->Put(WriteOptions(), std::to_string(i), std::to_string(i)));
@@ -1090,7 +1090,7 @@ TEST_F(LdbCmdTest, FileTemperatureUpdateManifest) {
     std::map<uint64_t, Temperature> current_temps;
     test_fs->CopyCurrentSstFileTemperatures(&current_temps);
     for (auto e : current_temps) {
-      if (e.second == Temperature::kUnknown) {
+      if (e.second == Temperature::Unknown) {
         test_fs->OverrideSstFileTemperature(e.first, kTestTemps[i]);
         number_to_temp[e.first] = kTestTemps[i];
       }
@@ -1114,7 +1114,7 @@ TEST_F(LdbCmdTest, FileTemperatureUpdateManifest) {
   test_fs->PopRequestedSstFileTemperatures(&requests);
   ASSERT_EQ(requests.size(), kTestTemps.size());
   for (auto& r : requests) {
-    ASSERT_EQ(r.second, Temperature::kUnknown);
+    ASSERT_EQ(r.second, Temperature::Unknown);
   }
 
   // Close for update_manifest

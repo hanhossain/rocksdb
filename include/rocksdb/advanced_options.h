@@ -18,6 +18,7 @@
 
 using rs::advanced_options::CompactionPri;
 using rs::advanced_options::CompactionStyle;
+using rs::advanced_options::Temperature;
 
 namespace ROCKSDB_NAMESPACE {
 
@@ -179,18 +180,6 @@ struct CompressionOptions {
   void SetMinRatio(double min_ratio) {
     max_compressed_bytes_per_kb = static_cast<int>(1024.0 / min_ratio + 0.5);
   }
-};
-
-// Temperature of a file. Used to pass to FileSystem for a different
-// placement and/or coding.
-// Reserve some numbers in the middle, in case we need to insert new tier
-// there.
-enum class Temperature : uint8_t {
-  kUnknown = 0,
-  kHot = 0x04,
-  kWarm = 0x08,
-  kCold = 0x0C,
-  kLastTemperature,
 };
 
 // The control option of how the cache tiers will be used. Currently rocksdb
@@ -892,8 +881,8 @@ struct AdvancedColumnFamilyOptions {
   //  `bottommost_temperature` and will be removed in next release.
   //
   // Dynamically changeable through the SetOptions() API
-  Temperature bottommost_temperature = Temperature::kUnknown;
-  Temperature last_level_temperature = Temperature::kUnknown;
+  Temperature bottommost_temperature = Temperature::Unknown;
+  Temperature last_level_temperature = Temperature::Unknown;
 
   // EXPERIMENTAL
   // The feature is still in development and is incomplete.

@@ -208,7 +208,7 @@ struct FileMetaData {
 
   bool marked_for_compaction = false;  // True if client asked us nicely to
                                        // compact this file.
-  Temperature temperature = Temperature::kUnknown;
+  Temperature temperature = Temperature::Unknown;
 
   // Used only in BlobDB. The file number of the oldest blob file this SST file
   // refers to. 0 is an invalid value; BlobDB numbers the files starting from 1.

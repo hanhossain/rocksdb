@@ -48,7 +48,7 @@ class GenerateLevelFilesBriefTest : public testing::Test {
         files_.size() + 1, 0, 0,
         InternalKey(smallest, smallest_seq, kTypeValue),
         InternalKey(largest, largest_seq, kTypeValue), smallest_seq,
-        largest_seq, /* marked_for_compact */ false, Temperature::kUnknown,
+        largest_seq, /* marked_for_compact */ false, Temperature::Unknown,
         kInvalidBlobFileNumber, kUnknownOldestAncesterTime,
         kUnknownFileCreationTime, kUnknownEpochNumber, kUnknownFileChecksum,
         kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
@@ -160,7 +160,7 @@ class VersionStorageInfoTestBase : public testing::Test {
     FileMetaData* f = new FileMetaData(
         file_number, 0, file_size, smallest, largest, /* smallest_seq */ 0,
         /* largest_seq */ 0, /* marked_for_compact */ false,
-        Temperature::kUnknown, oldest_blob_file_number,
+        Temperature::Unknown, oldest_blob_file_number,
         kUnknownOldestAncesterTime, kUnknownFileCreationTime,
         kUnknownEpochNumber, kUnknownFileChecksum, kUnknownFileChecksumFuncName,
         kNullUniqueId64x2, compensated_range_deletion_size);
@@ -3293,7 +3293,7 @@ class VersionSetTestMissingFiles : public VersionSetTestBase,
       ASSERT_OK(s);
       ASSERT_NE(0, file_size);
       file_metas->emplace_back(file_num, /*file_path_id=*/0, file_size, ikey,
-                               ikey, 0, 0, false, Temperature::kUnknown, 0, 0,
+                               ikey, 0, 0, false, Temperature::Unknown, 0, 0,
                                0, info.epoch_number, kUnknownFileChecksum,
                                kUnknownFileChecksumFuncName, kNullUniqueId64x2,
                                0);
@@ -3351,7 +3351,7 @@ TEST_F(VersionSetTestMissingFiles, ManifestFarBehindSst) {
 
     FileMetaData meta = FileMetaData(
         file_num, /*file_path_id=*/0, /*file_size=*/12, smallest_ikey,
-        largest_ikey, 0, 0, false, Temperature::kUnknown, 0, 0, 0,
+        largest_ikey, 0, 0, false, Temperature::Unknown, 0, 0, 0,
         file_num /* epoch_number */, kUnknownFileChecksum,
         kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
     added_files.emplace_back(0, meta);
@@ -3412,7 +3412,7 @@ TEST_F(VersionSetTestMissingFiles, ManifestAheadofSst) {
     InternalKey largest_ikey(largest_ukey, 1, ValueType::kTypeValue);
     FileMetaData meta = FileMetaData(
         file_num, /*file_path_id=*/0, /*file_size=*/12, smallest_ikey,
-        largest_ikey, 0, 0, false, Temperature::kUnknown, 0, 0, 0,
+        largest_ikey, 0, 0, false, Temperature::Unknown, 0, 0, 0,
         file_num /* epoch_number */, kUnknownFileChecksum,
         kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
     added_files.emplace_back(0, meta);

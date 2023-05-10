@@ -201,7 +201,7 @@ bool VersionEdit::EncodeTo(std::string* dst) const {
       char p = static_cast<char>(f.fd.GetPathId());
       PutLengthPrefixedSlice(dst, Slice(&p, 1));
     }
-    if (f.temperature != Temperature::kUnknown) {
+    if (f.temperature != Temperature::Unknown) {
       PutVarint32(dst, NewFileCustomTag::kTemperature);
       char p = static_cast<char>(f.temperature);
       PutLengthPrefixedSlice(dst, Slice(&p, 1));
@@ -400,7 +400,7 @@ const char* VersionEdit::DecodeNewFile4From(Slice* input) {
             return "temperature field wrong size";
           } else {
             Temperature casted_field = static_cast<Temperature>(field[0]);
-            if (casted_field <= Temperature::kCold) {
+            if (casted_field <= Temperature::Cold) {
               f.temperature = casted_field;
             }
           }
@@ -837,7 +837,7 @@ std::string VersionEdit::DebugString(bool hex_key) const {
     r.append(Slice(f.file_checksum).ToString(true));
     r.append(" file_checksum_func_name: ");
     r.append(f.file_checksum_func_name);
-    if (f.temperature != Temperature::kUnknown) {
+    if (f.temperature != Temperature::Unknown) {
       r.append(" temperature: ");
       // Maybe change to human readable format whenthe feature becomes
       // permanent
@@ -955,13 +955,13 @@ std::string VersionEdit::DebugJSON(int edit_num, bool hex_key) const {
       jw << "EpochNumber" << f.epoch_number;
       jw << "FileChecksum" << Slice(f.file_checksum).ToString(true);
       jw << "FileChecksumFuncName" << f.file_checksum_func_name;
-      if (f.temperature != Temperature::kUnknown) {
+      if (f.temperature != Temperature::Unknown) {
         jw << "temperature" << std::to_string(static_cast<int>(f.temperature));
       }
       if (f.oldest_blob_file_number != kInvalidBlobFileNumber) {
         jw << "OldestBlobFile" << f.oldest_blob_file_number;
       }
-      if (f.temperature != Temperature::kUnknown) {
+      if (f.temperature != Temperature::Unknown) {
         // Maybe change to human readable format whenthe feature becomes
         // permanent
         jw << "Temperature" << static_cast<int>(f.temperature);

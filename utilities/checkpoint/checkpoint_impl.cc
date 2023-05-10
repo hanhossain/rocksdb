@@ -334,7 +334,7 @@ Status CheckpointImpl::ExportColumnFamily(
                            cf_name.c_str(), fname.c_str());
             return CopyFile(db_->GetFileSystem(), src_dirname + fname,
                             tmp_export_dir + fname, 0, db_options.use_fsync,
-                            nullptr, Temperature::kUnknown);
+                            nullptr, Temperature::Unknown);
           } /*copy_file_cb*/);
 
       const auto enable_status = db_->EnableFileDeletions(false /*force*/);
