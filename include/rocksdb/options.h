@@ -36,6 +36,7 @@
 #undef max
 #endif
 
+using rs::advanced_options::CompressionOptions;
 using rs::options::BlobGarbageCollectionPolicy;
 using rs::options::BottommostLevelCompaction;
 using rs::options::CompactionServiceJobStatus;

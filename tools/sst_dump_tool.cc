@@ -182,16 +182,16 @@ int SSTDumpTool::Run(int argc, char const* const* argv, Options options) {
   uint64_t total_data_block_size = 0;
   uint64_t total_index_block_size = 0;
   uint64_t total_filter_block_size = 0;
-  int32_t compress_level_from = CompressionOptions::kDefaultCompressionLevel;
-  int32_t compress_level_to = CompressionOptions::kDefaultCompressionLevel;
+  int32_t compress_level_from = DEFAULT_COMPRESSION_LEVEL;
+  int32_t compress_level_to = DEFAULT_COMPRESSION_LEVEL;
   uint32_t compression_max_dict_bytes =
-      ROCKSDB_NAMESPACE::CompressionOptions().max_dict_bytes;
+      rs::advanced_options::new_compression_options().max_dict_bytes;
   uint32_t compression_zstd_max_train_bytes =
-      ROCKSDB_NAMESPACE::CompressionOptions().zstd_max_train_bytes;
+      rs::advanced_options::new_compression_options().zstd_max_train_bytes;
   uint64_t compression_max_dict_buffer_bytes =
-      ROCKSDB_NAMESPACE::CompressionOptions().max_dict_buffer_bytes;
+      rs::advanced_options::new_compression_options().max_dict_buffer_bytes;
   bool compression_use_zstd_finalize_dict =
-      !ROCKSDB_NAMESPACE::CompressionOptions().use_zstd_dict_trainer;
+      rs::advanced_options::new_compression_options().use_zstd_dict_trainer;
 
   int64_t tmp_val;
 
