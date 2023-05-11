@@ -782,7 +782,7 @@ TEST_F(DBSSTTest, RateLimitedWALDelete) {
 
   Options options = CurrentOptions();
   options.disable_auto_compactions = true;
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.env = env_;
 
   int64_t rate_bytes_per_sec = 1024 * 10;  // 10 Kbs / Sec
@@ -864,7 +864,7 @@ TEST_P(DBWALTestWithParam, WALTrashCleanupOnOpen) {
 
   Options options = CurrentOptions();
   options.disable_auto_compactions = true;
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.env = env.get();
   options.wal_dir = dbname_ + wal_dir_;
 
@@ -1534,7 +1534,7 @@ TEST_F(DBSSTTest, GetTotalSstFilesSize) {
 
   Options options = CurrentOptions();
   options.disable_auto_compactions = true;
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   DestroyAndReopen(options);
   // Generate 5 files in L0
   for (int i = 0; i < 5; i++) {
@@ -1634,7 +1634,7 @@ TEST_F(DBSSTTest, OpenDBWithoutGetFileSizeInvocations) {
   std::unique_ptr<MockEnv> env{MockEnv::Create(Env::Default())};
   options.env = env.get();
   options.disable_auto_compactions = true;
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.enable_blob_files = true;
   options.blob_file_size = 32;  // create one blob per file
   options.skip_checking_sst_file_sizes_on_db_open = true;
@@ -1671,7 +1671,7 @@ TEST_F(DBSSTTest, OpenDBWithoutGetFileSizeInvocations) {
 TEST_F(DBSSTTest, GetTotalSstFilesSizeVersionsFilesShared) {
   Options options = CurrentOptions();
   options.disable_auto_compactions = true;
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   DestroyAndReopen(options);
   // Generate 5 files in L0
   for (int i = 0; i < 5; i++) {

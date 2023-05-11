@@ -326,7 +326,7 @@ class ChargeTableReaderTest
     // To cache and re-use the same kv map and compression type in the test
     // suite for elimiating variance caused by these two factors
     kv_ = BlockBasedTableReaderBaseTest::GenerateKVMap();
-    compression_type_ = CompressionType::kNoCompression;
+    compression_type_ = CompressionType::NoCompression;
 
     table_reader_charge_tracking_cache_ = std::make_shared<
         TargetCacheChargeTrackingCache<

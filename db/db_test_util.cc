@@ -430,7 +430,7 @@ Options DBTestBase::GetOptions(
       options.compaction_readahead_size = 10 * 1024 * 1024;
       break;
     case kUncompressed:
-      options.compression = kNoCompression;
+      options.compression = CompressionType::NoCompression;
       break;
     case kNumLevel_3:
       options.num_levels = 3;

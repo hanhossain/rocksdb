@@ -328,7 +328,7 @@ int main(int argc, char** argv) {
   fprintf(stderr, "db path is %s\n", path.c_str());
   ROCKSDB_NAMESPACE::Options options;
   options.create_if_missing = true;
-  options.compression = ROCKSDB_NAMESPACE::CompressionType::kNoCompression;
+  options.compression = ROCKSDB_NAMESPACE::CompressionType::NoCompression;
   options.compaction_style =
       rs::advanced_options::CompactionStyle::None;
   options.level0_slowdown_writes_trigger = 99999;

@@ -198,7 +198,7 @@ DBOptions SanitizeOptions(const std::string& dbname, const DBOptions& src,
 
   // Supported wal compression types
   if (!StreamingCompressionTypeSupported(result.wal_compression)) {
-    result.wal_compression = kNoCompression;
+    result.wal_compression = CompressionType::NoCompression;
     ROCKS_LOG_WARN(result.info_log,
                    "wal_compression is disabled since only zstd is supported");
   }

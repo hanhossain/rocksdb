@@ -113,7 +113,7 @@ class BlockFetcherTest : public testing::Test {
                false /* compressed */, false /* do_uncompress */,
                heap_buf_allocator, compressed_buf_allocator, index_block,
                memcpy_stats, &compression_type);
-    ASSERT_EQ(compression_type, CompressionType::kNoCompression);
+    ASSERT_EQ(compression_type, CompressionType::NoCompression);
     result->assign(index_block->data.ToString());
   }
 
@@ -130,7 +130,7 @@ class BlockFetcherTest : public testing::Test {
       const std::string& table_name_prefix, bool compressed, bool do_uncompress,
       std::array<TestStats, NumModes> expected_stats_by_mode) {
     for (CompressionType compression_type : GetSupportedCompressions()) {
-      bool do_compress = compression_type != kNoCompression;
+      bool do_compress = compression_type != CompressionType::NoCompression;
       if (compressed != do_compress) continue;
       std::string compression_type_str =
           CompressionTypeToString(compression_type);
@@ -139,7 +139,7 @@ class BlockFetcherTest : public testing::Test {
       CreateTable(table_name, compression_type);
 
       CompressionType expected_compression_type_after_fetch =
-          (compressed && !do_uncompress) ? compression_type : kNoCompression;
+          (compressed && !do_uncompress) ? compression_type : CompressionType::NoCompression;
 
       BlockContents blocks[NumModes];
       std::string block_datas[NumModes];
@@ -170,7 +170,7 @@ class BlockFetcherTest : public testing::Test {
         ASSERT_EQ(memcpy_stats[i].num_compressed_buf_memcpy,
                   expected_stats.memcpy_stats.num_compressed_buf_memcpy);
 
-        if (kXpressCompression == compression_type) {
+        if (CompressionType::XpressCompression == compression_type) {
           // XPRESS allocates memory internally, thus does not support for
           // custom allocator verification
           continue;
@@ -289,7 +289,7 @@ class BlockFetcherTest : public testing::Test {
 
   // NOTE: compression_type returns the compression type of the fetched block
   // contents, so if the block is fetched and uncompressed, then it's
-  // kNoCompression.
+  // CompressionType::NoCompression.
   void FetchBlock(RandomAccessFileReader* file, const BlockHandle& block,
                   BlockType block_type, bool compressed, bool do_uncompress,
                   MemoryAllocator* heap_buf_allocator,
@@ -319,7 +319,7 @@ class BlockFetcherTest : public testing::Test {
 
   // NOTE: expected_compression_type is the expected compression
   // type of the fetched block content, if the block is uncompressed,
-  // then the expected compression type is kNoCompression.
+  // then the expected compression type is CompressionType::NoCompression.
   void FetchFirstDataBlock(const std::string& table_name, bool compressed,
                            bool do_uncompress,
                            CompressionType expected_compression_type,

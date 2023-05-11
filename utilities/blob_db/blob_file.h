@@ -52,7 +52,7 @@ class BlobFile {
   uint32_t column_family_id_{std::numeric_limits<uint32_t>::max()};
 
   // Compression type of blobs in the file
-  CompressionType compression_{kNoCompression};
+  CompressionType compression_{CompressionType::NoCompression};
 
   // If true, the keys in this file all has TTL. Otherwise all keys don't
   // have TTL.

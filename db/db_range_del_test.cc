@@ -946,7 +946,7 @@ TEST_F(DBRangeDelTest, TailingIteratorRangeTombstoneUnsupported) {
 TEST_F(DBRangeDelTest, SubcompactionHasEmptyDedicatedRangeDelFile) {
   const int kNumFiles = 2, kNumKeysPerFile = 4;
   Options options = CurrentOptions();
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.disable_auto_compactions = true;
   options.level0_file_num_compaction_trigger = kNumFiles;
   options.max_subcompactions = 2;
@@ -1027,7 +1027,7 @@ TEST_F(DBRangeDelTest, CompactionTreatsSplitInputLevelDeletionAtomically) {
   // compactions).
   const int kNumFilesPerLevel = 4, kValueBytes = 4 << 10;
   Options options = CurrentOptions();
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.level0_file_num_compaction_trigger = kNumFilesPerLevel;
   options.memtable_factory.reset(
       test::NewSpecialSkipListFactory(2 /* num_entries_flush */));
@@ -1100,7 +1100,7 @@ TEST_F(DBRangeDelTest, RangeTombstoneEndKeyAsSstableUpperBound) {
 
   const int kNumFilesPerLevel = 2, kValueBytes = 4 << 10;
   Options options = CurrentOptions();
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.level0_file_num_compaction_trigger = kNumFilesPerLevel;
   options.memtable_factory.reset(
       test::NewSpecialSkipListFactory(2 /* num_entries_flush */));
@@ -1250,7 +1250,7 @@ TEST_F(DBRangeDelTest, KeyAtOverlappingEndpointReappears) {
   const int kNumFiles = 4;
 
   Options options = CurrentOptions();
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.disable_auto_compactions = true;
   options.merge_operator.reset(new MockMergeOperator());
   options.target_file_size_base = kFileBytes;
@@ -1337,7 +1337,7 @@ TEST_F(DBRangeDelTest, UntruncatedTombstoneDoesNotDeleteNewerKey) {
   const int kKeysOverwritten = 10;
 
   Options options = CurrentOptions();
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.disable_auto_compactions = true;
   options.merge_operator.reset(new MockMergeOperator());
   options.num_levels = 2;
@@ -1436,7 +1436,7 @@ TEST_F(DBRangeDelTest, DeletedMergeOperandReappearsIterPrev) {
   const int kNumFiles = 4;
 
   Options options = CurrentOptions();
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.disable_auto_compactions = true;
   options.merge_operator.reset(new MockMergeOperator());
   options.target_file_size_base = kFileBytes;
@@ -1495,7 +1495,7 @@ TEST_F(DBRangeDelTest, SnapshotPreventsDroppedKeys) {
   const int kFileBytes = 1 << 20;
 
   Options options = CurrentOptions();
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.disable_auto_compactions = true;
   options.target_file_size_base = kFileBytes;
   Reopen(options);
@@ -1528,7 +1528,7 @@ TEST_F(DBRangeDelTest, SnapshotPreventsDroppedKeysInImmMemTables) {
   const int kFileBytes = 1 << 20;
 
   Options options = CurrentOptions();
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.disable_auto_compactions = true;
   options.target_file_size_base = kFileBytes;
   Reopen(options);
@@ -1575,7 +1575,7 @@ TEST_F(DBRangeDelTest, RangeTombstoneWrittenToMinimalSsts) {
   const int kFileBytes = 1 << 20;
   const int kValueBytes = 4 << 10;
   Options options = CurrentOptions();
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.disable_auto_compactions = true;
   // Have a bit of slack in the size limits but we enforce them more strictly
   // when manually flushing/compacting.
@@ -1663,7 +1663,7 @@ TEST_F(DBRangeDelTest, RangeTombstoneWrittenToMinimalSsts) {
 
 TEST_F(DBRangeDelTest, LevelCompactOutputCutAtRangeTombstoneForTtlFiles) {
   Options options = CurrentOptions();
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.compaction_pri = CompactionPri::MinOverlappingRatio;
   options.disable_auto_compactions = true;
   options.ttl = 24 * 60 * 60;  // 24 hours
@@ -1999,7 +1999,7 @@ TEST_F(DBRangeDelTest, IteratorReseek) {
   // Seek(1) should trigger cascading reseeks at all levels below immutable
   // memtable. SeekToFirst and SeekToLast trigger no reseek.
   Options options = CurrentOptions();
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.disable_auto_compactions = true;
 
   DestroyAndReopen(options);
@@ -2062,7 +2062,7 @@ TEST_F(DBRangeDelTest, ReseekDuringNextAndPrev) {
   // reseek to 3 for L0 and L1. Similar story for Prev() and SeekForPrev() is
   // tested.
   Options options = CurrentOptions();
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.disable_auto_compactions = true;
 
   DestroyAndReopen(options);
@@ -2158,7 +2158,7 @@ TEST_F(DBRangeDelTest, TombstoneFromCurrentLevel) {
   // Then Next() will reseek to 3 for L1 since 2 in L0 is covered by [2, 3) in
   // L0.
   Options options = CurrentOptions();
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.disable_auto_compactions = true;
 
   DestroyAndReopen(options);
@@ -2239,7 +2239,7 @@ TEST_F(DBRangeDelTest, TombstoneAcrossFileBoundary) {
   // Seek(1) and then Next() should move the L1 level iterator to
   // L1_1. Check if 5 is returned after Next().
   Options options = CurrentOptions();
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.disable_auto_compactions = true;
   options.target_file_size_base = 2 * 1024;
   options.max_compaction_bytes = 2 * 1024;
@@ -2301,7 +2301,7 @@ TEST_F(DBRangeDelTest, NonOverlappingTombstonAtBoundary) {
   // Note that [4, 7) is at end of L1_0 and not overlapping with any point key
   // in L1_0. [4, 7) from L1_0 should cover 5 is sentinel works
   Options options = CurrentOptions();
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.disable_auto_compactions = true;
   options.target_file_size_base = 2 * 1024;
   options.level_compaction_dynamic_file_size = false;
@@ -2356,7 +2356,7 @@ TEST_F(DBRangeDelTest, OlderLevelHasNewerData) {
   // L1_0: 1, 3, [2, 7)   L1_1: 5, 6 at a newer sequence number than [2, 7)
   // Compact L1_1 to L2. Seek(3) should not skip 5 or 6.
   Options options = CurrentOptions();
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.disable_auto_compactions = true;
   options.target_file_size_base = 3 * 1024;
   DestroyAndReopen(options);
@@ -2403,7 +2403,7 @@ TEST_F(DBRangeDelTest, LevelBoundaryDefinedByTombstone) {
   // Seek(3), which is over all points keys in L1, check whether
   // sentinel key from L1 works in this case.
   Options options = CurrentOptions();
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.disable_auto_compactions = true;
   options.target_file_size_base = 3 * 1024;
   DestroyAndReopen(options);
@@ -2445,7 +2445,7 @@ TEST_F(DBRangeDelTest, TombstoneOnlyFile) {
   // If sentinel works with tombstone only file, it should cover the key in L2.
   // Similar story for SeekForPrev(4).
   Options options = CurrentOptions();
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.disable_auto_compactions = true;
   options.target_file_size_base = 3 * 1024;
 
@@ -2507,7 +2507,7 @@ TEST_F(DBRangeDelTest, TombstoneOnlyLevel) {
   // Any kind of iterator seek should skip 3 and 4 in L2.
   // L1 level iterator should produce sentinel key.
   Options options = CurrentOptions();
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.disable_auto_compactions = true;
   options.target_file_size_base = 3 * 1024;
 
@@ -2598,7 +2598,7 @@ TEST_F(DBRangeDelTest, TombstoneOnlyWithOlderVisibleKey) {
   // L2: 2, 4, 5
   // 2 and 5 should be visible
   Options options = CurrentOptions();
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.disable_auto_compactions = true;
   options.target_file_size_base = 3 * 1024;
 
@@ -2666,7 +2666,7 @@ TEST_F(DBRangeDelTest, TombstoneSentinelDirectionChange) {
   // Redo the test after Put(5) into L1 so that there is a visible key in range
   // [4, 6).
   Options options = CurrentOptions();
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.disable_auto_compactions = true;
   options.target_file_size_base = 3 * 1024;
 
@@ -2717,7 +2717,7 @@ TEST_F(DBRangeDelTest, LeftSentinelKeyTest) {
   // L2: 2
   // SeekForPrev(4) should give 1 due to sentinel key keeping [2, 3) alive.
   Options options = CurrentOptions();
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.disable_auto_compactions = true;
   options.target_file_size_base = 3 * 1024;
   options.max_compaction_bytes = 2048;
@@ -2763,7 +2763,7 @@ TEST_F(DBRangeDelTest, LeftSentinelKeyTestWithNewerKey) {
   // L2: 3
   // SeekForPrev(4) then Prev() should give 2 and then 1.
   Options options = CurrentOptions();
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.disable_auto_compactions = true;
   options.target_file_size_base = 3 * 1024;
   options.max_compaction_bytes = 3 * 1024;
@@ -2827,7 +2827,7 @@ TEST_F(DBRangeDelTest, SentinelKeyCommonCaseTest) {
   // L1_0: 1, 2     L1_1: [3, 4) 5, 6, [7, 8)     L1_2: 9
   // Check iterator operations on LevelIterator.
   Options options = CurrentOptions();
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.disable_auto_compactions = true;
   options.target_file_size_base = 3 * 1024;
 
@@ -2919,7 +2919,7 @@ TEST_F(DBRangeDelTest, PrefixSentinelKey) {
   // just skip to the next SST file. But in this case, we should keep the file's
   // tombstone alive.
   Options options = CurrentOptions();
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.disable_auto_compactions = true;
   options.prefix_extractor.reset(NewFixedPrefixTransform(3));
   BlockBasedTableOptions table_options;

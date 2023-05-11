@@ -113,7 +113,7 @@ class SSTDumpToolTest : public testing::Test {
     tb.reset(opts.table_factory->NewTableBuilder(
         TableBuilderOptions(
             imoptions, moptions, ikc, &int_tbl_prop_collector_factories,
-            CompressionType::kNoCompression, CompressionOptions(),
+            CompressionType::NoCompression, CompressionOptions(),
             TablePropertiesCollectorFactory::Context::kUnknownColumnFamily,
             column_family_name, unknown_level),
         file_writer.get()));

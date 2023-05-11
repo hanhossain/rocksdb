@@ -89,7 +89,7 @@ class PrefetchTest
     options = CurrentOptions();
     options.write_buffer_size = 1024;
     options.create_if_missing = true;
-    options.compression = kNoCompression;
+    options.compression = CompressionType::NoCompression;
     options.env = env;
     options.disable_auto_compactions = true;
     if (use_direct_io) {
@@ -1292,7 +1292,7 @@ class PrefetchTest1 : public DBTestBase,
     options = CurrentOptions();
     options.write_buffer_size = 1024;
     options.create_if_missing = true;
-    options.compression = kNoCompression;
+    options.compression = CompressionType::NoCompression;
     options.env = env;
     options.disable_auto_compactions = true;
     if (use_direct_io) {

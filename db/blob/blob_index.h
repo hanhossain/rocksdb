@@ -181,7 +181,7 @@ class BlobIndex {
   uint64_t file_number_ = 0;
   uint64_t offset_ = 0;
   uint64_t size_ = 0;
-  CompressionType compression_ = kNoCompression;
+  CompressionType compression_ = CompressionType::NoCompression;
 };
 
 }  // namespace ROCKSDB_NAMESPACE

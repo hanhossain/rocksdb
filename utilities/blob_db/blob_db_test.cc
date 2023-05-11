@@ -532,7 +532,7 @@ TEST_F(BlobDBTest, Compression) {
   BlobDBOptions bdb_options;
   bdb_options.min_blob_size = 0;
   bdb_options.disable_background_tasks = true;
-  bdb_options.compression = CompressionType::kSnappyCompression;
+  bdb_options.compression = CompressionType::SnappyCompression;
   Open(bdb_options);
   std::map<std::string, std::string> data;
   for (size_t i = 0; i < 100; i++) {
@@ -554,14 +554,14 @@ TEST_F(BlobDBTest, DecompressAfterReopen) {
   BlobDBOptions bdb_options;
   bdb_options.min_blob_size = 0;
   bdb_options.disable_background_tasks = true;
-  bdb_options.compression = CompressionType::kSnappyCompression;
+  bdb_options.compression = CompressionType::SnappyCompression;
   Open(bdb_options);
   std::map<std::string, std::string> data;
   for (size_t i = 0; i < 100; i++) {
     PutRandom("put-key" + std::to_string(i), &rnd, &data);
   }
   VerifyDB(data);
-  bdb_options.compression = CompressionType::kNoCompression;
+  bdb_options.compression = CompressionType::NoCompression;
   Reopen(bdb_options);
   VerifyDB(data);
 }
@@ -572,7 +572,7 @@ TEST_F(BlobDBTest, EnableDisableCompressionGC) {
   bdb_options.min_blob_size = 0;
   bdb_options.garbage_collection_cutoff = 1.0;
   bdb_options.disable_background_tasks = true;
-  bdb_options.compression = kSnappyCompression;
+  bdb_options.compression = CompressionType::SnappyCompression;
   Open(bdb_options);
   std::map<std::string, std::string> data;
   size_t data_idx = 0;
@@ -582,10 +582,10 @@ TEST_F(BlobDBTest, EnableDisableCompressionGC) {
   VerifyDB(data);
   auto blob_files = blob_db_impl()->TEST_GetBlobFiles();
   ASSERT_EQ(1, blob_files.size());
-  ASSERT_EQ(kSnappyCompression, blob_files[0]->GetCompressionType());
+  ASSERT_EQ(CompressionType::SnappyCompression, blob_files[0]->GetCompressionType());
 
   // disable compression
-  bdb_options.compression = kNoCompression;
+  bdb_options.compression = CompressionType::NoCompression;
   Reopen(bdb_options);
 
   // Add more data with new compression type
@@ -596,7 +596,7 @@ TEST_F(BlobDBTest, EnableDisableCompressionGC) {
 
   blob_files = blob_db_impl()->TEST_GetBlobFiles();
   ASSERT_EQ(2, blob_files.size());
-  ASSERT_EQ(kNoCompression, blob_files[1]->GetCompressionType());
+  ASSERT_EQ(CompressionType::NoCompression, blob_files[1]->GetCompressionType());
 
   // Enable GC. If we do it earlier the snapshot release triggered compaction
   // may compact files and trigger GC before we can verify there are two files.
@@ -610,11 +610,11 @@ TEST_F(BlobDBTest, EnableDisableCompressionGC) {
 
   blob_files = blob_db_impl()->TEST_GetBlobFiles();
   for (auto bfile : blob_files) {
-    ASSERT_EQ(kNoCompression, bfile->GetCompressionType());
+    ASSERT_EQ(CompressionType::NoCompression, bfile->GetCompressionType());
   }
 
   // enabling the compression again
-  bdb_options.compression = kSnappyCompression;
+  bdb_options.compression = CompressionType::SnappyCompression;
   Reopen(bdb_options);
 
   // Add more data with new compression type
@@ -630,7 +630,7 @@ TEST_F(BlobDBTest, EnableDisableCompressionGC) {
 
   blob_files = blob_db_impl()->TEST_GetBlobFiles();
   for (auto bfile : blob_files) {
-    ASSERT_EQ(kSnappyCompression, bfile->GetCompressionType());
+    ASSERT_EQ(CompressionType::SnappyCompression, bfile->GetCompressionType());
   }
 }
 
@@ -643,7 +643,7 @@ TEST_F(BlobDBTest, ChangeCompressionGC) {
   bdb_options.min_blob_size = 0;
   bdb_options.garbage_collection_cutoff = 1.0;
   bdb_options.disable_background_tasks = true;
-  bdb_options.compression = kLZ4Compression;
+  bdb_options.compression = CompressionType::LZ4Compression;
   Open(bdb_options);
   std::map<std::string, std::string> data;
   size_t data_idx = 0;
@@ -653,10 +653,10 @@ TEST_F(BlobDBTest, ChangeCompressionGC) {
   VerifyDB(data);
   auto blob_files = blob_db_impl()->TEST_GetBlobFiles();
   ASSERT_EQ(1, blob_files.size());
-  ASSERT_EQ(kLZ4Compression, blob_files[0]->GetCompressionType());
+  ASSERT_EQ(CompressionType::LZ4Compression, blob_files[0]->GetCompressionType());
 
   // Change compression type
-  bdb_options.compression = kSnappyCompression;
+  bdb_options.compression = CompressionType::SnappyCompression;
   Reopen(bdb_options);
 
   // Add more data with Snappy compression type
@@ -668,7 +668,7 @@ TEST_F(BlobDBTest, ChangeCompressionGC) {
   // Verify blob file compression type
   blob_files = blob_db_impl()->TEST_GetBlobFiles();
   ASSERT_EQ(2, blob_files.size());
-  ASSERT_EQ(kSnappyCompression, blob_files[1]->GetCompressionType());
+  ASSERT_EQ(CompressionType::SnappyCompression, blob_files[1]->GetCompressionType());
 
   // Enable GC. If we do it earlier the snapshot release triggered compaction
   // may compact files and trigger GC before we can verify there are two files.
@@ -681,11 +681,11 @@ TEST_F(BlobDBTest, ChangeCompressionGC) {
   blob_db_impl()->TEST_DeleteObsoleteFiles();
   blob_files = blob_db_impl()->TEST_GetBlobFiles();
   for (auto bfile : blob_files) {
-    ASSERT_EQ(kSnappyCompression, bfile->GetCompressionType());
+    ASSERT_EQ(CompressionType::SnappyCompression, bfile->GetCompressionType());
   }
 
   // Disable compression
-  bdb_options.compression = kNoCompression;
+  bdb_options.compression = CompressionType::NoCompression;
   Reopen(bdb_options);
   for (; data_idx < 300; data_idx++) {
     PutRandom("put-key" + std::to_string(data_idx), &rnd, &data);
@@ -698,18 +698,18 @@ TEST_F(BlobDBTest, ChangeCompressionGC) {
   blob_db_impl()->TEST_DeleteObsoleteFiles();
   blob_files = blob_db_impl()->TEST_GetBlobFiles();
   for (auto bfile : blob_files) {
-    ASSERT_EQ(kNoCompression, bfile->GetCompressionType());
+    ASSERT_EQ(CompressionType::NoCompression, bfile->GetCompressionType());
   }
 
   // switching different compression types to generate mixed compression types
-  bdb_options.compression = kSnappyCompression;
+  bdb_options.compression = CompressionType::SnappyCompression;
   Reopen(bdb_options);
   for (; data_idx < 400; data_idx++) {
     PutRandom("put-key" + std::to_string(data_idx), &rnd, &data);
   }
   VerifyDB(data);
 
-  bdb_options.compression = kLZ4Compression;
+  bdb_options.compression = CompressionType::LZ4Compression;
   Reopen(bdb_options);
   for (; data_idx < 500; data_idx++) {
     PutRandom("put-key" + std::to_string(data_idx), &rnd, &data);
@@ -722,7 +722,7 @@ TEST_F(BlobDBTest, ChangeCompressionGC) {
   blob_db_impl()->TEST_DeleteObsoleteFiles();
   blob_files = blob_db_impl()->TEST_GetBlobFiles();
   for (auto bfile : blob_files) {
-    ASSERT_EQ(kLZ4Compression, bfile->GetCompressionType());
+    ASSERT_EQ(CompressionType::LZ4Compression, bfile->GetCompressionType());
   }
 }
 #endif  // LZ4
@@ -1251,7 +1251,7 @@ TEST_F(BlobDBTest, FIFOEviction_TriggerOnSSTSizeChange) {
   options.env = mock_env_.get();
   auto statistics = CreateDBStatistics();
   options.statistics = statistics;
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   Open(bdb_options, options);
 
   SyncPoint::GetInstance()->LoadDependency(
@@ -1385,7 +1385,7 @@ TEST_F(BlobDBTest, UserCompactionFilter) {
   bdb_options.blob_file_size = kMaxValueSize * 10;
   bdb_options.disable_background_tasks = true;
   if (Snappy_Supported()) {
-    bdb_options.compression = CompressionType::kSnappyCompression;
+    bdb_options.compression = CompressionType::SnappyCompression;
   }
   // case_num == 0: Test user defined compaction filter
   // case_num == 1: Test user defined compaction filter factory
@@ -1466,7 +1466,7 @@ TEST_F(BlobDBTest, UserCompactionFilter_BlobIOError) {
   bdb_options.min_blob_size = 0;
   bdb_options.blob_file_size = kValueSize * 10;
   bdb_options.disable_background_tasks = true;
-  bdb_options.compression = CompressionType::kNoCompression;
+  bdb_options.compression = CompressionType::NoCompression;
 
   std::vector<std::string> io_failure_cases = {
       "BlobDBImpl::CreateBlobFileAndWriter",
@@ -1946,7 +1946,7 @@ TEST_F(BlobDBTest, GarbageCollectionFailure) {
   // blob file.
   std::string blob_index;
   BlobIndex::EncodeBlob(&blob_index, /* file_number */ 1000, /* offset */ 1234,
-                        /* size */ 5678, kNoCompression);
+                        /* size */ 5678, CompressionType::NoCompression);
 
   WriteBatch batch;
   ASSERT_OK(WriteBatchInternal::PutBlobIndex(

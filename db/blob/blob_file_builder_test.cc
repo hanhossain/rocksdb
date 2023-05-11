@@ -195,7 +195,7 @@ TEST_F(BlobFileBuilderTest, BuildAndCheckOneFile) {
 
   // Verify the contents of the new blob file as well as the blob references
   VerifyBlobFile(blob_file_number, blob_file_path, column_family_id,
-                 kNoCompression, expected_key_value_pairs, blob_indexes);
+                 CompressionType::NoCompression, expected_key_value_pairs, blob_indexes);
 }
 
 TEST_F(BlobFileBuilderTest, BuildAndCheckMultipleFiles) {
@@ -282,7 +282,7 @@ TEST_F(BlobFileBuilderTest, BuildAndCheckMultipleFiles) {
         expected_key_value_pairs[i]};
     std::vector<std::string> blob_index{blob_indexes[i]};
 
-    VerifyBlobFile(i + 2, blob_file_paths[i], column_family_id, kNoCompression,
+    VerifyBlobFile(i + 2, blob_file_paths[i], column_family_id, CompressionType::NoCompression,
                    expected_key_value_pair, blob_index);
   }
 }
@@ -355,7 +355,7 @@ TEST_F(BlobFileBuilderTest, Compression) {
       test::PerThreadDBPath(mock_env_.get(), "BlobFileBuilderTest_Compression"),
       0);
   options.enable_blob_files = true;
-  options.blob_compression_type = kSnappyCompression;
+  options.blob_compression_type = CompressionType::SnappyCompression;
   options.env = mock_env_.get();
 
   ImmutableOptions immutable_options(options);
@@ -406,11 +406,11 @@ TEST_F(BlobFileBuilderTest, Compression) {
   ASSERT_EQ(blob_file_addition.GetTotalBlobCount(), 1);
 
   CompressionOptions opts;
-  CompressionContext context(kSnappyCompression);
+  CompressionContext context(CompressionType::SnappyCompression);
   constexpr uint64_t sample_for_compression = 0;
 
   CompressionInfo info(opts, context, CompressionDict::GetEmptyDict(),
-                       kSnappyCompression, sample_for_compression);
+                       CompressionType::SnappyCompression, sample_for_compression);
 
   std::string compressed_value;
   ASSERT_TRUE(Snappy_Compress(info, uncompressed_value.data(),
@@ -425,7 +425,7 @@ TEST_F(BlobFileBuilderTest, Compression) {
   std::vector<std::string> blob_indexes{blob_index};
 
   VerifyBlobFile(blob_file_number, blob_file_path, column_family_id,
-                 kSnappyCompression, expected_key_value_pairs, blob_indexes);
+                 CompressionType::SnappyCompression, expected_key_value_pairs, blob_indexes);
 }
 
 TEST_F(BlobFileBuilderTest, CompressionError) {
@@ -440,7 +440,7 @@ TEST_F(BlobFileBuilderTest, CompressionError) {
                             "BlobFileBuilderTest_CompressionError"),
       0);
   options.enable_blob_files = true;
-  options.blob_compression_type = kSnappyCompression;
+  options.blob_compression_type = CompressionType::SnappyCompression;
   options.env = mock_env_.get();
   ImmutableOptions immutable_options(options);
   MutableCFOptions mutable_cf_options(options);
@@ -579,7 +579,7 @@ TEST_F(BlobFileBuilderTest, Checksum) {
   std::vector<std::string> blob_indexes{blob_index};
 
   VerifyBlobFile(blob_file_number, blob_file_path, column_family_id,
-                 kNoCompression, expected_key_value_pairs, blob_indexes);
+                 CompressionType::NoCompression, expected_key_value_pairs, blob_indexes);
 }
 
 class BlobFileBuilderIOErrorTest

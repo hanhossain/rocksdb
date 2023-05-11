@@ -53,7 +53,7 @@ struct BlobLogHeader {
 
   uint32_t version = kVersion1;
   uint32_t column_family_id = 0;
-  CompressionType compression = kNoCompression;
+  CompressionType compression = CompressionType::NoCompression;
   bool has_ttl = false;
   ExpirationRange expiration_range;
 

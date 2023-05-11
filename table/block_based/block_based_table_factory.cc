@@ -611,7 +611,7 @@ Status BlockBasedTableFactory::ValidateOptions(
         "Unsupported BlockBasedTable format_version. Please check "
         "include/rocksdb/table.h for more info");
   }
-  if (table_options_.block_align && (cf_opts.compression != kNoCompression)) {
+  if (table_options_.block_align && (cf_opts.compression != CompressionType::NoCompression)) {
     return Status::InvalidArgument(
         "Enable block_align, but compression "
         "enabled");

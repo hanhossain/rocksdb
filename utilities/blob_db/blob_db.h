@@ -68,7 +68,7 @@ struct BlobDBOptions {
   uint64_t blob_file_size = 256 * 1024 * 1024;
 
   // what compression to use for Blob's
-  CompressionType compression = kNoCompression;
+  CompressionType compression = CompressionType::NoCompression;
 
   // If enabled, BlobDB cleans up stale blobs in non-TTL files during compaction
   // by rewriting the remaining live blobs to new files.

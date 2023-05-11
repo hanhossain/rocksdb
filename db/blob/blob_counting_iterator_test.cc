@@ -53,7 +53,7 @@ TEST(BlobCountingIteratorTest, CountBlobs) {
 
   std::string first_blob_index;
   BlobIndex::EncodeBlob(&first_blob_index, first_blob_file_number, first_offset,
-                        first_size, kNoCompression);
+                        first_size, CompressionType::NoCompression);
 
   constexpr uint64_t second_blob_file_number = 6;
   constexpr uint64_t second_offset = 2000;
@@ -61,7 +61,7 @@ TEST(BlobCountingIteratorTest, CountBlobs) {
 
   std::string second_blob_index;
   BlobIndex::EncodeBlob(&second_blob_index, second_blob_file_number,
-                        second_offset, second_size, kNoCompression);
+                        second_offset, second_size, CompressionType::NoCompression);
 
   const std::vector<std::string> values{first_blob_index, second_blob_index,
                                         "raw_value"};

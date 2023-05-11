@@ -984,7 +984,10 @@ set(BUILD_VERSION_CC ${CMAKE_BINARY_DIR}/build_version.cc)
 configure_file(util/build_version.cc.in ${BUILD_VERSION_CC} @ONLY)
 
 corrosion_import_crate(MANIFEST_PATH rocksdb-rs/Cargo.toml)
-corrosion_add_cxxbridge(rocksdb-rs-cxx CRATE rocksdb-rs FILES lib.rs advanced_options.rs options.rs)
+corrosion_add_cxxbridge(
+    rocksdb-rs-cxx
+    CRATE rocksdb-rs
+    FILES lib.rs advanced_options.rs options.rs)
 
 add_library(${ROCKSDB_STATIC_LIB} STATIC ${SOURCES} ${BUILD_VERSION_CC})
 target_link_libraries(

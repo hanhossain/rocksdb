@@ -56,7 +56,7 @@ Status BlobDumpTool::Run(const std::string& filename, DisplayType show_key,
   reader_.reset(new RandomAccessFileReader(std::move(file), filename));
   uint64_t offset = 0;
   uint64_t footer_offset = 0;
-  CompressionType compression = kNoCompression;
+  CompressionType compression = CompressionType::NoCompression;
   s = DumpBlobLogHeader(&offset, &compression);
   if (!s.ok()) {
     return s;
@@ -84,7 +84,7 @@ Status BlobDumpTool::Run(const std::string& filename, DisplayType show_key,
     fprintf(stdout, "  total records: %" PRIu64 "\n", total_records);
     fprintf(stdout, "  total key size: %" PRIu64 "\n", total_key_size);
     fprintf(stdout, "  total blob size: %" PRIu64 "\n", total_blob_size);
-    if (compression != kNoCompression) {
+    if (compression != CompressionType::NoCompression) {
       fprintf(stdout, "  total raw blob size: %" PRIu64 "\n",
               total_uncompressed_blob_size);
     }
@@ -206,7 +206,7 @@ Status BlobDumpTool::DumpRecord(DisplayType show_key, DisplayType show_blob,
   }
   // Decompress value
   std::string uncompressed_value;
-  if (compression != kNoCompression &&
+  if (compression != CompressionType::NoCompression &&
       (show_uncompressed_blob != DisplayType::kNone || show_summary)) {
     BlockContents contents;
     UncompressionContext context(compression);

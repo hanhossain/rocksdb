@@ -367,33 +367,33 @@ inline enum ROCKSDB_NAMESPACE::CompressionType StringToCompressionType(
   ROCKSDB_NAMESPACE::CompressionType ret_compression_type;
 
   if (!strcasecmp(ctype, "disable")) {
-    ret_compression_type = ROCKSDB_NAMESPACE::kDisableCompressionOption;
+    ret_compression_type = ROCKSDB_NAMESPACE::CompressionType::DisableCompressionOption;
   } else if (!strcasecmp(ctype, "none")) {
-    ret_compression_type = ROCKSDB_NAMESPACE::kNoCompression;
+    ret_compression_type = ROCKSDB_NAMESPACE::CompressionType::NoCompression;
   } else if (!strcasecmp(ctype, "snappy")) {
-    ret_compression_type = ROCKSDB_NAMESPACE::kSnappyCompression;
+    ret_compression_type = ROCKSDB_NAMESPACE::CompressionType::SnappyCompression;
   } else if (!strcasecmp(ctype, "zlib")) {
-    ret_compression_type = ROCKSDB_NAMESPACE::kZlibCompression;
+    ret_compression_type = ROCKSDB_NAMESPACE::CompressionType::ZlibCompression;
   } else if (!strcasecmp(ctype, "bzip2")) {
-    ret_compression_type = ROCKSDB_NAMESPACE::kBZip2Compression;
+    ret_compression_type = ROCKSDB_NAMESPACE::CompressionType::BZip2Compression;
   } else if (!strcasecmp(ctype, "lz4")) {
-    ret_compression_type = ROCKSDB_NAMESPACE::kLZ4Compression;
+    ret_compression_type = ROCKSDB_NAMESPACE::CompressionType::LZ4Compression;
   } else if (!strcasecmp(ctype, "lz4hc")) {
-    ret_compression_type = ROCKSDB_NAMESPACE::kLZ4HCCompression;
+    ret_compression_type = ROCKSDB_NAMESPACE::CompressionType::LZ4HCCompression;
   } else if (!strcasecmp(ctype, "xpress")) {
-    ret_compression_type = ROCKSDB_NAMESPACE::kXpressCompression;
+    ret_compression_type = ROCKSDB_NAMESPACE::CompressionType::XpressCompression;
   } else if (!strcasecmp(ctype, "zstd")) {
-    ret_compression_type = ROCKSDB_NAMESPACE::kZSTD;
+    ret_compression_type = ROCKSDB_NAMESPACE::CompressionType::ZSTD;
   } else {
     fprintf(stderr, "Cannot parse compression type '%s'\n", ctype);
     ret_compression_type =
-        ROCKSDB_NAMESPACE::kSnappyCompression;  // default value
+        ROCKSDB_NAMESPACE::CompressionType::SnappyCompression;  // default value
   }
-  if (ret_compression_type != ROCKSDB_NAMESPACE::kDisableCompressionOption &&
+  if (ret_compression_type != ROCKSDB_NAMESPACE::CompressionType::DisableCompressionOption &&
       !CompressionTypeSupported(ret_compression_type)) {
     // Use no compression will be more portable but considering this is
     // only a stress test and snappy is widely available. Use snappy here.
-    ret_compression_type = ROCKSDB_NAMESPACE::kSnappyCompression;
+    ret_compression_type = ROCKSDB_NAMESPACE::CompressionType::SnappyCompression;
   }
   return ret_compression_type;
 }

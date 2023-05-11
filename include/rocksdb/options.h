@@ -195,26 +195,26 @@ struct ColumnFamilyOptions : public AdvancedColumnFamilyOptions {
 
   // Compress blocks using the specified compression algorithm.
   //
-  // Default: kSnappyCompression, if it's supported. If snappy is not linked
-  // with the library, the default is kNoCompression.
+  // Default: CompressionType::SnappyCompression, if it's supported. If snappy is not linked
+  // with the library, the default is CompressionType::NoCompression.
   //
-  // Typical speeds of kSnappyCompression on an Intel(R) Core(TM)2 2.4GHz:
+  // Typical speeds of CompressionType::SnappyCompression on an Intel(R) Core(TM)2 2.4GHz:
   //    ~200-500MB/s compression
   //    ~400-800MB/s decompression
   //
   // Note that these speeds are significantly faster than most
   // persistent storage speeds, and therefore it is typically never
-  // worth switching to kNoCompression.  Even if the input data is
-  // incompressible, the kSnappyCompression implementation will
+  // worth switching to CompressionType::NoCompression.  Even if the input data is
+  // incompressible, the CompressionType::SnappyCompression implementation will
   // efficiently detect that and will switch to uncompressed mode.
   //
   // If you do not set `compression_opts.level`, or set it to
   // `CompressionOptions::kDefaultCompressionLevel`, we will attempt to pick the
   // default corresponding to `compression` as follows:
   //
-  // - kZSTD: 3
-  // - kZlibCompression: Z_DEFAULT_COMPRESSION (currently -1)
-  // - kLZ4HCCompression: 0
+  // - CompressionType::ZSTD: 3
+  // - CompressionType::ZlibCompression: Z_DEFAULT_COMPRESSION (currently -1)
+  // - CompressionType::LZ4HCCompression: 0
   // - For all others, we do not specify a compression level
   //
   // Dynamically changeable through SetOptions() API
@@ -226,8 +226,8 @@ struct ColumnFamilyOptions : public AdvancedColumnFamilyOptions {
   // bottommost_compression and all flush outputs still use options.compression,
   // but the behavior is subject to change.
   //
-  // Default: kDisableCompressionOption (Disabled)
-  CompressionType bottommost_compression = kDisableCompressionOption;
+  // Default: CompressionType::DisableCompressionOption (Disabled)
+  CompressionType bottommost_compression = CompressionType::DisableCompressionOption;
 
   // different options for compression algorithms used by bottommost_compression
   // if it is enabled. To enable it, please see the definition of
@@ -1190,7 +1190,7 @@ struct DBOptions {
   // If enabled WAL records will be compressed before they are written.
   // Only zstd is supported. Compressed WAL records will be read in supported
   // versions regardless of the wal_compression settings.
-  CompressionType wal_compression = kNoCompression;
+  CompressionType wal_compression = CompressionType::NoCompression;
 
   // If true, RocksDB supports flushing multiple column families and committing
   // their results atomically to MANIFEST. Note that it is not
@@ -1764,7 +1764,7 @@ extern Status CreateLoggerFromOptions(const std::string& dbname,
 struct CompactionOptions {
   // Compaction output compression type
   // Default: snappy
-  // If set to `kDisableCompressionOption`, RocksDB will choose compression type
+  // If set to `CompressionType::DisableCompressionOption`, RocksDB will choose compression type
   // according to the `ColumnFamilyOptions`, taking into account the output
   // level if `compression_per_level` is specified.
   CompressionType compression;
@@ -1775,7 +1775,7 @@ struct CompactionOptions {
   uint32_t max_subcompactions;
 
   CompactionOptions()
-      : compression(kSnappyCompression),
+      : compression(CompressionType::SnappyCompression),
         output_file_size_limit(std::numeric_limits<uint64_t>::max()),
         max_subcompactions(0) {}
 };

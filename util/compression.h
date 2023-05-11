@@ -176,7 +176,7 @@ struct CompressionDict {
     dict_ = std::move(dict);
 #if ZSTD_VERSION_NUMBER >= 700
     zstd_cdict_ = nullptr;
-    if (!dict_.empty() && (type == kZSTD || type == kZSTDNotFinalCompression)) {
+    if (!dict_.empty() && (type == CompressionType::ZSTD || type == CompressionType::ZSTDNotFinalCompression)) {
       if (level == CompressionOptions::kDefaultCompressionLevel) {
         // 3 is the value of ZSTD_CLEVEL_DEFAULT (not exposed publicly), see
         // https://github.com/facebook/zstd/issues/1148
@@ -364,7 +364,7 @@ class CompressionContext {
 #if defined(ZSTD) && (ZSTD_VERSION_NUMBER >= 500)
   ZSTD_CCtx* zstd_ctx_ = nullptr;
   void CreateNativeContext(CompressionType type) {
-    if (type == kZSTD || type == kZSTDNotFinalCompression) {
+    if (type == CompressionType::ZSTD || type == CompressionType::ZSTDNotFinalCompression) {
 #ifdef ROCKSDB_ZSTD_CUSTOM_MEM
       zstd_ctx_ =
           ZSTD_createCCtx_advanced(port::GetJeZstdAllocationOverrides());
@@ -432,7 +432,7 @@ class UncompressionContext {
 
  public:
   explicit UncompressionContext(CompressionType type) {
-    if (type == kZSTD || type == kZSTDNotFinalCompression) {
+    if (type == CompressionType::ZSTD || type == CompressionType::ZSTDNotFinalCompression) {
       ctx_cache_ = CompressionContextCache::Instance();
       uncomp_cached_data_ = ctx_cache_->GetCachedZSTDUncompressData();
     }
@@ -535,9 +535,9 @@ inline bool ZSTD_Streaming_Supported() {
 inline bool StreamingCompressionTypeSupported(
     CompressionType compression_type) {
   switch (compression_type) {
-    case kNoCompression:
+    case CompressionType::NoCompression:
       return true;
-    case kZSTD:
+    case CompressionType::ZSTD:
       return ZSTD_Streaming_Supported();
     default:
       return false;
@@ -546,23 +546,23 @@ inline bool StreamingCompressionTypeSupported(
 
 inline bool CompressionTypeSupported(CompressionType compression_type) {
   switch (compression_type) {
-    case kNoCompression:
+    case CompressionType::NoCompression:
       return true;
-    case kSnappyCompression:
+    case CompressionType::SnappyCompression:
       return Snappy_Supported();
-    case kZlibCompression:
+    case CompressionType::ZlibCompression:
       return Zlib_Supported();
-    case kBZip2Compression:
+    case CompressionType::BZip2Compression:
       return BZip2_Supported();
-    case kLZ4Compression:
+    case CompressionType::LZ4Compression:
       return LZ4_Supported();
-    case kLZ4HCCompression:
+    case CompressionType::LZ4HCCompression:
       return LZ4_Supported();
-    case kXpressCompression:
+    case CompressionType::XpressCompression:
       return XPRESS_Supported();
-    case kZSTDNotFinalCompression:
+    case CompressionType::ZSTDNotFinalCompression:
       return ZSTDNotFinal_Supported();
-    case kZSTD:
+    case CompressionType::ZSTD:
       return ZSTD_Supported();
     default:
       assert(false);
@@ -572,30 +572,30 @@ inline bool CompressionTypeSupported(CompressionType compression_type) {
 
 inline bool DictCompressionTypeSupported(CompressionType compression_type) {
   switch (compression_type) {
-    case kNoCompression:
+    case CompressionType::NoCompression:
       return false;
-    case kSnappyCompression:
+    case CompressionType::SnappyCompression:
       return false;
-    case kZlibCompression:
+    case CompressionType::ZlibCompression:
       return Zlib_Supported();
-    case kBZip2Compression:
+    case CompressionType::BZip2Compression:
       return false;
-    case kLZ4Compression:
-    case kLZ4HCCompression:
+    case CompressionType::LZ4Compression:
+    case CompressionType::LZ4HCCompression:
 #if LZ4_VERSION_NUMBER >= 10400  // r124+
       return LZ4_Supported();
 #else
       return false;
 #endif
-    case kXpressCompression:
+    case CompressionType::XpressCompression:
       return false;
-    case kZSTDNotFinalCompression:
+    case CompressionType::ZSTDNotFinalCompression:
 #if ZSTD_VERSION_NUMBER >= 500  // v0.5.0+
       return ZSTDNotFinal_Supported();
 #else
       return false;
 #endif
-    case kZSTD:
+    case CompressionType::ZSTD:
 #if ZSTD_VERSION_NUMBER >= 500  // v0.5.0+
       return ZSTD_Supported();
 #else
@@ -609,25 +609,25 @@ inline bool DictCompressionTypeSupported(CompressionType compression_type) {
 
 inline std::string CompressionTypeToString(CompressionType compression_type) {
   switch (compression_type) {
-    case kNoCompression:
+    case CompressionType::NoCompression:
       return "NoCompression";
-    case kSnappyCompression:
+    case CompressionType::SnappyCompression:
       return "Snappy";
-    case kZlibCompression:
+    case CompressionType::ZlibCompression:
       return "Zlib";
-    case kBZip2Compression:
+    case CompressionType::BZip2Compression:
       return "BZip2";
-    case kLZ4Compression:
+    case CompressionType::LZ4Compression:
       return "LZ4";
-    case kLZ4HCCompression:
+    case CompressionType::LZ4HCCompression:
       return "LZ4HC";
-    case kXpressCompression:
+    case CompressionType::XpressCompression:
       return "Xpress";
-    case kZSTD:
+    case CompressionType::ZSTD:
       return "ZSTD";
-    case kZSTDNotFinalCompression:
+    case CompressionType::ZSTDNotFinalCompression:
       return "ZSTDNotFinal";
-    case kDisableCompressionOption:
+    case CompressionType::DisableCompressionOption:
       return "DisableOption";
     default:
       assert(false);
@@ -1547,31 +1547,31 @@ inline bool CompressData(const Slice& raw,
   // Will return compressed block contents if (1) the compression method is
   // supported in this platform and (2) the compression rate is "good enough".
   switch (compression_info.type()) {
-    case kSnappyCompression:
+    case CompressionType::SnappyCompression:
       ret = Snappy_Compress(compression_info, raw.data(), raw.size(),
                             compressed_output);
       break;
-    case kZlibCompression:
+    case CompressionType::ZlibCompression:
       ret = Zlib_Compress(compression_info, compress_format_version, raw.data(),
                           raw.size(), compressed_output);
       break;
-    case kBZip2Compression:
+    case CompressionType::BZip2Compression:
       ret = BZip2_Compress(compression_info, compress_format_version,
                            raw.data(), raw.size(), compressed_output);
       break;
-    case kLZ4Compression:
+    case CompressionType::LZ4Compression:
       ret = LZ4_Compress(compression_info, compress_format_version, raw.data(),
                          raw.size(), compressed_output);
       break;
-    case kLZ4HCCompression:
+    case CompressionType::LZ4HCCompression:
       ret = LZ4HC_Compress(compression_info, compress_format_version,
                            raw.data(), raw.size(), compressed_output);
       break;
-    case kXpressCompression:
+    case CompressionType::XpressCompression:
       ret = XPRESS_Compress(raw.data(), raw.size(), compressed_output);
       break;
-    case kZSTD:
-    case kZSTDNotFinalCompression:
+    case CompressionType::ZSTD:
+    case CompressionType::ZSTDNotFinalCompression:
       ret = ZSTD_Compress(compression_info, raw.data(), raw.size(),
                           compressed_output);
       break;
@@ -1591,24 +1591,24 @@ inline CacheAllocationPtr UncompressData(
     size_t* uncompressed_size, uint32_t compress_format_version,
     MemoryAllocator* allocator = nullptr) {
   switch (uncompression_info.type()) {
-    case kSnappyCompression:
+    case CompressionType::SnappyCompression:
       return Snappy_Uncompress(data, n, uncompressed_size, allocator);
-    case kZlibCompression:
+    case CompressionType::ZlibCompression:
       return Zlib_Uncompress(uncompression_info, data, n, uncompressed_size,
                              compress_format_version, allocator);
-    case kBZip2Compression:
+    case CompressionType::BZip2Compression:
       return BZip2_Uncompress(data, n, uncompressed_size,
                               compress_format_version, allocator);
-    case kLZ4Compression:
-    case kLZ4HCCompression:
+    case CompressionType::LZ4Compression:
+    case CompressionType::LZ4HCCompression:
       return LZ4_Uncompress(uncompression_info, data, n, uncompressed_size,
                             compress_format_version, allocator);
-    case kXpressCompression:
+    case CompressionType::XpressCompression:
       // XPRESS allocates memory internally, thus no support for custom
       // allocator.
       return CacheAllocationPtr(XPRESS_Uncompress(data, n, uncompressed_size));
-    case kZSTD:
-    case kZSTDNotFinalCompression:
+    case CompressionType::ZSTD:
+    case CompressionType::ZSTDNotFinalCompression:
       return ZSTD_Uncompress(uncompression_info, data, n, uncompressed_size,
                              allocator);
     default:
@@ -1741,7 +1741,7 @@ class ZSTDStreamingCompress final : public StreamingCompress {
   explicit ZSTDStreamingCompress(const CompressionOptions& opts,
                                  uint32_t compress_format_version,
                                  size_t max_output_len)
-      : StreamingCompress(kZSTD, opts, compress_format_version,
+      : StreamingCompress(CompressionType::ZSTD, opts, compress_format_version,
                           max_output_len) {
 #ifdef ZSTD_STREAMING
     cctx_ = ZSTD_createCCtx();
@@ -1769,7 +1769,7 @@ class ZSTDStreamingUncompress final : public StreamingUncompress {
  public:
   explicit ZSTDStreamingUncompress(uint32_t compress_format_version,
                                    size_t max_output_len)
-      : StreamingUncompress(kZSTD, compress_format_version, max_output_len) {
+      : StreamingUncompress(CompressionType::ZSTD, compress_format_version, max_output_len) {
 #ifdef ZSTD_STREAMING
     dctx_ = ZSTD_createDCtx();
     assert(dctx_ != nullptr);

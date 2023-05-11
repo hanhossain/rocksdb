@@ -354,7 +354,7 @@ TEST_F(DBPropertiesTest, AggregatedTableProperties) {
 
     Options options = CurrentOptions();
     options.level0_file_num_compaction_trigger = 8;
-    options.compression = kNoCompression;
+    options.compression = CompressionType::NoCompression;
     options.create_if_missing = true;
     options.merge_operator.reset(new TestPutOperator());
 
@@ -415,7 +415,7 @@ TEST_F(DBPropertiesTest, ReadLatencyHistogramByLevel) {
   options.write_buffer_size = 110 << 10;
   options.level0_file_num_compaction_trigger = 6;
   options.num_levels = 4;
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.max_bytes_for_level_base = 4500 << 10;
   options.target_file_size_base = 98 << 10;
   options.max_write_buffer_number = 2;
@@ -547,7 +547,7 @@ TEST_F(DBPropertiesTest, AggregatedTablePropertiesAtLevel) {
   Random rnd(301);
   Options options = CurrentOptions();
   options.level0_file_num_compaction_trigger = 8;
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.create_if_missing = true;
   options.level0_file_num_compaction_trigger = 2;
   options.target_file_size_base = 8192;
@@ -923,7 +923,7 @@ TEST_F(DBPropertiesTest, ApproximateMemoryUsage) {
   Options options;
   options.write_buffer_size = 1000;  // small write buffer
   options.min_write_buffer_number_to_merge = 4;
-  options.compression = kNoCompression;
+  options.compression = CompressionType::NoCompression;
   options.create_if_missing = true;
   options = CurrentOptions(options);
   DestroyAndReopen(options);
@@ -1079,11 +1079,11 @@ TEST_F(DBPropertiesTest, EstimateCompressionRatio) {
   Reopen(options);
 
   ASSERT_OK(db_->SetOptions(
-      {{"compression_per_level", "kNoCompression:kSnappyCompression"}}));
+      {{"compression_per_level", "CompressionType::NoCompression:CompressionType::SnappyCompression"}}));
   auto opts = db_->GetOptions();
   ASSERT_EQ(opts.compression_per_level.size(), 2);
-  ASSERT_EQ(opts.compression_per_level[0], kNoCompression);
-  ASSERT_EQ(opts.compression_per_level[1], kSnappyCompression);
+  ASSERT_EQ(opts.compression_per_level[0], CompressionType::NoCompression);
+  ASSERT_EQ(opts.compression_per_level[1], CompressionType::SnappyCompression);
 
   // compression ratio is -1.0 when no open files at level
   ASSERT_EQ(CompressionRatioAtLevel(0), -1.0);
@@ -1570,18 +1570,18 @@ TEST_P(CompressionSamplingDBPropertiesTest,
   if (fast_) {
     // One of the following light compression libraries must be present.
     if (LZ4_Supported()) {
-      options.compression = kLZ4Compression;
+      options.compression = CompressionType::LZ4Compression;
     } else if (Snappy_Supported()) {
-      options.compression = kSnappyCompression;
+      options.compression = CompressionType::SnappyCompression;
     } else {
       return;
     }
   } else {
     // One of the following heavy compression libraries must be present.
     if (ZSTD_Supported()) {
-      options.compression = kZSTD;
+      options.compression = CompressionType::ZSTD;
     } else if (Zlib_Supported()) {
-      options.compression = kZlibCompression;
+      options.compression = CompressionType::ZlibCompression;
     } else {
       return;
     }

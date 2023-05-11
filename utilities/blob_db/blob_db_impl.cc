@@ -1136,7 +1136,7 @@ Status BlobDBImpl::PutBlobValue(const WriteOptions& /*options*/,
 
 Slice BlobDBImpl::GetCompressedSlice(const Slice& raw,
                                      std::string* compression_output) const {
-  if (bdb_options_.compression == kNoCompression) {
+  if (bdb_options_.compression == CompressionType::NoCompression) {
     return raw;
   }
   StopWatch compression_sw(clock_, statistics_, BLOB_DB_COMPRESSION_MICROS);
@@ -1153,7 +1153,7 @@ Slice BlobDBImpl::GetCompressedSlice(const Slice& raw,
 Status BlobDBImpl::DecompressSlice(const Slice& compressed_value,
                                    CompressionType compression_type,
                                    PinnableSlice* value_output) const {
-  assert(compression_type != kNoCompression);
+  assert(compression_type != CompressionType::NoCompression);
 
   BlockContents contents;
   auto cfh = static_cast<ColumnFamilyHandleImpl*>(DefaultColumnFamily());
@@ -1448,14 +1448,14 @@ Status BlobDBImpl::GetBlobValue(const Slice& key, const Slice& index_entry,
     return Status::OK();
   }
 
-  CompressionType compression_type = kNoCompression;
+  CompressionType compression_type = CompressionType::NoCompression;
   s = GetRawBlobFromFile(key, blob_index.file_number(), blob_index.offset(),
                          blob_index.size(), value, &compression_type);
   if (!s.ok()) {
     return s;
   }
 
-  if (compression_type != kNoCompression) {
+  if (compression_type != CompressionType::NoCompression) {
     s = DecompressSlice(*value, compression_type, value);
     if (!s.ok()) {
       if (debug_level_ >= 2) {
@@ -1480,7 +1480,7 @@ Status BlobDBImpl::GetRawBlobFromFile(const Slice& key, uint64_t file_number,
                                       CompressionType* compression_type) {
   assert(value);
   assert(compression_type);
-  assert(*compression_type == kNoCompression);
+  assert(*compression_type == CompressionType::NoCompression);
 
   if (!size) {
     value->PinSelf("");

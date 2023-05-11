@@ -1048,7 +1048,7 @@ TEST_F(DBBlobBasicTest, GetBlob_IndexWithInvalidFileNumber) {
   constexpr uint64_t size = 5678;
 
   BlobIndex::EncodeBlob(&blob_index, blob_file_number, offset, size,
-                        kNoCompression);
+                        CompressionType::NoCompression);
 
   WriteBatch batch;
   ASSERT_OK(WriteBatchInternal::PutBlobIndex(&batch, 0, key, blob_index));
@@ -1700,7 +1700,7 @@ TEST_F(DBBlobBasicTest, WarmCacheWithBlobsSecondary) {
   secondary_cache_opts.capacity = 1 << 20;
   secondary_cache_opts.num_shard_bits = 0;
   secondary_cache_opts.metadata_charge_policy = kDontChargeCacheMetadata;
-  secondary_cache_opts.compression_type = kNoCompression;
+  secondary_cache_opts.compression_type = CompressionType::NoCompression;
 
   LRUCacheOptions primary_cache_opts;
   primary_cache_opts.capacity = 1024;

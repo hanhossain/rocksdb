@@ -351,23 +351,23 @@ std::unordered_map<std::string, ChecksumType>
 
 std::unordered_map<std::string, CompressionType>
     OptionsHelper::compression_type_string_map = {
-        {"kNoCompression", kNoCompression},
-        {"kSnappyCompression", kSnappyCompression},
-        {"kZlibCompression", kZlibCompression},
-        {"kBZip2Compression", kBZip2Compression},
-        {"kLZ4Compression", kLZ4Compression},
-        {"kLZ4HCCompression", kLZ4HCCompression},
-        {"kXpressCompression", kXpressCompression},
-        {"kZSTD", kZSTD},
-        {"kZSTDNotFinalCompression", kZSTDNotFinalCompression},
-        {"kDisableCompressionOption", kDisableCompressionOption}};
+        {"CompressionType::NoCompression", CompressionType::NoCompression},
+        {"CompressionType::SnappyCompression", CompressionType::SnappyCompression},
+        {"CompressionType::ZlibCompression", CompressionType::ZlibCompression},
+        {"CompressionType::BZip2Compression", CompressionType::BZip2Compression},
+        {"CompressionType::LZ4Compression", CompressionType::LZ4Compression},
+        {"CompressionType::LZ4HCCompression", CompressionType::LZ4HCCompression},
+        {"CompressionType::XpressCompression", CompressionType::XpressCompression},
+        {"CompressionType::ZSTD", CompressionType::ZSTD},
+        {"CompressionType::ZSTDNotFinalCompression", CompressionType::ZSTDNotFinalCompression},
+        {"CompressionType::DisableCompressionOption", CompressionType::DisableCompressionOption}};
 
 std::vector<CompressionType> GetSupportedCompressions() {
   // std::set internally to deduplicate potential name aliases
   std::set<CompressionType> supported_compressions;
   for (const auto& comp_to_name : OptionsHelper::compression_type_string_map) {
     CompressionType t = comp_to_name.second;
-    if (t != kDisableCompressionOption && CompressionTypeSupported(t)) {
+    if (t != CompressionType::DisableCompressionOption && CompressionTypeSupported(t)) {
       supported_compressions.insert(t);
     }
   }
@@ -379,7 +379,7 @@ std::vector<CompressionType> GetSupportedDictCompressions() {
   std::set<CompressionType> dict_compression_types;
   for (const auto& comp_to_name : OptionsHelper::compression_type_string_map) {
     CompressionType t = comp_to_name.second;
-    if (t != kDisableCompressionOption && DictCompressionTypeSupported(t)) {
+    if (t != CompressionType::DisableCompressionOption && DictCompressionTypeSupported(t)) {
       dict_compression_types.insert(t);
     }
   }
