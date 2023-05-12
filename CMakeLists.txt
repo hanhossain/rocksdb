@@ -997,8 +997,8 @@ target_link_libraries(
 set(ROCKSDB_LIB ${ROCKSDB_STATIC_LIB})
 
 # Tests are excluded from Release builds
-CMAKE_DEPENDENT_OPTION(WITH_TESTS "build with tests" ON
-  "CMAKE_BUILD_TYPE STREQUAL Debug" OFF)
+## CMAKE_DEPENDENT_OPTION(WITH_TESTS "build with tests" ON
+# "CMAKE_BUILD_TYPE STREQUAL Debug" OFF)
 option(WITH_BENCHMARK_TOOLS "build with benchmarks" ON)
 option(WITH_CORE_TOOLS "build with ldb and sst_dump" ON)
 option(WITH_TOOLS "build with tools" ON)
