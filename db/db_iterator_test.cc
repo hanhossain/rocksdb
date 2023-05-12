@@ -148,7 +148,7 @@ TEST_P(DBIteratorTest, PersistedTierOnIterator) {
   Options options = CurrentOptions();
   CreateAndReopenWithCF({"pikachu"}, options);
   ReadOptions ropt;
-  ropt.read_tier = ReadTier::PersistedTier;
+  ropt.read_tier = rs::options::ReadTier::PersistedTier;
 
   auto* iter = db_->NewIterator(ropt, handles_[1]);
   ASSERT_TRUE(iter->status().IsNotSupported());
@@ -166,7 +166,7 @@ TEST_P(DBIteratorTest, NonBlockingIteration) {
     options_override.full_block_cache = true;
     Options options = CurrentOptions(options_override);
     options.statistics = ROCKSDB_NAMESPACE::CreateDBStatistics();
-    non_blocking_opts.read_tier = ReadTier::BlockCacheTier;
+    non_blocking_opts.read_tier = rs::options::ReadTier::BlockCacheTier;
 
     CreateAndReopenWithCF({"pikachu"}, options);
     // write one kv to the database.
@@ -1260,7 +1260,7 @@ TEST_P(DBIteratorTest, IndexWithFirstKey) {
     ropt.tailing = tailing;
     std::unique_ptr<Iterator> iter(NewIterator(ropt));
 
-    ropt.read_tier = ReadTier::BlockCacheTier;
+    ropt.read_tier = rs::options::ReadTier::BlockCacheTier;
     std::unique_ptr<Iterator> nonblocking_iter(NewIterator(ropt));
 
     iter->Seek("b10");
@@ -2744,7 +2744,7 @@ TEST_P(DBIteratorTest, NonBlockingIterationBugRepro) {
 
   // Create a nonblocking iterator before writing to memtable.
   ReadOptions ropt;
-  ropt.read_tier = ReadTier::BlockCacheTier;
+  ropt.read_tier = rs::options::ReadTier::BlockCacheTier;
   std::unique_ptr<Iterator> iter(NewIterator(ropt));
 
   // Overwrite a key in memtable many times to hit

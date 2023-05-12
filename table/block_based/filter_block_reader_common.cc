@@ -80,7 +80,7 @@ Status FilterBlockReaderCommon<TBlocklike>::GetOrReadFilterBlock(
 
   ReadOptions ro = read_options;
   if (no_io) {
-    ro.read_tier = ReadTier::BlockCacheTier;
+    ro.read_tier = rs::options::ReadTier::BlockCacheTier;
   }
 
   return ReadFilterBlock(table_, nullptr /* prefetch_buffer */, ro,

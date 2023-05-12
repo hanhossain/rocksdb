@@ -1465,7 +1465,7 @@ BlockBasedTable::MaybeReadBlockAndLoadToCache(
     GetContext* get_context, BlockCacheLookupContext* lookup_context,
     BlockContents* contents, bool async_read) const {
   assert(out_parsed_block != nullptr);
-  const bool no_io = (ro.read_tier == ReadTier::BlockCacheTier);
+  const bool no_io = (ro.read_tier == rs::options::ReadTier::BlockCacheTier);
   BlockCacheInterface<TBlocklike> block_cache{
       rep_->table_options.block_cache.get()};
 
@@ -1624,7 +1624,7 @@ BlockBasedTable::SaveLookupContextOrTraceRecord(
       assert(false);
       break;
   }
-  const bool no_io = ro.read_tier == ReadTier::BlockCacheTier;
+  const bool no_io = ro.read_tier == rs::options::ReadTier::BlockCacheTier;
   bool no_insert = no_io || !ro.fill_cache;
   if (BlockCacheTraceHelper::IsGetOrMultiGetOnDataBlock(
           trace_block_type, lookup_context->caller)) {
@@ -1703,7 +1703,7 @@ WithBlocklikeCheck<Status, TBlocklike> BlockBasedTable::RetrieveBlock(
 
   assert(out_parsed_block->IsEmpty());
 
-  const bool no_io = ro.read_tier == ReadTier::BlockCacheTier;
+  const bool no_io = ro.read_tier == rs::options::ReadTier::BlockCacheTier;
   if (no_io) {
     return Status::Incomplete("no blocking io");
   }
@@ -1823,7 +1823,7 @@ bool BlockBasedTable::PrefixRangeMayMatch(
   FilterBlockReader* const filter = rep_->filter.get();
   bool filter_checked = false;
   if (filter != nullptr) {
-    const bool no_io = read_options.read_tier == ReadTier::BlockCacheTier;
+    const bool no_io = read_options.read_tier == rs::options::ReadTier::BlockCacheTier;
 
     const Slice* const const_ikey_ptr = &internal_key;
     may_match = filter->RangeMayExist(
@@ -2057,7 +2057,7 @@ Status BlockBasedTable::Get(const ReadOptions& read_options, const Slice& key,
   assert(key.size() >= 8);  // key must be internal key
   assert(get_context != nullptr);
   Status s;
-  const bool no_io = read_options.read_tier == ReadTier::BlockCacheTier;
+  const bool no_io = read_options.read_tier == rs::options::ReadTier::BlockCacheTier;
 
   FilterBlockReader* const filter =
       !skip_filters ? rep_->filter.get() : nullptr;
@@ -2225,7 +2225,7 @@ Status BlockBasedTable::MultiGetFilter(const ReadOptions& read_options,
 
   // First check the full filter
   // If full filter not useful, Then go into each block
-  const bool no_io = read_options.read_tier == ReadTier::BlockCacheTier;
+  const bool no_io = read_options.read_tier == rs::options::ReadTier::BlockCacheTier;
   uint64_t tracing_mget_id = BlockCacheTraceHelper::kReservedGetId;
   if (mget_range->begin()->get_context) {
     tracing_mget_id = mget_range->begin()->get_context->get_tracing_get_id();

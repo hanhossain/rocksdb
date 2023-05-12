@@ -231,7 +231,7 @@ InternalIterator* TableCache::NewIterator(
   if (table_reader == nullptr) {
     s = FindTable(options, file_options, icomparator, file_meta, &handle,
                   block_protection_bytes_per_key, prefix_extractor,
-                  options.read_tier == ReadTier::BlockCacheTier /* no_io */,
+                  options.read_tier == rs::options::ReadTier::BlockCacheTier /* no_io */,
                   !for_compaction /* record_read_stats */, file_read_hist,
                   skip_filters, level,
                   true /* prefetch_index_and_filter_in_cache */,
@@ -437,7 +437,7 @@ Status TableCache::Get(
     if (t == nullptr) {
       s = FindTable(options, file_options_, internal_comparator, file_meta,
                     &handle, block_protection_bytes_per_key, prefix_extractor,
-                    options.read_tier == ReadTier::BlockCacheTier /* no_io */,
+                    options.read_tier == rs::options::ReadTier::BlockCacheTier /* no_io */,
                     true /* record_read_stats */, file_read_hist, skip_filters,
                     level, true /* prefetch_index_and_filter_in_cache */,
                     max_file_size_for_l0_meta_pin, file_meta.temperature);
@@ -467,7 +467,7 @@ Status TableCache::Get(
       get_context->SetReplayLog(row_cache_entry);  // nullptr if no cache.
       s = t->Get(options, k, get_context, prefix_extractor.get(), skip_filters);
       get_context->SetReplayLog(nullptr);
-    } else if (options.read_tier == ReadTier::BlockCacheTier && s.IsIncomplete()) {
+    } else if (options.read_tier == rs::options::ReadTier::BlockCacheTier && s.IsIncomplete()) {
       // Couldn't find Table in cache but treat as kFound if no_io set
       get_context->MarkKeyMayExist();
       s = Status::OK();
@@ -540,7 +540,7 @@ Status TableCache::MultiGetFilter(
   if (t == nullptr) {
     s = FindTable(options, file_options_, internal_comparator, file_meta,
                   &handle, block_protection_bytes_per_key, prefix_extractor,
-                  options.read_tier == ReadTier::BlockCacheTier /* no_io */,
+                  options.read_tier == rs::options::ReadTier::BlockCacheTier /* no_io */,
                   true /* record_read_stats */, file_read_hist,
                   /*skip_filters=*/false, level,
                   true /* prefetch_index_and_filter_in_cache */,

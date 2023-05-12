@@ -2684,7 +2684,7 @@ TEST_P(BlockBasedTableTest, IndexSeekOptimizationIncomplete) {
 
   auto reader = c.GetTableReader();
   ReadOptions ropt;
-  ropt.read_tier = ReadTier::BlockCacheTier;
+  ropt.read_tier = rs::options::ReadTier::BlockCacheTier;
   std::unique_ptr<InternalIterator> iter(reader->NewIterator(
       ropt, /*prefix_extractor=*/nullptr, /*arena=*/nullptr,
       /*skip_filters=*/false, TableReaderCaller::kUncategorized));

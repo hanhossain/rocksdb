@@ -36,7 +36,6 @@
 #undef max
 #endif
 
-using rs::options::ReadTier;
 using rs::options::TraceFilterType;
 using rs::options::WALRecoveryMode;
 
@@ -1464,7 +1463,7 @@ struct ReadOptions {
   // resides on a particular cache. If the required data is not
   // found at the specified cache, then Status::Incomplete is returned.
   // Default: ReadAllTier
-  ReadTier read_tier;
+  rs::options::ReadTier read_tier;
 
   // If true, all data read from underlying storage will be
   // verified against corresponding checksums.

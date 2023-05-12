@@ -446,9 +446,9 @@ Iterator* DBImplSecondary::NewIterator(const ReadOptions& read_options,
     return NewErrorIterator(
         Status::NotSupported("Managed iterator is not supported anymore."));
   }
-  if (read_options.read_tier == ReadTier::PersistedTier) {
+  if (read_options.read_tier == rs::options::ReadTier::PersistedTier) {
     return NewErrorIterator(Status::NotSupported(
-        "ReadTier::PersistedData is not yet supported in iterators."));
+        "rs::options::ReadTier::PersistedData is not yet supported in iterators."));
   }
   if (read_options.io_activity != Env::IOActivity::kUnknown) {
     return NewErrorIterator(Status::InvalidArgument(
@@ -517,9 +517,9 @@ Status DBImplSecondary::NewIterators(
   if (read_options.managed) {
     return Status::NotSupported("Managed iterator is not supported anymore.");
   }
-  if (read_options.read_tier == ReadTier::PersistedTier) {
+  if (read_options.read_tier == rs::options::ReadTier::PersistedTier) {
     return Status::NotSupported(
-        "ReadTier::PersistedData is not yet supported in iterators.");
+        "rs::options::ReadTier::PersistedData is not yet supported in iterators.");
   }
   if (read_options.io_activity != Env::IOActivity::kUnknown) {
     return Status::InvalidArgument(

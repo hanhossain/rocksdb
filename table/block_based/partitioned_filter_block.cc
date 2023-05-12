@@ -306,7 +306,7 @@ Status PartitionedFilterBlockReader::GetFilterPartitionBlock(
 
   ReadOptions read_options = _read_options;
   if (no_io) {
-    read_options.read_tier = ReadTier::BlockCacheTier;
+    read_options.read_tier = rs::options::ReadTier::BlockCacheTier;
   }
 
   const Status s =

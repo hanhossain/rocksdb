@@ -633,7 +633,7 @@ TEST_F(DBTest, ReadFromPersistedTier) {
 
       // Read directly from persited data.
       ReadOptions ropt;
-      ropt.read_tier = ReadTier::PersistedTier;
+      ropt.read_tier = rs::options::ReadTier::PersistedTier;
       std::string value;
       if (wopt.disableWAL) {
         // as data has not yet being flushed, we expect not found.

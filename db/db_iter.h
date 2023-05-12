@@ -376,7 +376,7 @@ class DBIter final : public Iterator {
   // Expect the inner iterator to maintain a total order.
   // prefix_extractor_ must be non-NULL if the value is false.
   const bool expect_total_order_inner_iter_;
-  ReadTier read_tier_;
+  rs::options::ReadTier read_tier_;
   bool fill_cache_;
   bool verify_checksums_;
   // Whether the iterator is allowed to expose blob references. Set to true when

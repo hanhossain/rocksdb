@@ -325,7 +325,7 @@ TEST_F(BlobSourceTest, GetBlobsFromCache) {
     ASSERT_EQ(statistics->getTickerCount(BLOB_DB_CACHE_BYTES_WRITE), 0);
 
     // Cache-only GetBlob
-    read_options.read_tier = ReadTier::BlockCacheTier;
+    read_options.read_tier = rs::options::ReadTier::BlockCacheTier;
     total_bytes = 0;
     blob_bytes = 0;
     get_perf_context()->Reset();
@@ -371,7 +371,7 @@ TEST_F(BlobSourceTest, GetBlobsFromCache) {
     std::vector<PinnableSlice> values(keys.size());
     uint64_t bytes_read = 0;
 
-    read_options.read_tier = ReadTier::BlockCacheTier;
+    read_options.read_tier = rs::options::ReadTier::BlockCacheTier;
     read_options.fill_cache = true;
     get_perf_context()->Reset();
     statistics->Reset().PermitUncheckedError();
@@ -413,7 +413,7 @@ TEST_F(BlobSourceTest, GetBlobsFromCache) {
     uint64_t bytes_read = 0;
     uint64_t file_number = 100;  // non-existing file
 
-    read_options.read_tier = ReadTier::ReadAllTier;
+    read_options.read_tier = rs::options::ReadTier::ReadAllTier;
     read_options.fill_cache = true;
     get_perf_context()->Reset();
     statistics->Reset().PermitUncheckedError();
@@ -510,7 +510,7 @@ TEST_F(BlobSourceTest, GetCompressedBlobs) {
     // Snappy Compression
     const uint64_t file_number = 1;
 
-    read_options.read_tier = ReadTier::ReadAllTier;
+    read_options.read_tier = rs::options::ReadTier::ReadAllTier;
 
     WriteBlobFile(immutable_options, column_family_id, has_ttl,
                   expiration_range, expiration_range, file_number, keys, blobs,
@@ -530,7 +530,7 @@ TEST_F(BlobSourceTest, GetCompressedBlobs) {
     }
 
     read_options.fill_cache = true;
-    read_options.read_tier = ReadTier::ReadAllTier;
+    read_options.read_tier = rs::options::ReadTier::ReadAllTier;
     get_perf_context()->Reset();
 
     for (size_t i = 0; i < num_blobs; ++i) {
@@ -551,7 +551,7 @@ TEST_F(BlobSourceTest, GetCompressedBlobs) {
 
     ASSERT_GE((int)get_perf_context()->blob_decompress_time, 0);
 
-    read_options.read_tier = ReadTier::BlockCacheTier;
+    read_options.read_tier = rs::options::ReadTier::BlockCacheTier;
     get_perf_context()->Reset();
 
     for (size_t i = 0; i < num_blobs; ++i) {
@@ -654,7 +654,7 @@ TEST_F(BlobSourceTest, MultiGetBlobsFromMultiFiles) {
   {
     // MultiGetBlob
     read_options.fill_cache = true;
-    read_options.read_tier = ReadTier::ReadAllTier;
+    read_options.read_tier = rs::options::ReadTier::ReadAllTier;
 
     autovector<BlobFileReadRequests> blob_reqs;
     std::array<autovector<BlobReadRequest>, blob_files> blob_reqs_in_file;
@@ -849,7 +849,7 @@ TEST_F(BlobSourceTest, MultiGetBlobsFromCache) {
     }
 
     read_options.fill_cache = true;
-    read_options.read_tier = ReadTier::ReadAllTier;
+    read_options.read_tier = rs::options::ReadTier::ReadAllTier;
     get_perf_context()->Reset();
     statistics->Reset().PermitUncheckedError();
 
@@ -914,7 +914,7 @@ TEST_F(BlobSourceTest, MultiGetBlobsFromCache) {
     }
 
     // Cache-only MultiGetBlobFromOneFile
-    read_options.read_tier = ReadTier::BlockCacheTier;
+    read_options.read_tier = rs::options::ReadTier::BlockCacheTier;
     get_perf_context()->Reset();
     statistics->Reset().PermitUncheckedError();
 
@@ -958,7 +958,7 @@ TEST_F(BlobSourceTest, MultiGetBlobsFromCache) {
   {
     // Cache-only MultiGetBlobFromOneFile
     uint64_t bytes_read = 0;
-    read_options.read_tier = ReadTier::BlockCacheTier;
+    read_options.read_tier = rs::options::ReadTier::BlockCacheTier;
 
     std::array<Status, num_blobs> statuses_buf;
     std::array<PinnableSlice, num_blobs> value_buf;
@@ -1002,7 +1002,7 @@ TEST_F(BlobSourceTest, MultiGetBlobsFromCache) {
     // MultiGetBlobFromOneFile from non-existing file
     uint64_t bytes_read = 0;
     uint64_t non_existing_file_number = 100;
-    read_options.read_tier = ReadTier::ReadAllTier;
+    read_options.read_tier = rs::options::ReadTier::ReadAllTier;
 
     std::array<Status, num_blobs> statuses_buf;
     std::array<PinnableSlice, num_blobs> value_buf;

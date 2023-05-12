@@ -3781,7 +3781,7 @@ TEST_F(DBTest2, MemtableOnlyIterator) {
   ASSERT_OK(Put(1, "bar", "second"));
 
   ReadOptions ropt;
-  ropt.read_tier = ReadTier::MemtableTier;
+  ropt.read_tier = rs::options::ReadTier::MemtableTier;
   std::string value;
   Iterator* it = nullptr;
 

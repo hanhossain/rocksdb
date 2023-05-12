@@ -131,7 +131,7 @@ struct Reader {
       state.it.reset(db_->NewIterator(options));
 
       if (FLAGS_cache_only_first) {
-        options.read_tier = ROCKSDB_NAMESPACE::ReadTier::BlockCacheTier;
+        options.read_tier = rs::options::ReadTier::BlockCacheTier;
         state.it_cacheonly.reset(db_->NewIterator(options));
       }
     }

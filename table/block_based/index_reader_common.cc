@@ -47,7 +47,7 @@ Status BlockBasedTable::IndexReaderCommon::GetOrReadIndexBlock(
 
   ReadOptions read_options = ro;
   if (no_io) {
-    read_options.read_tier = ReadTier::BlockCacheTier;
+    read_options.read_tier = rs::options::ReadTier::BlockCacheTier;
   }
 
   return ReadIndexBlock(table_, /*prefetch_buffer=*/nullptr, read_options,

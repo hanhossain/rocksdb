@@ -2958,7 +2958,7 @@ TEST_F(DBRangeDelTest, RefreshMemtableIter) {
   ASSERT_OK(
       db_->DeleteRange(WriteOptions(), db_->DefaultColumnFamily(), "a", "z"));
   ReadOptions ro;
-  ro.read_tier = ReadTier::MemtableTier;
+  ro.read_tier = rs::options::ReadTier::MemtableTier;
   std::unique_ptr<Iterator> iter{db_->NewIterator(ro)};
   ASSERT_OK(Flush());
   // First refresh reinits iter, which had a bug where
