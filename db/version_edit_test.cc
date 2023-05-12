@@ -42,7 +42,7 @@ TEST_F(VersionEditTest, EncodeDecode) {
     edit.AddFile(3, kBig + 300 + i, kBig32Bit + 400 + i, 0,
                  InternalKey("foo", kBig + 500 + i, kTypeValue),
                  InternalKey("zoo", kBig + 600 + i, kTypeDeletion),
-                 kBig + 500 + i, kBig + 600 + i, false, Temperature::Unknown,
+                 kBig + 500 + i, kBig + 600 + i, false, rs::advanced_options::Temperature::Unknown,
                  kInvalidBlobFileNumber, 888, 678,
                  kBig + 300 + i /* epoch_number */, "234", "crc32c",
                  kNullUniqueId64x2, 0);
@@ -62,24 +62,24 @@ TEST_F(VersionEditTest, EncodeDecodeNewFile4) {
   VersionEdit edit;
   edit.AddFile(3, 300, 3, 100, InternalKey("foo", kBig + 500, kTypeValue),
                InternalKey("zoo", kBig + 600, kTypeDeletion), kBig + 500,
-               kBig + 600, true, Temperature::Unknown, kInvalidBlobFileNumber,
+               kBig + 600, true, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
                kUnknownOldestAncesterTime, kUnknownFileCreationTime,
                300 /* epoch_number */, kUnknownFileChecksum,
                kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
   edit.AddFile(4, 301, 3, 100, InternalKey("foo", kBig + 501, kTypeValue),
                InternalKey("zoo", kBig + 601, kTypeDeletion), kBig + 501,
-               kBig + 601, false, Temperature::Unknown, kInvalidBlobFileNumber,
+               kBig + 601, false, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
                kUnknownOldestAncesterTime, kUnknownFileCreationTime,
                301 /* epoch_number */, kUnknownFileChecksum,
                kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
   edit.AddFile(5, 302, 0, 100, InternalKey("foo", kBig + 502, kTypeValue),
                InternalKey("zoo", kBig + 602, kTypeDeletion), kBig + 502,
-               kBig + 602, true, Temperature::Unknown, kInvalidBlobFileNumber,
+               kBig + 602, true, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
                666, 888, 302 /* epoch_number */, kUnknownFileChecksum,
                kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
   edit.AddFile(5, 303, 0, 100, InternalKey("foo", kBig + 503, kTypeBlobIndex),
                InternalKey("zoo", kBig + 603, kTypeBlobIndex), kBig + 503,
-               kBig + 603, true, Temperature::Unknown, 1001,
+               kBig + 603, true, rs::advanced_options::Temperature::Unknown, 1001,
                kUnknownOldestAncesterTime, kUnknownFileCreationTime,
                303 /* epoch_number */, kUnknownFileChecksum,
                kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
@@ -120,13 +120,13 @@ TEST_F(VersionEditTest, ForwardCompatibleNewFile4) {
   VersionEdit edit;
   edit.AddFile(3, 300, 3, 100, InternalKey("foo", kBig + 500, kTypeValue),
                InternalKey("zoo", kBig + 600, kTypeDeletion), kBig + 500,
-               kBig + 600, true, Temperature::Unknown, kInvalidBlobFileNumber,
+               kBig + 600, true, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
                kUnknownOldestAncesterTime, kUnknownFileCreationTime,
                300 /* epoch_number */, kUnknownFileChecksum,
                kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
   edit.AddFile(4, 301, 3, 100, InternalKey("foo", kBig + 501, kTypeValue),
                InternalKey("zoo", kBig + 601, kTypeDeletion), kBig + 501,
-               kBig + 601, false, Temperature::Unknown, kInvalidBlobFileNumber,
+               kBig + 601, false, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
                686, 868, 301 /* epoch_number */, "234", "crc32c",
                kNullUniqueId64x2, 0);
   edit.DeleteFile(4, 700);
@@ -174,7 +174,7 @@ TEST_F(VersionEditTest, NewFile4NotSupportedField) {
   VersionEdit edit;
   edit.AddFile(3, 300, 3, 100, InternalKey("foo", kBig + 500, kTypeValue),
                InternalKey("zoo", kBig + 600, kTypeDeletion), kBig + 500,
-               kBig + 600, true, Temperature::Unknown, kInvalidBlobFileNumber,
+               kBig + 600, true, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
                kUnknownOldestAncesterTime, kUnknownFileCreationTime,
                300 /* epoch_number */, kUnknownFileChecksum,
                kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
@@ -205,7 +205,7 @@ TEST_F(VersionEditTest, NewFile4NotSupportedField) {
 TEST_F(VersionEditTest, EncodeEmptyFile) {
   VersionEdit edit;
   edit.AddFile(0, 0, 0, 0, InternalKey(), InternalKey(), 0, 0, false,
-               Temperature::Unknown, kInvalidBlobFileNumber,
+               rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
                kUnknownOldestAncesterTime, kUnknownFileCreationTime,
                1 /*epoch_number*/, kUnknownFileChecksum,
                kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);

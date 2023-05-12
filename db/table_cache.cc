@@ -95,7 +95,7 @@ Status TableCache::GetTableReader(
     std::unique_ptr<TableReader>* table_reader,
     const std::shared_ptr<const SliceTransform>& prefix_extractor,
     bool skip_filters, int level, bool prefetch_index_and_filter_in_cache,
-    size_t max_file_size_for_l0_meta_pin, Temperature file_temperature) {
+    size_t max_file_size_for_l0_meta_pin, rs::advanced_options::Temperature file_temperature) {
   std::string fname = TableFileName(
       ioptions_.cf_paths, file_meta.fd.GetNumber(), file_meta.fd.GetPathId());
   std::unique_ptr<FSRandomAccessFile> file;
@@ -162,7 +162,7 @@ Status TableCache::FindTable(
     const std::shared_ptr<const SliceTransform>& prefix_extractor,
     const bool no_io, bool record_read_stats, HistogramImpl* file_read_hist,
     bool skip_filters, int level, bool prefetch_index_and_filter_in_cache,
-    size_t max_file_size_for_l0_meta_pin, Temperature file_temperature) {
+    size_t max_file_size_for_l0_meta_pin, rs::advanced_options::Temperature file_temperature) {
   PERF_TIMER_GUARD_WITH_CLOCK(find_table_nanos, ioptions_.clock);
   uint64_t number = file_meta.fd.GetNumber();
   Slice key = GetSliceForFileNumber(&number);

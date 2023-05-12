@@ -260,7 +260,7 @@ struct FileOperationInfo {
   const std::string& path;
   // Rocksdb try to provide file temperature information, but it's not
   // guaranteed.
-  Temperature temperature;
+  rs::advanced_options::Temperature temperature;
   uint64_t offset;
   size_t length;
   const Duration duration;
@@ -270,7 +270,7 @@ struct FileOperationInfo {
   FileOperationInfo(const FileOperationType _type, const std::string& _path,
                     const StartTimePoint& _start_ts,
                     const FinishTimePoint& _finish_ts, const Status& _status,
-                    const Temperature _temperature = Temperature::Unknown)
+                    const rs::advanced_options::Temperature _temperature = rs::advanced_options::Temperature::Unknown)
       : type(_type),
         path(_path),
         temperature(_temperature),

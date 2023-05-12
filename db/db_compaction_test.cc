@@ -8610,8 +8610,8 @@ TEST_F(DBCompactionTest, FIFOWarm) {
   int total_warm = 0;
   ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
       "NewWritableFile::FileOptions.temperature", [&](void* arg) {
-        Temperature temperature = *(static_cast<Temperature*>(arg));
-        if (temperature == Temperature::Warm) {
+        rs::advanced_options::Temperature temperature = *(static_cast<rs::advanced_options::Temperature*>(arg));
+        if (temperature == rs::advanced_options::Temperature::Warm) {
           total_warm++;
         }
       });
@@ -8647,10 +8647,10 @@ TEST_F(DBCompactionTest, FIFOWarm) {
   ColumnFamilyMetaData metadata;
   db_->GetColumnFamilyMetaData(&metadata);
   ASSERT_EQ(4, metadata.file_count);
-  ASSERT_EQ(Temperature::Unknown, metadata.levels[0].files[0].temperature);
-  ASSERT_EQ(Temperature::Unknown, metadata.levels[0].files[1].temperature);
-  ASSERT_EQ(Temperature::Warm, metadata.levels[0].files[2].temperature);
-  ASSERT_EQ(Temperature::Warm, metadata.levels[0].files[3].temperature);
+  ASSERT_EQ(rs::advanced_options::Temperature::Unknown, metadata.levels[0].files[0].temperature);
+  ASSERT_EQ(rs::advanced_options::Temperature::Unknown, metadata.levels[0].files[1].temperature);
+  ASSERT_EQ(rs::advanced_options::Temperature::Warm, metadata.levels[0].files[2].temperature);
+  ASSERT_EQ(rs::advanced_options::Temperature::Warm, metadata.levels[0].files[3].temperature);
   ASSERT_EQ(2, total_warm);
 
   Destroy(options);

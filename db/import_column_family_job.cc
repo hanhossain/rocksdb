@@ -81,7 +81,7 @@ Status ImportColumnFamilyJob::Prepare(uint64_t next_file_number,
     if (!hardlink_files) {
       status =
           CopyFile(fs_.get(), path_outside_db, path_inside_db, 0,
-                   db_options_.use_fsync, io_tracer_, Temperature::Unknown);
+                   db_options_.use_fsync, io_tracer_, rs::advanced_options::Temperature::Unknown);
     }
     if (!status.ok()) {
       break;

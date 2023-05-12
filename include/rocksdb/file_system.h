@@ -161,7 +161,7 @@ struct FileOptions : EnvOptions {
   // When creating a new file, set the temperature of the file so that
   // underlying file systems can put it with appropriate storage media and/or
   // coding.
-  Temperature temperature = Temperature::Unknown;
+  rs::advanced_options::Temperature temperature = rs::advanced_options::Temperature::Unknown;
 
   // The checksum type that is used to calculate the checksum value for
   // handoff during file writes.
@@ -754,7 +754,7 @@ class FSSequentialFile {
   // useful in case some outside process moves a file from one tier to another,
   // though the temperature is generally expected not to change while a file is
   // open.
-  virtual Temperature GetTemperature() const { return Temperature::Unknown; }
+  virtual rs::advanced_options::Temperature GetTemperature() const { return rs::advanced_options::Temperature::Unknown; }
 
   // If you're adding methods here, remember to add them to
   // SequentialFileWrapper too.
@@ -923,7 +923,7 @@ class FSRandomAccessFile {
   // useful in case some outside process moves a file from one tier to another,
   // though the temperature is generally expected not to change while a file is
   // open.
-  virtual Temperature GetTemperature() const { return Temperature::Unknown; }
+  virtual rs::advanced_options::Temperature GetTemperature() const { return rs::advanced_options::Temperature::Unknown; }
 
   // If you're adding methods here, remember to add them to
   // RandomAccessFileWrapper too.
@@ -1227,7 +1227,7 @@ class FSRandomRWFile {
   // useful in case some outside process moves a file from one tier to another,
   // though the temperature is generally expected not to change while a file is
   // open.
-  virtual Temperature GetTemperature() const { return Temperature::Unknown; }
+  virtual rs::advanced_options::Temperature GetTemperature() const { return rs::advanced_options::Temperature::Unknown; }
 
   // If you're adding methods here, remember to add them to
   // RandomRWFileWrapper too.
@@ -1559,7 +1559,7 @@ class FSSequentialFileWrapper : public FSSequentialFile {
                           IODebugContext* dbg) override {
     return target_->PositionedRead(offset, n, options, result, scratch, dbg);
   }
-  Temperature GetTemperature() const override {
+  rs::advanced_options::Temperature GetTemperature() const override {
     return target_->GetTemperature();
   }
 
@@ -1616,7 +1616,7 @@ class FSRandomAccessFileWrapper : public FSRandomAccessFile {
                      IODebugContext* dbg) override {
     return target()->ReadAsync(req, opts, cb, cb_arg, io_handle, del_fn, dbg);
   }
-  Temperature GetTemperature() const override {
+  rs::advanced_options::Temperature GetTemperature() const override {
     return target_->GetTemperature();
   }
 
@@ -1782,7 +1782,7 @@ class FSRandomRWFileWrapper : public FSRandomRWFile {
   IOStatus Close(const IOOptions& options, IODebugContext* dbg) override {
     return target_->Close(options, dbg);
   }
-  Temperature GetTemperature() const override {
+  rs::advanced_options::Temperature GetTemperature() const override {
     return target_->GetTemperature();
   }
 

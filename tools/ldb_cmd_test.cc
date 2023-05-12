@@ -1069,7 +1069,7 @@ TEST_F(LdbCmdTest, FileTemperatureUpdateManifest) {
   auto test_fs = std::make_shared<FileTemperatureTestFS>(FileSystem::Default());
   std::unique_ptr<Env> env(new CompositeEnvWrapper(Env::Default(), test_fs));
   Options opts;
-  opts.bottommost_temperature = Temperature::Warm;
+  opts.bottommost_temperature = rs::advanced_options::Temperature::Warm;
   opts.level0_file_num_compaction_trigger = 10;
   opts.create_if_missing = true;
   opts.env = env.get();
@@ -1079,18 +1079,18 @@ TEST_F(LdbCmdTest, FileTemperatureUpdateManifest) {
   ASSERT_OK(DestroyDB(dbname, opts));
   ASSERT_OK(DB::Open(opts, dbname, &db));
 
-  std::array<Temperature, 5> kTestTemps = {
-      Temperature::Cold, Temperature::Warm, Temperature::Hot,
-      Temperature::Warm, Temperature::Cold};
-  std::map<uint64_t, Temperature> number_to_temp;
+  std::array<rs::advanced_options::Temperature, 5> kTestTemps = {
+      rs::advanced_options::Temperature::Cold, rs::advanced_options::Temperature::Warm, rs::advanced_options::Temperature::Hot,
+      rs::advanced_options::Temperature::Warm, rs::advanced_options::Temperature::Cold};
+  std::map<uint64_t, rs::advanced_options::Temperature> number_to_temp;
   for (size_t i = 0; i < kTestTemps.size(); ++i) {
     ASSERT_OK(db->Put(WriteOptions(), std::to_string(i), std::to_string(i)));
     ASSERT_OK(db->Flush(FlushOptions()));
 
-    std::map<uint64_t, Temperature> current_temps;
+    std::map<uint64_t, rs::advanced_options::Temperature> current_temps;
     test_fs->CopyCurrentSstFileTemperatures(&current_temps);
     for (auto e : current_temps) {
-      if (e.second == Temperature::Unknown) {
+      if (e.second == rs::advanced_options::Temperature::Unknown) {
         test_fs->OverrideSstFileTemperature(e.first, kTestTemps[i]);
         number_to_temp[e.first] = kTestTemps[i];
       }
@@ -1110,11 +1110,11 @@ TEST_F(LdbCmdTest, FileTemperatureUpdateManifest) {
   }
 
   // Still all unknown
-  std::vector<std::pair<uint64_t, Temperature>> requests;
+  std::vector<std::pair<uint64_t, rs::advanced_options::Temperature>> requests;
   test_fs->PopRequestedSstFileTemperatures(&requests);
   ASSERT_EQ(requests.size(), kTestTemps.size());
   for (auto& r : requests) {
-    ASSERT_EQ(r.second, Temperature::Unknown);
+    ASSERT_EQ(r.second, rs::advanced_options::Temperature::Unknown);
   }
 
   // Close for update_manifest

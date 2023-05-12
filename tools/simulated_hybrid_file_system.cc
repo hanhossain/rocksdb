@@ -96,13 +96,13 @@ SimulatedHybridFileSystem::~SimulatedHybridFileSystem() {
 IOStatus SimulatedHybridFileSystem::NewRandomAccessFile(
     const std::string& fname, const FileOptions& file_opts,
     std::unique_ptr<FSRandomAccessFile>* result, IODebugContext* dbg) {
-  Temperature temperature = Temperature::Unknown;
+  rs::advanced_options::Temperature temperature = rs::advanced_options::Temperature::Unknown;
   if (is_full_fs_warm_) {
-    temperature = Temperature::Warm;
+    temperature = rs::advanced_options::Temperature::Warm;
   } else {
     const std::lock_guard<std::mutex> lock(mutex_);
     if (warm_file_set_.find(fname) != warm_file_set_.end()) {
-      temperature = Temperature::Warm;
+      temperature = rs::advanced_options::Temperature::Warm;
     }
     assert(temperature == file_opts.temperature);
   }
@@ -115,13 +115,13 @@ IOStatus SimulatedHybridFileSystem::NewRandomAccessFile(
 IOStatus SimulatedHybridFileSystem::NewWritableFile(
     const std::string& fname, const FileOptions& file_opts,
     std::unique_ptr<FSWritableFile>* result, IODebugContext* dbg) {
-  if (file_opts.temperature == Temperature::Warm) {
+  if (file_opts.temperature == rs::advanced_options::Temperature::Warm) {
     const std::lock_guard<std::mutex> lock(mutex_);
     warm_file_set_.insert(fname);
   }
 
   IOStatus s = target()->NewWritableFile(fname, file_opts, result, dbg);
-  if (file_opts.temperature == Temperature::Warm || is_full_fs_warm_) {
+  if (file_opts.temperature == rs::advanced_options::Temperature::Warm || is_full_fs_warm_) {
     result->reset(new SimulatedWritableFile(std::move(*result), rate_limiter_));
   }
   return s;
@@ -140,7 +140,7 @@ IOStatus SimulatedHybridFileSystem::DeleteFile(const std::string& fname,
 IOStatus SimulatedHybridRaf::Read(uint64_t offset, size_t n,
                                   const IOOptions& options, Slice* result,
                                   char* scratch, IODebugContext* dbg) const {
-  if (temperature_ == Temperature::Warm) {
+  if (temperature_ == rs::advanced_options::Temperature::Warm) {
     SimulateIOWait(n);
   }
   return target()->Read(offset, n, options, result, scratch, dbg);
@@ -149,7 +149,7 @@ IOStatus SimulatedHybridRaf::Read(uint64_t offset, size_t n,
 IOStatus SimulatedHybridRaf::MultiRead(FSReadRequest* reqs, size_t num_reqs,
                                        const IOOptions& options,
                                        IODebugContext* dbg) {
-  if (temperature_ == Temperature::Warm) {
+  if (temperature_ == rs::advanced_options::Temperature::Warm) {
     for (size_t i = 0; i < num_reqs; i++) {
       SimulateIOWait(reqs[i].len);
     }
@@ -160,7 +160,7 @@ IOStatus SimulatedHybridRaf::MultiRead(FSReadRequest* reqs, size_t num_reqs,
 IOStatus SimulatedHybridRaf::Prefetch(uint64_t offset, size_t n,
                                       const IOOptions& options,
                                       IODebugContext* dbg) {
-  if (temperature_ == Temperature::Warm) {
+  if (temperature_ == rs::advanced_options::Temperature::Warm) {
     SimulateIOWait(n);
   }
   return target()->Prefetch(offset, n, options, dbg);

@@ -41,7 +41,7 @@ namespace ROCKSDB_NAMESPACE {
 
 SstFileDumper::SstFileDumper(const Options& options,
                              const std::string& file_path,
-                             Temperature file_temp, size_t readahead_size,
+                             rs::advanced_options::Temperature file_temp, size_t readahead_size,
                              bool verify_checksum, bool output_hex,
                              bool decode_blob_index, const EnvOptions& soptions,
                              bool silent)

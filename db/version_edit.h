@@ -208,7 +208,7 @@ struct FileMetaData {
 
   bool marked_for_compaction = false;  // True if client asked us nicely to
                                        // compact this file.
-  Temperature temperature = Temperature::Unknown;
+  rs::advanced_options::Temperature temperature = rs::advanced_options::Temperature::Unknown;
 
   // Used only in BlobDB. The file number of the oldest blob file this SST file
   // refers to. 0 is an invalid value; BlobDB numbers the files starting from 1.
@@ -244,7 +244,7 @@ struct FileMetaData {
                const InternalKey& smallest_key, const InternalKey& largest_key,
                const SequenceNumber& smallest_seq,
                const SequenceNumber& largest_seq, bool marked_for_compact,
-               Temperature _temperature, uint64_t oldest_blob_file,
+               rs::advanced_options::Temperature _temperature, uint64_t oldest_blob_file,
                uint64_t _oldest_ancester_time, uint64_t _file_creation_time,
                uint64_t _epoch_number, const std::string& _file_checksum,
                const std::string& _file_checksum_func_name,
@@ -441,7 +441,7 @@ class VersionEdit {
                uint64_t file_size, const InternalKey& smallest,
                const InternalKey& largest, const SequenceNumber& smallest_seqno,
                const SequenceNumber& largest_seqno, bool marked_for_compaction,
-               Temperature temperature, uint64_t oldest_blob_file_number,
+               rs::advanced_options::Temperature temperature, uint64_t oldest_blob_file_number,
                uint64_t oldest_ancester_time, uint64_t file_creation_time,
                uint64_t epoch_number, const std::string& file_checksum,
                const std::string& file_checksum_func_name,

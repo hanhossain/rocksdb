@@ -87,7 +87,7 @@ class RandomAccessFileReader {
   HistogramImpl* file_read_hist_;
   RateLimiter* rate_limiter_;
   std::vector<std::shared_ptr<EventListener>> listeners_;
-  const Temperature file_temperature_;
+  const rs::advanced_options::Temperature file_temperature_;
   const bool is_last_level_;
 
   struct ReadAsyncInfo {
@@ -127,7 +127,7 @@ class RandomAccessFileReader {
       HistogramImpl* file_read_hist = nullptr,
       RateLimiter* rate_limiter = nullptr,
       const std::vector<std::shared_ptr<EventListener>>& listeners = {},
-      Temperature file_temperature = Temperature::Unknown,
+      rs::advanced_options::Temperature file_temperature = rs::advanced_options::Temperature::Unknown,
       bool is_last_level = false)
       : file_(std::move(raf), io_tracer, _file_name),
         file_name_(std::move(_file_name)),

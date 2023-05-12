@@ -68,7 +68,7 @@ class SimulatedHybridRaf : public FSRandomAccessFileOwnerWrapper {
  public:
   SimulatedHybridRaf(std::unique_ptr<FSRandomAccessFile>&& t,
                      std::shared_ptr<RateLimiter> rate_limiter,
-                     Temperature temperature)
+                     rs::advanced_options::Temperature temperature)
       : FSRandomAccessFileOwnerWrapper(std::move(t)),
         rate_limiter_(rate_limiter),
         temperature_(temperature) {}
@@ -87,7 +87,7 @@ class SimulatedHybridRaf : public FSRandomAccessFileOwnerWrapper {
 
  private:
   std::shared_ptr<RateLimiter> rate_limiter_;
-  Temperature temperature_;
+  rs::advanced_options::Temperature temperature_;
 
   void SimulateIOWait(int64_t num_requests) const;
 };

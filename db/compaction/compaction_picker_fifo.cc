@@ -112,7 +112,7 @@ Compaction* FIFOCompactionPicker::PickTTLCompaction(
   Compaction* c = new Compaction(
       vstorage, ioptions_, mutable_cf_options, mutable_db_options,
       std::move(inputs), 0, 0, 0, 0, kNoCompression,
-      mutable_cf_options.compression_opts, Temperature::Unknown,
+      mutable_cf_options.compression_opts, rs::advanced_options::Temperature::Unknown,
       /* max_subcompactions */ 0, {}, /* is manual */ false,
       /* trim_ts */ "", vstorage->CompactionScore(0),
       /* is deletion compaction */ true, /* l0_files_might_overlap */ true,
@@ -181,7 +181,7 @@ Compaction* FIFOCompactionPicker::PickSizeCompaction(
             {comp_inputs}, 0, 16 * 1024 * 1024 /* output file size limit */,
             0 /* max compaction bytes, not applicable */,
             0 /* output path ID */, mutable_cf_options.compression,
-            mutable_cf_options.compression_opts, Temperature::Unknown,
+            mutable_cf_options.compression_opts, rs::advanced_options::Temperature::Unknown,
             0 /* max_subcompactions */, {}, /* is manual */ false,
             /* trim_ts */ "", vstorage->CompactionScore(0),
             /* is deletion compaction */ false,
@@ -276,7 +276,7 @@ Compaction* FIFOCompactionPicker::PickSizeCompaction(
       /* target_file_size */ 0,
       /* max_compaction_bytes */ 0,
       /* output_path_id */ 0, kNoCompression,
-      mutable_cf_options.compression_opts, Temperature::Unknown,
+      mutable_cf_options.compression_opts, rs::advanced_options::Temperature::Unknown,
       /* max_subcompactions */ 0, {}, /* is manual */ false,
       /* trim_ts */ "", vstorage->CompactionScore(0),
       /* is deletion compaction */ true,
@@ -369,8 +369,8 @@ Compaction* FIFOCompactionPicker::PickCompactionToWarm(
                          cf_name.c_str(), prev_file->fd.GetNumber(),
                          oldest_ancester_time);
       }
-      if (f->temperature == Temperature::Unknown ||
-          f->temperature == Temperature::Hot) {
+      if (f->temperature == rs::advanced_options::Temperature::Unknown ||
+          f->temperature == rs::advanced_options::Temperature::Hot) {
         prev_file = f;
       } else if (!inputs[0].files.empty()) {
         // A warm file newer than files picked.
@@ -390,7 +390,7 @@ Compaction* FIFOCompactionPicker::PickCompactionToWarm(
       std::move(inputs), 0, 0 /* output file size limit */,
       0 /* max compaction bytes, not applicable */, 0 /* output path ID */,
       mutable_cf_options.compression, mutable_cf_options.compression_opts,
-      Temperature::Warm,
+      rs::advanced_options::Temperature::Warm,
       /* max_subcompactions */ 0, {}, /* is manual */ false, /* trim_ts */ "",
       vstorage->CompactionScore(0),
       /* is deletion compaction */ false, /* l0_files_might_overlap */ true,

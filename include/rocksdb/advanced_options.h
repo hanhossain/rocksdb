@@ -16,7 +16,6 @@
 #include "rocksdb/memtablerep.h"
 #include "rocksdb/universal_compaction.h"
 
-using rs::advanced_options::Temperature;
 using rs::advanced_options::UpdateStatus;
 
 namespace ROCKSDB_NAMESPACE {
@@ -837,8 +836,8 @@ struct AdvancedColumnFamilyOptions {
   //  `bottommost_temperature` and will be removed in next release.
   //
   // Dynamically changeable through the SetOptions() API
-  Temperature bottommost_temperature = Temperature::Unknown;
-  Temperature last_level_temperature = Temperature::Unknown;
+  rs::advanced_options::Temperature bottommost_temperature = rs::advanced_options::Temperature::Unknown;
+  rs::advanced_options::Temperature last_level_temperature = rs::advanced_options::Temperature::Unknown;
 
   // EXPERIMENTAL
   // The feature is still in development and is incomplete.

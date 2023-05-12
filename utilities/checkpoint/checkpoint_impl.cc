@@ -132,7 +132,7 @@ Status CheckpointImpl::CreateCheckpoint(const std::string& checkpoint_dir,
               uint64_t size_limit_bytes, FileType,
               const std::string& /* checksum_func_name */,
               const std::string& /* checksum_val */,
-              const Temperature temperature) {
+              const rs::advanced_options::Temperature temperature) {
             ROCKS_LOG_INFO(db_options.info_log, "Copying %s", fname.c_str());
             return CopyFile(db_->GetFileSystem(), src_dirname + "/" + fname,
                             full_private_path + "/" + fname, size_limit_bytes,
@@ -195,7 +195,7 @@ Status CheckpointImpl::CreateCustomCheckpoint(
         Status(const std::string& src_dirname, const std::string& src_fname,
                uint64_t size_limit_bytes, FileType type,
                const std::string& checksum_func_name,
-               const std::string& checksum_val, const Temperature temperature)>
+               const std::string& checksum_val, const rs::advanced_options::Temperature temperature)>
         copy_file_cb,
     std::function<Status(const std::string& fname, const std::string& contents,
                          FileType type)>
@@ -334,7 +334,7 @@ Status CheckpointImpl::ExportColumnFamily(
                            cf_name.c_str(), fname.c_str());
             return CopyFile(db_->GetFileSystem(), src_dirname + fname,
                             tmp_export_dir + fname, 0, db_options.use_fsync,
-                            nullptr, Temperature::Unknown);
+                            nullptr, rs::advanced_options::Temperature::Unknown);
           } /*copy_file_cb*/);
 
       const auto enable_status = db_->EnableFileDeletions(false /*force*/);

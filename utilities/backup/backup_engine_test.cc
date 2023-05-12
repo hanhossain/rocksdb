@@ -4083,7 +4083,7 @@ TEST_F(BackupEngineTest, FileTemperatures) {
   SetEnvsFromFileSystems();
 
   // Use temperatures
-  options_.bottommost_temperature = Temperature::Warm;
+  options_.bottommost_temperature = rs::advanced_options::Temperature::Warm;
   options_.level0_file_num_compaction_trigger = 2;
   // set dynamic_level to true so the compaction would compact the data to the
   // last level directly which will have the last_level_temperature
@@ -4105,8 +4105,8 @@ TEST_F(BackupEngineTest, FileTemperatures) {
   ASSERT_OK(db_->Flush(FlushOptions()));
 
   // Get temperatures from manifest
-  std::map<uint64_t, Temperature> manifest_temps;
-  std::map<Temperature, int> manifest_temp_counts;
+  std::map<uint64_t, rs::advanced_options::Temperature> manifest_temps;
+  std::map<rs::advanced_options::Temperature, int> manifest_temp_counts;
   {
     std::vector<LiveFileStorageInfo> infos;
     ASSERT_OK(
@@ -4121,11 +4121,11 @@ TEST_F(BackupEngineTest, FileTemperatures) {
 
   // Verify expected manifest temperatures
   ASSERT_EQ(manifest_temp_counts.size(), 2);
-  ASSERT_EQ(manifest_temp_counts[Temperature::Warm], 1);
-  ASSERT_EQ(manifest_temp_counts[Temperature::Unknown], 1);
+  ASSERT_EQ(manifest_temp_counts[rs::advanced_options::Temperature::Warm], 1);
+  ASSERT_EQ(manifest_temp_counts[rs::advanced_options::Temperature::Unknown], 1);
 
   // Verify manifest temperatures match FS temperatures
-  std::map<uint64_t, Temperature> current_temps;
+  std::map<uint64_t, rs::advanced_options::Temperature> current_temps;
   my_db_fs->CopyCurrentSstFileTemperatures(&current_temps);
   for (const auto& manifest_temp : manifest_temps) {
     ASSERT_EQ(current_temps[manifest_temp.first], manifest_temp.second);
@@ -4134,7 +4134,7 @@ TEST_F(BackupEngineTest, FileTemperatures) {
   // Try a few different things
   for (int i = 1; i <= 5; ++i) {
     // Expected temperatures after restore are based on manifest temperatures
-    std::map<uint64_t, Temperature> expected_temps = manifest_temps;
+    std::map<uint64_t, rs::advanced_options::Temperature> expected_temps = manifest_temps;
 
     if (i >= 2) {
       // For iterations 2 & 3, override current temperature of one file
@@ -4148,24 +4148,24 @@ TEST_F(BackupEngineTest, FileTemperatures) {
       OpenBackupEngine();
       for (const auto& manifest_temp : manifest_temps) {
         if (i <= 3) {
-          if (manifest_temp.second == Temperature::Warm) {
+          if (manifest_temp.second == rs::advanced_options::Temperature::Warm) {
             my_db_fs->OverrideSstFileTemperature(manifest_temp.first,
-                                                 Temperature::Cold);
+                                                 rs::advanced_options::Temperature::Cold);
             if (use_current) {
-              expected_temps[manifest_temp.first] = Temperature::Cold;
+              expected_temps[manifest_temp.first] = rs::advanced_options::Temperature::Cold;
             }
           }
         } else {
           assert(i <= 5);
-          if (manifest_temp.second == Temperature::Warm) {
+          if (manifest_temp.second == rs::advanced_options::Temperature::Warm) {
             my_db_fs->OverrideSstFileTemperature(manifest_temp.first,
-                                                 Temperature::Unknown);
+                                                 rs::advanced_options::Temperature::Unknown);
           } else {
-            ASSERT_EQ(manifest_temp.second, Temperature::Unknown);
+            ASSERT_EQ(manifest_temp.second, rs::advanced_options::Temperature::Unknown);
             my_db_fs->OverrideSstFileTemperature(manifest_temp.first,
-                                                 Temperature::Hot);
+                                                 rs::advanced_options::Temperature::Hot);
             // regardless of use_current
-            expected_temps[manifest_temp.first] = Temperature::Hot;
+            expected_temps[manifest_temp.first] = rs::advanced_options::Temperature::Hot;
           }
         }
       }
@@ -4178,15 +4178,15 @@ TEST_F(BackupEngineTest, FileTemperatures) {
     // Verify requested temperatures against manifest temperatures (before
     // retry with kUnknown if needed, and before backup finds out current
     // temperatures in FileSystem)
-    std::vector<std::pair<uint64_t, Temperature>> requested_temps;
+    std::vector<std::pair<uint64_t, rs::advanced_options::Temperature>> requested_temps;
     my_db_fs->PopRequestedSstFileTemperatures(&requested_temps);
     std::set<uint64_t> distinct_requests;
     for (const auto& requested_temp : requested_temps) {
       // Matching manifest temperatures, except allow retry request with
       // kUnknown
       auto manifest_temp = manifest_temps.at(requested_temp.first);
-      if (manifest_temp == Temperature::Unknown ||
-          requested_temp.second != Temperature::Unknown) {
+      if (manifest_temp == rs::advanced_options::Temperature::Unknown ||
+          requested_temp.second != rs::advanced_options::Temperature::Unknown) {
         ASSERT_EQ(manifest_temp, requested_temp.second);
       }
       distinct_requests.insert(requested_temp.first);

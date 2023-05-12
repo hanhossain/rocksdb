@@ -76,7 +76,7 @@ struct OptionsHelper {
   static std::map<rs::advanced_options::CompactionPri, std::string> compaction_pri_to_string;
   static std::map<CompactionStopStyle, std::string>
       compaction_stop_style_to_string;
-  static std::map<Temperature, std::string> temperature_to_string;
+  static std::map<rs::advanced_options::Temperature, std::string> temperature_to_string;
   static std::unordered_map<std::string, ChecksumType> checksum_type_string_map;
   static std::unordered_map<std::string, CompressionType>
       compression_type_string_map;
@@ -89,7 +89,7 @@ struct OptionsHelper {
       compaction_style_string_map;
   static std::unordered_map<std::string, rs::advanced_options::CompactionPri>
       compaction_pri_string_map;
-  static std::unordered_map<std::string, Temperature> temperature_string_map;
+  static std::unordered_map<std::string, rs::advanced_options::Temperature> temperature_string_map;
 };
 
 // Some aliasing

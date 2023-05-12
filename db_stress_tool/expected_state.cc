@@ -271,7 +271,7 @@ Status FileExpectedStateManager::SaveAtAndAfter(DB* db) {
   // with contents from "LATEST.state"
   Status s = CopyFile(FileSystem::Default(), latest_file_path,
                       state_file_temp_path, 0 /* size */, false /* use_fsync */,
-                      nullptr /* io_tracer */, Temperature::Unknown);
+                      nullptr /* io_tracer */, rs::advanced_options::Temperature::Unknown);
   if (s.ok()) {
     s = FileSystem::Default()->RenameFile(state_file_temp_path, state_file_path,
                                           IOOptions(), nullptr /* dbg */);
@@ -601,7 +601,7 @@ Status FileExpectedStateManager::Restore(DB* db) {
     // new "LATEST.state" appear atomically using `RenameFile()`.
     s = CopyFile(FileSystem::Default(), state_file_path, latest_file_temp_path,
                  0 /* size */, false /* use_fsync */, nullptr /* io_tracer */,
-                 Temperature::Unknown);
+                 rs::advanced_options::Temperature::Unknown);
   }
 
   {

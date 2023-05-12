@@ -336,11 +336,11 @@ std::map<CompactionStopStyle, std::string>
         {kCompactionStopStyleSimilarSize, "kCompactionStopStyleSimilarSize"},
         {kCompactionStopStyleTotalSize, "kCompactionStopStyleTotalSize"}};
 
-std::map<Temperature, std::string> OptionsHelper::temperature_to_string = {
-    {Temperature::Unknown, "kUnknown"},
-    {Temperature::Hot, "kHot"},
-    {Temperature::Warm, "kWarm"},
-    {Temperature::Cold, "kCold"}};
+std::map<rs::advanced_options::Temperature, std::string> OptionsHelper::temperature_to_string = {
+    {rs::advanced_options::Temperature::Unknown, "kUnknown"},
+    {rs::advanced_options::Temperature::Hot, "kHot"},
+    {rs::advanced_options::Temperature::Warm, "kWarm"},
+    {rs::advanced_options::Temperature::Cold, "kCold"}};
 
 std::unordered_map<std::string, ChecksumType>
     OptionsHelper::checksum_type_string_map = {{"kNoChecksum", kNoChecksum},
@@ -459,8 +459,8 @@ static bool ParseOptionHelper(void* opt_address, const OptionType& opt_type,
       break;
     }
     case OptionType::kTemperature: {
-      return ParseEnum<Temperature>(temperature_string_map, value,
-                                    static_cast<Temperature*>(opt_address));
+      return ParseEnum<rs::advanced_options::Temperature>(temperature_string_map, value,
+                                    static_cast<rs::advanced_options::Temperature*>(opt_address));
     }
     default:
       return false;
@@ -550,8 +550,8 @@ bool SerializeSingleOptionHelper(const void* opt_address,
       break;
     }
     case OptionType::kTemperature: {
-      return SerializeEnum<Temperature>(
-          temperature_string_map, *static_cast<const Temperature*>(opt_address),
+      return SerializeEnum<rs::advanced_options::Temperature>(
+          temperature_string_map, *static_cast<const rs::advanced_options::Temperature*>(opt_address),
           value);
     }
     default:
@@ -800,12 +800,12 @@ std::unordered_map<std::string, CompactionStopStyle>
         {"kCompactionStopStyleSimilarSize", kCompactionStopStyleSimilarSize},
         {"kCompactionStopStyleTotalSize", kCompactionStopStyleTotalSize}};
 
-std::unordered_map<std::string, Temperature>
+std::unordered_map<std::string, rs::advanced_options::Temperature>
     OptionsHelper::temperature_string_map = {
-        {"kUnknown", Temperature::Unknown},
-        {"kHot", Temperature::Hot},
-        {"kWarm", Temperature::Warm},
-        {"kCold", Temperature::Cold}};
+        {"kUnknown", rs::advanced_options::Temperature::Unknown},
+        {"kHot", rs::advanced_options::Temperature::Hot},
+        {"kWarm", rs::advanced_options::Temperature::Warm},
+        {"kCold", rs::advanced_options::Temperature::Cold}};
 
 std::unordered_map<std::string, rs::advanced_options::PrepopulateBlobCache>
     OptionsHelper::prepopulate_blob_cache_string_map = {
@@ -1183,7 +1183,7 @@ static bool AreOptionsEqual(OptionType type, const void* this_offset,
     case OptionType::kEncodedString:
       return IsOptionEqual<std::string>(this_offset, that_offset);
     case OptionType::kTemperature:
-      return IsOptionEqual<Temperature>(this_offset, that_offset);
+      return IsOptionEqual<rs::advanced_options::Temperature>(this_offset, that_offset);
     default:
       return false;
   }  // End switch

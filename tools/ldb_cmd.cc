@@ -3604,7 +3604,7 @@ void DumpSstFile(Options options, std::string filename, bool output_hex,
   }
   // no verification
   ROCKSDB_NAMESPACE::SstFileDumper dumper(
-      options, filename, Temperature::Unknown,
+      options, filename, rs::advanced_options::Temperature::Unknown,
       2 * 1024 * 1024 /* readahead_size */,
       /* verify_checksum */ false, output_hex, decode_blob_index);
   Status st = dumper.ReadSequential(true, std::numeric_limits<uint64_t>::max(),

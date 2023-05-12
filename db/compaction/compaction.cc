@@ -211,7 +211,7 @@ Compaction::Compaction(
     std::vector<CompactionInputFiles> _inputs, int _output_level,
     uint64_t _target_file_size, uint64_t _max_compaction_bytes,
     uint32_t _output_path_id, CompressionType _compression,
-    CompressionOptions _compression_opts, Temperature _output_temperature,
+    CompressionOptions _compression_opts, rs::advanced_options::Temperature _output_temperature,
     uint32_t _max_subcompactions, std::vector<FileMetaData*> _grandparents,
     bool _manual_compaction, const std::string& _trim_ts, double _score,
     bool _deletion_compaction, bool l0_files_might_overlap,

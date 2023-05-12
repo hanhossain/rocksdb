@@ -35,7 +35,7 @@ class CheckpointImpl : public Checkpoint {
                            const std::string& fname, uint64_t size_limit_bytes,
                            FileType type, const std::string& checksum_func_name,
                            const std::string& checksum_val,
-                           const Temperature src_temperature)>
+                           const rs::advanced_options::Temperature src_temperature)>
           copy_file_cb,
       std::function<Status(const std::string& fname,
                            const std::string& contents, FileType type)>

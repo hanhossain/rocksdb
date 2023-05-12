@@ -714,14 +714,14 @@ class FileTemperatureTestFS : public FileSystemWrapper {
       MutexLock lock(&mu_);
       requested_sst_file_temperatures_.emplace_back(number, opts.temperature);
       if (s.ok()) {
-        if (opts.temperature != Temperature::Unknown) {
+        if (opts.temperature != rs::advanced_options::Temperature::Unknown) {
           // Be extra picky and don't open if a wrong non-unknown temperature is
           // provided
           auto e = current_sst_file_temperatures_.find(number);
           if (e != current_sst_file_temperatures_.end() &&
               e->second != opts.temperature) {
             result->reset();
-            return IOStatus::PathNotFound("Temperature mismatch on " + fname);
+            return IOStatus::PathNotFound("rs::advanced_options::Temperature mismatch on " + fname);
           }
         }
         *result = WrapWithTemperature<FSSequentialFileOwnerWrapper>(
@@ -743,14 +743,14 @@ class FileTemperatureTestFS : public FileSystemWrapper {
       MutexLock lock(&mu_);
       requested_sst_file_temperatures_.emplace_back(number, opts.temperature);
       if (s.ok()) {
-        if (opts.temperature != Temperature::Unknown) {
+        if (opts.temperature != rs::advanced_options::Temperature::Unknown) {
           // Be extra picky and don't open if a wrong non-unknown temperature is
           // provided
           auto e = current_sst_file_temperatures_.find(number);
           if (e != current_sst_file_temperatures_.end() &&
               e->second != opts.temperature) {
             result->reset();
-            return IOStatus::PathNotFound("Temperature mismatch on " + fname);
+            return IOStatus::PathNotFound("rs::advanced_options::Temperature mismatch on " + fname);
           }
         }
         *result = WrapWithTemperature<FSRandomAccessFileOwnerWrapper>(
@@ -761,7 +761,7 @@ class FileTemperatureTestFS : public FileSystemWrapper {
   }
 
   void PopRequestedSstFileTemperatures(
-      std::vector<std::pair<uint64_t, Temperature>>* out = nullptr) {
+      std::vector<std::pair<uint64_t, rs::advanced_options::Temperature>>* out = nullptr) {
     MutexLock lock(&mu_);
     if (out) {
       *out = std::move(requested_sst_file_temperatures_);
@@ -784,21 +784,21 @@ class FileTemperatureTestFS : public FileSystemWrapper {
     return target()->NewWritableFile(fname, opts, result, dbg);
   }
 
-  void CopyCurrentSstFileTemperatures(std::map<uint64_t, Temperature>* out) {
+  void CopyCurrentSstFileTemperatures(std::map<uint64_t, rs::advanced_options::Temperature>* out) {
     MutexLock lock(&mu_);
     *out = current_sst_file_temperatures_;
   }
 
-  void OverrideSstFileTemperature(uint64_t number, Temperature temp) {
+  void OverrideSstFileTemperature(uint64_t number, rs::advanced_options::Temperature temp) {
     MutexLock lock(&mu_);
     current_sst_file_temperatures_[number] = temp;
   }
 
  protected:
   port::Mutex mu_;
-  std::vector<std::pair<uint64_t, Temperature>>
+  std::vector<std::pair<uint64_t, rs::advanced_options::Temperature>>
       requested_sst_file_temperatures_;
-  std::map<uint64_t, Temperature> current_sst_file_temperatures_;
+  std::map<uint64_t, rs::advanced_options::Temperature> current_sst_file_temperatures_;
 
   std::string GetFileName(const std::string& fname) {
     auto filename = fname.substr(fname.find_last_of(kFilePathSeparator) + 1);
@@ -817,7 +817,7 @@ class FileTemperatureTestFS : public FileSystemWrapper {
                    std::unique_ptr<FileT>&& t)
           : FileOwnerWrapperT(std::move(t)), fs_(fs), number_(number) {}
 
-      Temperature GetTemperature() const override {
+      rs::advanced_options::Temperature GetTemperature() const override {
         MutexLock lock(&fs_->mu_);
         return fs_->current_sst_file_temperatures_[number_];
       }
@@ -1308,7 +1308,7 @@ class DBTestBase : public testing::Test {
   uint64_t GetNumberOfSstFilesForColumnFamily(DB* db,
                                               std::string column_family_name);
 
-  uint64_t GetSstSizeHelper(Temperature temperature);
+  uint64_t GetSstSizeHelper(rs::advanced_options::Temperature temperature);
 
   uint64_t TestGetTickerCount(const Options& options, Tickers ticker_type) {
     return options.statistics->getTickerCount(ticker_type);

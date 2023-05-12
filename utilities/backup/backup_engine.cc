@@ -202,7 +202,7 @@ class BackupEngineImpl {
 
   struct FileInfo {
     FileInfo(const std::string& fname, uint64_t sz, const std::string& checksum,
-             const std::string& id, const std::string& sid, Temperature _temp)
+             const std::string& id, const std::string& sid, rs::advanced_options::Temperature _temp)
         : refs(0),
           filename(fname),
           size(sz),
@@ -227,7 +227,7 @@ class BackupEngineImpl {
     // db_session_id appears in the backup SST filename if the table naming
     // option is kUseDbSessionId
     const std::string db_session_id;
-    Temperature temp;
+    rs::advanced_options::Temperature temp;
 
     std::string GetDbFileName() const {
       std::string rv;
@@ -577,8 +577,8 @@ class BackupEngineImpl {
                             const EnvOptions& src_env_options, bool sync,
                             RateLimiter* rate_limiter,
                             std::function<void()> progress_callback,
-                            Temperature* src_temperature,
-                            Temperature dst_temperature,
+                            rs::advanced_options::Temperature* src_temperature,
+                            rs::advanced_options::Temperature dst_temperature,
                             uint64_t* bytes_toward_next_callback,
                             uint64_t* size, std::string* checksum_hex);
 
@@ -587,12 +587,12 @@ class BackupEngineImpl {
                                       const EnvOptions& src_env_options,
                                       uint64_t size_limit,
                                       std::string* checksum_hex,
-                                      const Temperature src_temperature) const;
+                                      const rs::advanced_options::Temperature src_temperature) const;
 
   // Obtain db_id and db_session_id from the table properties of file_path
   Status GetFileDbIdentities(Env* src_env, const EnvOptions& src_env_options,
                              const std::string& file_path,
-                             Temperature file_temp, RateLimiter* rate_limiter,
+                             rs::advanced_options::Temperature file_temp, RateLimiter* rate_limiter,
                              std::string* db_id, std::string* db_session_id);
 
   struct CopyOrCreateResult {
@@ -611,8 +611,8 @@ class BackupEngineImpl {
     std::string db_id;
     std::string db_session_id;
     IOStatus io_status;
-    Temperature expected_src_temperature = Temperature::Unknown;
-    Temperature current_src_temperature = Temperature::Unknown;
+    rs::advanced_options::Temperature expected_src_temperature = rs::advanced_options::Temperature::Unknown;
+    rs::advanced_options::Temperature current_src_temperature = rs::advanced_options::Temperature::Unknown;
   };
 
   // Exactly one of src_path and contents must be non-empty. If src_path is
@@ -621,8 +621,8 @@ class BackupEngineImpl {
   struct CopyOrCreateWorkItem {
     std::string src_path;
     std::string dst_path;
-    Temperature src_temperature;
-    Temperature dst_temperature;
+    rs::advanced_options::Temperature src_temperature;
+    rs::advanced_options::Temperature dst_temperature;
     std::string contents;
     Env* src_env;
     Env* dst_env;
@@ -641,8 +641,8 @@ class BackupEngineImpl {
     CopyOrCreateWorkItem()
         : src_path(""),
           dst_path(""),
-          src_temperature(Temperature::Unknown),
-          dst_temperature(Temperature::Unknown),
+          src_temperature(rs::advanced_options::Temperature::Unknown),
+          dst_temperature(rs::advanced_options::Temperature::Unknown),
           contents(""),
           src_env(nullptr),
           dst_env(nullptr),
@@ -687,8 +687,8 @@ class BackupEngineImpl {
     }
 
     CopyOrCreateWorkItem(std::string _src_path, std::string _dst_path,
-                         const Temperature _src_temperature,
-                         const Temperature _dst_temperature,
+                         const rs::advanced_options::Temperature _src_temperature,
+                         const rs::advanced_options::Temperature _dst_temperature,
                          std::string _contents, Env* _src_env, Env* _dst_env,
                          EnvOptions _src_env_options, bool _sync,
                          RateLimiter* _rate_limiter, uint64_t _size_limit,
@@ -828,7 +828,7 @@ class BackupEngineImpl {
       const std::string& contents = std::string(),
       const std::string& src_checksum_func_name = kUnknownFileChecksumFuncName,
       const std::string& src_checksum_str = kUnknownFileChecksum,
-      const Temperature src_temperature = Temperature::Unknown);
+      const rs::advanced_options::Temperature src_temperature = rs::advanced_options::Temperature::Unknown);
 
   // backup state data
   BackupID latest_backup_id_;
@@ -1280,7 +1280,7 @@ IOStatus BackupEngineImpl::Initialize() {
         uint64_t prev_bytes_written = IOSTATS(bytes_written);
 
         CopyOrCreateResult result;
-        Temperature temp = work_item.src_temperature;
+        rs::advanced_options::Temperature temp = work_item.src_temperature;
         result.io_status = CopyOrCreateFile(
             work_item.src_path, work_item.dst_path, work_item.contents,
             work_item.size_limit, work_item.src_env, work_item.dst_env,
@@ -1444,7 +1444,7 @@ IOStatus BackupEngineImpl::CreateNewBackupWithMetadata(
             uint64_t size_limit_bytes, FileType type,
             const std::string& checksum_func_name,
             const std::string& checksum_val,
-            const Temperature src_temperature) {
+            const rs::advanced_options::Temperature src_temperature) {
           if (type == kWalFile && !options_.backup_log_files) {
             return IOStatus::OK();
           }
@@ -1561,9 +1561,9 @@ IOStatus BackupEngineImpl::CreateNewBackupWithMetadata(
     item.result.wait();
     auto result = item.result.get();
     item_io_status = result.io_status;
-    Temperature temp = result.expected_src_temperature;
-    if (result.current_src_temperature != Temperature::Unknown &&
-        (temp == Temperature::Unknown ||
+    rs::advanced_options::Temperature temp = result.expected_src_temperature;
+    if (result.current_src_temperature != rs::advanced_options::Temperature::Unknown &&
+        (temp == rs::advanced_options::Temperature::Unknown ||
          options_.current_temperatures_override_manifest)) {
       temp = result.current_src_temperature;
     }
@@ -2012,7 +2012,7 @@ IOStatus BackupEngineImpl::RestoreDBFromBackup(
     ROCKS_LOG_INFO(options_.info_log, "Restoring %s to %s\n", file.c_str(),
                    dst.c_str());
     CopyOrCreateWorkItem copy_or_create_work_item(
-        absolute_file, dst, Temperature::Unknown /* src_temp */,
+        absolute_file, dst, rs::advanced_options::Temperature::Unknown /* src_temp */,
         file_info->temp, "" /* contents */, src_env, db_env_,
         EnvOptions() /* src_env_options */, options_.sync,
         options_.restore_rate_limiter.get(), file_info->size,
@@ -2133,7 +2133,7 @@ IOStatus BackupEngineImpl::VerifyBackup(BackupID backup_id,
                      abs_path.c_str());
       IOStatus io_s = ReadFileAndComputeChecksum(
           abs_path, backup_fs_, EnvOptions(), 0 /* size_limit */, &checksum_hex,
-          Temperature::Unknown);
+          rs::advanced_options::Temperature::Unknown);
       if (!io_s.ok()) {
         return io_s;
       } else if (file_info->checksum_hex != checksum_hex) {
@@ -2152,8 +2152,8 @@ IOStatus BackupEngineImpl::CopyOrCreateFile(
     const std::string& src, const std::string& dst, const std::string& contents,
     uint64_t size_limit, Env* src_env, Env* dst_env,
     const EnvOptions& src_env_options, bool sync, RateLimiter* rate_limiter,
-    std::function<void()> progress_callback, Temperature* src_temperature,
-    Temperature dst_temperature, uint64_t* bytes_toward_next_callback,
+    std::function<void()> progress_callback, rs::advanced_options::Temperature* src_temperature,
+    rs::advanced_options::Temperature dst_temperature, uint64_t* bytes_toward_next_callback,
     uint64_t* size, std::string* checksum_hex) {
   assert(src.empty() != contents.empty());
   IOStatus io_s;
@@ -2181,7 +2181,7 @@ IOStatus BackupEngineImpl::CopyOrCreateFile(
     io_s = src_env->GetFileSystem()->NewSequentialFile(src, src_file_options,
                                                        &src_file, nullptr);
   }
-  if (io_s.IsPathNotFound() && *src_temperature != Temperature::Unknown) {
+  if (io_s.IsPathNotFound() && *src_temperature != rs::advanced_options::Temperature::Unknown) {
     // Retry without temperature hint in case the FileSystem is strict with
     // non-kUnknown temperature option
     io_s = src_env->GetFileSystem()->NewSequentialFile(
@@ -2294,7 +2294,7 @@ IOStatus BackupEngineImpl::AddBackupFileWorkItem(
     uint64_t size_limit, bool shared_checksum,
     std::function<void()> progress_callback, const std::string& contents,
     const std::string& src_checksum_func_name,
-    const std::string& src_checksum_str, const Temperature src_temperature) {
+    const std::string& src_checksum_str, const rs::advanced_options::Temperature src_temperature) {
   assert(contents.empty() != src_dir.empty());
 
   std::string src_path = src_dir + "/" + fname;
@@ -2487,7 +2487,7 @@ IOStatus BackupEngineImpl::AddBackupFileWorkItem(
   if (!contents.empty() || need_to_copy) {
     CopyOrCreateWorkItem copy_or_create_work_item(
         src_dir.empty() ? "" : src_path, *copy_dest_path, src_temperature,
-        Temperature::Unknown /*dst_temp*/, contents, db_env_, backup_env_,
+        rs::advanced_options::Temperature::Unknown /*dst_temp*/, contents, db_env_, backup_env_,
         src_env_options, options_.sync, rate_limiter, size_limit, stats,
         progress_callback, src_checksum_func_name, checksum_hex, db_id,
         db_session_id);
@@ -2529,7 +2529,7 @@ IOStatus BackupEngineImpl::AddBackupFileWorkItem(
 IOStatus BackupEngineImpl::ReadFileAndComputeChecksum(
     const std::string& src, const std::shared_ptr<FileSystem>& src_fs,
     const EnvOptions& src_env_options, uint64_t size_limit,
-    std::string* checksum_hex, const Temperature src_temperature) const {
+    std::string* checksum_hex, const rs::advanced_options::Temperature src_temperature) const {
   if (checksum_hex == nullptr) {
     return status_to_io_status(Status::Aborted("Checksum pointer is null"));
   }
@@ -2544,10 +2544,10 @@ IOStatus BackupEngineImpl::ReadFileAndComputeChecksum(
   RateLimiter* rate_limiter = options_.backup_rate_limiter.get();
   IOStatus io_s = SequentialFileReader::Create(
       src_fs, src, file_options, &src_reader, nullptr /* dbg */, rate_limiter);
-  if (io_s.IsPathNotFound() && src_temperature != Temperature::Unknown) {
+  if (io_s.IsPathNotFound() && src_temperature != rs::advanced_options::Temperature::Unknown) {
     // Retry without temperature hint in case the FileSystem is strict with
     // non-kUnknown temperature option
-    file_options.temperature = Temperature::Unknown;
+    file_options.temperature = rs::advanced_options::Temperature::Unknown;
     io_s = SequentialFileReader::Create(src_fs, src, file_options, &src_reader,
                                         nullptr /* dbg */, rate_limiter);
   }
@@ -2582,7 +2582,7 @@ IOStatus BackupEngineImpl::ReadFileAndComputeChecksum(
 
 Status BackupEngineImpl::GetFileDbIdentities(
     Env* src_env, const EnvOptions& src_env_options,
-    const std::string& file_path, Temperature file_temp,
+    const std::string& file_path, rs::advanced_options::Temperature file_temp,
     RateLimiter* rate_limiter, std::string* db_id, std::string* db_session_id) {
   assert(db_id != nullptr || db_session_id != nullptr);
 
@@ -3086,7 +3086,7 @@ IOStatus BackupEngineImpl::BackupMeta::LoadFromFile(
 
     std::optional<uint64_t> expected_size{};
     std::string checksum_hex;
-    Temperature temp = Temperature::Unknown;
+    rs::advanced_options::Temperature temp = rs::advanced_options::Temperature::Unknown;
     bool excluded = false;
     for (unsigned i = 1; i < components.size(); i += 2) {
       const std::string& field_name = components[i];
@@ -3110,7 +3110,7 @@ IOStatus BackupEngineImpl::BackupMeta::LoadFromFile(
           // Could report corruption, but in case of new temperatures added
           // in future, letting those map to kUnknown which should generally
           // be safe.
-          temp = Temperature::Unknown;
+          temp = rs::advanced_options::Temperature::Unknown;
         }
       } else if (field_name == kExcludedFieldName) {
         if (field_data == "true") {
@@ -3274,7 +3274,7 @@ IOStatus BackupEngineImpl::BackupMeta::StoreToFile(
       buf << " " << kFileCrc32cFieldName << " "
           << ChecksumHexToInt32(file->checksum_hex);
     }
-    if (schema_version >= 2 && file->temp != Temperature::Unknown) {
+    if (schema_version >= 2 && file->temp != rs::advanced_options::Temperature::Unknown) {
       buf << " " << kTemperatureFieldName << " "
           << temperature_to_string[file->temp];
     }

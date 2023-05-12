@@ -31,7 +31,7 @@ Status ExternalSstFileIngestionJob::Prepare(
     const std::vector<std::string>& external_files_paths,
     const std::vector<std::string>& files_checksums,
     const std::vector<std::string>& files_checksum_func_names,
-    const Temperature& file_temperature, uint64_t next_file_number,
+    const rs::advanced_options::Temperature& file_temperature, uint64_t next_file_number,
     SuperVersion* sv) {
   Status status;
 
@@ -155,7 +155,7 @@ Status ExternalSstFileIngestionJob::Prepare(
       // CopyFile also sync the new file.
       status =
           CopyFile(fs_.get(), path_outside_db, path_inside_db, 0,
-                   db_options_.use_fsync, io_tracer_, Temperature::Unknown);
+                   db_options_.use_fsync, io_tracer_, rs::advanced_options::Temperature::Unknown);
     }
     TEST_SYNC_POINT("ExternalSstFileIngestionJob::Prepare:FileAdded");
     if (!status.ok()) {
@@ -523,7 +523,7 @@ void ExternalSstFileIngestionJob::CreateEquivalentFileIngestingCompactions() {
         ,
         LLONG_MAX /* max compaction bytes, not applicable */,
         0 /* output path ID, not applicable */, mutable_cf_options.compression,
-        mutable_cf_options.compression_opts, Temperature::Unknown,
+        mutable_cf_options.compression_opts, rs::advanced_options::Temperature::Unknown,
         0 /* max_subcompaction, not applicable */,
         {} /* grandparents, not applicable */, false /* is manual */,
         "" /* trim_ts */, -1 /* score, not applicable */,

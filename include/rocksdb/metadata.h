@@ -38,7 +38,7 @@ struct FileStorageInfo {
   uint64_t size = 0;
 
   // This feature is experimental and subject to change.
-  Temperature temperature = Temperature::Unknown;
+  rs::advanced_options::Temperature temperature = rs::advanced_options::Temperature::Unknown;
 
   // The checksum of a SST file, the value is decided by the file content and
   // the checksum algorithm used for this SST file. The checksum function is
@@ -79,7 +79,7 @@ struct SstFileMetaData : public FileStorageInfo {
                   SequenceNumber _smallest_seqno, SequenceNumber _largest_seqno,
                   const std::string& _smallestkey,
                   const std::string& _largestkey, uint64_t _num_reads_sampled,
-                  bool _being_compacted, Temperature _temperature,
+                  bool _being_compacted, rs::advanced_options::Temperature _temperature,
                   uint64_t _oldest_blob_file_number,
                   uint64_t _oldest_ancester_time, uint64_t _file_creation_time,
                   uint64_t _epoch_number, std::string& _file_checksum,

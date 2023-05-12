@@ -1678,7 +1678,7 @@ uint64_t DBTestBase::GetNumberOfSstFilesForColumnFamily(
   return result;
 }
 
-uint64_t DBTestBase::GetSstSizeHelper(Temperature temperature) {
+uint64_t DBTestBase::GetSstSizeHelper(rs::advanced_options::Temperature temperature) {
   std::string prop;
   EXPECT_TRUE(dbfull()->GetProperty(
       DB::Properties::kLiveSstFilesSizeAtTemperature +

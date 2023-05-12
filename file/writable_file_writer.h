@@ -165,7 +165,7 @@ class WritableFileWriter {
   bool perform_data_verification_;
   uint32_t buffered_data_crc32c_checksum_;
   bool buffered_data_with_checksum_;
-  Temperature temperature_;
+  rs::advanced_options::Temperature temperature_;
 
  public:
   WritableFileWriter(

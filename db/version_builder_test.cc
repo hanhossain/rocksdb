@@ -70,7 +70,7 @@ class VersionBuilderTest : public testing::Test {
     FileMetaData* f = new FileMetaData(
         file_number, path_id, file_size, GetInternalKey(smallest, smallest_seq),
         GetInternalKey(largest, largest_seq), smallest_seqno, largest_seqno,
-        /* marked_for_compact */ false, Temperature::Unknown,
+        /* marked_for_compact */ false, rs::advanced_options::Temperature::Unknown,
         oldest_blob_file_number, kUnknownOldestAncesterTime,
         kUnknownFileCreationTime, epoch_number, kUnknownFileChecksum,
         kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
@@ -133,7 +133,7 @@ class VersionBuilderTest : public testing::Test {
     edit->AddFile(level, table_file_number, path_id, file_size,
                   GetInternalKey(smallest), GetInternalKey(largest),
                   smallest_seqno, largest_seqno, marked_for_compaction,
-                  Temperature::Unknown, blob_file_number,
+                  rs::advanced_options::Temperature::Unknown, blob_file_number,
                   kUnknownOldestAncesterTime, kUnknownFileCreationTime,
                   epoch_number, kUnknownFileChecksum,
                   kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
@@ -185,7 +185,7 @@ TEST_F(VersionBuilderTest, ApplyAndSaveTo) {
   VersionEdit version_edit;
   version_edit.AddFile(
       2, 666, 0, 100U, GetInternalKey("301"), GetInternalKey("350"), 200, 200,
-      false, Temperature::Unknown, kInvalidBlobFileNumber,
+      false, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
       kUnknownOldestAncesterTime, kUnknownFileCreationTime, kUnknownEpochNumber,
       kUnknownFileChecksum, kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
   version_edit.DeleteFile(3, 27U);
@@ -232,7 +232,7 @@ TEST_F(VersionBuilderTest, ApplyAndSaveToDynamic) {
   VersionEdit version_edit;
   version_edit.AddFile(
       3, 666, 0, 100U, GetInternalKey("301"), GetInternalKey("350"), 200, 200,
-      false, Temperature::Unknown, kInvalidBlobFileNumber,
+      false, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
       kUnknownOldestAncesterTime, kUnknownFileCreationTime, kUnknownEpochNumber,
       kUnknownFileChecksum, kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
 
@@ -283,7 +283,7 @@ TEST_F(VersionBuilderTest, ApplyAndSaveToDynamic2) {
   VersionEdit version_edit;
   version_edit.AddFile(
       4, 666, 0, 100U, GetInternalKey("301"), GetInternalKey("350"), 200, 200,
-      false, Temperature::Unknown, kInvalidBlobFileNumber,
+      false, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
       kUnknownOldestAncesterTime, kUnknownFileCreationTime, kUnknownEpochNumber,
       kUnknownFileChecksum, kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
   version_edit.DeleteFile(0, 1U);
@@ -319,27 +319,27 @@ TEST_F(VersionBuilderTest, ApplyMultipleAndSaveTo) {
   VersionEdit version_edit;
   version_edit.AddFile(
       2, 666, 0, 100U, GetInternalKey("301"), GetInternalKey("350"), 200, 200,
-      false, Temperature::Unknown, kInvalidBlobFileNumber,
+      false, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
       kUnknownOldestAncesterTime, kUnknownFileCreationTime, kUnknownEpochNumber,
       kUnknownFileChecksum, kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
   version_edit.AddFile(
       2, 676, 0, 100U, GetInternalKey("401"), GetInternalKey("450"), 200, 200,
-      false, Temperature::Unknown, kInvalidBlobFileNumber,
+      false, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
       kUnknownOldestAncesterTime, kUnknownFileCreationTime, kUnknownEpochNumber,
       kUnknownFileChecksum, kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
   version_edit.AddFile(
       2, 636, 0, 100U, GetInternalKey("601"), GetInternalKey("650"), 200, 200,
-      false, Temperature::Unknown, kInvalidBlobFileNumber,
+      false, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
       kUnknownOldestAncesterTime, kUnknownFileCreationTime, kUnknownEpochNumber,
       kUnknownFileChecksum, kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
   version_edit.AddFile(
       2, 616, 0, 100U, GetInternalKey("501"), GetInternalKey("550"), 200, 200,
-      false, Temperature::Unknown, kInvalidBlobFileNumber,
+      false, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
       kUnknownOldestAncesterTime, kUnknownFileCreationTime, kUnknownEpochNumber,
       kUnknownFileChecksum, kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
   version_edit.AddFile(
       2, 606, 0, 100U, GetInternalKey("701"), GetInternalKey("750"), 200, 200,
-      false, Temperature::Unknown, kInvalidBlobFileNumber,
+      false, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
       kUnknownOldestAncesterTime, kUnknownFileCreationTime, kUnknownEpochNumber,
       kUnknownFileChecksum, kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
 
@@ -378,27 +378,27 @@ TEST_F(VersionBuilderTest, ApplyDeleteAndSaveTo) {
   VersionEdit version_edit;
   version_edit.AddFile(
       2, 666, 0, 100U, GetInternalKey("301"), GetInternalKey("350"), 200, 200,
-      false, Temperature::Unknown, kInvalidBlobFileNumber,
+      false, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
       kUnknownOldestAncesterTime, kUnknownFileCreationTime, kUnknownEpochNumber,
       kUnknownFileChecksum, kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
   version_edit.AddFile(
       2, 676, 0, 100U, GetInternalKey("401"), GetInternalKey("450"), 200, 200,
-      false, Temperature::Unknown, kInvalidBlobFileNumber,
+      false, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
       kUnknownOldestAncesterTime, kUnknownFileCreationTime, kUnknownEpochNumber,
       kUnknownFileChecksum, kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
   version_edit.AddFile(
       2, 636, 0, 100U, GetInternalKey("601"), GetInternalKey("650"), 200, 200,
-      false, Temperature::Unknown, kInvalidBlobFileNumber,
+      false, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
       kUnknownOldestAncesterTime, kUnknownFileCreationTime, kUnknownEpochNumber,
       kUnknownFileChecksum, kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
   version_edit.AddFile(
       2, 616, 0, 100U, GetInternalKey("501"), GetInternalKey("550"), 200, 200,
-      false, Temperature::Unknown, kInvalidBlobFileNumber,
+      false, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
       kUnknownOldestAncesterTime, kUnknownFileCreationTime, kUnknownEpochNumber,
       kUnknownFileChecksum, kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
   version_edit.AddFile(
       2, 606, 0, 100U, GetInternalKey("701"), GetInternalKey("750"), 200, 200,
-      false, Temperature::Unknown, kInvalidBlobFileNumber,
+      false, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
       kUnknownOldestAncesterTime, kUnknownFileCreationTime, kUnknownEpochNumber,
       kUnknownFileChecksum, kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
   ASSERT_OK(version_builder.Apply(&version_edit));
@@ -406,14 +406,14 @@ TEST_F(VersionBuilderTest, ApplyDeleteAndSaveTo) {
   VersionEdit version_edit2;
   version_edit.AddFile(
       2, 808, 0, 100U, GetInternalKey("901"), GetInternalKey("950"), 200, 200,
-      false, Temperature::Unknown, kInvalidBlobFileNumber,
+      false, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
       kUnknownOldestAncesterTime, kUnknownFileCreationTime, kUnknownEpochNumber,
       kUnknownFileChecksum, kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
   version_edit2.DeleteFile(2, 616);
   version_edit2.DeleteFile(2, 636);
   version_edit.AddFile(
       2, 806, 0, 100U, GetInternalKey("801"), GetInternalKey("850"), 200, 200,
-      false, Temperature::Unknown, kInvalidBlobFileNumber,
+      false, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
       kUnknownOldestAncesterTime, kUnknownFileCreationTime, kUnknownEpochNumber,
       kUnknownFileChecksum, kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
 
@@ -524,7 +524,7 @@ TEST_F(VersionBuilderTest, ApplyFileDeletionAndAddition) {
       level, file_number, path_id, file_size,
       GetInternalKey(smallest, smallest_seq),
       GetInternalKey(largest, largest_seq), smallest_seqno, largest_seqno,
-      marked_for_compaction, Temperature::Unknown, kInvalidBlobFileNumber,
+      marked_for_compaction, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
       kUnknownOldestAncesterTime, kUnknownFileCreationTime, kUnknownEpochNumber,
       kUnknownFileChecksum, kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
 
@@ -573,7 +573,7 @@ TEST_F(VersionBuilderTest, ApplyFileAdditionAlreadyInBase) {
   edit.AddFile(
       new_level, file_number, path_id, file_size, GetInternalKey(smallest),
       GetInternalKey(largest), smallest_seqno, largest_seqno,
-      marked_for_compaction, Temperature::Unknown, kInvalidBlobFileNumber,
+      marked_for_compaction, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
       kUnknownOldestAncesterTime, kUnknownFileCreationTime, kUnknownEpochNumber,
       kUnknownFileChecksum, kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
 
@@ -609,7 +609,7 @@ TEST_F(VersionBuilderTest, ApplyFileAdditionAlreadyApplied) {
   edit.AddFile(
       level, file_number, path_id, file_size, GetInternalKey(smallest),
       GetInternalKey(largest), smallest_seqno, largest_seqno,
-      marked_for_compaction, Temperature::Unknown, kInvalidBlobFileNumber,
+      marked_for_compaction, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
       kUnknownOldestAncesterTime, kUnknownFileCreationTime, kUnknownEpochNumber,
       kUnknownFileChecksum, kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
 
@@ -622,7 +622,7 @@ TEST_F(VersionBuilderTest, ApplyFileAdditionAlreadyApplied) {
   other_edit.AddFile(
       new_level, file_number, path_id, file_size, GetInternalKey(smallest),
       GetInternalKey(largest), smallest_seqno, largest_seqno,
-      marked_for_compaction, Temperature::Unknown, kInvalidBlobFileNumber,
+      marked_for_compaction, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
       kUnknownOldestAncesterTime, kUnknownFileCreationTime, kUnknownEpochNumber,
       kUnknownFileChecksum, kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
 
@@ -658,7 +658,7 @@ TEST_F(VersionBuilderTest, ApplyFileAdditionAndDeletion) {
   addition.AddFile(
       level, file_number, path_id, file_size, GetInternalKey(smallest),
       GetInternalKey(largest), smallest_seqno, largest_seqno,
-      marked_for_compaction, Temperature::Unknown, kInvalidBlobFileNumber,
+      marked_for_compaction, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
       kUnknownOldestAncesterTime, kUnknownFileCreationTime, kUnknownEpochNumber,
       kUnknownFileChecksum, kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
 
@@ -1231,7 +1231,7 @@ TEST_F(VersionBuilderTest, SaveBlobFilesToConcurrentJobs) {
   edit.AddFile(
       level, table_file_number, path_id, file_size, GetInternalKey(smallest),
       GetInternalKey(largest), smallest_seqno, largest_seqno,
-      marked_for_compaction, Temperature::Unknown, blob_file_number,
+      marked_for_compaction, rs::advanced_options::Temperature::Unknown, blob_file_number,
       kUnknownOldestAncesterTime, kUnknownFileCreationTime, 2 /*epoch_number*/,
       checksum_value, checksum_method, kNullUniqueId64x2, 0);
   edit.AddBlobFile(blob_file_number, total_blob_count, total_blob_bytes,
@@ -1317,7 +1317,7 @@ TEST_F(VersionBuilderTest, CheckConsistencyForBlobFiles) {
                /* file_size */ 100, /* smallest */ GetInternalKey("701"),
                /* largest */ GetInternalKey("750"), /* smallest_seqno */ 200,
                /* largest_seqno */ 200, /* marked_for_compaction */ false,
-               Temperature::Unknown,
+               rs::advanced_options::Temperature::Unknown,
                /* oldest_blob_file_number */ 16, kUnknownOldestAncesterTime,
                kUnknownFileCreationTime, kUnknownEpochNumber,
                kUnknownFileChecksum, kUnknownFileChecksumFuncName,
@@ -1327,7 +1327,7 @@ TEST_F(VersionBuilderTest, CheckConsistencyForBlobFiles) {
                /* file_size */ 100, /* smallest */ GetInternalKey("801"),
                /* largest */ GetInternalKey("850"), /* smallest_seqno */ 200,
                /* largest_seqno */ 200, /* marked_for_compaction */ false,
-               Temperature::Unknown,
+               rs::advanced_options::Temperature::Unknown,
                /* oldest_blob_file_number */ 1000, kUnknownOldestAncesterTime,
                kUnknownFileCreationTime, kUnknownEpochNumber,
                kUnknownFileChecksum, kUnknownFileChecksumFuncName,
@@ -1549,7 +1549,7 @@ TEST_F(VersionBuilderTest, MaintainLinkedSstsForBlobFiles) {
       /* file_size */ 100, /* smallest */ GetInternalKey("21", 2100),
       /* largest */ GetInternalKey("21", 2100), /* smallest_seqno */ 2100,
       /* largest_seqno */ 2100, /* marked_for_compaction */ false,
-      Temperature::Unknown,
+      rs::advanced_options::Temperature::Unknown,
       /* oldest_blob_file_number */ 1, kUnknownOldestAncesterTime,
       kUnknownFileCreationTime, kUnknownEpochNumber, kUnknownFileChecksum,
       kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
@@ -1560,7 +1560,7 @@ TEST_F(VersionBuilderTest, MaintainLinkedSstsForBlobFiles) {
       /* file_size */ 100, /* smallest */ GetInternalKey("22", 2200),
       /* largest */ GetInternalKey("22", 2200), /* smallest_seqno */ 2200,
       /* largest_seqno */ 2200, /* marked_for_compaction */ false,
-      Temperature::Unknown, kInvalidBlobFileNumber, kUnknownOldestAncesterTime,
+      rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber, kUnknownOldestAncesterTime,
       kUnknownFileCreationTime, kUnknownEpochNumber, kUnknownFileChecksum,
       kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
 
@@ -1581,7 +1581,7 @@ TEST_F(VersionBuilderTest, MaintainLinkedSstsForBlobFiles) {
                /* largest */ GetInternalKey("03", 300),
                /* smallest_seqno */ 300,
                /* largest_seqno */ 300, /* marked_for_compaction */ false,
-               Temperature::Unknown,
+               rs::advanced_options::Temperature::Unknown,
                /* oldest_blob_file_number */ 3, kUnknownOldestAncesterTime,
                kUnknownFileCreationTime, kUnknownEpochNumber,
                kUnknownFileChecksum, kUnknownFileChecksumFuncName,
@@ -1594,7 +1594,7 @@ TEST_F(VersionBuilderTest, MaintainLinkedSstsForBlobFiles) {
                /* largest */ GetInternalKey("13", 1300),
                /* smallest_seqno */ 1300,
                /* largest_seqno */ 1300, /* marked_for_compaction */ false,
-               Temperature::Unknown, kInvalidBlobFileNumber,
+               rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
                kUnknownOldestAncesterTime, kUnknownFileCreationTime,
                kUnknownEpochNumber, kUnknownFileChecksum,
                kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
@@ -1607,7 +1607,7 @@ TEST_F(VersionBuilderTest, MaintainLinkedSstsForBlobFiles) {
                /* largest */ GetInternalKey("23", 2300),
                /* smallest_seqno */ 2300,
                /* largest_seqno */ 2300, /* marked_for_compaction */ false,
-               Temperature::Unknown,
+               rs::advanced_options::Temperature::Unknown,
                /* oldest_blob_file_number */ 5, kUnknownOldestAncesterTime,
                kUnknownFileCreationTime, kUnknownEpochNumber,
                kUnknownFileChecksum, kUnknownFileChecksumFuncName,
@@ -1708,7 +1708,7 @@ TEST_F(VersionBuilderTest, CheckConsistencyForL0FilesSortedByEpochNumber) {
       /* file_size */ 100, /* smallest */ GetInternalKey("a", 1),
       /* largest */ GetInternalKey("c", 3), /* smallest_seqno */ 1,
       /* largest_seqno */ 3, /* marked_for_compaction */ false,
-      Temperature::Unknown,
+      rs::advanced_options::Temperature::Unknown,
       /* oldest_blob_file_number */ kInvalidBlobFileNumber,
       kUnknownOldestAncesterTime, kUnknownFileCreationTime,
       1 /* epoch_number */, kUnknownFileChecksum, kUnknownFileChecksumFuncName,
@@ -1718,7 +1718,7 @@ TEST_F(VersionBuilderTest, CheckConsistencyForL0FilesSortedByEpochNumber) {
       /* file_size */ 100, /* smallest */ GetInternalKey("b", 2),
       /* largest */ GetInternalKey("d", 4), /* smallest_seqno */ 2,
       /* largest_seqno */ 4, /* marked_for_compaction */ false,
-      Temperature::Unknown,
+      rs::advanced_options::Temperature::Unknown,
       /* oldest_blob_file_number */ kInvalidBlobFileNumber,
       kUnknownOldestAncesterTime, kUnknownFileCreationTime,
       1 /* epoch_number */, kUnknownFileChecksum, kUnknownFileChecksumFuncName,
@@ -1745,7 +1745,7 @@ TEST_F(VersionBuilderTest, CheckConsistencyForL0FilesSortedByEpochNumber) {
       /* file_size */ 100, /* smallest */ GetInternalKey("a", 1),
       /* largest */ GetInternalKey("a", 1), /* smallest_seqno */ 1,
       /* largest_seqno */ 1, /* marked_for_compaction */ false,
-      Temperature::Unknown,
+      rs::advanced_options::Temperature::Unknown,
       /* oldest_blob_file_number */ kInvalidBlobFileNumber,
       kUnknownOldestAncesterTime, kUnknownFileCreationTime,
       1 /* epoch_number */, kUnknownFileChecksum, kUnknownFileChecksumFuncName,
@@ -1755,7 +1755,7 @@ TEST_F(VersionBuilderTest, CheckConsistencyForL0FilesSortedByEpochNumber) {
       /* file_size */ 100, /* smallest */ GetInternalKey("b", 2),
       /* largest */ GetInternalKey("b", 2), /* smallest_seqno */ 2,
       /* largest_seqno */ 2, /* marked_for_compaction */ false,
-      Temperature::Unknown,
+      rs::advanced_options::Temperature::Unknown,
       /* oldest_blob_file_number */ kInvalidBlobFileNumber,
       kUnknownOldestAncesterTime, kUnknownFileCreationTime,
       2 /* epoch_number */, kUnknownFileChecksum, kUnknownFileChecksumFuncName,

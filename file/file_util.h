@@ -23,18 +23,18 @@ extern IOStatus CopyFile(FileSystem* fs, const std::string& source,
                          std::unique_ptr<WritableFileWriter>& dest_writer,
                          uint64_t size, bool use_fsync,
                          const std::shared_ptr<IOTracer>& io_tracer,
-                         const Temperature temperature);
+                         const rs::advanced_options::Temperature temperature);
 extern IOStatus CopyFile(FileSystem* fs, const std::string& source,
                          const std::string& destination, uint64_t size,
                          bool use_fsync,
                          const std::shared_ptr<IOTracer>& io_tracer,
-                         const Temperature temperature);
+                         const rs::advanced_options::Temperature temperature);
 inline IOStatus CopyFile(const std::shared_ptr<FileSystem>& fs,
                          const std::string& source,
                          const std::string& destination, uint64_t size,
                          bool use_fsync,
                          const std::shared_ptr<IOTracer>& io_tracer,
-                         const Temperature temperature) {
+                         const rs::advanced_options::Temperature temperature) {
   return CopyFile(fs.get(), source, destination, size, use_fsync, io_tracer,
                   temperature);
 }

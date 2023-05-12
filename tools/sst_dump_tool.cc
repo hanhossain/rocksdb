@@ -420,7 +420,7 @@ int SSTDumpTool::Run(int argc, char const* const* argv, Options options) {
     }
 
     ROCKSDB_NAMESPACE::SstFileDumper dumper(
-        options, filename, Temperature::Unknown, readahead_size,
+        options, filename, rs::advanced_options::Temperature::Unknown, readahead_size,
         verify_checksum, output_hex, decode_blob_index);
     // Not a valid SST
     if (!dumper.getStatus().ok()) {

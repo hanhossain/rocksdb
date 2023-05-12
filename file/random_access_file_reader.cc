@@ -27,7 +27,7 @@ const std::array<Histograms, std::size_t(Env::IOActivity::kUnknown)>
         FILE_READ_FLUSH_MICROS,
         FILE_READ_COMPACTION_MICROS,
     }};
-inline void RecordIOStats(Statistics* stats, Temperature file_temperature,
+inline void RecordIOStats(Statistics* stats, rs::advanced_options::Temperature file_temperature,
                           bool is_last_level, size_t size) {
   IOSTATS_ADD(bytes_read, size);
   // record for last/non-last level
@@ -40,21 +40,21 @@ inline void RecordIOStats(Statistics* stats, Temperature file_temperature,
   }
 
   // record for temperature file
-  if (file_temperature != Temperature::Unknown) {
+  if (file_temperature != rs::advanced_options::Temperature::Unknown) {
     switch (file_temperature) {
-      case Temperature::Hot:
+      case rs::advanced_options::Temperature::Hot:
         IOSTATS_ADD(file_io_stats_by_temperature.hot_file_bytes_read, size);
         IOSTATS_ADD(file_io_stats_by_temperature.hot_file_read_count, 1);
         RecordTick(stats, HOT_FILE_READ_BYTES, size);
         RecordTick(stats, HOT_FILE_READ_COUNT, 1);
         break;
-      case Temperature::Warm:
+      case rs::advanced_options::Temperature::Warm:
         IOSTATS_ADD(file_io_stats_by_temperature.warm_file_bytes_read, size);
         IOSTATS_ADD(file_io_stats_by_temperature.warm_file_read_count, 1);
         RecordTick(stats, WARM_FILE_READ_BYTES, size);
         RecordTick(stats, WARM_FILE_READ_COUNT, 1);
         break;
-      case Temperature::Cold:
+      case rs::advanced_options::Temperature::Cold:
         IOSTATS_ADD(file_io_stats_by_temperature.cold_file_bytes_read, size);
         IOSTATS_ADD(file_io_stats_by_temperature.cold_file_read_count, 1);
         RecordTick(stats, COLD_FILE_READ_BYTES, size);
