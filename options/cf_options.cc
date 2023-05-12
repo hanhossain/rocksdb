@@ -542,7 +542,7 @@ static std::unordered_map<std::string, OptionTypeInfo>
         TablePropertiesCollectorFactories table_properties_collector_factories;
         using TablePropertiesCollectorFactories =
             std::vector<std::shared_ptr<TablePropertiesCollectorFactory>>;
-        UpdateStatus (*inplace_callback)(char* existing_value,
+        rs::advanced_options::UpdateStatus (*inplace_callback)(char* existing_value,
                                          uint34_t* existing_value_size,
                                          Slice delta_value,
                                          std::string* merged_value);

@@ -391,7 +391,7 @@ TEST_F(OptionsSettableTest, ColumnFamilyOptionsAllFieldsSettable) {
   // ColumnFamilyOptions.
   const OffsetGap kColumnFamilyOptionsExcluded = {
       {offsetof(struct ColumnFamilyOptions, inplace_callback),
-       sizeof(UpdateStatus(*)(char*, uint32_t*, Slice, std::string*))},
+       sizeof(rs::advanced_options::UpdateStatus(*)(char*, uint32_t*, Slice, std::string*))},
       {offsetof(struct ColumnFamilyOptions,
                 memtable_insert_with_hint_prefix_extractor),
        sizeof(std::shared_ptr<const SliceTransform>)},

@@ -49,7 +49,7 @@ struct ImmutableMemTableOptions {
   bool memtable_whole_key_filtering;
   bool inplace_update_support;
   size_t inplace_update_num_locks;
-  UpdateStatus (*inplace_callback)(char* existing_value,
+  rs::advanced_options::UpdateStatus (*inplace_callback)(char* existing_value,
                                    uint32_t* existing_value_size,
                                    Slice delta_value,
                                    std::string* merged_value);

@@ -1558,7 +1558,7 @@ Status MemTable::UpdateCallback(SequenceNumber seq, const Slice& key,
         WriteLock wl(GetLock(lkey.user_key()));
         auto status = moptions_.inplace_callback(prev_buffer, &new_prev_size,
                                                  delta, &str_value);
-        if (status == UpdateStatus::UpdatedInplace) {
+        if (status == rs::advanced_options::UpdateStatus::UpdatedInplace) {
           // Value already updated by callback.
           assert(new_prev_size <= prev_size);
           if (new_prev_size < prev_size) {
@@ -1588,7 +1588,7 @@ Status MemTable::UpdateCallback(SequenceNumber seq, const Slice& key,
                                 prev_buffer + new_prev_size);
           }
           return Status::OK();
-        } else if (status == UpdateStatus::Updated) {
+        } else if (status == rs::advanced_options::UpdateStatus::Updated) {
           Status s;
           if (kv_prot_info != nullptr) {
             ProtectionInfoKVOS64 updated_kv_prot_info(*kv_prot_info);
@@ -1602,7 +1602,7 @@ Status MemTable::UpdateCallback(SequenceNumber seq, const Slice& key,
           RecordTick(moptions_.statistics, NUMBER_KEYS_WRITTEN);
           UpdateFlushState();
           return s;
-        } else if (status == UpdateStatus::Failed) {
+        } else if (status == rs::advanced_options::UpdateStatus::Failed) {
           // `Failed` is named incorrectly. It indicates no update
           // happened. It does not indicate a failure happened.
           UpdateFlushState();

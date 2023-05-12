@@ -2062,7 +2062,7 @@ class MemTableInserter : public WriteBatch::Handler {
           ret_status = Status::OK();
         }
         if (ret_status.ok()) {
-          UpdateStatus update_status;
+          rs::advanced_options::UpdateStatus update_status;
           char* prev_buffer = const_cast<char*>(prev_value.c_str());
           uint32_t prev_size = static_cast<uint32_t>(prev_value.size());
           if (get_status.ok()) {
@@ -2073,7 +2073,7 @@ class MemTableInserter : public WriteBatch::Handler {
                 nullptr /* existing_value */, nullptr /* existing_value_size */,
                 value, &merged_value);
           }
-          if (update_status == UpdateStatus::UpdatedInplace) {
+          if (update_status == rs::advanced_options::UpdateStatus::UpdatedInplace) {
             assert(get_status.ok());
             if (kv_prot_info != nullptr) {
               ProtectionInfoKVOS64 updated_kv_prot_info(*kv_prot_info);
@@ -2091,7 +2091,7 @@ class MemTableInserter : public WriteBatch::Handler {
             if (ret_status.ok()) {
               RecordTick(moptions->statistics, NUMBER_KEYS_WRITTEN);
             }
-          } else if (update_status == UpdateStatus::Updated) {
+          } else if (update_status == rs::advanced_options::UpdateStatus::Updated) {
             if (kv_prot_info != nullptr) {
               ProtectionInfoKVOS64 updated_kv_prot_info(*kv_prot_info);
               updated_kv_prot_info.UpdateV(value, merged_value);

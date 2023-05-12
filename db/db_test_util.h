@@ -1269,20 +1269,20 @@ class DBTestBase : public testing::Test {
   //   sets newValue with delta
   // If previous value is not empty,
   //   updates previous value with 'b' string of previous value size - 1.
-  static UpdateStatus updateInPlaceSmallerSize(char* prevValue,
+  static rs::advanced_options::UpdateStatus updateInPlaceSmallerSize(char* prevValue,
                                                uint32_t* prevSize, Slice delta,
                                                std::string* newValue);
 
-  static UpdateStatus updateInPlaceSmallerVarintSize(char* prevValue,
+  static rs::advanced_options::UpdateStatus updateInPlaceSmallerVarintSize(char* prevValue,
                                                      uint32_t* prevSize,
                                                      Slice delta,
                                                      std::string* newValue);
 
-  static UpdateStatus updateInPlaceLargerSize(char* prevValue,
+  static rs::advanced_options::UpdateStatus updateInPlaceLargerSize(char* prevValue,
                                               uint32_t* prevSize, Slice delta,
                                               std::string* newValue);
 
-  static UpdateStatus updateInPlaceNoAction(char* prevValue, uint32_t* prevSize,
+  static rs::advanced_options::UpdateStatus updateInPlaceNoAction(char* prevValue, uint32_t* prevSize,
                                             Slice delta, std::string* newValue);
 
   // Utility method to test InplaceUpdate
