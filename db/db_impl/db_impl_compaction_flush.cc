@@ -1212,14 +1212,14 @@ Status DBImpl::CompactRangeInternal(const CompactRangeOptions& options,
           //  through L0 -> LBase compaction, and hence did not go through
           //  compaction filter.
           if ((options.bottommost_level_compaction ==
-                   BottommostLevelCompaction::IfHaveCompactionFilter &&
+                   rs::options::BottommostLevelCompaction::IfHaveCompactionFilter &&
                max_overlapped_level != 0 &&
                (cfd->ioptions()->compaction_filter != nullptr ||
                 cfd->ioptions()->compaction_filter_factory != nullptr)) ||
               options.bottommost_level_compaction ==
-                  BottommostLevelCompaction::ForceOptimized ||
+                  rs::options::BottommostLevelCompaction::ForceOptimized ||
               options.bottommost_level_compaction ==
-                  BottommostLevelCompaction::Force) {
+                  rs::options::BottommostLevelCompaction::Force) {
             // Use `next_file_number` as `max_file_num_to_ignore` to avoid
             // rewriting newly compacted files when it is kForceOptimized.
             s = RunManualCompaction(

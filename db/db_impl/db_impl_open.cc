@@ -1783,7 +1783,7 @@ Status DB::OpenAndTrimHistory(
   assert(db);
   CompactRangeOptions options;
   options.bottommost_level_compaction =
-      BottommostLevelCompaction::ForceOptimized;
+      rs::options::BottommostLevelCompaction::ForceOptimized;
   auto db_impl = static_cast_with_check<DBImpl>(db);
   for (auto handle : *handles) {
     assert(handle != nullptr);

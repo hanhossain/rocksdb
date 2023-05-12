@@ -2599,7 +2599,7 @@ TEST_F(DBBloomFilterTest, OptimizeFiltersForHits) {
 
   CompactRangeOptions compact_options;
   compact_options.bottommost_level_compaction =
-      BottommostLevelCompaction::Skip;
+      rs::options::BottommostLevelCompaction::Skip;
   compact_options.change_level = true;
   compact_options.target_level = 7;
   ASSERT_OK(db_->CompactRange(compact_options, handles_[1], nullptr, nullptr));

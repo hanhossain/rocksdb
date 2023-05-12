@@ -293,7 +293,7 @@ TEST_F(DBMergeOperatorTest, MergeOperatorFailsWithMustMerge) {
     {
       CompactRangeOptions cro;
       cro.bottommost_level_compaction =
-          BottommostLevelCompaction::ForceOptimized;
+          rs::options::BottommostLevelCompaction::ForceOptimized;
       ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
     }
     check_query();
@@ -318,7 +318,7 @@ TEST_F(DBMergeOperatorTest, MergeOperatorFailsWithMustMerge) {
     {
       CompactRangeOptions cro;
       cro.bottommost_level_compaction =
-          BottommostLevelCompaction::ForceOptimized;
+          rs::options::BottommostLevelCompaction::ForceOptimized;
       ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
     }
     check_query();
@@ -338,7 +338,7 @@ TEST_F(DBMergeOperatorTest, MergeOperatorFailsWithMustMerge) {
     {
       CompactRangeOptions cro;
       cro.bottommost_level_compaction =
-          BottommostLevelCompaction::ForceOptimized;
+          rs::options::BottommostLevelCompaction::ForceOptimized;
       ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
     }
     check_query();
@@ -352,7 +352,7 @@ TEST_F(DBMergeOperatorTest, MergeOperatorFailsWithMustMerge) {
     ASSERT_EQ("NOT_FOUND", Get("k2"));
     CompactRangeOptions cro;
     cro.bottommost_level_compaction =
-        BottommostLevelCompaction::ForceOptimized;
+        rs::options::BottommostLevelCompaction::ForceOptimized;
     ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
     ASSERT_EQ("", FilesPerLevel());
   }

@@ -538,7 +538,7 @@ TEST_P(TieredCompactionTest, LevelColdRangeDelete) {
   ASSERT_OK(Flush());
 
   CompactRangeOptions cro;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
+  cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::Force;
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   ASSERT_EQ("0,1",
             FilesPerLevel());  // bottommost but not last level file is hot
@@ -659,7 +659,7 @@ TEST_P(TieredCompactionTest, LevelOutofBoundaryRangeDelete) {
   ASSERT_OK(Flush());
 
   CompactRangeOptions cro;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
+  cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::Force;
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
 
   // range tombstone is not in cold tier
@@ -776,7 +776,7 @@ TEST_P(TieredCompactionTest, UniversalRangeDelete) {
 
   // compact to the penultimate level with 10 files
   CompactRangeOptions cro;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
+  cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::Force;
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
 
   ASSERT_EQ("0,0,0,0,0,10", FilesPerLevel());
@@ -930,7 +930,7 @@ TEST_P(TieredCompactionTest, SequenceBasedTieredStorageLevel) {
 
   // The compaction won't move the data up
   CompactRangeOptions cro;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
+  cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::Force;
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,0,1", FilesPerLevel());
   ASSERT_EQ(GetSstSizeHelper(Temperature::Unknown), 0);
@@ -1147,7 +1147,7 @@ TEST_P(TieredCompactionTest, RangeBasedTieredStorageLevel) {
     hot_end = Key(200);
   }
   CompactRangeOptions cro;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
+  cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::Force;
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,0,1", FilesPerLevel());
   ASSERT_EQ(GetSstSizeHelper(Temperature::Unknown), 0);
@@ -1284,7 +1284,7 @@ TEST_F(PrecludeLastLevelTest, MigrationFromPreserveTimeManualCompaction) {
   ASSERT_OK(Flush());
 
   CompactRangeOptions cro;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
+  cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::Force;
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
 
   // all data is moved up to the penultimate level
@@ -1435,7 +1435,7 @@ TEST_F(PrecludeLastLevelTest, MigrationFromPreserveTimePartial) {
   ASSERT_OK(Flush());
 
   CompactRangeOptions cro;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
+  cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::Force;
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
 
   // some data are moved up, some are not
@@ -1541,7 +1541,7 @@ TEST_F(PrecludeLastLevelTest, LastLevelOnlyCompactionPartial) {
   Reopen(options);
 
   CompactRangeOptions cro;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
+  cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::Force;
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
 
   // some data are moved up, some are not
@@ -1682,7 +1682,7 @@ TEST_P(PrecludeLastLevelTestWithParms, LastLevelOnlyCompactionNoPreclude) {
 
   auto manual_compaction_thread = port::Thread([this]() {
     CompactRangeOptions cro;
-    cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
+    cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::Force;
     cro.exclusive_manual_compaction = false;
     ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   });
@@ -1752,7 +1752,7 @@ TEST_P(PrecludeLastLevelTestWithParms, PeriodicCompactionToPenultimateLevel) {
   }
   ASSERT_OK(Flush());
   CompactRangeOptions cro;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
+  cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::Force;
 
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
 
@@ -1920,7 +1920,7 @@ TEST_F(PrecludeLastLevelTest, PartialPenultimateLevelCompaction) {
   }
   ASSERT_OK(Flush());
   CompactRangeOptions cro;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
+  cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::Force;
 
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
 
@@ -2095,7 +2095,7 @@ TEST_F(PrecludeLastLevelTest, RangeDelsCauseFileEndpointsToOverlap) {
   //   [key000008#6,kTypeValue, key000012#10,kTypeValue]
   //   [key000013#11,kTypeValue, key000017#15,kTypeValue]
   CompactRangeOptions cro;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
+  cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::Force;
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   ASSERT_EQ("0,0,0,0,0,3,3", FilesPerLevel());
   verify_db();

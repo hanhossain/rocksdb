@@ -8050,7 +8050,7 @@ class Benchmark {
     DB* db = SelectDB(thread);
     CompactRangeOptions cro;
     cro.bottommost_level_compaction =
-        BottommostLevelCompaction::ForceOptimized;
+        rs::options::BottommostLevelCompaction::ForceOptimized;
     cro.max_subcompactions = static_cast<uint32_t>(FLAGS_subcompactions);
     db->CompactRange(cro, nullptr, nullptr);
   }

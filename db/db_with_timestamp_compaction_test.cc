@@ -340,7 +340,7 @@ TEST_F(TimestampCompatibleCompactionTest, EmptyCompactionOutput) {
   CompactRangeOptions cro;
   // range tombstone will be dropped during compaction
   cro.full_history_ts_low = &ts;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
+  cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::Force;
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
 }
 

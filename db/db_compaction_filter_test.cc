@@ -1016,7 +1016,7 @@ TEST_F(DBTestCompactionFilter, DropKeyWithSingleDelete) {
   ASSERT_OK(Flush());
   {
     CompactRangeOptions cro;
-    cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
+    cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::Force;
     ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   }
 }

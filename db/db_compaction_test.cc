@@ -137,14 +137,14 @@ class DBCompactionTestWithParam
 class DBCompactionTestWithBottommostParam
     : public DBTestBase,
       public testing::WithParamInterface<
-          std::tuple<BottommostLevelCompaction, bool>> {
+          std::tuple<rs::options::BottommostLevelCompaction, bool>> {
  public:
   DBCompactionTestWithBottommostParam()
       : DBTestBase("db_compaction_test", /*env_do_fsync=*/true) {
     bottommost_level_compaction_ = std::get<0>(GetParam());
   }
 
-  BottommostLevelCompaction bottommost_level_compaction_;
+  rs::options::BottommostLevelCompaction bottommost_level_compaction_;
 };
 
 class DBCompactionDirectIOTest : public DBCompactionTest,
@@ -517,7 +517,7 @@ TEST_F(DBCompactionTest, TestTableReaderForCompaction) {
   CompactRangeOptions cro;
   cro.change_level = true;
   cro.target_level = 2;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::ForceOptimized;
+  cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::ForceOptimized;
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   // Only verifying compaction outputs issues one table cache lookup
   // for both data block and range deletion block).
@@ -651,7 +651,7 @@ TEST_F(DBCompactionTest, CompactRangeBottomPri) {
 
   // Recompact bottom most level uses bottom pool
   CompactRangeOptions cro;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
+  cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::Force;
   ASSERT_OK(dbfull()->CompactRange(cro, nullptr, nullptr));
   ASSERT_EQ(1, low_pri_count);
   ASSERT_EQ(2, bottom_pri_count);
@@ -1048,7 +1048,7 @@ TEST_F(DBCompactionTest, CompactionSstPartitionWithManualCompaction) {
   // CONTROL 1: compact without partitioner
   CompactRangeOptions compact_options;
   compact_options.bottommost_level_compaction =
-      BottommostLevelCompaction::ForceOptimized;
+      rs::options::BottommostLevelCompaction::ForceOptimized;
   ASSERT_OK(dbfull()->CompactRange(CompactRangeOptions(), nullptr, nullptr));
 
   // Check (compacted but no partitioning yet)
@@ -2582,7 +2582,7 @@ TEST_P(DBCompactionTestWithParam, ConvertCompactionStyle) {
   // cannot use kForceOptimized here because the compaction here is expected
   // to generate one output file
   compact_options.bottommost_level_compaction =
-      BottommostLevelCompaction::Force;
+      rs::options::BottommostLevelCompaction::Force;
   compact_options.exclusive_manual_compaction = exclusive_manual_compaction_;
   ASSERT_OK(
       dbfull()->CompactRange(compact_options, handles_[1], nullptr, nullptr));
@@ -3363,7 +3363,7 @@ TEST_P(DBCompactionTestWithParam, ForceBottommostLevelCompaction) {
   // then compacte the bottommost level L3=>L3 (non trivial move)
   compact_options = CompactRangeOptions();
   compact_options.bottommost_level_compaction =
-      BottommostLevelCompaction::ForceOptimized;
+      rs::options::BottommostLevelCompaction::ForceOptimized;
   ASSERT_OK(db_->CompactRange(compact_options, nullptr, nullptr));
   ASSERT_EQ("0,0,0,1", FilesPerLevel(0));
   ASSERT_EQ(trivial_move, 4);
@@ -3381,7 +3381,7 @@ TEST_P(DBCompactionTestWithParam, ForceBottommostLevelCompaction) {
   non_trivial_move = 0;
   compact_options = CompactRangeOptions();
   compact_options.bottommost_level_compaction =
-      BottommostLevelCompaction::Skip;
+      rs::options::BottommostLevelCompaction::Skip;
   // Compaction will do L0=>L1 L1=>L2 L2=>L3 (3 trivial moves)
   // and will skip bottommost level compaction
   ASSERT_OK(db_->CompactRange(compact_options, nullptr, nullptr));
@@ -6088,7 +6088,7 @@ TEST_F(DBCompactionTest, PartialManualCompaction) {
       {{"max_compaction_bytes", std::to_string(max_compaction_bytes)}}));
 
   CompactRangeOptions cro;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::ForceOptimized;
+  cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::ForceOptimized;
   ASSERT_OK(dbfull()->CompactRange(cro, nullptr, nullptr));
 }
 
@@ -6175,7 +6175,7 @@ TEST_F(DBCompactionTest, ManualCompactionBottomLevelOptimized) {
   ASSERT_EQ(num, 0);
 
   CompactRangeOptions cro;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::ForceOptimized;
+  cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::ForceOptimized;
   ASSERT_OK(dbfull()->CompactRange(cro, nullptr, nullptr));
 
   const std::vector<InternalStats::CompactionStats>& comp_stats2 =
@@ -7368,8 +7368,8 @@ TEST_F(DBCompactionTest, SingleOverlappingNonL0BottommostManualCompaction) {
   Options options = CurrentOptions();
   options.disable_auto_compactions = true;
   options.num_levels = 7;
-  for (auto b : {BottommostLevelCompaction::Force,
-                 BottommostLevelCompaction::ForceOptimized}) {
+  for (auto b : {rs::options::BottommostLevelCompaction::Force,
+                 rs::options::BottommostLevelCompaction::ForceOptimized}) {
     DestroyAndReopen(options);
 
     // Generate some sst files on level 0 with sequence keys (no overlap)
@@ -7422,9 +7422,9 @@ TEST_P(DBCompactionTestWithBottommostParam, SequenceKeysManualCompaction) {
   // All bottommost_level_compaction options should allow l0 -> l1 trivial move.
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   ASSERT_TRUE(trivial_moved);
-  if (bottommost_level_compaction_ == BottommostLevelCompaction::Force ||
+  if (bottommost_level_compaction_ == rs::options::BottommostLevelCompaction::Force ||
       bottommost_level_compaction_ ==
-          BottommostLevelCompaction::ForceOptimized) {
+          rs::options::BottommostLevelCompaction::ForceOptimized) {
     // bottommost level should go through intra-level compaction
     // and has only 1 file
     if (dynamic_level) {
@@ -7445,10 +7445,10 @@ TEST_P(DBCompactionTestWithBottommostParam, SequenceKeysManualCompaction) {
 INSTANTIATE_TEST_CASE_P(
     DBCompactionTestWithBottommostParam, DBCompactionTestWithBottommostParam,
     ::testing::Combine(
-        ::testing::Values(BottommostLevelCompaction::Skip,
-                          BottommostLevelCompaction::IfHaveCompactionFilter,
-                          BottommostLevelCompaction::Force,
-                          BottommostLevelCompaction::ForceOptimized),
+        ::testing::Values(rs::options::BottommostLevelCompaction::Skip,
+                          rs::options::BottommostLevelCompaction::IfHaveCompactionFilter,
+                          rs::options::BottommostLevelCompaction::Force,
+                          rs::options::BottommostLevelCompaction::ForceOptimized),
         ::testing::Bool()));
 
 TEST_F(DBCompactionTest, UpdateLevelSubCompactionTest) {
@@ -9119,7 +9119,7 @@ TEST_F(DBCompactionTest, BottomPriCompactionCountsTowardConcurrencyLimit) {
 
   port::Thread compact_range_thread([&] {
     CompactRangeOptions cro;
-    cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
+    cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::Force;
     cro.exclusive_manual_compaction = false;
     ASSERT_OK(dbfull()->CompactRange(cro, nullptr, nullptr));
   });

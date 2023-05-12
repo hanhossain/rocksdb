@@ -234,7 +234,7 @@ TEST_P(DBOptionChangeMigrationTests, Migrate3) {
     if (num == 9) {
       // Issue a full compaction to generate some zero-out files
       CompactRangeOptions cro;
-      cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
+      cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::Force;
       ASSERT_OK(dbfull()->CompactRange(cro, nullptr, nullptr));
     }
   }
@@ -318,7 +318,7 @@ TEST_P(DBOptionChangeMigrationTests, Migrate4) {
     if (num == 9) {
       // Issue a full compaction to generate some zero-out files
       CompactRangeOptions cro;
-      cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
+      cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::Force;
       ASSERT_OK(dbfull()->CompactRange(cro, nullptr, nullptr));
     }
   }
@@ -498,7 +498,7 @@ TEST_F(DBOptionChangeMigrationTest, CompactedSrcToUniversal) {
   }
   Flush();
   CompactRangeOptions cro;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
+  cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::Force;
   ASSERT_OK(dbfull()->CompactRange(cro, nullptr, nullptr));
 
   // Will make sure exactly those keys are in the DB after migration.

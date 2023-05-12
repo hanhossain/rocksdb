@@ -36,7 +36,6 @@
 #undef max
 #endif
 
-using rs::options::BottommostLevelCompaction;
 using rs::options::CompactionServiceJobStatus;
 using rs::options::ReadTier;
 using rs::options::TraceFilterType;
@@ -1797,8 +1796,8 @@ struct CompactRangeOptions {
   uint32_t target_path_id = 0;
   // By default level based compaction will only compact the bottommost level
   // if there is a compaction filter
-  BottommostLevelCompaction bottommost_level_compaction =
-      BottommostLevelCompaction::IfHaveCompactionFilter;
+  rs::options::BottommostLevelCompaction bottommost_level_compaction =
+      rs::options::BottommostLevelCompaction::IfHaveCompactionFilter;
   // If true, will execute immediately even if doing so would cause the DB to
   // enter write stall mode. Otherwise, it'll sleep until load is low enough.
   bool allow_write_stall = false;

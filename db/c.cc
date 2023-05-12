@@ -126,7 +126,6 @@ using ROCKSDB_NAMESPACE::WriteOptions;
 
 using rs::advanced_options::CompactionOptionsFIFO;
 using rs::advanced_options::PrepopulateBlobCache;
-using rs::options::BottommostLevelCompaction;
 using rs::options::WALRecoveryMode;
 
 using std::unordered_set;
@@ -4571,7 +4570,7 @@ void rocksdb_compactoptions_destroy(rocksdb_compactoptions_t* opt) {
 void rocksdb_compactoptions_set_bottommost_level_compaction(
     rocksdb_compactoptions_t* opt, unsigned char v) {
   opt->rep.bottommost_level_compaction =
-      static_cast<BottommostLevelCompaction>(v);
+      static_cast<rs::options::BottommostLevelCompaction>(v);
 }
 
 unsigned char rocksdb_compactoptions_get_bottommost_level_compaction(

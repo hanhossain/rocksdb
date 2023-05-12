@@ -1394,7 +1394,7 @@ TEST_F(DBTest2, PresetCompressionDictLocality) {
   ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
   CompactRangeOptions compact_range_opts;
   compact_range_opts.bottommost_level_compaction =
-      BottommostLevelCompaction::ForceOptimized;
+      rs::options::BottommostLevelCompaction::ForceOptimized;
   ASSERT_OK(db_->CompactRange(compact_range_opts, nullptr, nullptr));
 
   // Dictionary compression should not be so good as to compress four totally
@@ -2300,7 +2300,7 @@ TEST_F(DBTest2, MaxCompactionBytesTest) {
     GenerateNewRandomFile(&rnd);
   }
   CompactRangeOptions cro;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
+  cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::Force;
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   ASSERT_EQ("0,0,8", FilesPerLevel(0));
 
@@ -2909,7 +2909,7 @@ TEST_F(DBTest2, AutomaticCompactionOverlapManualCompaction) {
   // Run a manual compaction that will compact the 2 files in L2
   // into 1 file in L2
   cro.exclusive_manual_compaction = false;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::ForceOptimized;
+  cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::ForceOptimized;
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
 
   ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
@@ -2983,7 +2983,7 @@ TEST_F(DBTest2, ManualCompactionOverlapManualCompaction) {
   // into 1 file in L1
   CompactRangeOptions cro;
   cro.exclusive_manual_compaction = false;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::ForceOptimized;
+  cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::ForceOptimized;
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   bg_thread.join();
 
@@ -5615,7 +5615,7 @@ TEST_F(DBTest2, PrefixBloomReseek) {
   ASSERT_OK(Put("ddd0", ""));
   ASSERT_OK(Flush());
   CompactRangeOptions cro;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::Skip;
+  cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::Skip;
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
 
   ASSERT_OK(Put("bbb1", ""));
@@ -5656,7 +5656,7 @@ TEST_F(DBTest2, PrefixBloomFilteredOut) {
   ASSERT_OK(Put("ddd0", ""));
   ASSERT_OK(Flush());
   CompactRangeOptions cro;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::Skip;
+  cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::Skip;
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
 
   Iterator* iter = db_->NewIterator(ReadOptions());
@@ -6129,7 +6129,7 @@ TEST_F(DBTest2, ChangePrefixExtractor) {
 
     CompactRangeOptions compact_range_opts;
     compact_range_opts.bottommost_level_compaction =
-        BottommostLevelCompaction::Force;
+        rs::options::BottommostLevelCompaction::Force;
     ASSERT_OK(db_->CompactRange(compact_range_opts, nullptr, nullptr));
     ASSERT_OK(db_->CompactRange(compact_range_opts, nullptr, nullptr));
 

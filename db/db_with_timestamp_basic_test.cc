@@ -269,7 +269,7 @@ TEST_F(DBBasicTestWithTimestamp, UpdateFullHistoryTsLow) {
   Slice ts_low = ts_low_str;
   CompactRangeOptions comp_opts;
   comp_opts.full_history_ts_low = &ts_low;
-  comp_opts.bottommost_level_compaction = BottommostLevelCompaction::Force;
+  comp_opts.bottommost_level_compaction = rs::options::BottommostLevelCompaction::Force;
 
   ASSERT_OK(db_->CompactRange(comp_opts, nullptr, nullptr));
 
@@ -3387,7 +3387,7 @@ TEST_F(DBBasicTestWithTimestamp,
   std::string compaction_ts_str = Timestamp(2, 0);
   Slice compaction_ts = compaction_ts_str;
   cro.full_history_ts_low = &compaction_ts;
-  cro.bottommost_level_compaction = BottommostLevelCompaction::Force;
+  cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::Force;
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
   ropts.timestamp = &compaction_ts;
   std::string value, ts;
