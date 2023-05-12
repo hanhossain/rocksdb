@@ -247,7 +247,7 @@ class CompactionJob {
   // Release all reserved threads and update the compaction limits.
   void ReleaseSubcompactionResources();
 
-  CompactionServiceJobStatus ProcessKeyValueCompactionWithCompactionService(
+  rs::options::CompactionServiceJobStatus ProcessKeyValueCompactionWithCompactionService(
       SubcompactionState* sub_compact);
 
   // update the thread status for starting a compaction.

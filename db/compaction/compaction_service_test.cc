@@ -31,21 +31,21 @@ class MyTestCompactionService : public CompactionService {
 
   const char* Name() const override { return kClassName(); }
 
-  CompactionServiceJobStatus StartV2(
+  rs::options::CompactionServiceJobStatus StartV2(
       const CompactionServiceJobInfo& info,
       const std::string& compaction_service_input) override {
     InstrumentedMutexLock l(&mutex_);
     start_info_ = info;
     assert(info.db_name == db_path_);
     jobs_.emplace(info.job_id, compaction_service_input);
-    CompactionServiceJobStatus s = CompactionServiceJobStatus::Success;
+    rs::options::CompactionServiceJobStatus s = rs::options::CompactionServiceJobStatus::Success;
     if (is_override_start_status_) {
       return override_start_status_;
     }
     return s;
   }
 
-  CompactionServiceJobStatus WaitForCompleteV2(
+  rs::options::CompactionServiceJobStatus WaitForCompleteV2(
       const CompactionServiceJobInfo& info,
       std::string* compaction_service_result) override {
     std::string compaction_input;
@@ -55,7 +55,7 @@ class MyTestCompactionService : public CompactionService {
       wait_info_ = info;
       auto i = jobs_.find(info.job_id);
       if (i == jobs_.end()) {
-        return CompactionServiceJobStatus::Failure;
+        return rs::options::CompactionServiceJobStatus::Failure;
       }
       compaction_input = std::move(i->second);
       jobs_.erase(i);
@@ -98,9 +98,9 @@ class MyTestCompactionService : public CompactionService {
     }
     compaction_num_.fetch_add(1);
     if (s.ok()) {
-      return CompactionServiceJobStatus::Success;
+      return rs::options::CompactionServiceJobStatus::Success;
     } else {
-      return CompactionServiceJobStatus::Failure;
+      return rs::options::CompactionServiceJobStatus::Failure;
     }
   }
 
@@ -109,12 +109,12 @@ class MyTestCompactionService : public CompactionService {
   CompactionServiceJobInfo GetCompactionInfoForStart() { return start_info_; }
   CompactionServiceJobInfo GetCompactionInfoForWait() { return wait_info_; }
 
-  void OverrideStartStatus(CompactionServiceJobStatus s) {
+  void OverrideStartStatus(rs::options::CompactionServiceJobStatus s) {
     is_override_start_status_ = true;
     override_start_status_ = s;
   }
 
-  void OverrideWaitStatus(CompactionServiceJobStatus s) {
+  void OverrideWaitStatus(rs::options::CompactionServiceJobStatus s) {
     is_override_wait_status_ = true;
     override_wait_status_ = s;
   }
@@ -142,11 +142,11 @@ class MyTestCompactionService : public CompactionService {
   CompactionServiceJobInfo start_info_;
   CompactionServiceJobInfo wait_info_;
   bool is_override_start_status_ = false;
-  CompactionServiceJobStatus override_start_status_ =
-      CompactionServiceJobStatus::Failure;
+  rs::options::CompactionServiceJobStatus override_start_status_ =
+      rs::options::CompactionServiceJobStatus::Failure;
   bool is_override_wait_status_ = false;
-  CompactionServiceJobStatus override_wait_status_ =
-      CompactionServiceJobStatus::Failure;
+  rs::options::CompactionServiceJobStatus override_wait_status_ =
+      rs::options::CompactionServiceJobStatus::Failure;
   bool is_override_wait_result_ = false;
   std::string override_wait_result_;
   std::vector<std::shared_ptr<EventListener>> listeners_;
@@ -417,7 +417,7 @@ TEST_F(CompactionServiceTest, FailedToStart) {
   GenerateTestData();
 
   auto my_cs = GetCompactionService();
-  my_cs->OverrideStartStatus(CompactionServiceJobStatus::Failure);
+  my_cs->OverrideStartStatus(rs::options::CompactionServiceJobStatus::Failure);
 
   std::string start_str = Key(15);
   std::string end_str = Key(45);
@@ -674,7 +674,7 @@ TEST_F(CompactionServiceTest, FallbackLocalAuto) {
   uint64_t primary_write_bytes =
       primary_statistics->getTickerCount(COMPACT_WRITE_BYTES);
 
-  my_cs->OverrideStartStatus(CompactionServiceJobStatus::UseLocal);
+  my_cs->OverrideStartStatus(rs::options::CompactionServiceJobStatus::UseLocal);
 
   for (int i = 0; i < 20; i++) {
     for (int j = 0; j < 10; j++) {
@@ -749,7 +749,7 @@ TEST_F(CompactionServiceTest, FallbackLocalManual) {
             primary_write_bytes);
 
   // return run local again with API WaitForComplete
-  my_cs->OverrideWaitStatus(CompactionServiceJobStatus::UseLocal);
+  my_cs->OverrideWaitStatus(rs::options::CompactionServiceJobStatus::UseLocal);
   start_str = Key(120);
   start = start_str;
   comp_num = my_cs->GetCompactionNum();

@@ -1036,14 +1036,14 @@ void CompactionJob::ProcessKeyValueCompaction(SubcompactionState* sub_compact) {
   assert(sub_compact);
   assert(sub_compact->compaction);
   if (db_options_.compaction_service) {
-    CompactionServiceJobStatus comp_status =
+    rs::options::CompactionServiceJobStatus comp_status =
         ProcessKeyValueCompactionWithCompactionService(sub_compact);
-    if (comp_status == CompactionServiceJobStatus::Success ||
-        comp_status == CompactionServiceJobStatus::Failure) {
+    if (comp_status == rs::options::CompactionServiceJobStatus::Success ||
+        comp_status == rs::options::CompactionServiceJobStatus::Failure) {
       return;
     }
     // fallback to local compaction
-    assert(comp_status == CompactionServiceJobStatus::UseLocal);
+    assert(comp_status == rs::options::CompactionServiceJobStatus::UseLocal);
   }
 
   uint64_t prev_cpu_micros = db_options_.clock->CPUMicros();
