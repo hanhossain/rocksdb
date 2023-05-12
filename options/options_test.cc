@@ -267,7 +267,7 @@ TEST_F(OptionsTest, GetOptionsFromMapTest) {
   ASSERT_EQ(new_cf_opt.blob_garbage_collection_force_threshold, 0.75);
   ASSERT_EQ(new_cf_opt.blob_compaction_readahead_size, 262144);
   ASSERT_EQ(new_cf_opt.blob_file_starting_level, 1);
-  ASSERT_EQ(new_cf_opt.prepopulate_blob_cache, PrepopulateBlobCache::Disable);
+  ASSERT_EQ(new_cf_opt.prepopulate_blob_cache, rs::advanced_options::PrepopulateBlobCache::Disable);
   ASSERT_EQ(new_cf_opt.last_level_temperature, Temperature::Warm);
   ASSERT_EQ(new_cf_opt.bottommost_temperature, Temperature::Warm);
   ASSERT_EQ(new_cf_opt.persist_user_defined_timestamps, true);
@@ -2459,7 +2459,7 @@ TEST_F(OptionsOldApiTest, GetOptionsFromMapTest) {
   ASSERT_EQ(new_cf_opt.blob_garbage_collection_force_threshold, 0.75);
   ASSERT_EQ(new_cf_opt.blob_compaction_readahead_size, 262144);
   ASSERT_EQ(new_cf_opt.blob_file_starting_level, 1);
-  ASSERT_EQ(new_cf_opt.prepopulate_blob_cache, PrepopulateBlobCache::Disable);
+  ASSERT_EQ(new_cf_opt.prepopulate_blob_cache, rs::advanced_options::PrepopulateBlobCache::Disable);
   ASSERT_EQ(new_cf_opt.last_level_temperature, Temperature::Warm);
   ASSERT_EQ(new_cf_opt.bottommost_temperature, Temperature::Warm);
   ASSERT_EQ(new_cf_opt.persist_user_defined_timestamps, true);

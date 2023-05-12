@@ -124,8 +124,6 @@ using ROCKSDB_NAMESPACE::WriteBatch;
 using ROCKSDB_NAMESPACE::WriteBatchWithIndex;
 using ROCKSDB_NAMESPACE::WriteOptions;
 
-using rs::advanced_options::PrepopulateBlobCache;
-
 using std::unordered_set;
 using std::vector;
 
@@ -3101,7 +3099,7 @@ void rocksdb_options_set_blob_cache(rocksdb_options_t* opt,
 }
 
 void rocksdb_options_set_prepopulate_blob_cache(rocksdb_options_t* opt, int t) {
-  opt->rep.prepopulate_blob_cache = static_cast<PrepopulateBlobCache>(t);
+  opt->rep.prepopulate_blob_cache = static_cast<rs::advanced_options::PrepopulateBlobCache>(t);
 }
 
 int rocksdb_options_get_prepopulate_blob_cache(rocksdb_options_t* opt) {

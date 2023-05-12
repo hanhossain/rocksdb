@@ -16,7 +16,6 @@
 #include "rocksdb/memtablerep.h"
 #include "rocksdb/universal_compaction.h"
 
-using rs::advanced_options::PrepopulateBlobCache;
 using rs::advanced_options::Temperature;
 using rs::advanced_options::UpdateStatus;
 
@@ -1002,7 +1001,7 @@ struct AdvancedColumnFamilyOptions {
   // Default: disabled
   //
   // Dynamically changeable through the SetOptions() API
-  PrepopulateBlobCache prepopulate_blob_cache = PrepopulateBlobCache::Disable;
+  rs::advanced_options::PrepopulateBlobCache prepopulate_blob_cache = rs::advanced_options::PrepopulateBlobCache::Disable;
 
   // Enable memtable per key-value checksum protection.
   //

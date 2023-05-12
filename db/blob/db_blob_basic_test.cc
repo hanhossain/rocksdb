@@ -1599,7 +1599,7 @@ TEST_F(DBBlobBasicTest, WarmCacheWithBlobsDuringFlush) {
   options.disable_auto_compactions = true;
   options.enable_blob_garbage_collection = true;
   options.blob_garbage_collection_age_cutoff = 1.0;
-  options.prepopulate_blob_cache = PrepopulateBlobCache::FlushOnly;
+  options.prepopulate_blob_cache = rs::advanced_options::PrepopulateBlobCache::FlushOnly;
   options.statistics = ROCKSDB_NAMESPACE::CreateDBStatistics();
 
   DestroyAndReopen(options);
@@ -1649,7 +1649,7 @@ TEST_F(DBBlobBasicTest, DynamicallyWarmCacheDuringFlush) {
   options.disable_auto_compactions = true;
   options.enable_blob_garbage_collection = true;
   options.blob_garbage_collection_age_cutoff = 1.0;
-  options.prepopulate_blob_cache = PrepopulateBlobCache::FlushOnly;
+  options.prepopulate_blob_cache = rs::advanced_options::PrepopulateBlobCache::FlushOnly;
   options.statistics = ROCKSDB_NAMESPACE::CreateDBStatistics();
 
   DestroyAndReopen(options);
@@ -1714,7 +1714,7 @@ TEST_F(DBBlobBasicTest, WarmCacheWithBlobsSecondary) {
   options.statistics = CreateDBStatistics();
   options.enable_blob_files = true;
   options.blob_cache = NewLRUCache(primary_cache_opts);
-  options.prepopulate_blob_cache = PrepopulateBlobCache::FlushOnly;
+  options.prepopulate_blob_cache = rs::advanced_options::PrepopulateBlobCache::FlushOnly;
 
   DestroyAndReopen(options);
 

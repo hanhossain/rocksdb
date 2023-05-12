@@ -80,7 +80,7 @@ struct OptionsHelper {
   static std::unordered_map<std::string, ChecksumType> checksum_type_string_map;
   static std::unordered_map<std::string, CompressionType>
       compression_type_string_map;
-  static std::unordered_map<std::string, PrepopulateBlobCache>
+  static std::unordered_map<std::string, rs::advanced_options::PrepopulateBlobCache>
       prepopulate_blob_cache_string_map;
   static std::unordered_map<std::string, CompactionStopStyle>
       compaction_stop_style_string_map;

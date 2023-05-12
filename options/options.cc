@@ -444,7 +444,7 @@ void ColumnFamilyOptions::Dump(Logger* log) const {
                        blob_cache->GetPrintableOptions().c_str());
       ROCKS_LOG_HEADER(
           log, "                          blob_cache prepopulated: %s",
-          prepopulate_blob_cache == PrepopulateBlobCache::FlushOnly
+          prepopulate_blob_cache == rs::advanced_options::PrepopulateBlobCache::FlushOnly
                            ? "flush only"
               : "disabled");
     }

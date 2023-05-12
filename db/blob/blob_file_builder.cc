@@ -398,7 +398,7 @@ Status BlobFileBuilder::PutBlobIntoCacheIfNeeded(const Slice& blob,
   BlobSource::SharedCacheInterface blob_cache{immutable_options_->blob_cache};
   auto statistics = immutable_options_->statistics.get();
   bool warm_cache =
-      prepopulate_blob_cache_ == PrepopulateBlobCache::FlushOnly &&
+      prepopulate_blob_cache_ == rs::advanced_options::PrepopulateBlobCache::FlushOnly &&
       creation_reason_ == BlobFileCreationReason::kFlush;
 
   if (blob_cache && warm_cache) {

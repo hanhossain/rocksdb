@@ -214,7 +214,7 @@ struct MutableCFOptions {
         blob_garbage_collection_force_threshold(0.0),
         blob_compaction_readahead_size(0),
         blob_file_starting_level(0),
-        prepopulate_blob_cache(PrepopulateBlobCache::Disable),
+        prepopulate_blob_cache(rs::advanced_options::PrepopulateBlobCache::Disable),
         max_sequential_skip_in_iterations(0),
         check_flush_compaction_key_order(true),
         paranoid_file_checks(false),
@@ -301,7 +301,7 @@ struct MutableCFOptions {
   double blob_garbage_collection_force_threshold;
   uint64_t blob_compaction_readahead_size;
   int blob_file_starting_level;
-  PrepopulateBlobCache prepopulate_blob_cache;
+  rs::advanced_options::PrepopulateBlobCache prepopulate_blob_cache;
 
   // Misc options
   uint64_t max_sequential_skip_in_iterations;
