@@ -268,7 +268,7 @@ TEST_F(DBBasicTest, CompactedDB) {
   std::vector<std::string> files;
   uint64_t manifest_file_size;
   ASSERT_OK(db_->GetLiveFiles(files, &manifest_file_size, /*flush*/ true));
-  LiveFilesStorageInfoOptions lfsi_opts;
+  rs::options::LiveFilesStorageInfoOptions lfsi_opts = rs::options::LiveFilesStorageInfoOptions_new();
   lfsi_opts.wal_size_for_flush = 0;  // always
   std::vector<LiveFileStorageInfo> files2;
   ASSERT_OK(db_->GetLiveFilesStorageInfo(lfsi_opts, &files2));

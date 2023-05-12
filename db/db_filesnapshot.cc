@@ -192,7 +192,7 @@ Status DBImpl::GetCurrentWalFile(std::unique_ptr<LogFile>* current_log_file) {
 }
 
 Status DBImpl::GetLiveFilesStorageInfo(
-    const LiveFilesStorageInfoOptions& opts,
+    const rs::options::LiveFilesStorageInfoOptions& opts,
     std::vector<LiveFileStorageInfo>* files) {
   // To avoid returning partial results, only move results to files on success.
   assert(files);

@@ -500,7 +500,7 @@ class DBImpl : public DB {
       FileChecksumList* checksum_list) override;
 
   virtual Status GetLiveFilesStorageInfo(
-      const LiveFilesStorageInfoOptions& opts,
+      const rs::options::LiveFilesStorageInfoOptions& opts,
       std::vector<LiveFileStorageInfo>* files) override;
 
   // Obtains the meta data of the specified column family of the DB.

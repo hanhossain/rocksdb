@@ -2539,7 +2539,7 @@ TEST_F(DBTest, SnapshotFiles) {
 
     // Also test GetLiveFilesStorageInfo
     std::vector<LiveFileStorageInfo> new_infos;
-    ASSERT_OK(db_->GetLiveFilesStorageInfo(LiveFilesStorageInfoOptions(),
+    ASSERT_OK(db_->GetLiveFilesStorageInfo(rs::options::LiveFilesStorageInfoOptions_new(),
                                            &new_infos));
 
     // Close DB (while deletions disabled)
@@ -3311,7 +3311,7 @@ class ModelDB : public DB {
   }
 
   Status GetLiveFilesStorageInfo(
-      const LiveFilesStorageInfoOptions& /*opts*/,
+      const rs::options::LiveFilesStorageInfoOptions& /*opts*/,
       std::vector<LiveFileStorageInfo>* /*files*/) override {
     return Status::OK();
   }

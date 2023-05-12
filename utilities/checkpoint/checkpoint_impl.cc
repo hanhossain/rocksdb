@@ -204,7 +204,7 @@ Status CheckpointImpl::CreateCustomCheckpoint(
     bool get_live_table_checksum) {
   *sequence_number = db_->GetLatestSequenceNumber();
 
-  LiveFilesStorageInfoOptions opts;
+  rs::options::LiveFilesStorageInfoOptions opts = rs::options::LiveFilesStorageInfoOptions_new();
   opts.include_checksum_info = get_live_table_checksum;
   opts.wal_size_for_flush = log_size_for_flush;
 

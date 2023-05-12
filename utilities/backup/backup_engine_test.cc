@@ -101,7 +101,7 @@ class DummyDB : public StackableDB {
   ColumnFamilyHandle* DefaultColumnFamily() const override { return nullptr; }
 
   Status GetLiveFilesStorageInfo(
-      const LiveFilesStorageInfoOptions& opts,
+      const rs::options::LiveFilesStorageInfoOptions& opts,
       std::vector<LiveFileStorageInfo>* files) override {
     uint64_t number;
     FileType type;
@@ -4110,7 +4110,7 @@ TEST_F(BackupEngineTest, FileTemperatures) {
   {
     std::vector<LiveFileStorageInfo> infos;
     ASSERT_OK(
-        db_->GetLiveFilesStorageInfo(LiveFilesStorageInfoOptions(), &infos));
+        db_->GetLiveFilesStorageInfo(rs::options::LiveFilesStorageInfoOptions_new(), &infos));
     for (auto info : infos) {
       if (info.file_type == kTableFile) {
         manifest_temps.emplace(info.file_number, info.temperature);

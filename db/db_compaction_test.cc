@@ -2496,7 +2496,7 @@ TEST_P(DBCompactionTestWithParam, LevelCompactionCFPathUse) {
 
   {  // Also verify GetLiveFilesStorageInfo with db_paths / cf_paths
     std::vector<LiveFileStorageInfo> new_infos;
-    LiveFilesStorageInfoOptions lfsio;
+    rs::options::LiveFilesStorageInfoOptions lfsio = rs::options::LiveFilesStorageInfoOptions_new();
     lfsio.wal_size_for_flush = UINT64_MAX;  // no flush
     ASSERT_OK(db_->GetLiveFilesStorageInfo(lfsio, &new_infos));
     std::unordered_map<std::string, int> live_sst_by_dir;

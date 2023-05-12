@@ -7023,7 +7023,7 @@ TEST_F(DBTest2, CheckpointFileTemperature) {
   std::map<uint64_t, Temperature> temperatures;
   std::vector<LiveFileStorageInfo> infos;
   ASSERT_OK(
-      dbfull()->GetLiveFilesStorageInfo(LiveFilesStorageInfoOptions(), &infos));
+      dbfull()->GetLiveFilesStorageInfo(rs::options::LiveFilesStorageInfoOptions_new(), &infos));
   for (auto info : infos) {
     temperatures.emplace(info.file_number, info.temperature);
   }

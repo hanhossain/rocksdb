@@ -685,7 +685,7 @@ TEST_P(DBWriteTest, LockWALConcurrentRecursive) {
   ASSERT_EQ(Get("k1"), "val");
   {
     std::vector<LiveFileStorageInfo> files;
-    LiveFilesStorageInfoOptions lf_opts;
+    rs::options::LiveFilesStorageInfoOptions lf_opts = rs::options::LiveFilesStorageInfoOptions_new();
     // A DB flush could deadlock
     lf_opts.wal_size_for_flush = UINT64_MAX;
     ASSERT_OK(db_->GetLiveFilesStorageInfo({lf_opts}, &files));

@@ -1638,7 +1638,7 @@ class DB {
   // EnableFileDeletions() after to prevent deletions.
   // For LSM-tree metadata, use Get*MetaData() functions instead.
   virtual Status GetLiveFilesStorageInfo(
-      const LiveFilesStorageInfoOptions& opts,
+      const rs::options::LiveFilesStorageInfoOptions& opts,
       std::vector<LiveFileStorageInfo>* files) = 0;
 
   // Obtains the LSM-tree meta data of the specified column family of the DB,

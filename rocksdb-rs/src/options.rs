@@ -1,3 +1,5 @@
+use crate::options::ffi::LiveFilesStorageInfoOptions;
+
 #[cxx::bridge(namespace = "rs::options")]
 mod ffi {
     enum CompactionServiceJobStatus {
@@ -103,4 +105,31 @@ mod ffi {
         /// Do not trace the `MultiGet()` operations
         MultiGet = 0x10,
     }
+
+    struct LiveFilesStorageInfoOptions {
+        /// Whether to populate FileStorageInfo::file_checksum* or leave blank
+        include_checksum_info: bool,
+        /// Flushes memtables if total size in bytes of live WAL files is >= this
+        /// number (and DB is not read-only).
+        /// Default: always force a flush without checking sizes.
+        wal_size_for_flush: u64,
+    }
+
+    extern "Rust" {
+        #[cxx_name = "LiveFilesStorageInfoOptions_new"]
+        pub fn new_live_files_storage_info_options() -> LiveFilesStorageInfoOptions;
+    }
+}
+
+impl LiveFilesStorageInfoOptions {
+    pub fn new() -> LiveFilesStorageInfoOptions {
+        LiveFilesStorageInfoOptions {
+            include_checksum_info: false,
+            wal_size_for_flush: 0,
+        }
+    }
+}
+
+pub fn new_live_files_storage_info_options() -> LiveFilesStorageInfoOptions {
+    LiveFilesStorageInfoOptions::new()
 }
