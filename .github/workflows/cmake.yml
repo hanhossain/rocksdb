@@ -18,6 +18,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Check disk space (before cleaning)
+      run: df -h
+
+    - name: Free disk space
+      run: |
+        sudo docker rmi $(docker image ls -aq) || true
+        sudo rm -rf /usr/share/dotnet
+        sudo rm -rf /usr/local/lib/android
+
+    - name: Check disk space (after cleaning)
+      run: df -h
+
     - uses: actions/checkout@v3
     
     - name: Setup dependencies
@@ -35,7 +47,7 @@ jobs:
     - name: Build
       working-directory: ${{github.workspace}}/build
       # Build your program with the given configuration
-      run: ninja 
+      run: ninja
 
     - name: Test
       working-directory: ${{github.workspace}}/build
