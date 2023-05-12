@@ -18,20 +18,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Check disk space (before cleaning)
+      run: df -h
+
+    - name: Free disk space
+      run: |
+        sudo docker rmi $(docker image ls -aq) || true
+        sudo rm -rf /usr/share/dotnet
+        sudo rm -rf /usr/local/lib/android
+
+    - name: Check disk space (after cleaning)
+      run: df -h
+
     - uses: actions/checkout@v3
     
     - name: Setup dependencies
       run: sudo apt-get install libgflags-dev ninja-build
+      
+    - name: Create build directory
+      run: mkdir -p ${{github.workspace}}/build
 
     - name: Configure CMake
+      working-directory: ${{github.workspace}}/build
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: mkdir -p ${{github.workspace}}/build && cd ${{github.workspace}}/build && cmake -GNinja -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DWITH_ALL_TESTS=OFF ..
+      run: cmake -GNinja -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} ..
 
     - name: Build
       working-directory: ${{github.workspace}}/build
       # Build your program with the given configuration
-      run: ninja 
+      run: ninja
 
     - name: Test
       working-directory: ${{github.workspace}}/build
