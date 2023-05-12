@@ -42,7 +42,7 @@ inline void BlockFetcher::ProcessTrailerIfPresent() {
         BlockBasedTable::GetBlockCompressionType(slice_.data(), block_size_);
   } else {
     // E.g. plain table or cuckoo table
-    compression_type_ = CompressionType::NoCompression;
+    compression_type_ = kNoCompression;
   }
 }
 
@@ -214,14 +214,14 @@ inline void BlockFetcher::GetBlockContents() {
     if (got_from_prefetch_buffer_ || used_buf_ == &stack_buf_[0]) {
       CopyBufferToHeapBuf();
     } else if (used_buf_ == compressed_buf_.get()) {
-      if (compression_type_ == CompressionType::NoCompression &&
+      if (compression_type_ == kNoCompression &&
           memory_allocator_ != memory_allocator_compressed_) {
         CopyBufferToHeapBuf();
       } else {
         heap_buf_ = std::move(compressed_buf_);
       }
     } else if (direct_io_buf_.get() != nullptr) {
-      if (compression_type_ == CompressionType::NoCompression) {
+      if (compression_type_ == kNoCompression) {
         CopyBufferToHeapBuf();
       } else {
         CopyBufferToCompressedBuf();
@@ -237,7 +237,7 @@ inline void BlockFetcher::GetBlockContents() {
 
 IOStatus BlockFetcher::ReadBlockContents() {
   if (TryGetUncompressBlockFromPersistentCache()) {
-    compression_type_ = CompressionType::NoCompression;
+    compression_type_ = kNoCompression;
 #ifndef NDEBUG
     contents_->has_trailer = footer_.GetBlockTrailerSize() > 0;
 #endif  // NDEBUG
@@ -321,7 +321,7 @@ IOStatus BlockFetcher::ReadBlockContents() {
     }
   }
 
-  if (do_uncompress_ && compression_type_ != CompressionType::NoCompression) {
+  if (do_uncompress_ && compression_type_ != kNoCompression) {
     PERF_TIMER_GUARD(block_decompress_time);
     // compressed page, uncompress, update cache
     UncompressionContext context(compression_type_);
@@ -332,7 +332,7 @@ IOStatus BlockFetcher::ReadBlockContents() {
 #ifndef NDEBUG
     num_heap_buf_memcpy_++;
 #endif
-    compression_type_ = CompressionType::NoCompression;
+    compression_type_ = kNoCompression;
   } else {
     GetBlockContents();
   }
@@ -344,7 +344,7 @@ IOStatus BlockFetcher::ReadBlockContents() {
 
 IOStatus BlockFetcher::ReadAsyncBlockContents() {
   if (TryGetUncompressBlockFromPersistentCache()) {
-    compression_type_ = CompressionType::NoCompression;
+    compression_type_ = kNoCompression;
 #ifndef NDEBUG
     contents_->has_trailer = footer_.GetBlockTrailerSize() > 0;
 #endif  // NDEBUG
@@ -371,7 +371,7 @@ IOStatus BlockFetcher::ReadAsyncBlockContents() {
         }
         used_buf_ = const_cast<char*>(slice_.data());
 
-        if (do_uncompress_ && compression_type_ != CompressionType::NoCompression) {
+        if (do_uncompress_ && compression_type_ != kNoCompression) {
           PERF_TIMER_GUARD(block_decompress_time);
           // compressed page, uncompress, update cache
           UncompressionContext context(compression_type_);
@@ -383,7 +383,7 @@ IOStatus BlockFetcher::ReadAsyncBlockContents() {
 #ifndef NDEBUG
           num_heap_buf_memcpy_++;
 #endif
-          compression_type_ = CompressionType::NoCompression;
+          compression_type_ = kNoCompression;
         } else {
           GetBlockContents();
         }

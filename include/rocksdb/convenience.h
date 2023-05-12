@@ -146,15 +146,15 @@ struct ConfigOptions {
 //   An array is specified by a list of values, where ':' is used as
 //   the delimiter to separate each value.
 //   [Example]:
-//   - {"compression_per_level", "CompressionType::NoCompression:CompressionType::SnappyCompression"}
+//   - {"compression_per_level", "kNoCompression:kSnappyCompression"}
 //     in GetColumnFamilyOptionsFromMap, or
-//   - "compression_per_level=CompressionType::NoCompression:CompressionType::SnappyCompression" in
+//   - "compression_per_level=kNoCompression:kSnappyCompression" in
 //     GetColumnFamilyOptionsFromMapString
 // * Enums:
 //   The valid values of each enum are identical to the names of its constants.
 //   [Example]:
-//   - CompressionType: valid values are "CompressionType::NoCompression",
-//     "CompressionType::SnappyCompression", "CompressionType::ZlibCompression", "CompressionType::BZip2Compression", ...
+//   - CompressionType: valid values are "kNoCompression",
+//     "kSnappyCompression", "kZlibCompression", "kBZip2Compression", ...
 //   - CompactionStyle: valid values are "kCompactionStyleLevel",
 //     "kCompactionStyleUniversal", "kCompactionStyleFIFO", and
 //     "kCompactionStyleNone".

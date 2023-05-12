@@ -22,9 +22,9 @@ ROCKSDB_NAMESPACE::Env* db_stress_env = nullptr;
 // read_fault_one_in or write_fault_one_in flag
 std::shared_ptr<ROCKSDB_NAMESPACE::FaultInjectionTestFS> fault_fs_guard;
 enum ROCKSDB_NAMESPACE::CompressionType compression_type_e =
-    ROCKSDB_NAMESPACE::CompressionType::SnappyCompression;
+    ROCKSDB_NAMESPACE::kSnappyCompression;
 enum ROCKSDB_NAMESPACE::CompressionType bottommost_compression_type_e =
-    ROCKSDB_NAMESPACE::CompressionType::SnappyCompression;
+    ROCKSDB_NAMESPACE::kSnappyCompression;
 enum ROCKSDB_NAMESPACE::ChecksumType checksum_type_e =
     ROCKSDB_NAMESPACE::kCRC32c;
 enum RepFactory FLAGS_rep_factory = kSkipList;

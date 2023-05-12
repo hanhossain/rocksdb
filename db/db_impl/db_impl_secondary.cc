@@ -811,7 +811,7 @@ Status DBImplSecondary::CompactWithoutInstallation(
 
   // Use comp_options to reuse some CompactFiles functions
   CompactionOptions comp_options;
-  comp_options.compression = CompressionType::DisableCompressionOption;
+  comp_options.compression = kDisableCompressionOption;
   comp_options.output_file_size_limit = MaxFileSizeForLevel(
       *mutable_cf_options, input.output_level, cf_options.compaction_style,
       vstorage->base_level(), cf_options.level_compaction_dynamic_level_bytes);

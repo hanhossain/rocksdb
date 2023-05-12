@@ -243,7 +243,7 @@ DEFINE_SYNC_AND_ASYNC(void, BlockBasedTable::RetrieveMultipleBlocks)
       // heap buffer or there is no cache at all.
       CompressionType compression_type =
           GetBlockCompressionType(serialized_block);
-      if (use_shared_buffer && compression_type == CompressionType::NoCompression) {
+      if (use_shared_buffer && compression_type == kNoCompression) {
         Slice serialized =
             Slice(req.result.data() + req_offset, BlockSizeWithTrailer(handle));
         serialized_block = BlockContents(
@@ -281,7 +281,7 @@ DEFINE_SYNC_AND_ASYNC(void, BlockBasedTable::RetrieveMultipleBlocks)
       CompressionType compression_type =
           GetBlockCompressionType(serialized_block);
       BlockContents contents;
-      if (compression_type != CompressionType::NoCompression) {
+      if (compression_type != kNoCompression) {
         UncompressionContext context(compression_type);
         UncompressionInfo info(context, uncompression_dict, compression_type);
         s = UncompressSerializedBlock(

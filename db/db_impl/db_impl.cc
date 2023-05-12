@@ -124,7 +124,7 @@ CompressionType GetCompressionFlush(
   if (ioptions.compaction_style == CompactionStyle::Universal &&
       mutable_cf_options.compaction_options_universal
               .compression_size_percent >= 0) {
-    return CompressionType::NoCompression;
+    return kNoCompression;
   }
   if (mutable_cf_options.compression_per_level.empty()) {
     return mutable_cf_options.compression;
@@ -138,8 +138,8 @@ namespace {
 void DumpSupportInfo(Logger* logger) {
   ROCKS_LOG_HEADER(logger, "Compression algorithms supported:");
   for (auto& compression : OptionsHelper::compression_type_string_map) {
-    if (compression.second != CompressionType::NoCompression &&
-        compression.second != CompressionType::DisableCompressionOption) {
+    if (compression.second != kNoCompression &&
+        compression.second != kDisableCompressionOption) {
       ROCKS_LOG_HEADER(logger, "\t%s supported: %d", compression.first.c_str(),
                        CompressionTypeSupported(compression.second));
     }

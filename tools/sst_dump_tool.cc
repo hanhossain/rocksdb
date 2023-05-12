@@ -19,14 +19,14 @@ namespace ROCKSDB_NAMESPACE {
 
 static const std::vector<std::pair<CompressionType, const char*>>
     kCompressions = {
-        {CompressionType::NoCompression, "CompressionType::NoCompression"},
-        {CompressionType::SnappyCompression, "CompressionType::SnappyCompression"},
-        {CompressionType::ZlibCompression, "CompressionType::ZlibCompression"},
-        {CompressionType::BZip2Compression, "CompressionType::BZip2Compression"},
-        {CompressionType::LZ4Compression, "CompressionType::LZ4Compression"},
-        {CompressionType::LZ4HCCompression, "CompressionType::LZ4HCCompression"},
-        {CompressionType::XpressCompression, "CompressionType::XpressCompression"},
-        {CompressionType::ZSTD, "CompressionType::ZSTD"}};
+        {CompressionType::kNoCompression, "kNoCompression"},
+        {CompressionType::kSnappyCompression, "kSnappyCompression"},
+        {CompressionType::kZlibCompression, "kZlibCompression"},
+        {CompressionType::kBZip2Compression, "kBZip2Compression"},
+        {CompressionType::kLZ4Compression, "kLZ4Compression"},
+        {CompressionType::kLZ4HCCompression, "kLZ4HCCompression"},
+        {CompressionType::kXpressCompression, "kXpressCompression"},
+        {CompressionType::kZSTD, "kZSTD"}};
 
 namespace {
 
@@ -96,7 +96,7 @@ void print_help(bool to_stderr) {
       be used when trying different compression algorithms
 
     --compression_types=<comma-separated list of CompressionType members, e.g.,
-      CompressionType::SnappyCompression>
+      kSnappyCompression>
       Can be combined with --command=recompress to run recompression for this
       list of compression types
       Supported compression types: %s
@@ -182,16 +182,16 @@ int SSTDumpTool::Run(int argc, char const* const* argv, Options options) {
   uint64_t total_data_block_size = 0;
   uint64_t total_index_block_size = 0;
   uint64_t total_filter_block_size = 0;
-  int32_t compress_level_from = DEFAULT_COMPRESSION_LEVEL;
-  int32_t compress_level_to = DEFAULT_COMPRESSION_LEVEL;
+  int32_t compress_level_from = CompressionOptions::kDefaultCompressionLevel;
+  int32_t compress_level_to = CompressionOptions::kDefaultCompressionLevel;
   uint32_t compression_max_dict_bytes =
-      rs::advanced_options::new_compression_options().max_dict_bytes;
+      ROCKSDB_NAMESPACE::CompressionOptions().max_dict_bytes;
   uint32_t compression_zstd_max_train_bytes =
-      rs::advanced_options::new_compression_options().zstd_max_train_bytes;
+      ROCKSDB_NAMESPACE::CompressionOptions().zstd_max_train_bytes;
   uint64_t compression_max_dict_buffer_bytes =
-      rs::advanced_options::new_compression_options().max_dict_buffer_bytes;
+      ROCKSDB_NAMESPACE::CompressionOptions().max_dict_buffer_bytes;
   bool compression_use_zstd_finalize_dict =
-      rs::advanced_options::new_compression_options().use_zstd_dict_trainer;
+      !ROCKSDB_NAMESPACE::CompressionOptions().use_zstd_dict_trainer;
 
   int64_t tmp_val;
 

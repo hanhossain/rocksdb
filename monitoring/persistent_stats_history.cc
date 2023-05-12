@@ -71,7 +71,7 @@ void OptimizeForPersistentStats(ColumnFamilyOptions* cfo) {
   cfo->max_bytes_for_level_base = 10 * 1048576;
   cfo->soft_pending_compaction_bytes_limit = 256 * 1048576;
   cfo->hard_pending_compaction_bytes_limit = 1073741824ul;
-  cfo->compression = CompressionType::NoCompression;
+  cfo->compression = kNoCompression;
 }
 
 PersistentStatsHistoryIterator::~PersistentStatsHistoryIterator() {}

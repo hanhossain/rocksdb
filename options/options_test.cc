@@ -70,18 +70,18 @@ TEST_F(OptionsTest, GetOptionsFromMapTest) {
       {"min_write_buffer_number_to_merge", "3"},
       {"max_write_buffer_number_to_maintain", "99"},
       {"max_write_buffer_size_to_maintain", "-99999"},
-      {"compression", "CompressionType::SnappyCompression"},
+      {"compression", "kSnappyCompression"},
       {"compression_per_level",
-       "CompressionType::NoCompression:"
-       "CompressionType::SnappyCompression:"
-       "CompressionType::ZlibCompression:"
-       "CompressionType::BZip2Compression:"
-       "CompressionType::LZ4Compression:"
-       "CompressionType::LZ4HCCompression:"
-       "CompressionType::XpressCompression:"
-       "CompressionType::ZSTD:"
-       "CompressionType::ZSTDNotFinalCompression"},
-      {"bottommost_compression", "CompressionType::LZ4Compression"},
+       "kNoCompression:"
+       "kSnappyCompression:"
+       "kZlibCompression:"
+       "kBZip2Compression:"
+       "kLZ4Compression:"
+       "kLZ4HCCompression:"
+       "kXpressCompression:"
+       "kZSTD:"
+       "kZSTDNotFinalCompression"},
+      {"bottommost_compression", "kLZ4Compression"},
       {"bottommost_compression_opts", "5:6:7:8:10:true"},
       {"compression_opts", "4:5:6:7:8:2:true:100:false"},
       {"num_levels", "8"},
@@ -120,7 +120,7 @@ TEST_F(OptionsTest, GetOptionsFromMapTest) {
       {"enable_blob_files", "true"},
       {"min_blob_size", "1K"},
       {"blob_file_size", "1G"},
-      {"blob_compression_type", "CompressionType::ZSTD"},
+      {"blob_compression_type", "kZSTD"},
       {"enable_blob_garbage_collection", "true"},
       {"blob_garbage_collection_age_cutoff", "0.5"},
       {"blob_garbage_collection_force_threshold", "0.75"},
@@ -193,17 +193,17 @@ TEST_F(OptionsTest, GetOptionsFromMapTest) {
   ASSERT_EQ(new_cf_opt.min_write_buffer_number_to_merge, 3);
   ASSERT_EQ(new_cf_opt.max_write_buffer_number_to_maintain, 99);
   ASSERT_EQ(new_cf_opt.max_write_buffer_size_to_maintain, -99999);
-  ASSERT_EQ(new_cf_opt.compression, CompressionType::SnappyCompression);
+  ASSERT_EQ(new_cf_opt.compression, kSnappyCompression);
   ASSERT_EQ(new_cf_opt.compression_per_level.size(), 9U);
-  ASSERT_EQ(new_cf_opt.compression_per_level[0], CompressionType::NoCompression);
-  ASSERT_EQ(new_cf_opt.compression_per_level[1], CompressionType::SnappyCompression);
-  ASSERT_EQ(new_cf_opt.compression_per_level[2], CompressionType::ZlibCompression);
-  ASSERT_EQ(new_cf_opt.compression_per_level[3], CompressionType::BZip2Compression);
-  ASSERT_EQ(new_cf_opt.compression_per_level[4], CompressionType::LZ4Compression);
-  ASSERT_EQ(new_cf_opt.compression_per_level[5], CompressionType::LZ4HCCompression);
-  ASSERT_EQ(new_cf_opt.compression_per_level[6], CompressionType::XpressCompression);
-  ASSERT_EQ(new_cf_opt.compression_per_level[7], CompressionType::ZSTD);
-  ASSERT_EQ(new_cf_opt.compression_per_level[8], CompressionType::ZSTDNotFinalCompression);
+  ASSERT_EQ(new_cf_opt.compression_per_level[0], kNoCompression);
+  ASSERT_EQ(new_cf_opt.compression_per_level[1], kSnappyCompression);
+  ASSERT_EQ(new_cf_opt.compression_per_level[2], kZlibCompression);
+  ASSERT_EQ(new_cf_opt.compression_per_level[3], kBZip2Compression);
+  ASSERT_EQ(new_cf_opt.compression_per_level[4], kLZ4Compression);
+  ASSERT_EQ(new_cf_opt.compression_per_level[5], kLZ4HCCompression);
+  ASSERT_EQ(new_cf_opt.compression_per_level[6], kXpressCompression);
+  ASSERT_EQ(new_cf_opt.compression_per_level[7], kZSTD);
+  ASSERT_EQ(new_cf_opt.compression_per_level[8], kZSTDNotFinalCompression);
   ASSERT_EQ(new_cf_opt.compression_opts.window_bits, 4);
   ASSERT_EQ(new_cf_opt.compression_opts.level, 5);
   ASSERT_EQ(new_cf_opt.compression_opts.strategy, 6);
@@ -213,7 +213,7 @@ TEST_F(OptionsTest, GetOptionsFromMapTest) {
   ASSERT_EQ(new_cf_opt.compression_opts.enabled, true);
   ASSERT_EQ(new_cf_opt.compression_opts.max_dict_buffer_bytes, 100u);
   ASSERT_EQ(new_cf_opt.compression_opts.use_zstd_dict_trainer, false);
-  ASSERT_EQ(new_cf_opt.bottommost_compression, CompressionType::LZ4Compression);
+  ASSERT_EQ(new_cf_opt.bottommost_compression, kLZ4Compression);
   ASSERT_EQ(new_cf_opt.bottommost_compression_opts.window_bits, 5);
   ASSERT_EQ(new_cf_opt.bottommost_compression_opts.level, 6);
   ASSERT_EQ(new_cf_opt.bottommost_compression_opts.strategy, 7);
@@ -261,7 +261,7 @@ TEST_F(OptionsTest, GetOptionsFromMapTest) {
   ASSERT_EQ(new_cf_opt.enable_blob_files, true);
   ASSERT_EQ(new_cf_opt.min_blob_size, 1ULL << 10);
   ASSERT_EQ(new_cf_opt.blob_file_size, 1ULL << 30);
-  ASSERT_EQ(new_cf_opt.blob_compression_type, CompressionType::ZSTD);
+  ASSERT_EQ(new_cf_opt.blob_compression_type, kZSTD);
   ASSERT_EQ(new_cf_opt.enable_blob_garbage_collection, true);
   ASSERT_EQ(new_cf_opt.blob_garbage_collection_age_cutoff, 0.5);
   ASSERT_EQ(new_cf_opt.blob_garbage_collection_force_threshold, 0.75);
@@ -1367,7 +1367,7 @@ TEST_F(OptionsTest, GetOptionsFromStringTest) {
   ASSERT_EQ(new_options.compression_opts.parallel_threads, 1u);
   ASSERT_EQ(new_options.compression_opts.enabled, false);
   ASSERT_EQ(new_options.compression_opts.use_zstd_dict_trainer, true);
-  ASSERT_EQ(new_options.bottommost_compression, CompressionType::DisableCompressionOption);
+  ASSERT_EQ(new_options.bottommost_compression, kDisableCompressionOption);
   ASSERT_EQ(new_options.bottommost_compression_opts.window_bits, 5);
   ASSERT_EQ(new_options.bottommost_compression_opts.level, 6);
   ASSERT_EQ(new_options.bottommost_compression_opts.strategy, 7);
@@ -1903,20 +1903,20 @@ TEST_F(OptionsTest, StringToMapRandomTest) {
 TEST_F(OptionsTest, GetStringFromCompressionType) {
   std::string res;
 
-  ASSERT_OK(GetStringFromCompressionType(&res, CompressionType::NoCompression));
-  ASSERT_EQ(res, "CompressionType::NoCompression");
+  ASSERT_OK(GetStringFromCompressionType(&res, kNoCompression));
+  ASSERT_EQ(res, "kNoCompression");
 
-  ASSERT_OK(GetStringFromCompressionType(&res, CompressionType::SnappyCompression));
-  ASSERT_EQ(res, "CompressionType::SnappyCompression");
+  ASSERT_OK(GetStringFromCompressionType(&res, kSnappyCompression));
+  ASSERT_EQ(res, "kSnappyCompression");
 
-  ASSERT_OK(GetStringFromCompressionType(&res, CompressionType::DisableCompressionOption));
-  ASSERT_EQ(res, "CompressionType::DisableCompressionOption");
+  ASSERT_OK(GetStringFromCompressionType(&res, kDisableCompressionOption));
+  ASSERT_EQ(res, "kDisableCompressionOption");
 
-  ASSERT_OK(GetStringFromCompressionType(&res, CompressionType::LZ4Compression));
-  ASSERT_EQ(res, "CompressionType::LZ4Compression");
+  ASSERT_OK(GetStringFromCompressionType(&res, kLZ4Compression));
+  ASSERT_EQ(res, "kLZ4Compression");
 
-  ASSERT_OK(GetStringFromCompressionType(&res, CompressionType::ZlibCompression));
-  ASSERT_EQ(res, "CompressionType::ZlibCompression");
+  ASSERT_OK(GetStringFromCompressionType(&res, kZlibCompression));
+  ASSERT_EQ(res, "kZlibCompression");
 
   ASSERT_NOK(
       GetStringFromCompressionType(&res, static_cast<CompressionType>(-10)));
@@ -2260,18 +2260,18 @@ TEST_F(OptionsOldApiTest, GetOptionsFromMapTest) {
       {"min_write_buffer_number_to_merge", "3"},
       {"max_write_buffer_number_to_maintain", "99"},
       {"max_write_buffer_size_to_maintain", "-99999"},
-      {"compression", "CompressionType::SnappyCompression"},
+      {"compression", "kSnappyCompression"},
       {"compression_per_level",
-       "CompressionType::NoCompression:"
-       "CompressionType::SnappyCompression:"
-       "CompressionType::ZlibCompression:"
-       "CompressionType::BZip2Compression:"
-       "CompressionType::LZ4Compression:"
-       "CompressionType::LZ4HCCompression:"
-       "CompressionType::XpressCompression:"
-       "CompressionType::ZSTD:"
-       "CompressionType::ZSTDNotFinalCompression"},
-      {"bottommost_compression", "CompressionType::LZ4Compression"},
+       "kNoCompression:"
+       "kSnappyCompression:"
+       "kZlibCompression:"
+       "kBZip2Compression:"
+       "kLZ4Compression:"
+       "kLZ4HCCompression:"
+       "kXpressCompression:"
+       "kZSTD:"
+       "kZSTDNotFinalCompression"},
+      {"bottommost_compression", "kLZ4Compression"},
       {"bottommost_compression_opts", "5:6:7:8:9:true"},
       {"compression_opts", "4:5:6:7:8:9:true:10:false"},
       {"num_levels", "8"},
@@ -2314,7 +2314,7 @@ TEST_F(OptionsOldApiTest, GetOptionsFromMapTest) {
       {"enable_blob_files", "true"},
       {"min_blob_size", "1K"},
       {"blob_file_size", "1G"},
-      {"blob_compression_type", "CompressionType::ZSTD"},
+      {"blob_compression_type", "kZSTD"},
       {"enable_blob_garbage_collection", "true"},
       {"blob_garbage_collection_age_cutoff", "0.5"},
       {"blob_garbage_collection_force_threshold", "0.75"},
@@ -2382,17 +2382,17 @@ TEST_F(OptionsOldApiTest, GetOptionsFromMapTest) {
   ASSERT_EQ(new_cf_opt.min_write_buffer_number_to_merge, 3);
   ASSERT_EQ(new_cf_opt.max_write_buffer_number_to_maintain, 99);
   ASSERT_EQ(new_cf_opt.max_write_buffer_size_to_maintain, -99999);
-  ASSERT_EQ(new_cf_opt.compression, CompressionType::SnappyCompression);
+  ASSERT_EQ(new_cf_opt.compression, kSnappyCompression);
   ASSERT_EQ(new_cf_opt.compression_per_level.size(), 9U);
-  ASSERT_EQ(new_cf_opt.compression_per_level[0], CompressionType::NoCompression);
-  ASSERT_EQ(new_cf_opt.compression_per_level[1], CompressionType::SnappyCompression);
-  ASSERT_EQ(new_cf_opt.compression_per_level[2], CompressionType::ZlibCompression);
-  ASSERT_EQ(new_cf_opt.compression_per_level[3], CompressionType::BZip2Compression);
-  ASSERT_EQ(new_cf_opt.compression_per_level[4], CompressionType::LZ4Compression);
-  ASSERT_EQ(new_cf_opt.compression_per_level[5], CompressionType::LZ4HCCompression);
-  ASSERT_EQ(new_cf_opt.compression_per_level[6], CompressionType::XpressCompression);
-  ASSERT_EQ(new_cf_opt.compression_per_level[7], CompressionType::ZSTD);
-  ASSERT_EQ(new_cf_opt.compression_per_level[8], CompressionType::ZSTDNotFinalCompression);
+  ASSERT_EQ(new_cf_opt.compression_per_level[0], kNoCompression);
+  ASSERT_EQ(new_cf_opt.compression_per_level[1], kSnappyCompression);
+  ASSERT_EQ(new_cf_opt.compression_per_level[2], kZlibCompression);
+  ASSERT_EQ(new_cf_opt.compression_per_level[3], kBZip2Compression);
+  ASSERT_EQ(new_cf_opt.compression_per_level[4], kLZ4Compression);
+  ASSERT_EQ(new_cf_opt.compression_per_level[5], kLZ4HCCompression);
+  ASSERT_EQ(new_cf_opt.compression_per_level[6], kXpressCompression);
+  ASSERT_EQ(new_cf_opt.compression_per_level[7], kZSTD);
+  ASSERT_EQ(new_cf_opt.compression_per_level[8], kZSTDNotFinalCompression);
   ASSERT_EQ(new_cf_opt.compression_opts.window_bits, 4);
   ASSERT_EQ(new_cf_opt.compression_opts.level, 5);
   ASSERT_EQ(new_cf_opt.compression_opts.strategy, 6);
@@ -2402,7 +2402,7 @@ TEST_F(OptionsOldApiTest, GetOptionsFromMapTest) {
   ASSERT_EQ(new_cf_opt.compression_opts.enabled, true);
   ASSERT_EQ(new_cf_opt.compression_opts.max_dict_buffer_bytes, 10u);
   ASSERT_EQ(new_cf_opt.compression_opts.use_zstd_dict_trainer, false);
-  ASSERT_EQ(new_cf_opt.bottommost_compression, CompressionType::LZ4Compression);
+  ASSERT_EQ(new_cf_opt.bottommost_compression, kLZ4Compression);
   ASSERT_EQ(new_cf_opt.bottommost_compression_opts.window_bits, 5);
   ASSERT_EQ(new_cf_opt.bottommost_compression_opts.level, 6);
   ASSERT_EQ(new_cf_opt.bottommost_compression_opts.strategy, 7);
@@ -2453,7 +2453,7 @@ TEST_F(OptionsOldApiTest, GetOptionsFromMapTest) {
   ASSERT_EQ(new_cf_opt.enable_blob_files, true);
   ASSERT_EQ(new_cf_opt.min_blob_size, 1ULL << 10);
   ASSERT_EQ(new_cf_opt.blob_file_size, 1ULL << 30);
-  ASSERT_EQ(new_cf_opt.blob_compression_type, CompressionType::ZSTD);
+  ASSERT_EQ(new_cf_opt.blob_compression_type, kZSTD);
   ASSERT_EQ(new_cf_opt.enable_blob_garbage_collection, true);
   ASSERT_EQ(new_cf_opt.blob_garbage_collection_age_cutoff, 0.5);
   ASSERT_EQ(new_cf_opt.blob_garbage_collection_force_threshold, 0.75);
@@ -3113,7 +3113,7 @@ TEST_F(OptionsOldApiTest, GetOptionsFromStringTest) {
   ASSERT_EQ(new_options.compression_opts.parallel_threads, 1u);
   ASSERT_EQ(new_options.compression_opts.enabled, false);
   ASSERT_EQ(new_options.compression_opts.use_zstd_dict_trainer, true);
-  ASSERT_EQ(new_options.bottommost_compression, CompressionType::DisableCompressionOption);
+  ASSERT_EQ(new_options.bottommost_compression, kDisableCompressionOption);
   ASSERT_EQ(new_options.bottommost_compression_opts.window_bits, 5);
   ASSERT_EQ(new_options.bottommost_compression_opts.level, 6);
   ASSERT_EQ(new_options.bottommost_compression_opts.strategy, 7);

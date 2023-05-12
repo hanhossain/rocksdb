@@ -12,7 +12,7 @@ StreamingCompress* StreamingCompress::Create(CompressionType compression_type,
                                              uint32_t compress_format_version,
                                              size_t max_output_len) {
   switch (compression_type) {
-    case CompressionType::ZSTD: {
+    case kZSTD: {
       if (!ZSTD_Streaming_Supported()) {
         return nullptr;
       }
@@ -28,7 +28,7 @@ StreamingUncompress* StreamingUncompress::Create(
     CompressionType compression_type, uint32_t compress_format_version,
     size_t max_output_len) {
   switch (compression_type) {
-    case CompressionType::ZSTD: {
+    case kZSTD: {
       if (!ZSTD_Streaming_Supported()) {
         return nullptr;
       }

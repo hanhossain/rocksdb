@@ -234,7 +234,7 @@ static const int kCDTValueSize = 1000;
 static const int kCDTKeysPerBuffer = 4;
 static const int kCDTNumLevels = 8;
 Options DeletionTriggerOptions(Options options) {
-  options.compression = CompressionType::NoCompression;
+  options.compression = kNoCompression;
   options.write_buffer_size = kCDTKeysPerBuffer * (kCDTValueSize + 24);
   options.min_write_buffer_number_to_merge = 1;
   options.max_write_buffer_size_to_maintain = 0;
@@ -1124,7 +1124,7 @@ TEST_F(DBCompactionTest, ZeroSeqIdCompaction) {
 
   // compaction options
   CompactionOptions compact_opt;
-  compact_opt.compression = CompressionType::NoCompression;
+  compact_opt.compression = kNoCompression;
   compact_opt.output_file_size_limit = 4096;
   const size_t key_len =
       static_cast<size_t>(compact_opt.output_file_size_limit) / 5;
@@ -1204,7 +1204,7 @@ TEST_F(DBCompactionTest, ManualCompactionUnknownOutputSize) {
 
   // note CompactionOptions::output_file_size_limit is unset.
   CompactionOptions compact_opt;
-  compact_opt.compression = CompressionType::NoCompression;
+  compact_opt.compression = kNoCompression;
   ASSERT_OK(dbfull()->CompactFiles(compact_opt, input_filenames, 1));
 }
 
@@ -2895,7 +2895,7 @@ TEST_P(DBCompactionTestWithParam, DISABLED_CompactFilesOnLevelCompaction) {
   options.max_bytes_for_level_base = options.target_file_size_base * 2;
   options.level0_stop_writes_trigger = 2;
   options.max_bytes_for_level_multiplier = 2;
-  options.compression = CompressionType::NoCompression;
+  options.compression = kNoCompression;
   options.max_subcompactions = max_subcompactions_;
   options = CurrentOptions(options);
   CreateAndReopenWithCF({"pikachu"}, options);
@@ -2953,7 +2953,7 @@ TEST_P(DBCompactionTestWithParam, PartialCompactionFailure) {
       options.level0_file_num_compaction_trigger *
       options.target_file_size_base;
   options.max_bytes_for_level_multiplier = 2;
-  options.compression = CompressionType::NoCompression;
+  options.compression = kNoCompression;
   options.max_subcompactions = max_subcompactions_;
 
   env_->SetBackgroundThreads(1, Env::HIGH);
@@ -3116,8 +3116,8 @@ TEST_P(DBCompactionTestWithParam, CompressLevelCompaction) {
   // First two levels have no compression, so that a trivial move between
   // them will be allowed. Level 2 has Zlib compression so that a trivial
   // move to level 3 will not be allowed
-  options.compression_per_level = {CompressionType::NoCompression, CompressionType::NoCompression,
-                                   CompressionType::ZlibCompression};
+  options.compression_per_level = {kNoCompression, kNoCompression,
+                                   kZlibCompression};
   int matches = 0, didnt_match = 0, trivial_move = 0, non_trivial = 0;
 
   ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
@@ -3240,7 +3240,7 @@ TEST_F(DBCompactionTest, SuggestCompactRangeNoTwoLevel0Compactions) {
   options.arena_block_size = 4 << 10;
   options.level0_file_num_compaction_trigger = 4;
   options.num_levels = 4;
-  options.compression = CompressionType::NoCompression;
+  options.compression = kNoCompression;
   options.max_bytes_for_level_base = 450 << 10;
   options.target_file_size_base = 98 << 10;
   options.max_write_buffer_number = 2;
@@ -3398,7 +3398,7 @@ TEST_P(DBCompactionTestWithParam, ForceBottommostLevelCompaction) {
 
 TEST_P(DBCompactionTestWithParam, IntraL0Compaction) {
   Options options = CurrentOptions();
-  options.compression = CompressionType::NoCompression;
+  options.compression = kNoCompression;
   options.level0_file_num_compaction_trigger = 5;
   options.max_background_compactions = 2;
   options.max_subcompactions = max_subcompactions_;
@@ -3477,7 +3477,7 @@ TEST_P(DBCompactionTestWithParam, IntraL0CompactionDoesNotObsoleteDeletions) {
   // regression test for issue #2722: L0->L0 compaction can resurrect deleted
   // keys from older L0 files if L1+ files' key-ranges do not include the key.
   Options options = CurrentOptions();
-  options.compression = CompressionType::NoCompression;
+  options.compression = kNoCompression;
   options.level0_file_num_compaction_trigger = 5;
   options.max_background_compactions = 2;
   options.max_subcompactions = max_subcompactions_;
@@ -3794,7 +3794,7 @@ TEST_F(DBCompactionTest, CompactBottomLevelFilesWithDeletions) {
   const int kNumLevelFiles = 4;
   const int kValueSize = 128;
   Options options = CurrentOptions();
-  options.compression = CompressionType::NoCompression;
+  options.compression = kNoCompression;
   options.level0_file_num_compaction_trigger = kNumLevelFiles;
   // inflate it a bit to account for key/metadata overhead
   options.target_file_size_base = 120 * kNumKeysPerFile * kValueSize / 100;
@@ -3868,7 +3868,7 @@ TEST_F(DBCompactionTest, NoCompactBottomLevelFilesWithDeletions) {
   const int kNumLevelFiles = 4;
   const int kValueSize = 128;
   Options options = CurrentOptions();
-  options.compression = CompressionType::NoCompression;
+  options.compression = kNoCompression;
   options.disable_auto_compactions = true;
   options.level0_file_num_compaction_trigger = kNumLevelFiles;
   // inflate it a bit to account for key/metadata overhead
@@ -3930,7 +3930,7 @@ TEST_F(DBCompactionTest, NoCompactBottomLevelFilesWithDeletions) {
 
 TEST_F(DBCompactionTest, RoundRobinTtlCompactionNormal) {
   Options options = CurrentOptions();
-  options.compression = CompressionType::NoCompression;
+  options.compression = kNoCompression;
   options.level0_file_num_compaction_trigger = 20;
   options.ttl = 24 * 60 * 60;  // 24 hours
   options.compaction_pri = CompactionPri::RoundRobin;
@@ -4083,7 +4083,7 @@ TEST_F(DBCompactionTest, RoundRobinTtlCompactionUnsortedTime) {
   // to the oldest file, RoundRobin compaction should still compact the file
   // after cursor until all expired files are compacted.
   Options options = CurrentOptions();
-  options.compression = CompressionType::NoCompression;
+  options.compression = kNoCompression;
   options.level0_file_num_compaction_trigger = 20;
   options.ttl = 24 * 60 * 60;  // 24 hours
   options.compaction_pri = CompactionPri::RoundRobin;
@@ -4170,7 +4170,7 @@ TEST_F(DBCompactionTest, LevelCompactExpiredTtlFiles) {
   const int kValueSize = 1024;
 
   Options options = CurrentOptions();
-  options.compression = CompressionType::NoCompression;
+  options.compression = kNoCompression;
   options.ttl = 24 * 60 * 60;  // 24 hours
   options.max_open_files = -1;
   env_->SetMockSleep();
@@ -4280,7 +4280,7 @@ TEST_F(DBCompactionTest, LevelTtlCompactionOutputCuttingIteractingWithOther) {
   // TTL states were not being updated for keys that ShouldStopBefore() would
   // return true for reasons other than TTL.
   Options options = CurrentOptions();
-  options.compression = CompressionType::NoCompression;
+  options.compression = kNoCompression;
   options.ttl = 24 * 60 * 60;  // 24 hours
   options.max_open_files = -1;
   options.compaction_pri = CompactionPri::MinOverlappingRatio;
@@ -4354,7 +4354,7 @@ TEST_F(DBCompactionTest, LevelTtlCascadingCompactions) {
   for (bool if_restart : {false, true}) {
     for (bool if_open_all_files : {false, true}) {
       Options options = CurrentOptions();
-      options.compression = CompressionType::NoCompression;
+      options.compression = kNoCompression;
       options.ttl = 24 * 60 * 60;  // 24 hours
       if (if_open_all_files) {
         options.max_open_files = -1;
@@ -5642,7 +5642,7 @@ TEST_P(CompactionPriTest, Test) {
   options.hard_pending_compaction_bytes_limit = 256 * 1024;
   options.max_bytes_for_level_base = 64 * 1024;
   options.max_bytes_for_level_multiplier = 4;
-  options.compression = CompressionType::NoCompression;
+  options.compression = kNoCompression;
 
   DestroyAndReopen(options);
 
@@ -5681,7 +5681,7 @@ TEST_F(DBCompactionTest, PersistRoundRobinCompactCursor) {
   options.compaction_pri = CompactionPri::RoundRobin;
   options.max_bytes_for_level_multiplier = 4;
   options.num_levels = 3;
-  options.compression = CompressionType::NoCompression;
+  options.compression = kNoCompression;
 
   DestroyAndReopen(options);
 
@@ -5994,7 +5994,7 @@ TEST_P(DBCompactionTestWithParam, RoundRobinWithoutAdditionalResources) {
 TEST_F(DBCompactionTest, RoundRobinCutOutputAtCompactCursor) {
   Options options = CurrentOptions();
   options.num_levels = 3;
-  options.compression = CompressionType::NoCompression;
+  options.compression = kNoCompression;
   options.write_buffer_size = 4 * 1024;
   options.max_bytes_for_level_base = 64 * 1024;
   options.max_bytes_for_level_multiplier = 4;
@@ -6066,7 +6066,7 @@ TEST_F(DBCompactionTest, PartialManualCompaction) {
   Options opts = CurrentOptions();
   opts.num_levels = 3;
   opts.level0_file_num_compaction_trigger = 10;
-  opts.compression = CompressionType::NoCompression;
+  opts.compression = kNoCompression;
   opts.merge_operator.reset(new NoopMergeOperator());
   opts.target_file_size_base = 10240;
   DestroyAndReopen(opts);
@@ -6139,7 +6139,7 @@ TEST_F(DBCompactionTest, ManualCompactionBottomLevelOptimized) {
   Options opts = CurrentOptions();
   opts.num_levels = 3;
   opts.level0_file_num_compaction_trigger = 5;
-  opts.compression = CompressionType::NoCompression;
+  opts.compression = kNoCompression;
   opts.merge_operator.reset(new NoopMergeOperator());
   opts.target_file_size_base = 1024;
   opts.max_bytes_for_level_multiplier = 2;
@@ -6698,7 +6698,7 @@ class DBCompactionTestL0FilesMisorderCorruption : public DBCompactionTest {
                     const std::string& compaction_path_to_test = "") {
     options_ = CurrentOptions();
     options_.create_if_missing = true;
-    options_.compression = CompressionType::NoCompression;
+    options_.compression = kNoCompression;
 
     options_.force_consistency_checks = true;
     options_.compaction_style = compaciton_style;
@@ -8286,7 +8286,7 @@ TEST_F(DBCompactionTest, CompactionWithBlobGCError_IndexWithInvalidFileNumber) {
   constexpr uint64_t size = 5678;
 
   BlobIndex::EncodeBlob(&blob_index, blob_file_number, offset, size,
-                        CompressionType::NoCompression);
+                        kNoCompression);
 
   WriteBatch batch;
   ASSERT_OK(
@@ -9189,7 +9189,7 @@ TEST_F(DBCompactionTest, TurnOnLevelCompactionDynamicLevelBytes) {
   options.allow_ingest_behind = false;
   options.level_compaction_dynamic_level_bytes = false;
   options.num_levels = 6;
-  options.compression = CompressionType::NoCompression;
+  options.compression = kNoCompression;
   options.max_bytes_for_level_base = 1 << 20;
   options.max_bytes_for_level_multiplier = 10;
   DestroyAndReopen(options);
@@ -9292,7 +9292,7 @@ TEST_F(DBCompactionTest, DrainUnnecessaryLevelsAfterMultiplierChanged) {
   const int kValueBytes = 1 << 10;  // 1KB
 
   Options options = CurrentOptions();
-  options.compression = CompressionType::NoCompression;
+  options.compression = kNoCompression;
   options.level_compaction_dynamic_level_bytes = true;
   options.max_bytes_for_level_base = kBaseLevelBytes;
   options.max_bytes_for_level_multiplier = kInitMultiplier;
@@ -9348,7 +9348,7 @@ TEST_F(DBCompactionTest, DrainUnnecessaryLevelsAfterDBBecomesSmall) {
   const int kDeleteFileNum = 8;
 
   Options options = CurrentOptions();
-  options.compression = CompressionType::NoCompression;
+  options.compression = kNoCompression;
   options.level_compaction_dynamic_level_bytes = true;
   options.max_bytes_for_level_base = kBaseLevelBytes;
   options.max_bytes_for_level_multiplier = kMultiplier;

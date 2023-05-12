@@ -443,7 +443,7 @@ enum Tickers : uint32_t {
   // are stored compressed.
   BYTES_COMPRESSED_TO,
   // Number of uncompressed bytes for SST blocks that are stored uncompressed
-  // because compression type is CompressionType::NoCompression, or some error case caused
+  // because compression type is kNoCompression, or some error case caused
   // compression not to run or produce an output. Index blocks are only counted
   // if enable_index_compression is true.
   BYTES_COMPRESSION_BYPASSED,

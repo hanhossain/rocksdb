@@ -591,7 +591,7 @@ DEFINE_string(compressed_secondary_cache_compression_type, "lz4",
               "values stored in CompressedSecondaryCache.");
 static enum ROCKSDB_NAMESPACE::CompressionType
     FLAGS_compressed_secondary_cache_compression_type_e =
-        ROCKSDB_NAMESPACE::CompressionType::LZ4Compression;
+        ROCKSDB_NAMESPACE::kLZ4Compression;
 
 DEFINE_uint32(
     compressed_secondary_cache_compress_format_version, 2,
@@ -818,7 +818,7 @@ DEFINE_bool(manual_wal_flush, false,
 DEFINE_string(wal_compression, "none",
               "Algorithm to use for WAL compression. none to disable.");
 static enum ROCKSDB_NAMESPACE::CompressionType FLAGS_wal_compression_e =
-    ROCKSDB_NAMESPACE::CompressionType::NoCompression;
+    ROCKSDB_NAMESPACE::kNoCompression;
 
 DEFINE_string(wal_dir, "", "If not empty, use the given dir for WAL");
 
@@ -1032,7 +1032,7 @@ DEFINE_string(
     blob_db_compression_type, "snappy",
     "[Stacked BlobDB] Algorithm to use to compress blobs in blob files.");
 static enum ROCKSDB_NAMESPACE::CompressionType
-    FLAGS_blob_db_compression_type_e = ROCKSDB_NAMESPACE::CompressionType::SnappyCompression;
+    FLAGS_blob_db_compression_type_e = ROCKSDB_NAMESPACE::kSnappyCompression;
 
 
 // Integrated BlobDB options
@@ -1241,21 +1241,21 @@ static enum ROCKSDB_NAMESPACE::CompressionType StringToCompressionType(
   assert(ctype);
 
   if (!strcasecmp(ctype, "none"))
-    return ROCKSDB_NAMESPACE::CompressionType::NoCompression;
+    return ROCKSDB_NAMESPACE::kNoCompression;
   else if (!strcasecmp(ctype, "snappy"))
-    return ROCKSDB_NAMESPACE::CompressionType::SnappyCompression;
+    return ROCKSDB_NAMESPACE::kSnappyCompression;
   else if (!strcasecmp(ctype, "zlib"))
-    return ROCKSDB_NAMESPACE::CompressionType::ZlibCompression;
+    return ROCKSDB_NAMESPACE::kZlibCompression;
   else if (!strcasecmp(ctype, "bzip2"))
-    return ROCKSDB_NAMESPACE::CompressionType::BZip2Compression;
+    return ROCKSDB_NAMESPACE::kBZip2Compression;
   else if (!strcasecmp(ctype, "lz4"))
-    return ROCKSDB_NAMESPACE::CompressionType::LZ4Compression;
+    return ROCKSDB_NAMESPACE::kLZ4Compression;
   else if (!strcasecmp(ctype, "lz4hc"))
-    return ROCKSDB_NAMESPACE::CompressionType::LZ4HCCompression;
+    return ROCKSDB_NAMESPACE::kLZ4HCCompression;
   else if (!strcasecmp(ctype, "xpress"))
-    return ROCKSDB_NAMESPACE::CompressionType::XpressCompression;
+    return ROCKSDB_NAMESPACE::kXpressCompression;
   else if (!strcasecmp(ctype, "zstd"))
-    return ROCKSDB_NAMESPACE::CompressionType::ZSTD;
+    return ROCKSDB_NAMESPACE::kZSTD;
   else {
     fprintf(stderr, "Cannot parse compression type '%s'\n", ctype);
     exit(1);
@@ -1275,22 +1275,22 @@ static std::string ColumnFamilyName(size_t i) {
 DEFINE_string(compression_type, "snappy",
               "Algorithm to use to compress the database");
 static enum ROCKSDB_NAMESPACE::CompressionType FLAGS_compression_type_e =
-    ROCKSDB_NAMESPACE::CompressionType::SnappyCompression;
+    ROCKSDB_NAMESPACE::kSnappyCompression;
 
 DEFINE_int64(sample_for_compression, 0, "Sample every N block for compression");
 
-DEFINE_int32(compression_level, rs::advanced_options::new_compression_options().level,
+DEFINE_int32(compression_level, ROCKSDB_NAMESPACE::CompressionOptions().level,
              "Compression level. The meaning of this value is library-"
              "dependent. If unset, we try to use the default for the library "
              "specified in `--compression_type`");
 
 DEFINE_int32(compression_max_dict_bytes,
-             rs::advanced_options::new_compression_options().max_dict_bytes,
+             ROCKSDB_NAMESPACE::CompressionOptions().max_dict_bytes,
              "Maximum size of dictionary used to prime the compression "
              "library.");
 
 DEFINE_int32(compression_zstd_max_train_bytes,
-             rs::advanced_options::new_compression_options().zstd_max_train_bytes,
+             ROCKSDB_NAMESPACE::CompressionOptions().zstd_max_train_bytes,
              "Maximum size of training data passed to zstd's dictionary "
              "trainer.");
 
@@ -1304,11 +1304,11 @@ DEFINE_int32(compression_parallel_threads, 1,
              "Number of threads for parallel compression.");
 
 DEFINE_uint64(compression_max_dict_buffer_bytes,
-              rs::advanced_options::new_compression_options().max_dict_buffer_bytes,
+              ROCKSDB_NAMESPACE::CompressionOptions().max_dict_buffer_bytes,
               "Maximum bytes to buffer to collect samples for dictionary.");
 
 DEFINE_bool(compression_use_zstd_dict_trainer,
-            rs::advanced_options::new_compression_options().use_zstd_dict_trainer,
+            ROCKSDB_NAMESPACE::CompressionOptions().use_zstd_dict_trainer,
             "If true, use ZSTD_TrainDictionary() to create dictionary, else"
             "use ZSTD_FinalizeDictionary() to create dictionary");
 
@@ -2821,7 +2821,7 @@ class Benchmark {
     fprintf(stdout,
             "WARNING: Assertions are enabled; benchmarks unnecessarily slow\n");
 #endif
-    if (FLAGS_compression_type_e != ROCKSDB_NAMESPACE::CompressionType::NoCompression) {
+    if (FLAGS_compression_type_e != ROCKSDB_NAMESPACE::kNoCompression) {
       // The test string should not be too small.
       const int len = FLAGS_block_size;
       std::string input_str(len, 'y');
@@ -4448,7 +4448,7 @@ class Benchmark {
       assert(FLAGS_min_level_to_compress <= FLAGS_num_levels);
       options.compression_per_level.resize(FLAGS_num_levels);
       for (int i = 0; i < FLAGS_min_level_to_compress; i++) {
-        options.compression_per_level[i] = CompressionType::NoCompression;
+        options.compression_per_level[i] = kNoCompression;
       }
       for (int i = FLAGS_min_level_to_compress; i < FLAGS_num_levels; i++) {
         options.compression_per_level[i] = FLAGS_compression_type_e;
@@ -8174,7 +8174,7 @@ class Benchmark {
 
     ROCKSDB_NAMESPACE::CompactionOptions options;
     // Lets RocksDB use the configured compression for this level
-    options.compression = ROCKSDB_NAMESPACE::CompressionType::DisableCompressionOption;
+    options.compression = ROCKSDB_NAMESPACE::kDisableCompressionOption;
 
     ROCKSDB_NAMESPACE::ColumnFamilyDescriptor cfDesc;
     db_with_cfh.db->DefaultColumnFamily()->GetDescriptor(&cfDesc);

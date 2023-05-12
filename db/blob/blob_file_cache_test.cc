@@ -54,7 +54,7 @@ void WriteBlobFile(uint32_t column_family_id,
   constexpr bool has_ttl = false;
   constexpr ExpirationRange expiration_range;
 
-  BlobLogHeader header(column_family_id, CompressionType::NoCompression, has_ttl,
+  BlobLogHeader header(column_family_id, kNoCompression, has_ttl,
                        expiration_range);
 
   ASSERT_OK(blob_log_writer.WriteHeader(header));

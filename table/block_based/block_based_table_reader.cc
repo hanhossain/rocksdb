@@ -670,9 +670,9 @@ Status BlockBasedTable::Open(
   bool blocks_definitely_zstd_compressed =
       rep->table_properties &&
       (rep->table_properties->compression_name ==
-           CompressionTypeToString(CompressionType::ZSTD) ||
+           CompressionTypeToString(kZSTD) ||
        rep->table_properties->compression_name ==
-           CompressionTypeToString(CompressionType::ZSTDNotFinalCompression));
+           CompressionTypeToString(kZSTDNotFinalCompression));
   rep->create_context = BlockCreateContext(
       &rep->table_options, rep->ioptions.stats,
       blocks_definitely_zstd_compressed, block_protection_bytes_per_key,
@@ -895,7 +895,7 @@ Status BlockBasedTable::ReadPropertiesBlock(
       rep_->table_properties = std::move(table_properties);
       rep_->blocks_maybe_compressed =
           rep_->table_properties->compression_name !=
-          CompressionTypeToString(CompressionType::NoCompression);
+          CompressionTypeToString(kNoCompression);
     }
   } else {
     ROCKS_LOG_ERROR(rep_->ioptions.logger,
@@ -1341,7 +1341,7 @@ WithBlocklikeCheck<Status, TBlocklike> BlockBasedTable::PutDataBlockToCache(
   Statistics* statistics = ioptions.stats;
 
   std::unique_ptr<TBlocklike> block_holder;
-  if (block_comp_type != CompressionType::NoCompression) {
+  if (block_comp_type != kNoCompression) {
     // Retrieve the uncompressed contents into a new buffer
     BlockContents uncompressed_block_contents;
     UncompressionContext context(block_comp_type);

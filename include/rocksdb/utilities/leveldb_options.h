@@ -115,16 +115,16 @@ struct LevelDBOptions {
   // Compress blocks using the specified compression algorithm.  This
   // parameter can be changed dynamically.
   //
-  // Default: CompressionType::SnappyCompression, which gives lightweight but fast
+  // Default: kSnappyCompression, which gives lightweight but fast
   // compression.
   //
-  // Typical speeds of CompressionType::SnappyCompression on an Intel(R) Core(TM)2 2.4GHz:
+  // Typical speeds of kSnappyCompression on an Intel(R) Core(TM)2 2.4GHz:
   //    ~200-500MB/s compression
   //    ~400-800MB/s decompression
   // Note that these speeds are significantly faster than most
   // persistent storage speeds, and therefore it is typically never
-  // worth switching to CompressionType::NoCompression.  Even if the input data is
-  // incompressible, the CompressionType::SnappyCompression implementation will
+  // worth switching to kNoCompression.  Even if the input data is
+  // incompressible, the kSnappyCompression implementation will
   // efficiently detect that and will switch to uncompressed mode.
   CompressionType compression;
 

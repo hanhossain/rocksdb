@@ -96,7 +96,7 @@ CompactionFilter::Decision BlobIndexCompactionFilterBase::FilterV2(
     }
     // Read value from blob file.
     PinnableSlice blob;
-    CompressionType compression_type = CompressionType::NoCompression;
+    CompressionType compression_type = kNoCompression;
     constexpr bool need_decompress = true;
     if (!ReadBlobFromOldFile(ikey.user_key, blob_index, &blob, need_decompress,
                              &compression_type)) {
@@ -126,7 +126,7 @@ CompactionFilter::Decision BlobIndexCompactionFilterBase::HandleValueChange(
   }
   Slice new_blob_value(*new_value);
   std::string compression_output;
-  if (blob_db_impl->bdb_options_.compression != CompressionType::NoCompression) {
+  if (blob_db_impl->bdb_options_.compression != kNoCompression) {
     new_blob_value =
         blob_db_impl->GetCompressedSlice(new_blob_value, &compression_output);
   }
@@ -221,7 +221,7 @@ bool BlobIndexCompactionFilterBase::ReadBlobFromOldFile(
     return false;
   }
 
-  if (need_decompress && *compression_type != CompressionType::NoCompression) {
+  if (need_decompress && *compression_type != kNoCompression) {
     s = blob_db_impl->DecompressSlice(*blob, *compression_type, blob);
     if (!s.ok()) {
       ROCKS_LOG_ERROR(
@@ -366,7 +366,7 @@ CompactionFilter::BlobDecision BlobIndexCompactionFilterGC::PrepareBlobOutput(
   }
 
   PinnableSlice blob;
-  CompressionType compression_type = CompressionType::NoCompression;
+  CompressionType compression_type = kNoCompression;
   std::string compression_output;
   if (!ReadBlobFromOldFile(key, blob_index, &blob, false, &compression_type)) {
     gc_stats_.SetError();
@@ -376,7 +376,7 @@ CompactionFilter::BlobDecision BlobIndexCompactionFilterGC::PrepareBlobOutput(
   // If the compression_type is changed, re-compress it with the new compression
   // type.
   if (compression_type != blob_db_impl->bdb_options_.compression) {
-    if (compression_type != CompressionType::NoCompression) {
+    if (compression_type != kNoCompression) {
       const Status status =
           blob_db_impl->DecompressSlice(blob, compression_type, &blob);
       if (!status.ok()) {
@@ -384,7 +384,7 @@ CompactionFilter::BlobDecision BlobIndexCompactionFilterGC::PrepareBlobOutput(
         return BlobDecision::kCorruption;
       }
     }
-    if (blob_db_impl->bdb_options_.compression != CompressionType::NoCompression) {
+    if (blob_db_impl->bdb_options_.compression != kNoCompression) {
       blob_db_impl->GetCompressedSlice(blob, &compression_output);
       blob = PinnableSlice(&compression_output);
       blob.PinSelf();
