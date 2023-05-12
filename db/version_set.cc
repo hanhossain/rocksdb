@@ -3861,7 +3861,7 @@ void SortFileByRoundRobin(const InternalKeyComparator& icmp,
                           bool level0_non_overlapping, int level,
                           std::vector<Fsize>* temp) {
   if (level == 0 && !level0_non_overlapping) {
-    // Using CompactionPri::OldestSmallestSeqFirst when level === 0, since the
+    // Using rs::advanced_options::CompactionPri::OldestSmallestSeqFirst when level === 0, since the
     // files may overlap (not fully sorted)
     std::sort(temp->begin(), temp->end(),
               [](const Fsize& f1, const Fsize& f2) -> bool {
@@ -3939,30 +3939,30 @@ void VersionStorageInfo::UpdateFilesByCompactionPri(
       num = temp.size();
     }
     switch (ioptions.compaction_pri) {
-      case CompactionPri::ByCompensatedSize:
+      case rs::advanced_options::CompactionPri::ByCompensatedSize:
         std::partial_sort(temp.begin(), temp.begin() + num, temp.end(),
                           CompareCompensatedSizeDescending);
         break;
-      case CompactionPri::OldestLargestSeqFirst:
+      case rs::advanced_options::CompactionPri::OldestLargestSeqFirst:
         std::sort(temp.begin(), temp.end(),
                   [](const Fsize& f1, const Fsize& f2) -> bool {
                     return f1.file->fd.largest_seqno <
                            f2.file->fd.largest_seqno;
                   });
         break;
-      case CompactionPri::OldestSmallestSeqFirst:
+      case rs::advanced_options::CompactionPri::OldestSmallestSeqFirst:
         std::sort(temp.begin(), temp.end(),
                   [](const Fsize& f1, const Fsize& f2) -> bool {
                     return f1.file->fd.smallest_seqno <
                            f2.file->fd.smallest_seqno;
                   });
         break;
-      case CompactionPri::MinOverlappingRatio:
+      case rs::advanced_options::CompactionPri::MinOverlappingRatio:
         SortFileByOverlappingRatio(*internal_comparator_, files_[level],
                                    files_[level + 1], ioptions.clock, level,
                                    num_non_empty_levels_, options.ttl, &temp);
         break;
-      case CompactionPri::RoundRobin:
+      case rs::advanced_options::CompactionPri::RoundRobin:
         SortFileByRoundRobin(*internal_comparator_, &compact_cursor_,
                              level0_non_overlapping_, level, &temp);
         break;

@@ -1664,7 +1664,7 @@ TEST_F(DBRangeDelTest, RangeTombstoneWrittenToMinimalSsts) {
 TEST_F(DBRangeDelTest, LevelCompactOutputCutAtRangeTombstoneForTtlFiles) {
   Options options = CurrentOptions();
   options.compression = kNoCompression;
-  options.compaction_pri = CompactionPri::MinOverlappingRatio;
+  options.compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio;
   options.disable_auto_compactions = true;
   options.ttl = 24 * 60 * 60;  // 24 hours
   options.target_file_size_base = 8 << 10;

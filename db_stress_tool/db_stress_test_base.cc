@@ -2427,20 +2427,20 @@ void StressTest::PrintEnv() const {
   fprintf(stdout, "Compaction TTL            : %" PRIu64 "\n",
           FLAGS_compaction_ttl);
   const char* compaction_pri = "";
-  switch ((CompactionPri)FLAGS_compaction_pri) {
-    case CompactionPri::ByCompensatedSize:
+  switch ((rs::advanced_options::CompactionPri)FLAGS_compaction_pri) {
+    case rs::advanced_options::CompactionPri::ByCompensatedSize:
       compaction_pri = "kByCompensatedSize";
       break;
-    case CompactionPri::OldestLargestSeqFirst:
+    case rs::advanced_options::CompactionPri::OldestLargestSeqFirst:
       compaction_pri = "kOldestLargestSeqFirst";
       break;
-    case CompactionPri::OldestSmallestSeqFirst:
+    case rs::advanced_options::CompactionPri::OldestSmallestSeqFirst:
       compaction_pri = "kOldestSmallestSeqFirst";
       break;
-    case CompactionPri::MinOverlappingRatio:
+    case rs::advanced_options::CompactionPri::MinOverlappingRatio:
       compaction_pri = "kMinOverlappingRatio";
       break;
-    case CompactionPri::RoundRobin:
+    case rs::advanced_options::CompactionPri::RoundRobin:
       compaction_pri = "kRoundRobin";
       break;
   }
@@ -3043,7 +3043,7 @@ void InitializeOptionsFromFlags(
         FLAGS_fifo_allow_compaction;
   }
   options.compaction_pri =
-      static_cast<rs::advanced_options::CompactionPri>(FLAGS_compaction_pri);
+      static_cast<rs::advanced_options::rs::advanced_options::CompactionPri>(FLAGS_compaction_pri);
   options.num_levels = FLAGS_num_levels;
   if (FLAGS_prefix_size >= 0) {
     options.prefix_extractor.reset(NewFixedPrefixTransform(FLAGS_prefix_size));

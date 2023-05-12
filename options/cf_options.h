@@ -27,7 +27,7 @@ struct ImmutableCFOptions {
 
   CompactionStyle compaction_style;
 
-  CompactionPri compaction_pri;
+  rs::advanced_options::CompactionPri compaction_pri;
 
   const Comparator* user_comparator;
   InternalKeyComparator internal_comparator;  // Only in Immutable

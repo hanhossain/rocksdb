@@ -63,9 +63,9 @@ class CompactionPickerTestBase : public testing::Test {
         vstorage_(nullptr) {
     mutable_cf_options_.ttl = 0;
     mutable_cf_options_.periodic_compaction_seconds = 0;
-    // ioptions_.compaction_pri = CompactionPri::MinOverlappingRatio has its own set of
+    // ioptions_.compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio has its own set of
     // tests to cover.
-    ioptions_.compaction_pri = CompactionPri::ByCompensatedSize;
+    ioptions_.compaction_pri = rs::advanced_options::CompactionPri::ByCompensatedSize;
     fifo_options_.max_table_files_size = 1;
     mutable_cf_options_.RefreshDerivedOptions(ioptions_);
     ioptions_.cf_paths.emplace_back("dummy",
@@ -456,7 +456,7 @@ TEST_F(CompactionPickerTest, Level0TriggerDynamic4) {
 TEST_F(CompactionPickerTest, LevelTriggerDynamic4) {
   int num_levels = ioptions_.num_levels;
   ioptions_.level_compaction_dynamic_level_bytes = true;
-  ioptions_.compaction_pri = CompactionPri::MinOverlappingRatio;
+  ioptions_.compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio;
   mutable_cf_options_.level0_file_num_compaction_trigger = 2;
   mutable_cf_options_.max_bytes_for_level_base = 200;
   mutable_cf_options_.max_bytes_for_level_multiplier = 10;
@@ -1246,7 +1246,7 @@ TEST_F(CompactionPickerTest, FIFOToWarmWithHotBetweenWarms) {
 
 TEST_F(CompactionPickerTest, CompactionPriMinOverlapping1) {
   NewVersionStorage(6, CompactionStyle::Level);
-  ioptions_.compaction_pri = CompactionPri::MinOverlappingRatio;
+  ioptions_.compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio;
   mutable_cf_options_.target_file_size_base = 100000000000;
   mutable_cf_options_.target_file_size_multiplier = 10;
   mutable_cf_options_.max_bytes_for_level_base = 10 * 1024 * 1024;
@@ -1277,7 +1277,7 @@ TEST_F(CompactionPickerTest, CompactionPriMinOverlapping1) {
 
 TEST_F(CompactionPickerTest, CompactionPriMinOverlapping2) {
   NewVersionStorage(6, CompactionStyle::Level);
-  ioptions_.compaction_pri = CompactionPri::MinOverlappingRatio;
+  ioptions_.compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio;
   mutable_cf_options_.target_file_size_base = 10000000;
   mutable_cf_options_.target_file_size_multiplier = 10;
   mutable_cf_options_.max_bytes_for_level_base = 10 * 1024 * 1024;
@@ -1308,7 +1308,7 @@ TEST_F(CompactionPickerTest, CompactionPriMinOverlapping2) {
 
 TEST_F(CompactionPickerTest, CompactionPriMinOverlapping3) {
   NewVersionStorage(6, CompactionStyle::Level);
-  ioptions_.compaction_pri = CompactionPri::MinOverlappingRatio;
+  ioptions_.compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio;
   mutable_cf_options_.max_bytes_for_level_base = 10000000;
   mutable_cf_options_.max_bytes_for_level_multiplier = 10;
 
@@ -1336,7 +1336,7 @@ TEST_F(CompactionPickerTest, CompactionPriMinOverlapping3) {
 
 TEST_F(CompactionPickerTest, CompactionPriMinOverlapping4) {
   NewVersionStorage(6, CompactionStyle::Level);
-  ioptions_.compaction_pri = CompactionPri::MinOverlappingRatio;
+  ioptions_.compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio;
   mutable_cf_options_.max_bytes_for_level_base = 10000000;
   mutable_cf_options_.max_bytes_for_level_multiplier = 10;
   mutable_cf_options_.ignore_max_compaction_bytes_for_input = false;
@@ -1371,7 +1371,7 @@ TEST_F(CompactionPickerTest, CompactionPriRoundRobin) {
                                            InternalKey()};
   std::vector<uint32_t> selected_files = {8U, 6U, 6U};
 
-  ioptions_.compaction_pri = CompactionPri::RoundRobin;
+  ioptions_.compaction_pri = rs::advanced_options::CompactionPri::RoundRobin;
   mutable_cf_options_.max_bytes_for_level_base = 12000000;
   mutable_cf_options_.max_bytes_for_level_multiplier = 10;
   for (size_t i = 0; i < test_cursors.size(); i++) {
@@ -1407,7 +1407,7 @@ TEST_F(CompactionPickerTest, CompactionPriRoundRobin) {
 }
 
 TEST_F(CompactionPickerTest, CompactionPriMultipleFilesRoundRobin1) {
-  ioptions_.compaction_pri = CompactionPri::RoundRobin;
+  ioptions_.compaction_pri = rs::advanced_options::CompactionPri::RoundRobin;
   mutable_cf_options_.max_compaction_bytes = 100000000u;
   mutable_cf_options_.max_bytes_for_level_base = 120;
   mutable_cf_options_.max_bytes_for_level_multiplier = 10;
@@ -1450,7 +1450,7 @@ TEST_F(CompactionPickerTest, CompactionPriMultipleFilesRoundRobin1) {
 }
 
 TEST_F(CompactionPickerTest, CompactionPriMultipleFilesRoundRobin2) {
-  ioptions_.compaction_pri = CompactionPri::RoundRobin;
+  ioptions_.compaction_pri = rs::advanced_options::CompactionPri::RoundRobin;
   mutable_cf_options_.max_compaction_bytes = 2500u;
   mutable_cf_options_.max_bytes_for_level_base = 120;
   mutable_cf_options_.max_bytes_for_level_multiplier = 10;
@@ -1494,7 +1494,7 @@ TEST_F(CompactionPickerTest, CompactionPriMultipleFilesRoundRobin2) {
 }
 
 TEST_F(CompactionPickerTest, CompactionPriMultipleFilesRoundRobin3) {
-  ioptions_.compaction_pri = CompactionPri::RoundRobin;
+  ioptions_.compaction_pri = rs::advanced_options::CompactionPri::RoundRobin;
   mutable_cf_options_.max_compaction_bytes = 1000000u;
   mutable_cf_options_.max_bytes_for_level_base = 120;
   mutable_cf_options_.max_bytes_for_level_multiplier = 10;
@@ -1534,7 +1534,7 @@ TEST_F(CompactionPickerTest, CompactionPriMultipleFilesRoundRobin3) {
 
 TEST_F(CompactionPickerTest, CompactionPriMinOverlappingManyFiles) {
   NewVersionStorage(6, CompactionStyle::Level);
-  ioptions_.compaction_pri = CompactionPri::MinOverlappingRatio;
+  ioptions_.compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio;
   mutable_cf_options_.max_bytes_for_level_base = 15000000;
   mutable_cf_options_.max_bytes_for_level_multiplier = 10;
 
@@ -1615,7 +1615,7 @@ TEST_F(CompactionPickerTest, ParentIndexResetBug) {
 // ranges (with different sequence numbers) in the input files.
 TEST_F(CompactionPickerTest, OverlappingUserKeys) {
   NewVersionStorage(6, CompactionStyle::Level);
-  ioptions_.compaction_pri = CompactionPri::ByCompensatedSize;
+  ioptions_.compaction_pri = rs::advanced_options::CompactionPri::ByCompensatedSize;
 
   Add(1, 1U, "100", "150", 1U);
   // Overlapping user keys
@@ -2627,7 +2627,7 @@ TEST_F(CompactionPickerTest, TrivialMoveMultipleFiles1) {
   mutable_cf_options_.max_bytes_for_level_base = 1000u;
   mutable_cf_options_.max_compaction_bytes = 10000001u;
   ioptions_.level_compaction_dynamic_level_bytes = false;
-  ioptions_.compaction_pri = CompactionPri::MinOverlappingRatio;
+  ioptions_.compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio;
   NewVersionStorage(6, CompactionStyle::Level);
 
   Add(2, 1U, "100", "150", 3000U);
@@ -2662,7 +2662,7 @@ TEST_F(CompactionPickerTest, TrivialMoveMultipleFiles2) {
   mutable_cf_options_.max_bytes_for_level_base = 1000u;
   mutable_cf_options_.max_compaction_bytes = 10000001u;
   ioptions_.level_compaction_dynamic_level_bytes = false;
-  ioptions_.compaction_pri = CompactionPri::MinOverlappingRatio;
+  ioptions_.compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio;
   NewVersionStorage(6, CompactionStyle::Level);
 
   Add(2, 1U, "100", "150", 3000U);
@@ -2694,7 +2694,7 @@ TEST_F(CompactionPickerTest, TrivialMoveMultipleFiles3) {
   mutable_cf_options_.max_bytes_for_level_base = 1000u;
   mutable_cf_options_.max_compaction_bytes = 10000001u;
   ioptions_.level_compaction_dynamic_level_bytes = false;
-  ioptions_.compaction_pri = CompactionPri::MinOverlappingRatio;
+  ioptions_.compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio;
   NewVersionStorage(6, CompactionStyle::Level);
 
   // Even if consecutive files can be trivial moved, we don't pick them
@@ -2726,7 +2726,7 @@ TEST_F(CompactionPickerTest, TrivialMoveMultipleFiles4) {
   mutable_cf_options_.max_bytes_for_level_base = 1000u;
   mutable_cf_options_.max_compaction_bytes = 10000001u;
   ioptions_.level_compaction_dynamic_level_bytes = false;
-  ioptions_.compaction_pri = CompactionPri::MinOverlappingRatio;
+  ioptions_.compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio;
   NewVersionStorage(6, CompactionStyle::Level);
 
   Add(2, 1U, "100", "150", 4000U);
@@ -2753,7 +2753,7 @@ TEST_F(CompactionPickerTest, TrivialMoveMultipleFiles5) {
   mutable_cf_options_.max_bytes_for_level_base = 1000u;
   mutable_cf_options_.max_compaction_bytes = 10000001u;
   ioptions_.level_compaction_dynamic_level_bytes = false;
-  ioptions_.compaction_pri = CompactionPri::MinOverlappingRatio;
+  ioptions_.compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio;
   NewVersionStorage(6, CompactionStyle::Level);
 
   // File 4 and 5 aren't clean cut, so only 2 and 3 are picked.
@@ -2783,7 +2783,7 @@ TEST_F(CompactionPickerTest, TrivialMoveMultipleFiles6) {
   mutable_cf_options_.max_bytes_for_level_base = 1000u;
   mutable_cf_options_.max_compaction_bytes = 10000001u;
   ioptions_.level_compaction_dynamic_level_bytes = false;
-  ioptions_.compaction_pri = CompactionPri::MinOverlappingRatio;
+  ioptions_.compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio;
   NewVersionStorage(6, CompactionStyle::Level);
 
   Add(2, 1U, "100", "150", 3000U);

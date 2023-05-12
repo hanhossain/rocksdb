@@ -3469,7 +3469,7 @@ Status DBImpl::BackgroundCompaction(bool* made_progress,
       }
     }
     if (c->compaction_reason() == CompactionReason::kLevelMaxLevelSize &&
-        c->immutable_options()->compaction_pri == CompactionPri::RoundRobin) {
+        c->immutable_options()->compaction_pri == rs::advanced_options::CompactionPri::RoundRobin) {
       int start_level = c->start_level();
       if (start_level > 0) {
         auto vstorage = c->input_version()->storage_info();

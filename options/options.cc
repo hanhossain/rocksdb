@@ -559,7 +559,7 @@ ColumnFamilyOptions* ColumnFamilyOptions::OldDefaults(
     int rocksdb_major_version, int rocksdb_minor_version) {
   if (rocksdb_major_version < 5 ||
       (rocksdb_major_version == 5 && rocksdb_minor_version <= 18)) {
-    compaction_pri = CompactionPri::ByCompensatedSize;
+    compaction_pri = rs::advanced_options::CompactionPri::ByCompensatedSize;
   }
   if (rocksdb_major_version < 4 ||
       (rocksdb_major_version == 4 && rocksdb_minor_version < 7)) {

@@ -255,7 +255,7 @@ void LevelCompactionBuilder::SetupInitialFiles() {
   }
 
   // TTL Compaction
-  if (ioptions_.compaction_pri == CompactionPri::RoundRobin &&
+  if (ioptions_.compaction_pri == rs::advanced_options::CompactionPri::RoundRobin &&
       !vstorage_->ExpiredTtlFiles().empty()) {
     auto expired_files = vstorage_->ExpiredTtlFiles();
     // the expired files list should already be sorted by level
@@ -431,7 +431,7 @@ bool LevelCompactionBuilder::SetupOtherInputsIfNeeded() {
   if (output_level_ != 0) {
     output_level_inputs_.level = output_level_;
     bool round_robin_expanding =
-        ioptions_.compaction_pri == CompactionPri::RoundRobin &&
+        ioptions_.compaction_pri == rs::advanced_options::CompactionPri::RoundRobin &&
         compaction_reason_ == CompactionReason::kLevelMaxLevelSize;
     if (round_robin_expanding) {
       SetupOtherFilesWithRoundRobinExpansion();
@@ -788,7 +788,7 @@ bool LevelCompactionBuilder::PickFileToCompact() {
     // do not pick a file to compact if it is being compacted
     // from n-1 level.
     if (f->being_compacted) {
-      if (ioptions_.compaction_pri == CompactionPri::RoundRobin) {
+      if (ioptions_.compaction_pri == rs::advanced_options::CompactionPri::RoundRobin) {
         // TODO(zichen): this file may be involved in one compaction from
         // an upper level, cannot advance the cursor for round-robin policy.
         // Currently, we do not pick any file to compact in this case. We
@@ -810,7 +810,7 @@ bool LevelCompactionBuilder::PickFileToCompact() {
       // user-key overlap.
       start_level_inputs_.clear();
 
-      if (ioptions_.compaction_pri == CompactionPri::RoundRobin) {
+      if (ioptions_.compaction_pri == rs::advanced_options::CompactionPri::RoundRobin) {
         return false;
       }
       continue;
@@ -832,14 +832,14 @@ bool LevelCompactionBuilder::PickFileToCompact() {
       if (start_level_ > 0 &&
           TryExtendNonL0TrivialMove(index,
                                     ioptions_.compaction_pri ==
-                                        CompactionPri::RoundRobin /* only_expand_right */)) {
+                                        rs::advanced_options::CompactionPri::RoundRobin /* only_expand_right */)) {
         break;
       }
     } else {
       if (!compaction_picker_->ExpandInputsToCleanCut(cf_name_, vstorage_,
                                                       &output_level_inputs)) {
         start_level_inputs_.clear();
-        if (ioptions_.compaction_pri == CompactionPri::RoundRobin) {
+        if (ioptions_.compaction_pri == rs::advanced_options::CompactionPri::RoundRobin) {
           return false;
         }
         continue;
@@ -851,7 +851,7 @@ bool LevelCompactionBuilder::PickFileToCompact() {
   }
 
   // store where to start the iteration in the next call to PickCompaction
-  if (ioptions_.compaction_pri != CompactionPri::RoundRobin) {
+  if (ioptions_.compaction_pri != rs::advanced_options::CompactionPri::RoundRobin) {
     vstorage_->SetNextCompactionIndex(start_level_, cmp_idx);
   }
   return start_level_inputs_.size() > 0;

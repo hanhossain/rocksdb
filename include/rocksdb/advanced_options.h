@@ -16,7 +16,6 @@
 #include "rocksdb/memtablerep.h"
 #include "rocksdb/universal_compaction.h"
 
-using rs::advanced_options::CompactionPri;
 using rs::advanced_options::CompactionStyle;
 using rs::advanced_options::PrepopulateBlobCache;
 using rs::advanced_options::Temperature;
@@ -648,8 +647,8 @@ struct AdvancedColumnFamilyOptions {
 
   // If level compaction_style = CompactionStyle::Level, for each level,
   // which files are prioritized to be picked to compact.
-  // Default: CompactionPri::MinOverlappingRatio
-  CompactionPri compaction_pri = CompactionPri::MinOverlappingRatio;
+  // Default: rs::advanced_options::CompactionPri::MinOverlappingRatio
+  rs::advanced_options::CompactionPri compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio;
 
   // The options needed to support Universal Style compactions
   //

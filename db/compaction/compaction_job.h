@@ -324,7 +324,7 @@ class CompactionJob {
 
   uint64_t GetCompactionId(SubcompactionState* sub_compact) const;
   // Stores the number of reserved threads in shared env_ for the number of
-  // extra subcompaction in CompactionPri::RoundRobin compaction priority
+  // extra subcompaction in rs::advanced_options::CompactionPri::RoundRobin compaction priority
   int extra_num_subcompaction_threads_reserved_;
 
   // Stores the pointer to bg_compaction_scheduled_,

@@ -910,7 +910,7 @@ Compaction* UniversalCompactionBuilder::PickIncrementalForReduceSizeAmp(
   // the range.
   //
   // Note that it is a similar problem as leveled compaction's
-  // CompactionPri::MinOverlappingRatio priority, but instead of picking single files
+  // rs::advanced_options::CompactionPri::MinOverlappingRatio priority, but instead of picking single files
   // we expand to a target compaction size. The reason is that in
   // leveled compaction, actual fanout value tends to high, e.g. 10, so
   // even with single file in down merging level, the extra size

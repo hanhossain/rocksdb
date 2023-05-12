@@ -324,12 +324,12 @@ std::map<CompactionStyle, std::string>
         {CompactionStyle::FIFO, "kCompactionStyleFIFO"},
         {CompactionStyle::None, "kCompactionStyleNone"}};
 
-std::map<CompactionPri, std::string> OptionsHelper::compaction_pri_to_string = {
-    {CompactionPri::ByCompensatedSize, "kByCompensatedSize"},
-    {CompactionPri::OldestLargestSeqFirst, "kOldestLargestSeqFirst"},
-    {CompactionPri::OldestSmallestSeqFirst, "kOldestSmallestSeqFirst"},
-    {CompactionPri::MinOverlappingRatio, "kMinOverlappingRatio"},
-    {CompactionPri::RoundRobin, "kRoundRobin"}};
+std::map<rs::advanced_options::CompactionPri, std::string> OptionsHelper::compaction_pri_to_string = {
+    {rs::advanced_options::CompactionPri::ByCompensatedSize, "kByCompensatedSize"},
+    {rs::advanced_options::CompactionPri::OldestLargestSeqFirst, "kOldestLargestSeqFirst"},
+    {rs::advanced_options::CompactionPri::OldestSmallestSeqFirst, "kOldestSmallestSeqFirst"},
+    {rs::advanced_options::CompactionPri::MinOverlappingRatio, "kMinOverlappingRatio"},
+    {rs::advanced_options::CompactionPri::RoundRobin, "kRoundRobin"}};
 
 std::map<CompactionStopStyle, std::string>
     OptionsHelper::compaction_stop_style_to_string = {
@@ -437,8 +437,8 @@ static bool ParseOptionHelper(void* opt_address, const OptionType& opt_type,
           compaction_style_string_map, value,
           static_cast<CompactionStyle*>(opt_address));
     case OptionType::kCompactionPri:
-      return ParseEnum<CompactionPri>(compaction_pri_string_map, value,
-                                      static_cast<CompactionPri*>(opt_address));
+      return ParseEnum<rs::advanced_options::CompactionPri>(compaction_pri_string_map, value,
+                                      static_cast<rs::advanced_options::CompactionPri*>(opt_address));
     case OptionType::kCompressionType:
       return ParseEnum<CompressionType>(
           compression_type_string_map, value,
@@ -524,9 +524,9 @@ bool SerializeSingleOptionHelper(const void* opt_address,
           compaction_style_string_map,
           *(static_cast<const CompactionStyle*>(opt_address)), value);
     case OptionType::kCompactionPri:
-      return SerializeEnum<CompactionPri>(
+      return SerializeEnum<rs::advanced_options::CompactionPri>(
           compaction_pri_string_map,
-          *(static_cast<const CompactionPri*>(opt_address)), value);
+          *(static_cast<const rs::advanced_options::CompactionPri*>(opt_address)), value);
     case OptionType::kCompressionType:
       return SerializeEnum<CompressionType>(
           compression_type_string_map,
@@ -787,13 +787,13 @@ std::unordered_map<std::string, CompactionStyle>
         {"kCompactionStyleFIFO", CompactionStyle::FIFO},
         {"kCompactionStyleNone", CompactionStyle::None}};
 
-std::unordered_map<std::string, CompactionPri>
+std::unordered_map<std::string, rs::advanced_options::CompactionPri>
     OptionsHelper::compaction_pri_string_map = {
-        {"kByCompensatedSize", CompactionPri::ByCompensatedSize},
-        {"kOldestLargestSeqFirst", CompactionPri::OldestLargestSeqFirst},
-        {"kOldestSmallestSeqFirst", CompactionPri::OldestSmallestSeqFirst},
-        {"kMinOverlappingRatio", CompactionPri::MinOverlappingRatio},
-        {"kRoundRobin", CompactionPri::RoundRobin}};
+        {"kByCompensatedSize", rs::advanced_options::CompactionPri::ByCompensatedSize},
+        {"kOldestLargestSeqFirst", rs::advanced_options::CompactionPri::OldestLargestSeqFirst},
+        {"kOldestSmallestSeqFirst", rs::advanced_options::CompactionPri::OldestSmallestSeqFirst},
+        {"kMinOverlappingRatio", rs::advanced_options::CompactionPri::MinOverlappingRatio},
+        {"kRoundRobin", rs::advanced_options::CompactionPri::RoundRobin}};
 
 std::unordered_map<std::string, CompactionStopStyle>
     OptionsHelper::compaction_stop_style_string_map = {
@@ -1173,7 +1173,7 @@ static bool AreOptionsEqual(OptionType type, const void* this_offset,
     case OptionType::kCompactionStopStyle:
       return IsOptionEqual<CompactionStopStyle>(this_offset, that_offset);
     case OptionType::kCompactionPri:
-      return IsOptionEqual<CompactionPri>(this_offset, that_offset);
+      return IsOptionEqual<rs::advanced_options::CompactionPri>(this_offset, that_offset);
     case OptionType::kCompressionType:
       return IsOptionEqual<CompressionType>(this_offset, that_offset);
     case OptionType::kChecksumType:

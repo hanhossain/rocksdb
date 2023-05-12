@@ -730,7 +730,7 @@ void CompactionOutputs::FillFilesToCutForTtl() {
   if (compaction_->immutable_options()->compaction_style !=
           CompactionStyle::Level ||
       compaction_->immutable_options()->compaction_pri !=
-          CompactionPri::MinOverlappingRatio ||
+          rs::advanced_options::CompactionPri::MinOverlappingRatio ||
       compaction_->mutable_cf_options()->ttl == 0 ||
       compaction_->num_input_levels() < 2 || compaction_->bottommost_level()) {
     return;
