@@ -88,7 +88,7 @@ class CorruptionTest : public testing::Test {
     EXPECT_NE(base_env_, nullptr);
     fs_.reset(new ErrorFS(base_env_->GetFileSystem()));
     env_ = NewCompositeEnv(fs_);
-    options_.wal_recovery_mode = WALRecoveryMode::TolerateCorruptedTailRecords;
+    options_.wal_recovery_mode = rs::options::WALRecoveryMode::TolerateCorruptedTailRecords;
     options_.env = env_.get();
     dbname_ = test::PerThreadDBPath(env_.get(), "corruption_test");
     Status s = DestroyDB(dbname_, options_);
@@ -346,7 +346,7 @@ TEST_F(CorruptionTest, PostPITRCorruptionWALsRetained) {
   // retained leading to the next recovery failing.
   CloseDb();
 
-  options_.wal_recovery_mode = WALRecoveryMode::PointInTimeRecovery;
+  options_.wal_recovery_mode = rs::options::WALRecoveryMode::PointInTimeRecovery;
 
   const std::string test_cf_name = "test_cf";
   std::vector<ColumnFamilyDescriptor> cf_descs;
@@ -1184,7 +1184,7 @@ TEST_P(CrashDuringRecoveryWithCorruptionTest, CrashDuringRecovery) {
   Options options;
   options.track_and_verify_wals_in_manifest =
       track_and_verify_wals_in_manifest_;
-  options.wal_recovery_mode = WALRecoveryMode::PointInTimeRecovery;
+  options.wal_recovery_mode = rs::options::WALRecoveryMode::PointInTimeRecovery;
   options.avoid_flush_during_recovery = false;
   options.env = env_.get();
   ASSERT_OK(DestroyDB(dbname_, options));
@@ -1354,7 +1354,7 @@ TEST_P(CrashDuringRecoveryWithCorruptionTest, CrashDuringRecovery) {
 TEST_P(CrashDuringRecoveryWithCorruptionTest, TxnDbCrashDuringRecovery) {
   CloseDb();
   Options options;
-  options.wal_recovery_mode = WALRecoveryMode::PointInTimeRecovery;
+  options.wal_recovery_mode = rs::options::WALRecoveryMode::PointInTimeRecovery;
   options.track_and_verify_wals_in_manifest =
       track_and_verify_wals_in_manifest_;
   options.avoid_flush_during_recovery = false;
@@ -1551,7 +1551,7 @@ TEST_P(CrashDuringRecoveryWithCorruptionTest, TxnDbCrashDuringRecovery) {
 TEST_P(CrashDuringRecoveryWithCorruptionTest, CrashDuringRecoveryWithFlush) {
   CloseDb();
   Options options;
-  options.wal_recovery_mode = WALRecoveryMode::PointInTimeRecovery;
+  options.wal_recovery_mode = rs::options::WALRecoveryMode::PointInTimeRecovery;
   options.avoid_flush_during_recovery = false;
   options.env = env_.get();
   options.create_if_missing = true;

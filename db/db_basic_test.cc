@@ -4556,7 +4556,7 @@ TEST_F(DBBasicTest, VerifyFileChecksumsReadahead) {
 TEST_F(DBBasicTest, DISABLED_ManualWalSync) {
   Options options = CurrentOptions();
   options.track_and_verify_wals_in_manifest = true;
-  options.wal_recovery_mode = WALRecoveryMode::AbsoluteConsistency;
+  options.wal_recovery_mode = rs::options::WALRecoveryMode::AbsoluteConsistency;
   DestroyAndReopen(options);
 
   ASSERT_OK(Put("x", "y"));

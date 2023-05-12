@@ -1405,7 +1405,7 @@ INSTANTIATE_TEST_CASE_P(
 class DBWALTestWithParamsVaryingRecoveryMode
     : public DBWALTestBase,
       public ::testing::WithParamInterface<
-          std::tuple<bool, int, int, WALRecoveryMode, CompressionType>> {
+          std::tuple<bool, int, int, rs::options::WALRecoveryMode, CompressionType>> {
  public:
   DBWALTestWithParamsVaryingRecoveryMode()
       : DBWALTestBase("/db_wal_test_with_params_mode") {}
@@ -1419,10 +1419,10 @@ INSTANTIATE_TEST_CASE_P(
                          RecoveryTestHelper::kWALFileOffset +
                              RecoveryTestHelper::kWALFilesCount,
                          1),
-        ::testing::Values(WALRecoveryMode::TolerateCorruptedTailRecords,
-                          WALRecoveryMode::AbsoluteConsistency,
-                          WALRecoveryMode::PointInTimeRecovery,
-                          WALRecoveryMode::SkipAnyCorruptedRecords),
+        ::testing::Values(rs::options::WALRecoveryMode::TolerateCorruptedTailRecords,
+                          rs::options::WALRecoveryMode::AbsoluteConsistency,
+                          rs::options::WALRecoveryMode::PointInTimeRecovery,
+                          rs::options::WALRecoveryMode::SkipAnyCorruptedRecords),
         ::testing::Values(CompressionType::kNoCompression,
                           CompressionType::kZSTD)));
 
@@ -1443,7 +1443,7 @@ TEST_P(DBWALTestWithParams, kTolerateCorruptedTailRecords) {
   RecoveryTestHelper::CorruptWAL(this, options, corrupt_offset * .3,
                                  /*len%=*/.1, wal_file_id, trunc);
 
-  options.wal_recovery_mode = WALRecoveryMode::TolerateCorruptedTailRecords;
+  options.wal_recovery_mode = rs::options::WALRecoveryMode::TolerateCorruptedTailRecords;
   if (trunc) {
     options.create_if_missing = false;
     ASSERT_OK(TryReopen(options));
@@ -1484,7 +1484,7 @@ TEST_P(DBWALTestWithParams, kAbsoluteConsistency) {
   RecoveryTestHelper::CorruptWAL(this, options, corrupt_offset * .33,
                                  /*len%=*/.1, wal_file_id, trunc);
   // verify
-  options.wal_recovery_mode = WALRecoveryMode::AbsoluteConsistency;
+  options.wal_recovery_mode = rs::options::WALRecoveryMode::AbsoluteConsistency;
   options.create_if_missing = false;
   ASSERT_NOK(TryReopen(options));
 }
@@ -1518,7 +1518,7 @@ TEST_F(DBWALTest, kPointInTimeRecoveryCFConsistency) {
   ASSERT_OK(Flush(2));
 
   // PIT recovery & verify
-  options.wal_recovery_mode = WALRecoveryMode::PointInTimeRecovery;
+  options.wal_recovery_mode = rs::options::WALRecoveryMode::PointInTimeRecovery;
   ASSERT_NOK(TryReopenWithColumnFamilies({"default", "one", "two"}, options));
 }
 
@@ -1723,7 +1723,7 @@ TEST_P(DBWALTestWithParams, kPointInTimeRecovery) {
                                  /*len%=*/.1, wal_file_id, trunc);
 
   // Verify
-  options.wal_recovery_mode = WALRecoveryMode::PointInTimeRecovery;
+  options.wal_recovery_mode = rs::options::WALRecoveryMode::PointInTimeRecovery;
   options.create_if_missing = false;
   ASSERT_OK(TryReopen(options));
 
@@ -1777,7 +1777,7 @@ TEST_P(DBWALTestWithParams, kSkipAnyCorruptedRecords) {
                                  /*len%=*/.1, wal_file_id, trunc);
 
   // Verify behavior
-  options.wal_recovery_mode = WALRecoveryMode::SkipAnyCorruptedRecords;
+  options.wal_recovery_mode = rs::options::WALRecoveryMode::SkipAnyCorruptedRecords;
   options.create_if_missing = false;
   ASSERT_OK(TryReopen(options));
 
@@ -1992,7 +1992,7 @@ TEST_P(DBWALTestWithParamsVaryingRecoveryMode,
   // Corruption offset position
   int corrupt_offset = std::get<1>(GetParam());
   int wal_file_id = std::get<2>(GetParam());  // WAL file
-  WALRecoveryMode recovery_mode = std::get<3>(GetParam());
+  rs::options::WALRecoveryMode recovery_mode = std::get<3>(GetParam());
   // WAL compression type
   CompressionType compression_type = std::get<4>(GetParam());
 
@@ -2005,9 +2005,9 @@ TEST_P(DBWALTestWithParamsVaryingRecoveryMode,
   // Skip the test if DB won't open.
   if (!TryReopen(options).ok()) {
     ASSERT_TRUE(options.wal_recovery_mode ==
-                    WALRecoveryMode::AbsoluteConsistency ||
+                    rs::options::WALRecoveryMode::AbsoluteConsistency ||
                 (!trunc && options.wal_recovery_mode ==
-                               WALRecoveryMode::TolerateCorruptedTailRecords));
+                               rs::options::WALRecoveryMode::TolerateCorruptedTailRecords));
     return;
   }
   ASSERT_OK(TryReopen(options));
@@ -2290,7 +2290,7 @@ TEST_F(DBWALTest, ReadOnlyRecoveryNoTruncate) {
 TEST_F(DBWALTest, WalInManifestButNotInSortedWals) {
   Options options = CurrentOptions();
   options.track_and_verify_wals_in_manifest = true;
-  options.wal_recovery_mode = WALRecoveryMode::AbsoluteConsistency;
+  options.wal_recovery_mode = rs::options::WALRecoveryMode::AbsoluteConsistency;
 
   // Build a way to make wal files selectively go missing
   bool wals_go_missing = false;
@@ -2371,7 +2371,7 @@ TEST_F(DBWALTest, GetCompressedWalsAfterSync) {
     return;
   }
   Options options = GetDefaultOptions();
-  options.wal_recovery_mode = WALRecoveryMode::PointInTimeRecovery;
+  options.wal_recovery_mode = rs::options::WALRecoveryMode::PointInTimeRecovery;
   options.create_if_missing = true;
   options.env = env_;
   options.avoid_flush_during_recovery = true;

@@ -551,7 +551,7 @@ DBOptions* DBOptions::OldDefaults(int rocksdb_major_version,
     delayed_write_rate = 16 * 1024U * 1024U;
   }
   max_open_files = 5000;
-  wal_recovery_mode = WALRecoveryMode::TolerateCorruptedTailRecords;
+  wal_recovery_mode = rs::options::WALRecoveryMode::TolerateCorruptedTailRecords;
   return this;
 }
 

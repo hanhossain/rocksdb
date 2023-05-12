@@ -67,7 +67,7 @@ Reader::~Reader() {
 // TODO krad: Evaluate if we need to move to a more strict mode where we
 // restrict the inconsistency to only the last log
 bool Reader::ReadRecord(Slice* record, std::string* scratch,
-                        WALRecoveryMode wal_recovery_mode,
+                        rs::options::WALRecoveryMode wal_recovery_mode,
                         uint64_t* record_checksum) {
   scratch->clear();
   record->clear();
@@ -165,8 +165,8 @@ bool Reader::ReadRecord(Slice* record, std::string* scratch,
         break;
 
       case kBadHeader:
-        if (wal_recovery_mode == WALRecoveryMode::AbsoluteConsistency ||
-            wal_recovery_mode == WALRecoveryMode::PointInTimeRecovery) {
+        if (wal_recovery_mode == rs::options::WALRecoveryMode::AbsoluteConsistency ||
+            wal_recovery_mode == rs::options::WALRecoveryMode::PointInTimeRecovery) {
           // In clean shutdown we don't expect any error in the log files.
           // In point-in-time recovery an incomplete record at the end could
           // produce a hole in the recovered data. Report an error here, which
@@ -178,8 +178,8 @@ bool Reader::ReadRecord(Slice* record, std::string* scratch,
 
       case kEof:
         if (in_fragmented_record) {
-          if (wal_recovery_mode == WALRecoveryMode::AbsoluteConsistency ||
-              wal_recovery_mode == WALRecoveryMode::PointInTimeRecovery) {
+          if (wal_recovery_mode == rs::options::WALRecoveryMode::AbsoluteConsistency ||
+              wal_recovery_mode == rs::options::WALRecoveryMode::PointInTimeRecovery) {
             // In clean shutdown we don't expect any error in the log files.
             // In point-in-time recovery an incomplete record at the end could
             // produce a hole in the recovered data. Report an error here, which
@@ -195,11 +195,11 @@ bool Reader::ReadRecord(Slice* record, std::string* scratch,
         return false;
 
       case kOldRecord:
-        if (wal_recovery_mode != WALRecoveryMode::SkipAnyCorruptedRecords) {
+        if (wal_recovery_mode != rs::options::WALRecoveryMode::SkipAnyCorruptedRecords) {
           // Treat a record from a previous instance of the log as EOF.
           if (in_fragmented_record) {
-            if (wal_recovery_mode == WALRecoveryMode::AbsoluteConsistency ||
-                wal_recovery_mode == WALRecoveryMode::PointInTimeRecovery) {
+            if (wal_recovery_mode == rs::options::WALRecoveryMode::AbsoluteConsistency ||
+                wal_recovery_mode == rs::options::WALRecoveryMode::PointInTimeRecovery) {
               // In clean shutdown we don't expect any error in the log files.
               // In point-in-time recovery an incomplete record at the end could
               // produce a hole in the recovered data. Report an error here,
@@ -226,8 +226,8 @@ bool Reader::ReadRecord(Slice* record, std::string* scratch,
 
       case kBadRecordLen:
         if (eof_) {
-          if (wal_recovery_mode == WALRecoveryMode::AbsoluteConsistency ||
-              wal_recovery_mode == WALRecoveryMode::PointInTimeRecovery) {
+          if (wal_recovery_mode == rs::options::WALRecoveryMode::AbsoluteConsistency ||
+              wal_recovery_mode == rs::options::WALRecoveryMode::PointInTimeRecovery) {
             // In clean shutdown we don't expect any error in the log files.
             // In point-in-time recovery an incomplete record at the end could
             // produce a hole in the recovered data. Report an error here, which
@@ -241,7 +241,7 @@ bool Reader::ReadRecord(Slice* record, std::string* scratch,
 
       case kBadRecordChecksum:
         if (recycled_ && wal_recovery_mode ==
-                             WALRecoveryMode::TolerateCorruptedTailRecords) {
+                             rs::options::WALRecoveryMode::TolerateCorruptedTailRecords) {
           scratch->clear();
           return false;
         }
@@ -568,7 +568,7 @@ void Reader::InitCompression(const CompressionTypeRecord& compression_record) {
 }
 
 bool FragmentBufferedReader::ReadRecord(Slice* record, std::string* scratch,
-                                        WALRecoveryMode /*unused*/,
+                                        rs::options::WALRecoveryMode /*unused*/,
                                         uint64_t* /* checksum */) {
   assert(record != nullptr);
   assert(scratch != nullptr);

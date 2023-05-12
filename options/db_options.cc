@@ -26,14 +26,14 @@
 #include "util/string_util.h"
 
 namespace ROCKSDB_NAMESPACE {
-static std::unordered_map<std::string, WALRecoveryMode>
+static std::unordered_map<std::string, rs::options::WALRecoveryMode>
     wal_recovery_mode_string_map = {
         {"kTolerateCorruptedTailRecords",
-         WALRecoveryMode::TolerateCorruptedTailRecords},
-        {"kAbsoluteConsistency", WALRecoveryMode::AbsoluteConsistency},
-        {"kPointInTimeRecovery", WALRecoveryMode::PointInTimeRecovery},
+         rs::options::WALRecoveryMode::TolerateCorruptedTailRecords},
+        {"kAbsoluteConsistency", rs::options::WALRecoveryMode::AbsoluteConsistency},
+        {"kPointInTimeRecovery", rs::options::WALRecoveryMode::PointInTimeRecovery},
         {"kSkipAnyCorruptedRecords",
-         WALRecoveryMode::SkipAnyCorruptedRecords}};
+         rs::options::WALRecoveryMode::SkipAnyCorruptedRecords}};
 
 static std::unordered_map<std::string, DBOptions::AccessHint>
     access_hint_string_map = {{"NONE", DBOptions::AccessHint::NONE},
@@ -328,7 +328,7 @@ static std::unordered_map<std::string, OptionTypeInfo>
           OptionType::kBoolean, OptionVerificationType::kNormal,
           OptionTypeFlags::kNone}},
         {"wal_recovery_mode",
-         OptionTypeInfo::Enum<WALRecoveryMode>(
+         OptionTypeInfo::Enum<rs::options::WALRecoveryMode>(
              offsetof(struct ImmutableDBOptions, wal_recovery_mode),
              &wal_recovery_mode_string_map)},
         {"enable_write_thread_adaptive_yield",

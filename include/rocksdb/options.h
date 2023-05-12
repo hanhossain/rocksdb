@@ -36,8 +36,6 @@
 #undef max
 #endif
 
-using rs::options::WALRecoveryMode;
-
 namespace ROCKSDB_NAMESPACE {
 
 class Cache;
@@ -1107,7 +1105,7 @@ struct DBOptions {
 
   // Recovery mode to control the consistency while replaying WAL
   // Default: kPointInTimeRecovery
-  WALRecoveryMode wal_recovery_mode = WALRecoveryMode::PointInTimeRecovery;
+  rs::options::WALRecoveryMode wal_recovery_mode = rs::options::WALRecoveryMode::PointInTimeRecovery;
 
   // if set to false then recovery will fail when a prepared
   // transaction is encountered in the WAL
@@ -1244,7 +1242,7 @@ struct DBOptions {
   // opening the DB to any point-in-time valid state for each column family,
   // including the empty/new state, versus the default of returning non-WAL
   // data losses to the user as errors. In terms of RocksDB user data, this
-  // is like applying WALRecoveryMode::PointInTimeRecovery to each column
+  // is like applying rs::options::WALRecoveryMode::PointInTimeRecovery to each column
   // family rather than just the WAL.
   //
   // Best-efforts recovery (BER) is specifically designed to recover a DB with

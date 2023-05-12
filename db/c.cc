@@ -126,7 +126,6 @@ using ROCKSDB_NAMESPACE::WriteOptions;
 
 using rs::advanced_options::CompactionOptionsFIFO;
 using rs::advanced_options::PrepopulateBlobCache;
-using rs::options::WALRecoveryMode;
 
 using std::unordered_set;
 using std::vector;
@@ -3147,7 +3146,7 @@ int rocksdb_options_get_level0_stop_writes_trigger(rocksdb_options_t* opt) {
 }
 
 void rocksdb_options_set_wal_recovery_mode(rocksdb_options_t* opt, int mode) {
-  opt->rep.wal_recovery_mode = static_cast<WALRecoveryMode>(mode);
+  opt->rep.wal_recovery_mode = static_cast<rs::options::WALRecoveryMode>(mode);
 }
 
 int rocksdb_options_get_wal_recovery_mode(rocksdb_options_t* opt) {
