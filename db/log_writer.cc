@@ -161,7 +161,7 @@ IOStatus Writer::AddCompressionTypeRecord() {
   // Should be the first record
   assert(block_offset_ == 0);
 
-  if (compression_type_ == CompressionType::NoCompression) {
+  if (compression_type_ == kNoCompression) {
     // No need to add a record
     return IOStatus::OK();
   }
@@ -189,7 +189,7 @@ IOStatus Writer::AddCompressionTypeRecord() {
     assert(compressed_buffer_);
   } else {
     // Disable compression if the record could not be added.
-    compression_type_ = CompressionType::NoCompression;
+    compression_type_ = kNoCompression;
   }
   return s;
 }

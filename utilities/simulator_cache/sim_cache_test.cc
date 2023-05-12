@@ -35,7 +35,7 @@ class SimCacheTest : public DBTestBase {
   Options GetOptions(const BlockBasedTableOptions& table_options) {
     Options options = CurrentOptions();
     options.create_if_missing = true;
-    // options.compression = CompressionType::NoCompression;
+    // options.compression = kNoCompression;
     options.statistics = ROCKSDB_NAMESPACE::CreateDBStatistics();
     options.table_factory.reset(NewBlockBasedTableFactory(table_options));
     return options;

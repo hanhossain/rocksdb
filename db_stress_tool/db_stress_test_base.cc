@@ -148,16 +148,16 @@ std::shared_ptr<Cache> StressTest::NewCache(size_t capacity,
 }
 
 std::vector<std::string> StressTest::GetBlobCompressionTags() {
-  std::vector<std::string> compression_tags{"CompressionType::NoCompression"};
+  std::vector<std::string> compression_tags{"kNoCompression"};
 
   if (Snappy_Supported()) {
-    compression_tags.emplace_back("CompressionType::SnappyCompression");
+    compression_tags.emplace_back("kSnappyCompression");
   }
   if (LZ4_Supported()) {
-    compression_tags.emplace_back("CompressionType::LZ4Compression");
+    compression_tags.emplace_back("kLZ4Compression");
   }
   if (ZSTD_Supported()) {
-    compression_tags.emplace_back("CompressionType::ZSTD");
+    compression_tags.emplace_back("kZSTD");
   }
 
   return compression_tags;

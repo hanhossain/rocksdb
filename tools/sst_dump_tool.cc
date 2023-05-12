@@ -19,14 +19,14 @@ namespace ROCKSDB_NAMESPACE {
 
 static const std::vector<std::pair<CompressionType, const char*>>
     kCompressions = {
-        {CompressionType::NoCompression, "CompressionType::NoCompression"},
-        {CompressionType::SnappyCompression, "CompressionType::SnappyCompression"},
-        {CompressionType::ZlibCompression, "CompressionType::ZlibCompression"},
-        {CompressionType::BZip2Compression, "CompressionType::BZip2Compression"},
-        {CompressionType::LZ4Compression, "CompressionType::LZ4Compression"},
-        {CompressionType::LZ4HCCompression, "CompressionType::LZ4HCCompression"},
-        {CompressionType::XpressCompression, "CompressionType::XpressCompression"},
-        {CompressionType::ZSTD, "CompressionType::ZSTD"}};
+        {CompressionType::kNoCompression, "kNoCompression"},
+        {CompressionType::kSnappyCompression, "kSnappyCompression"},
+        {CompressionType::kZlibCompression, "kZlibCompression"},
+        {CompressionType::kBZip2Compression, "kBZip2Compression"},
+        {CompressionType::kLZ4Compression, "kLZ4Compression"},
+        {CompressionType::kLZ4HCCompression, "kLZ4HCCompression"},
+        {CompressionType::kXpressCompression, "kXpressCompression"},
+        {CompressionType::kZSTD, "kZSTD"}};
 
 namespace {
 
@@ -96,7 +96,7 @@ void print_help(bool to_stderr) {
       be used when trying different compression algorithms
 
     --compression_types=<comma-separated list of CompressionType members, e.g.,
-      CompressionType::SnappyCompression>
+      kSnappyCompression>
       Can be combined with --command=recompress to run recompression for this
       list of compression types
       Supported compression types: %s

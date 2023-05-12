@@ -76,7 +76,7 @@ class Writer {
   explicit Writer(std::unique_ptr<WritableFileWriter>&& dest,
                   uint64_t log_number, bool recycle_log_files,
                   bool manual_flush = false,
-                  CompressionType compressionType = CompressionType::NoCompression);
+                  CompressionType compressionType = kNoCompression);
   // No copying allowed
   Writer(const Writer&) = delete;
   void operator=(const Writer&) = delete;

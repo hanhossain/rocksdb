@@ -119,7 +119,7 @@ AdvancedColumnFamilyOptions::AdvancedColumnFamilyOptions(const Options& options)
 }
 
 ColumnFamilyOptions::ColumnFamilyOptions()
-    : compression(Snappy_Supported() ? CompressionType::SnappyCompression : CompressionType::NoCompression),
+    : compression(Snappy_Supported() ? kSnappyCompression : kNoCompression),
       table_factory(
           std::shared_ptr<TableFactory>(new BlockBasedTableFactory())) {}
 
@@ -175,7 +175,7 @@ void ColumnFamilyOptions::Dump(Logger* log) const {
     }
     ROCKS_LOG_HEADER(
         log, "                 Options.bottommost_compression: %s",
-        bottommost_compression == CompressionType::DisableCompressionOption
+        bottommost_compression == kDisableCompressionOption
             ? "Disabled"
             : CompressionTypeToString(bottommost_compression).c_str());
     ROCKS_LOG_HEADER(
@@ -651,12 +651,12 @@ ColumnFamilyOptions* ColumnFamilyOptions::OptimizeLevelStyleCompaction(
   compression_per_level.resize(num_levels);
   for (int i = 0; i < num_levels; ++i) {
     if (i < 2) {
-      compression_per_level[i] = CompressionType::NoCompression;
+      compression_per_level[i] = kNoCompression;
     } else {
       compression_per_level[i] =
           LZ4_Supported()
-              ? CompressionType::LZ4Compression
-              : (Snappy_Supported() ? CompressionType::SnappyCompression : CompressionType::NoCompression);
+              ? kLZ4Compression
+              : (Snappy_Supported() ? kSnappyCompression : kNoCompression);
     }
   }
   return this;

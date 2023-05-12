@@ -50,7 +50,7 @@ Status BlobFileReader::Create(
 
   Statistics* const statistics = immutable_options.stats;
 
-  CompressionType compression_type = CompressionType::NoCompression;
+  CompressionType compression_type = kNoCompression;
 
   {
     const Status s =
@@ -587,7 +587,7 @@ Status BlobFileReader::UncompressBlobIfNeeded(
     std::unique_ptr<BlobContents>* result) {
   assert(result);
 
-  if (compression_type == CompressionType::NoCompression) {
+  if (compression_type == kNoCompression) {
     BlobContentsCreator::Create(result, nullptr, value_slice, allocator);
     return Status::OK();
   }

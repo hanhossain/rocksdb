@@ -1223,14 +1223,14 @@ TEST_F(DBTest2, PresetCompressionDict) {
   table_options.block_size = kBlockSizeBytes;
   std::vector<CompressionType> compression_types;
   if (Zlib_Supported()) {
-    compression_types.push_back(CompressionType::ZlibCompression);
+    compression_types.push_back(kZlibCompression);
   }
 #if LZ4_VERSION_NUMBER >= 10400  // r124+
-  compression_types.push_back(CompressionType::LZ4Compression);
-  compression_types.push_back(CompressionType::LZ4HCCompression);
+  compression_types.push_back(kLZ4Compression);
+  compression_types.push_back(kLZ4HCCompression);
 #endif  // LZ4_VERSION_NUMBER >= 10400
   if (ZSTD_Supported()) {
-    compression_types.push_back(CompressionType::ZSTD);
+    compression_types.push_back(kZSTD);
   }
 
   enum DictionaryTypes : int {
@@ -1266,7 +1266,7 @@ TEST_F(DBTest2, PresetCompressionDict) {
           options.compression_opts.zstd_max_train_bytes = 0;
           break;
         case kWithZSTDfinalizeDict:
-          if (compression_type != CompressionType::ZSTD ||
+          if (compression_type != kZSTD ||
               !ZSTD_FinalizeDictionarySupported()) {
             continue;
           }
@@ -1275,7 +1275,7 @@ TEST_F(DBTest2, PresetCompressionDict) {
           options.compression_opts.use_zstd_dict_trainer = false;
           break;
         case kWithZSTDTrainedDict:
-          if (compression_type != CompressionType::ZSTD || !ZSTD_TrainDictionarySupported()) {
+          if (compression_type != kZSTD || !ZSTD_TrainDictionarySupported()) {
             continue;
           }
           options.compression_opts.max_dict_bytes = kBlockSizeBytes;
@@ -1363,7 +1363,7 @@ TEST_F(DBTest2, PresetCompressionDictLocality) {
   const int kNumBytesPerEntry = 1 << 10;   // 1KB
   const int kNumFiles = 4;
   Options options = CurrentOptions();
-  options.compression = CompressionType::ZSTD;
+  options.compression = kZSTD;
   options.compression_opts.max_dict_bytes = 1 << 14;        // 16KB
   options.compression_opts.zstd_max_train_bytes = 1 << 18;  // 256KB
   options.statistics = ROCKSDB_NAMESPACE::CreateDBStatistics();
@@ -1486,8 +1486,8 @@ TEST_P(PresetCompressionDictTest, Flush) {
     // TODO(ajkr): fix the below assertion to work with ZSTD. The expectation on
     // number of bytes needs to be adjusted in case the cached block is in
     // ZSTD's digested dictionary format.
-    if (compression_type_ != CompressionType::ZSTD &&
-        compression_type_ != CompressionType::ZSTDNotFinalCompression) {
+    if (compression_type_ != kZSTD &&
+        compression_type_ != kZSTDNotFinalCompression) {
       // Although we limited buffering to `kBlockLen`, there may be up to two
       // blocks of data included in the dictionary since we only check limit
       // after each block is built.
@@ -1564,8 +1564,8 @@ TEST_P(PresetCompressionDictTest, CompactNonBottommost) {
     // TODO(ajkr): fix the below assertion to work with ZSTD. The expectation on
     // number of bytes needs to be adjusted in case the cached block is in
     // ZSTD's digested dictionary format.
-    if (compression_type_ != CompressionType::ZSTD &&
-        compression_type_ != CompressionType::ZSTDNotFinalCompression) {
+    if (compression_type_ != kZSTD &&
+        compression_type_ != kZSTDNotFinalCompression) {
       // Although we limited buffering to `kBlockLen`, there may be up to two
       // blocks of data included in the dictionary since we only check limit
       // after each block is built.
@@ -1626,8 +1626,8 @@ TEST_P(PresetCompressionDictTest, CompactBottommost) {
   // TODO(ajkr): fix the below assertion to work with ZSTD. The expectation on
   // number of bytes needs to be adjusted in case the cached block is in ZSTD's
   // digested dictionary format.
-  if (compression_type_ != CompressionType::ZSTD &&
-      compression_type_ != CompressionType::ZSTDNotFinalCompression) {
+  if (compression_type_ != kZSTD &&
+      compression_type_ != kZSTDNotFinalCompression) {
     // Although we limited buffering to `kBlockLen`, there may be up to two
     // blocks of data included in the dictionary since we only check limit after
     // each block is built.
@@ -1655,7 +1655,7 @@ class CompactionCompressionListener : public EventListener {
       }
     }
 
-    if (db_options_->bottommost_compression != CompressionType::DisableCompressionOption &&
+    if (db_options_->bottommost_compression != kDisableCompressionOption &&
         ci.output_level == bottommost_level) {
       ASSERT_EQ(ci.compression, db_options_->bottommost_compression);
     } else if (db_options_->compression_per_level.size() != 0) {
@@ -1689,7 +1689,7 @@ class CompressionFailuresTest
   }
 
   CompressionFailureType compression_failure_type_ = kTestCompressionFail;
-  CompressionType compression_type_ = CompressionType::NoCompression;
+  CompressionType compression_type_ = kNoCompression;
   uint32_t compression_max_dict_bytes_ = 0;
   uint32_t compression_parallel_threads_ = 0;
 };
@@ -1703,7 +1703,7 @@ INSTANTIATE_TEST_CASE_P(
                        ::testing::Values(0, 10), ::testing::Values(1, 4)));
 
 TEST_P(CompressionFailuresTest, CompressionFailures) {
-  if (compression_type_ == CompressionType::NoCompression) {
+  if (compression_type_ == kNoCompression) {
     return;
   }
 
@@ -1796,7 +1796,7 @@ TEST_P(CompressionFailuresTest, CompressionFailures) {
   ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
 
   if (compression_failure_type_ == kTestCompressionFail) {
-    // Should be CompressionType::NoCompression, check content consistency
+    // Should be kNoCompression, check content consistency
     std::unique_ptr<Iterator> db_iter(db_->NewIterator(ReadOptions()));
     for (db_iter->SeekToFirst(); db_iter->Valid(); db_iter->Next()) {
       std::string key = db_iter->key().ToString();
@@ -1845,22 +1845,22 @@ TEST_F(DBTest2, CompressionOptions) {
     if (iter == 0) {
       // Use different compression algorithms for different levels but
       // always use Zlib for bottommost level
-      options.compression_per_level = {CompressionType::NoCompression,     CompressionType::NoCompression,
-                                       CompressionType::NoCompression,     CompressionType::SnappyCompression,
-                                       CompressionType::SnappyCompression, CompressionType::SnappyCompression,
-                                       CompressionType::ZlibCompression};
-      options.compression = CompressionType::NoCompression;
-      options.bottommost_compression = CompressionType::ZlibCompression;
+      options.compression_per_level = {kNoCompression,     kNoCompression,
+                                       kNoCompression,     kSnappyCompression,
+                                       kSnappyCompression, kSnappyCompression,
+                                       kZlibCompression};
+      options.compression = kNoCompression;
+      options.bottommost_compression = kZlibCompression;
     } else if (iter == 1) {
       // Use Snappy except for bottommost level use ZLib
       options.compression_per_level = {};
-      options.compression = CompressionType::SnappyCompression;
-      options.bottommost_compression = CompressionType::ZlibCompression;
+      options.compression = kSnappyCompression;
+      options.bottommost_compression = kZlibCompression;
     } else if (iter == 2) {
       // Use Snappy everywhere
       options.compression_per_level = {};
-      options.compression = CompressionType::SnappyCompression;
-      options.bottommost_compression = CompressionType::DisableCompressionOption;
+      options.compression = kSnappyCompression;
+      options.bottommost_compression = kDisableCompressionOption;
     }
 
     for (auto num_threads : compression_parallel_threads) {
@@ -2286,7 +2286,7 @@ TEST_F(DBTest2, MaxCompactionBytesTest) {
   options.arena_block_size = 4 << 10;
   options.level0_file_num_compaction_trigger = 4;
   options.num_levels = 4;
-  options.compression = CompressionType::NoCompression;
+  options.compression = kNoCompression;
   options.max_bytes_for_level_base = 450 << 10;
   options.target_file_size_base = 100 << 10;
   // Infinite for full compaction.
@@ -3904,7 +3904,7 @@ TEST_F(DBTest2, RateLimitedCompactionReads) {
       }
       Options options = CurrentOptions();
       options.compaction_readahead_size = compaction_readahead_size;
-      options.compression = CompressionType::NoCompression;
+      options.compression = kNoCompression;
       options.level0_file_num_compaction_trigger = kNumL0Files;
       options.memtable_factory.reset(
           test::NewSpecialSkipListFactory(kNumKeysPerFile));
@@ -5153,7 +5153,7 @@ TEST_F(DBTest2, PinnableSliceAndMmapReads) {
   }
   options.allow_mmap_reads = true;
   options.max_open_files = 100;
-  options.compression = CompressionType::NoCompression;
+  options.compression = kNoCompression;
   Reopen(options);
 
   ASSERT_OK(Put("foo", "bar"));

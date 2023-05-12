@@ -134,11 +134,11 @@ class CompressedSecondaryCacheTestBase : public testing::Test,
     if (sec_cache_is_compressed) {
       if (!LZ4_Supported()) {
         ROCKSDB_GTEST_SKIP("This test requires LZ4 support.");
-        opts.compression_type = CompressionType::NoCompression;
+        opts.compression_type = CompressionType::kNoCompression;
         sec_cache_is_compressed = false;
       }
     } else {
-      opts.compression_type = CompressionType::NoCompression;
+      opts.compression_type = CompressionType::kNoCompression;
     }
 
     if (use_jemalloc) {
@@ -165,10 +165,10 @@ class CompressedSecondaryCacheTestBase : public testing::Test,
     if (sec_cache_is_compressed) {
       if (!LZ4_Supported()) {
         ROCKSDB_GTEST_SKIP("This test requires LZ4 support.");
-        secondary_cache_opts.compression_type = CompressionType::NoCompression;
+        secondary_cache_opts.compression_type = CompressionType::kNoCompression;
       }
     } else {
-      secondary_cache_opts.compression_type = CompressionType::NoCompression;
+      secondary_cache_opts.compression_type = CompressionType::kNoCompression;
     }
 
     secondary_cache_opts.capacity = 1100;
@@ -239,11 +239,11 @@ class CompressedSecondaryCacheTestBase : public testing::Test,
     if (sec_cache_is_compressed) {
       if (!LZ4_Supported()) {
         ROCKSDB_GTEST_SKIP("This test requires LZ4 support.");
-        secondary_cache_opts.compression_type = CompressionType::NoCompression;
+        secondary_cache_opts.compression_type = CompressionType::kNoCompression;
         sec_cache_is_compressed = false;
       }
     } else {
-      secondary_cache_opts.compression_type = CompressionType::NoCompression;
+      secondary_cache_opts.compression_type = CompressionType::kNoCompression;
     }
 
     secondary_cache_opts.capacity = 6000;
@@ -408,10 +408,10 @@ class CompressedSecondaryCacheTestBase : public testing::Test,
     if (sec_cache_is_compressed) {
       if (!LZ4_Supported()) {
         ROCKSDB_GTEST_SKIP("This test requires LZ4 support.");
-        secondary_cache_opts.compression_type = CompressionType::NoCompression;
+        secondary_cache_opts.compression_type = CompressionType::kNoCompression;
       }
     } else {
-      secondary_cache_opts.compression_type = CompressionType::NoCompression;
+      secondary_cache_opts.compression_type = CompressionType::kNoCompression;
     }
 
     secondary_cache_opts.capacity = 6000;
@@ -454,10 +454,10 @@ class CompressedSecondaryCacheTestBase : public testing::Test,
     if (sec_cache_is_compressed) {
       if (!LZ4_Supported()) {
         ROCKSDB_GTEST_SKIP("This test requires LZ4 support.");
-        secondary_cache_opts.compression_type = CompressionType::NoCompression;
+        secondary_cache_opts.compression_type = CompressionType::kNoCompression;
       }
     } else {
-      secondary_cache_opts.compression_type = CompressionType::NoCompression;
+      secondary_cache_opts.compression_type = CompressionType::kNoCompression;
     }
 
     secondary_cache_opts.capacity = 6000;
@@ -502,10 +502,10 @@ class CompressedSecondaryCacheTestBase : public testing::Test,
     if (sec_cache_is_compressed) {
       if (!LZ4_Supported()) {
         ROCKSDB_GTEST_SKIP("This test requires LZ4 support.");
-        secondary_cache_opts.compression_type = CompressionType::NoCompression;
+        secondary_cache_opts.compression_type = CompressionType::kNoCompression;
       }
     } else {
-      secondary_cache_opts.compression_type = CompressionType::NoCompression;
+      secondary_cache_opts.compression_type = CompressionType::kNoCompression;
     }
 
     secondary_cache_opts.capacity = 6000;
@@ -551,10 +551,10 @@ class CompressedSecondaryCacheTestBase : public testing::Test,
     if (sec_cache_is_compressed) {
       if (!LZ4_Supported()) {
         ROCKSDB_GTEST_SKIP("This test requires LZ4 support.");
-        secondary_cache_opts.compression_type = CompressionType::NoCompression;
+        secondary_cache_opts.compression_type = CompressionType::kNoCompression;
       }
     } else {
-      secondary_cache_opts.compression_type = CompressionType::NoCompression;
+      secondary_cache_opts.compression_type = CompressionType::kNoCompression;
     }
 
     secondary_cache_opts.capacity = 6000;
@@ -635,7 +635,7 @@ class CompressedSecondaryCacheTestBase : public testing::Test,
     std::string str = rnd.RandomString(static_cast<int>(str_size));
     size_t charge{0};
     CacheValueChunk* chunks_head =
-        sec_cache->SplitValueIntoChunks(str, CompressionType::LZ4Compression, charge);
+        sec_cache->SplitValueIntoChunks(str, kLZ4Compression, charge);
     ASSERT_EQ(charge, str_size + 3 * (sizeof(CacheValueChunk) - 1));
 
     CacheValueChunk* current_chunk = chunks_head;
@@ -719,7 +719,7 @@ class CompressedSecondaryCacheTestBase : public testing::Test,
     std::string str = rnd.RandomString(static_cast<int>(str_size));
     size_t charge{0};
     CacheValueChunk* chunks_head =
-        sec_cache->SplitValueIntoChunks(str, CompressionType::LZ4Compression, charge);
+        sec_cache->SplitValueIntoChunks(str, kLZ4Compression, charge);
     ASSERT_EQ(charge, str_size + 3 * (sizeof(CacheValueChunk) - 1));
 
     CacheAllocationPtr value =
@@ -782,13 +782,13 @@ TEST_P(CompressedSecondaryCacheTestWithCompressionParam, BasicTestFromString) {
     if (LZ4_Supported()) {
       sec_cache_uri =
           "compressed_secondary_cache://"
-          "capacity=2048;num_shard_bits=0;compression_type=CompressionType::LZ4Compression;"
+          "capacity=2048;num_shard_bits=0;compression_type=kLZ4Compression;"
           "compress_format_version=2";
     } else {
       ROCKSDB_GTEST_SKIP("This test requires LZ4 support.");
       sec_cache_uri =
           "compressed_secondary_cache://"
-          "capacity=2048;num_shard_bits=0;compression_type=CompressionType::NoCompression";
+          "capacity=2048;num_shard_bits=0;compression_type=kNoCompression";
       sec_cache_is_compressed_ = false;
     }
     Status s = SecondaryCache::CreateFromString(ConfigOptions(), sec_cache_uri,
@@ -797,7 +797,7 @@ TEST_P(CompressedSecondaryCacheTestWithCompressionParam, BasicTestFromString) {
   } else {
     sec_cache_uri =
         "compressed_secondary_cache://"
-        "capacity=2048;num_shard_bits=0;compression_type=CompressionType::NoCompression";
+        "capacity=2048;num_shard_bits=0;compression_type=kNoCompression";
     Status s = SecondaryCache::CreateFromString(ConfigOptions(), sec_cache_uri,
                                                 &sec_cache);
     EXPECT_OK(s);
@@ -813,13 +813,13 @@ TEST_P(CompressedSecondaryCacheTestWithCompressionParam,
     if (LZ4_Supported()) {
       sec_cache_uri =
           "compressed_secondary_cache://"
-          "capacity=2048;num_shard_bits=0;compression_type=CompressionType::LZ4Compression;"
+          "capacity=2048;num_shard_bits=0;compression_type=kLZ4Compression;"
           "compress_format_version=2;enable_custom_split_merge=true";
     } else {
       ROCKSDB_GTEST_SKIP("This test requires LZ4 support.");
       sec_cache_uri =
           "compressed_secondary_cache://"
-          "capacity=2048;num_shard_bits=0;compression_type=CompressionType::NoCompression;"
+          "capacity=2048;num_shard_bits=0;compression_type=kNoCompression;"
           "enable_custom_split_merge=true";
       sec_cache_is_compressed_ = false;
     }
@@ -829,7 +829,7 @@ TEST_P(CompressedSecondaryCacheTestWithCompressionParam,
   } else {
     sec_cache_uri =
         "compressed_secondary_cache://"
-        "capacity=2048;num_shard_bits=0;compression_type=CompressionType::NoCompression;"
+        "capacity=2048;num_shard_bits=0;compression_type=kNoCompression;"
         "enable_custom_split_merge=true";
     Status s = SecondaryCache::CreateFromString(ConfigOptions(), sec_cache_uri,
                                                 &sec_cache);
@@ -874,7 +874,7 @@ TEST_P(CompressedSecondaryCacheTestWithCompressionParam, EntryRoles) {
       return;
     }
   } else {
-    opts.compression_type = CompressionType::NoCompression;
+    opts.compression_type = CompressionType::kNoCompression;
   }
 
   // Select a random subset to include, for fast test

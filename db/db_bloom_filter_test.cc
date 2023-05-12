@@ -2450,7 +2450,7 @@ TEST_F(DBBloomFilterTest, OptimizeFiltersForHits) {
   options.max_write_buffer_number = 2;
   options.max_background_compactions = 8;
   options.max_background_flushes = 8;
-  options.compression = CompressionType::NoCompression;
+  options.compression = kNoCompression;
   options.compaction_style = CompactionStyle::Level;
   options.level_compaction_dynamic_level_bytes = true;
   BlockBasedTableOptions bbto;
@@ -3054,7 +3054,7 @@ TEST_F(DBBloomFilterTest, SeekForPrevWithPartitionedFilters) {
   options.create_if_missing = true;
   constexpr size_t kPrefixLength = 4;
   options.prefix_extractor.reset(NewFixedPrefixTransform(kPrefixLength));
-  options.compression = CompressionType::NoCompression;
+  options.compression = kNoCompression;
   BlockBasedTableOptions bbto;
   bbto.filter_policy.reset(NewBloomFilterPolicy(50));
   bbto.index_shortening =

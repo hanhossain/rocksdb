@@ -436,8 +436,8 @@ struct AdvancedColumnFamilyOptions {
   // NOTE: if the vector size is smaller than the level number, the undefined
   // lower level uses the last option in the vector, for example, for 3 level
   // LSM tree the following settings are the same:
-  // {CompressionType::NoCompression, CompressionType::SnappyCompression}
-  // {CompressionType::NoCompression, CompressionType::SnappyCompression, CompressionType::SnappyCompression}
+  // {kNoCompression, kSnappyCompression}
+  // {kNoCompression, kSnappyCompression, kSnappyCompression}
   //
   // Dynamically changeable through SetOptions() API
   std::vector<CompressionType> compression_per_level;
@@ -927,7 +927,7 @@ struct AdvancedColumnFamilyOptions {
   // Default: no compression
   //
   // Dynamically changeable through the SetOptions() API
-  CompressionType blob_compression_type = CompressionType::NoCompression;
+  CompressionType blob_compression_type = kNoCompression;
 
   // Enables garbage collection of blobs. Blob GC is performed as part of
   // compaction. Valid blobs residing in blob files older than a cutoff get

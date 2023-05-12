@@ -689,7 +689,7 @@ TEST_P(LogTest, Recycle) {
 INSTANTIATE_TEST_CASE_P(
     Log, LogTest,
     ::testing::Combine(::testing::Values(0, 1), ::testing::Bool(),
-                       ::testing::Values(CompressionType::NoCompression)));
+                       ::testing::Values(CompressionType::kNoCompression)));
 
 class RetriableLogTest : public ::testing::TestWithParam<int> {
  private:
@@ -914,7 +914,7 @@ TEST_P(CompressionLogTest, Empty) {
   }
   ASSERT_OK(SetupTestEnv());
   const bool compression_enabled =
-      std::get<2>(GetParam()) == CompressionType::NoCompression ? false : true;
+      std::get<2>(GetParam()) == kNoCompression ? false : true;
   // If WAL compression is enabled, a record is added for the compression type
   const int compression_record_size = compression_enabled ? kHeaderSize + 4 : 0;
   ASSERT_EQ(compression_record_size, WrittenBytes());
@@ -1014,8 +1014,8 @@ TEST_P(CompressionLogTest, AlignedFragmentation) {
 INSTANTIATE_TEST_CASE_P(
     Compression, CompressionLogTest,
     ::testing::Combine(::testing::Values(0, 1), ::testing::Bool(),
-                       ::testing::Values(CompressionType::NoCompression,
-                                         CompressionType::ZSTD)));
+                       ::testing::Values(CompressionType::kNoCompression,
+                                         CompressionType::kZSTD)));
 
 class StreamingCompressionTest
     : public ::testing::TestWithParam<std::tuple<int, CompressionType>> {};
@@ -1083,7 +1083,7 @@ INSTANTIATE_TEST_CASE_P(
     StreamingCompression, StreamingCompressionTest,
     ::testing::Combine(::testing::Values(10, 100, 1000, kBlockSize,
                                          kBlockSize * 2),
-                       ::testing::Values(CompressionType::ZSTD)));
+                       ::testing::Values(CompressionType::kZSTD)));
 
 }  // namespace log
 }  // namespace ROCKSDB_NAMESPACE

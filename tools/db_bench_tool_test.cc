@@ -69,7 +69,7 @@ class DBBenchTest : public testing::Test {
     opt.dump_malloc_stats = true;  // db_bench uses a different default
     opt.compaction_style = style;
     opt.num_levels = levels;
-    opt.compression = CompressionType::NoCompression;
+    opt.compression = kNoCompression;
     opt.arena_block_size = 8388608;
 
     return SanitizeOptions(db_path_, opt);
@@ -247,7 +247,7 @@ const std::string options_file_content = R"OPTIONS_FILE(
   max_grandparent_overlap_factor=10
   max_bytes_for_level_multiplier=10
   memtable_factory=SkipListFactory
-  compression=CompressionType::NoCompression
+  compression=kNoCompression
   min_partial_merge_operands=2
   level0_stop_writes_trigger=100
   num_levels=1
@@ -274,7 +274,7 @@ const std::string options_file_content = R"OPTIONS_FILE(
   enable_blob_files=true
   min_blob_size=16
   blob_file_size=10485760
-  blob_compression_type=CompressionType::NoCompression
+  blob_compression_type=kNoCompression
   enable_blob_garbage_collection=true
   blob_garbage_collection_age_cutoff=0.5
   blob_garbage_collection_force_threshold=0.75

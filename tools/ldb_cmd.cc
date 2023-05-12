@@ -675,28 +675,28 @@ bool LDBCommand::ParseCompressionTypeOption(
   if (itr != option_map_.end()) {
     const std::string& comp = itr->second;
     if (comp == "no") {
-      value = CompressionType::NoCompression;
+      value = kNoCompression;
       return true;
     } else if (comp == "snappy") {
-      value = CompressionType::SnappyCompression;
+      value = kSnappyCompression;
       return true;
     } else if (comp == "zlib") {
-      value = CompressionType::ZlibCompression;
+      value = kZlibCompression;
       return true;
     } else if (comp == "bzip2") {
-      value = CompressionType::BZip2Compression;
+      value = kBZip2Compression;
       return true;
     } else if (comp == "lz4") {
-      value = CompressionType::LZ4Compression;
+      value = kLZ4Compression;
       return true;
     } else if (comp == "lz4hc") {
-      value = CompressionType::LZ4HCCompression;
+      value = kLZ4HCCompression;
       return true;
     } else if (comp == "xpress") {
-      value = CompressionType::XpressCompression;
+      value = kXpressCompression;
       return true;
     } else if (comp == "zstd") {
-      value = CompressionType::ZSTD;
+      value = kZSTD;
       return true;
     } else {
       // Unknown compression.

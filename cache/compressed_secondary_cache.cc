@@ -57,7 +57,7 @@ std::unique_ptr<SecondaryCacheResultHandle> CompressedSecondaryCache::Lookup(
   Status s;
   Cache::ObjectPtr value{nullptr};
   size_t charge{0};
-  if (cache_options_.compression_type == CompressionType::NoCompression ||
+  if (cache_options_.compression_type == kNoCompression ||
       cache_options_.do_not_compress_roles.Contains(helper->role)) {
     s = helper->create_cb(Slice(ptr->get(), handle_value_charge),
                           create_context, allocator, &value, &charge);
@@ -130,7 +130,7 @@ Status CompressedSecondaryCache::Insert(const Slice& key,
   Slice val(ptr.get(), size);
 
   std::string compressed_val;
-  if (cache_options_.compression_type != CompressionType::NoCompression &&
+  if (cache_options_.compression_type != kNoCompression &&
       !cache_options_.do_not_compress_roles.Contains(helper->role)) {
     PERF_COUNTER_ADD(compressed_sec_cache_uncompressed_bytes, size);
     CompressionOptions compression_opts;
@@ -224,7 +224,7 @@ CompressedSecondaryCache::SplitValueIntoChunks(const Slice& value,
     if (upper == malloc_bin_sizes_.begin() ||
         upper == malloc_bin_sizes_.end() ||
         *upper - predicted_chunk_size < malloc_bin_sizes_.front() ||
-        compression_type == CompressionType::NoCompression) {
+        compression_type == kNoCompression) {
       tmp_size = predicted_chunk_size;
     } else {
       tmp_size = *(--upper);

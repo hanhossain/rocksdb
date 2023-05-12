@@ -1399,8 +1399,8 @@ INSTANTIATE_TEST_CASE_P(
                                         RecoveryTestHelper::kWALFileOffset +
                                             RecoveryTestHelper::kWALFilesCount,
                                         1),
-                       ::testing::Values(CompressionType::NoCompression,
-                                         CompressionType::ZSTD)));
+                       ::testing::Values(CompressionType::kNoCompression,
+                                         CompressionType::kZSTD)));
 
 class DBWALTestWithParamsVaryingRecoveryMode
     : public DBWALTestBase,
@@ -1423,8 +1423,8 @@ INSTANTIATE_TEST_CASE_P(
                           WALRecoveryMode::AbsoluteConsistency,
                           WALRecoveryMode::PointInTimeRecovery,
                           WALRecoveryMode::SkipAnyCorruptedRecords),
-        ::testing::Values(CompressionType::NoCompression,
-                          CompressionType::ZSTD)));
+        ::testing::Values(CompressionType::kNoCompression,
+                          CompressionType::kZSTD)));
 
 // Test scope:
 // - We expect to open the data store when there is incomplete trailing writes
@@ -2366,7 +2366,7 @@ TEST_F(DBWALTest, WalTermTest) {
 }
 
 TEST_F(DBWALTest, GetCompressedWalsAfterSync) {
-  if (db_->GetOptions().wal_compression == CompressionType::NoCompression) {
+  if (db_->GetOptions().wal_compression == kNoCompression) {
     ROCKSDB_GTEST_BYPASS("stream compression not present");
     return;
   }
@@ -2379,7 +2379,7 @@ TEST_F(DBWALTest, GetCompressedWalsAfterSync) {
   // Enable WAL compression so that the newly-created WAL will be non-empty
   // after DB open, even if point-in-time WAL recovery encounters no
   // corruption.
-  options.wal_compression = CompressionType::ZSTD;
+  options.wal_compression = kZSTD;
   DestroyAndReopen(options);
 
   // Write something to memtable and WAL so that log_empty_ will be false after

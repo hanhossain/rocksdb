@@ -69,7 +69,7 @@ void WriteBlobFile(const ImmutableOptions& immutable_options,
 
   std::vector<std::string> compressed_blobs(num);
   std::vector<Slice> blobs_to_write(num);
-  if (CompressionType::NoCompression == compression) {
+  if (kNoCompression == compression) {
     for (size_t i = 0; i < num; ++i) {
       blobs_to_write[i] = blobs[i];
       blob_sizes[i] = blobs[i].size();
@@ -177,7 +177,7 @@ TEST_F(BlobSourceTest, GetBlobsFromCache) {
   std::vector<uint64_t> blob_sizes(keys.size());
 
   WriteBlobFile(immutable_options, column_family_id, has_ttl, expiration_range,
-                expiration_range, blob_file_number, keys, blobs, CompressionType::NoCompression,
+                expiration_range, blob_file_number, keys, blobs, kNoCompression,
                 blob_offsets, blob_sizes);
 
   constexpr size_t capacity = 1024;
@@ -216,7 +216,7 @@ TEST_F(BlobSourceTest, GetBlobsFromCache) {
 
       ASSERT_OK(blob_source.GetBlob(read_options, keys[i], blob_file_number,
                                     blob_offsets[i], file_size, blob_sizes[i],
-                                    CompressionType::NoCompression, prefetch_buffer, &values[i],
+                                    kNoCompression, prefetch_buffer, &values[i],
                                     &bytes_read));
       ASSERT_EQ(values[i], blobs[i]);
       ASSERT_TRUE(values[i].IsPinned());
@@ -254,7 +254,7 @@ TEST_F(BlobSourceTest, GetBlobsFromCache) {
 
       ASSERT_OK(blob_source.GetBlob(read_options, keys[i], blob_file_number,
                                     blob_offsets[i], file_size, blob_sizes[i],
-                                    CompressionType::NoCompression, prefetch_buffer, &values[i],
+                                    kNoCompression, prefetch_buffer, &values[i],
                                     &bytes_read));
       ASSERT_EQ(values[i], blobs[i]);
       ASSERT_TRUE(values[i].IsPinned());
@@ -298,7 +298,7 @@ TEST_F(BlobSourceTest, GetBlobsFromCache) {
 
       ASSERT_OK(blob_source.GetBlob(read_options, keys[i], blob_file_number,
                                     blob_offsets[i], file_size, blob_sizes[i],
-                                    CompressionType::NoCompression, prefetch_buffer, &values[i],
+                                    kNoCompression, prefetch_buffer, &values[i],
                                     &bytes_read));
       ASSERT_EQ(values[i], blobs[i]);
       ASSERT_TRUE(values[i].IsPinned());
@@ -337,7 +337,7 @@ TEST_F(BlobSourceTest, GetBlobsFromCache) {
 
       ASSERT_OK(blob_source.GetBlob(read_options, keys[i], blob_file_number,
                                     blob_offsets[i], file_size, blob_sizes[i],
-                                    CompressionType::NoCompression, prefetch_buffer, &values[i],
+                                    kNoCompression, prefetch_buffer, &values[i],
                                     &bytes_read));
       ASSERT_EQ(values[i], blobs[i]);
       ASSERT_TRUE(values[i].IsPinned());
@@ -383,7 +383,7 @@ TEST_F(BlobSourceTest, GetBlobsFromCache) {
       ASSERT_TRUE(blob_source
                       .GetBlob(read_options, keys[i], blob_file_number,
                                blob_offsets[i], file_size, blob_sizes[i],
-                               CompressionType::NoCompression, prefetch_buffer, &values[i],
+                               kNoCompression, prefetch_buffer, &values[i],
                                &bytes_read)
                       .IsIncomplete());
       ASSERT_TRUE(values[i].empty());
@@ -425,7 +425,7 @@ TEST_F(BlobSourceTest, GetBlobsFromCache) {
       ASSERT_TRUE(blob_source
                       .GetBlob(read_options, keys[i], file_number,
                                blob_offsets[i], file_size, blob_sizes[i],
-                               CompressionType::NoCompression, prefetch_buffer, &values[i],
+                               kNoCompression, prefetch_buffer, &values[i],
                                &bytes_read)
                       .IsIOError());
       ASSERT_TRUE(values[i].empty());
@@ -455,7 +455,7 @@ TEST_F(BlobSourceTest, GetCompressedBlobs) {
     return;
   }
 
-  const CompressionType compression = CompressionType::SnappyCompression;
+  const CompressionType compression = kSnappyCompression;
 
   options_.cf_paths.emplace_back(
       test::PerThreadDBPath(env_, "BlobSourceTest_GetCompressedBlobs"), 0);
@@ -627,7 +627,7 @@ TEST_F(BlobSourceTest, MultiGetBlobsFromMultiFiles) {
       const uint64_t file_number = i + 1;
       WriteBlobFile(immutable_options, column_family_id, has_ttl,
                     expiration_range, expiration_range, file_number, keys,
-                    blobs, CompressionType::NoCompression, blob_offsets, blob_sizes);
+                    blobs, kNoCompression, blob_offsets, blob_sizes);
     }
   }
 
@@ -665,7 +665,7 @@ TEST_F(BlobSourceTest, MultiGetBlobsFromMultiFiles) {
       const uint64_t file_number = i + 1;
       for (size_t j = 0; j < num_blobs; ++j) {
         blob_reqs_in_file[i].emplace_back(
-            keys[j], blob_offsets[j], blob_sizes[j], CompressionType::NoCompression,
+            keys[j], blob_offsets[j], blob_sizes[j], kNoCompression,
             &value_buf[i * num_blobs + j], &statuses_buf[i * num_blobs + j]);
       }
       blob_reqs.emplace_back(file_number, file_size, blob_reqs_in_file[i]);
@@ -718,7 +718,7 @@ TEST_F(BlobSourceTest, MultiGetBlobsFromMultiFiles) {
     const uint64_t fake_file_number = 100;
     for (size_t i = 0; i < num_blobs; ++i) {
       fake_blob_reqs_in_file.emplace_back(
-          keys[i], blob_offsets[i], blob_sizes[i], CompressionType::NoCompression,
+          keys[i], blob_offsets[i], blob_sizes[i], kNoCompression,
           &fake_value_buf[i], &fake_statuses_buf[i]);
     }
 
@@ -811,7 +811,7 @@ TEST_F(BlobSourceTest, MultiGetBlobsFromCache) {
   std::vector<uint64_t> blob_sizes(keys.size());
 
   WriteBlobFile(immutable_options, column_family_id, has_ttl, expiration_range,
-                expiration_range, blob_file_number, keys, blobs, CompressionType::NoCompression,
+                expiration_range, blob_file_number, keys, blobs, kNoCompression,
                 blob_offsets, blob_sizes);
 
   constexpr size_t capacity = 10;
@@ -843,7 +843,7 @@ TEST_F(BlobSourceTest, MultiGetBlobsFromCache) {
 
     for (size_t i = 0; i < num_blobs; i += 2) {  // even index
       blob_reqs.emplace_back(keys[i], blob_offsets[i], blob_sizes[i],
-                             CompressionType::NoCompression, &value_buf[i], &statuses_buf[i]);
+                             kNoCompression, &value_buf[i], &statuses_buf[i]);
       ASSERT_FALSE(blob_source.TEST_BlobInCache(blob_file_number, file_size,
                                                 blob_offsets[i]));
     }
@@ -902,7 +902,7 @@ TEST_F(BlobSourceTest, MultiGetBlobsFromCache) {
 
       ASSERT_OK(blob_source.GetBlob(read_options, keys[i], blob_file_number,
                                     blob_offsets[i], file_size, blob_sizes[i],
-                                    CompressionType::NoCompression, prefetch_buffer,
+                                    kNoCompression, prefetch_buffer,
                                     &value_buf[i], &bytes_read));
       ASSERT_EQ(value_buf[i], blobs[i]);
       ASSERT_TRUE(value_buf[i].IsPinned());
@@ -921,7 +921,7 @@ TEST_F(BlobSourceTest, MultiGetBlobsFromCache) {
     blob_reqs.clear();
     for (size_t i = 0; i < num_blobs; ++i) {
       blob_reqs.emplace_back(keys[i], blob_offsets[i], blob_sizes[i],
-                             CompressionType::NoCompression, &value_buf[i], &statuses_buf[i]);
+                             kNoCompression, &value_buf[i], &statuses_buf[i]);
     }
 
     blob_source.MultiGetBlobFromOneFile(read_options, blob_file_number,
@@ -966,7 +966,7 @@ TEST_F(BlobSourceTest, MultiGetBlobsFromCache) {
 
     for (size_t i = 0; i < num_blobs; i++) {
       blob_reqs.emplace_back(keys[i], blob_offsets[i], blob_sizes[i],
-                             CompressionType::NoCompression, &value_buf[i], &statuses_buf[i]);
+                             kNoCompression, &value_buf[i], &statuses_buf[i]);
       ASSERT_FALSE(blob_source.TEST_BlobInCache(blob_file_number, file_size,
                                                 blob_offsets[i]));
     }
@@ -1010,7 +1010,7 @@ TEST_F(BlobSourceTest, MultiGetBlobsFromCache) {
 
     for (size_t i = 0; i < num_blobs; i++) {
       blob_reqs.emplace_back(keys[i], blob_offsets[i], blob_sizes[i],
-                             CompressionType::NoCompression, &value_buf[i], &statuses_buf[i]);
+                             kNoCompression, &value_buf[i], &statuses_buf[i]);
       ASSERT_FALSE(blob_source.TEST_BlobInCache(non_existing_file_number,
                                                 file_size, blob_offsets[i]));
     }
@@ -1087,7 +1087,7 @@ TEST_F(BlobSecondaryCacheTest, GetBlobsFromSecondaryCache) {
     return;
   }
 
-  secondary_cache_opts_.compression_type = CompressionType::SnappyCompression;
+  secondary_cache_opts_.compression_type = kSnappyCompression;
   lru_cache_opts_.secondary_cache =
       NewCompressedSecondaryCache(secondary_cache_opts_);
   options_.blob_cache = NewLRUCache(lru_cache_opts_);
@@ -1123,7 +1123,7 @@ TEST_F(BlobSecondaryCacheTest, GetBlobsFromSecondaryCache) {
   std::vector<uint64_t> blob_sizes(keys.size());
 
   WriteBlobFile(immutable_options, column_family_id, has_ttl, expiration_range,
-                expiration_range, file_number, keys, blobs, CompressionType::NoCompression,
+                expiration_range, file_number, keys, blobs, kNoCompression,
                 blob_offsets, blob_sizes);
 
   constexpr size_t capacity = 1024;
@@ -1145,7 +1145,7 @@ TEST_F(BlobSecondaryCacheTest, GetBlobsFromSecondaryCache) {
       blob_source.GetBlobFileReader(read_options, file_number, &file_reader));
   ASSERT_NE(file_reader.GetValue(), nullptr);
   const uint64_t file_size = file_reader.GetValue()->GetFileSize();
-  ASSERT_EQ(file_reader.GetValue()->GetCompressionType(), CompressionType::NoCompression);
+  ASSERT_EQ(file_reader.GetValue()->GetCompressionType(), kNoCompression);
 
   read_options.verify_checksums = true;
 
@@ -1162,7 +1162,7 @@ TEST_F(BlobSecondaryCacheTest, GetBlobsFromSecondaryCache) {
     // key0 should be filled to the primary cache from the blob file.
     ASSERT_OK(blob_source.GetBlob(read_options, keys[0], file_number,
                                   blob_offsets[0], file_size, blob_sizes[0],
-                                  CompressionType::NoCompression, nullptr /* prefetch_buffer */,
+                                  kNoCompression, nullptr /* prefetch_buffer */,
                                   &values[0], nullptr /* bytes_read */));
     // Release cache handle
     values[0].Reset();
@@ -1171,7 +1171,7 @@ TEST_F(BlobSecondaryCacheTest, GetBlobsFromSecondaryCache) {
     // cache. key1 should be filled to the primary cache from the blob file.
     ASSERT_OK(blob_source.GetBlob(read_options, keys[1], file_number,
                                   blob_offsets[1], file_size, blob_sizes[1],
-                                  CompressionType::NoCompression, nullptr /* prefetch_buffer */,
+                                  kNoCompression, nullptr /* prefetch_buffer */,
                                   &values[1], nullptr /* bytes_read */));
 
     // Release cache handle
@@ -1181,7 +1181,7 @@ TEST_F(BlobSecondaryCacheTest, GetBlobsFromSecondaryCache) {
     // should be evicted and key1's dummy item is inserted into secondary cache.
     ASSERT_OK(blob_source.GetBlob(read_options, keys[0], file_number,
                                   blob_offsets[0], file_size, blob_sizes[0],
-                                  CompressionType::NoCompression, nullptr /* prefetch_buffer */,
+                                  kNoCompression, nullptr /* prefetch_buffer */,
                                   &values[0], nullptr /* bytes_read */));
     ASSERT_EQ(values[0], blobs[0]);
     ASSERT_TRUE(
@@ -1194,7 +1194,7 @@ TEST_F(BlobSecondaryCacheTest, GetBlobsFromSecondaryCache) {
     // key1 should be filled to the primary cache from the blob file.
     ASSERT_OK(blob_source.GetBlob(read_options, keys[1], file_number,
                                   blob_offsets[1], file_size, blob_sizes[1],
-                                  CompressionType::NoCompression, nullptr /* prefetch_buffer */,
+                                  kNoCompression, nullptr /* prefetch_buffer */,
                                   &values[1], nullptr /* bytes_read */));
     ASSERT_EQ(values[1], blobs[1]);
     ASSERT_TRUE(
@@ -1261,7 +1261,7 @@ TEST_F(BlobSecondaryCacheTest, GetBlobsFromSecondaryCache) {
       // key1 is evicted and inserted into the secondary cache.
       ASSERT_OK(blob_source.GetBlob(
           read_options, keys[0], file_number, blob_offsets[0], file_size,
-          blob_sizes[0], CompressionType::NoCompression, nullptr /* prefetch_buffer */,
+          blob_sizes[0], kNoCompression, nullptr /* prefetch_buffer */,
           &values[0], nullptr /* bytes_read */));
       ASSERT_EQ(values[0], blobs[0]);
 
@@ -1412,7 +1412,7 @@ TEST_F(BlobSourceCacheReservationTest, SimpleCacheReservation) {
 
   WriteBlobFile(immutable_options, kColumnFamilyId, kHasTTL, expiration_range,
                 expiration_range, kBlobFileNumber, keys_, blobs_,
-                CompressionType::NoCompression, blob_offsets, blob_sizes);
+                kNoCompression, blob_offsets, blob_sizes);
 
   constexpr size_t capacity = 10;
   std::shared_ptr<Cache> backing_cache = NewLRUCache(capacity);
@@ -1444,7 +1444,7 @@ TEST_F(BlobSourceCacheReservationTest, SimpleCacheReservation) {
     for (size_t i = 0; i < kNumBlobs; ++i) {
       ASSERT_OK(blob_source.GetBlob(
           read_options, keys_[i], kBlobFileNumber, blob_offsets[i],
-          blob_file_size_, blob_sizes[i], CompressionType::NoCompression,
+          blob_file_size_, blob_sizes[i], kNoCompression,
           nullptr /* prefetch_buffer */, &values[i], nullptr /* bytes_read */));
       ASSERT_EQ(cache_res_mgr->GetTotalReservedCacheSize(), 0);
       ASSERT_EQ(cache_res_mgr->GetTotalMemoryUsed(), 0);
@@ -1463,7 +1463,7 @@ TEST_F(BlobSourceCacheReservationTest, SimpleCacheReservation) {
     for (size_t i = 0; i < kNumBlobs; ++i) {
       ASSERT_OK(blob_source.GetBlob(
           read_options, keys_[i], kBlobFileNumber, blob_offsets[i],
-          blob_file_size_, blob_sizes[i], CompressionType::NoCompression,
+          blob_file_size_, blob_sizes[i], kNoCompression,
           nullptr /* prefetch_buffer */, &values[i], nullptr /* bytes_read */));
 
       size_t charge = 0;
@@ -1532,7 +1532,7 @@ TEST_F(BlobSourceCacheReservationTest, IncreaseCacheReservation) {
   constexpr ExpirationRange expiration_range;
   WriteBlobFile(immutable_options, kColumnFamilyId, kHasTTL, expiration_range,
                 expiration_range, kBlobFileNumber, keys_, blobs_,
-                CompressionType::NoCompression, blob_offsets, blob_sizes);
+                kNoCompression, blob_offsets, blob_sizes);
 
   constexpr size_t capacity = 10;
   std::shared_ptr<Cache> backing_cache = NewLRUCache(capacity);
@@ -1564,7 +1564,7 @@ TEST_F(BlobSourceCacheReservationTest, IncreaseCacheReservation) {
     for (size_t i = 0; i < kNumBlobs; ++i) {
       ASSERT_OK(blob_source.GetBlob(
           read_options, keys_[i], kBlobFileNumber, blob_offsets[i],
-          blob_file_size_, blob_sizes[i], CompressionType::NoCompression,
+          blob_file_size_, blob_sizes[i], kNoCompression,
           nullptr /* prefetch_buffer */, &values[i], nullptr /* bytes_read */));
       ASSERT_EQ(cache_res_mgr->GetTotalReservedCacheSize(), 0);
       ASSERT_EQ(cache_res_mgr->GetTotalMemoryUsed(), 0);
@@ -1580,7 +1580,7 @@ TEST_F(BlobSourceCacheReservationTest, IncreaseCacheReservation) {
     for (size_t i = 0; i < kNumBlobs; ++i) {
       ASSERT_OK(blob_source.GetBlob(
           read_options, keys_[i], kBlobFileNumber, blob_offsets[i],
-          blob_file_size_, blob_sizes[i], CompressionType::NoCompression,
+          blob_file_size_, blob_sizes[i], kNoCompression,
           nullptr /* prefetch_buffer */, &values[i], nullptr /* bytes_read */));
 
       // Release cache handle

@@ -81,12 +81,12 @@ CompressionType GetCompressionType(const VersionStorageInfo* vstorage,
                                    const bool enable_compression) {
   if (!enable_compression) {
     // disable compression
-    return CompressionType::NoCompression;
+    return kNoCompression;
   }
 
   // If bottommost_compression is set and we are compacting to the
   // bottommost level then we should use it.
-  if (mutable_cf_options.bottommost_compression != CompressionType::DisableCompressionOption &&
+  if (mutable_cf_options.bottommost_compression != kDisableCompressionOption &&
       level >= (vstorage->num_non_empty_levels() - 1)) {
     return mutable_cf_options.bottommost_compression;
   }
@@ -358,7 +358,7 @@ Compaction* CompactionPicker::CompactFiles(
 #endif /* !NDEBUG */
 
   CompressionType compression_type;
-  if (compact_options.compression == CompressionType::DisableCompressionOption) {
+  if (compact_options.compression == kDisableCompressionOption) {
     int base_level;
     if (ioptions_.compaction_style == CompactionStyle::Level) {
       base_level = vstorage->base_level();

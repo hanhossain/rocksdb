@@ -38,13 +38,13 @@ TEST(BlobGarbageMeterTest, MeasureGarbage) {
   // additional garbage. Blob file 6 is a newly written file (i.e. no inflow,
   // only outflow) and is thus not tracked by the meter.
   std::vector<BlobDescriptor> blobs{
-      {"key", 4, 1234, 555, CompressionType::LZ4Compression, true, true},
-      {"other_key", 4, 6789, 101010, CompressionType::LZ4Compression, true, true},
-      {"yet_another_key", 5, 22222, 3456, CompressionType::LZ4Compression, true, true},
-      {"foo_key", 5, 77777, 8888, CompressionType::LZ4Compression, true, true},
-      {"bar_key", 5, 999999, 1212, CompressionType::LZ4Compression, true, false},
-      {"baz_key", 5, 1234567, 890, CompressionType::LZ4Compression, true, false},
-      {"new_key", 6, 7777, 9999, CompressionType::NoCompression, false, true}};
+      {"key", 4, 1234, 555, kLZ4Compression, true, true},
+      {"other_key", 4, 6789, 101010, kLZ4Compression, true, true},
+      {"yet_another_key", 5, 22222, 3456, kLZ4Compression, true, true},
+      {"foo_key", 5, 77777, 8888, kLZ4Compression, true, true},
+      {"bar_key", 5, 999999, 1212, kLZ4Compression, true, false},
+      {"baz_key", 5, 1234567, 890, kLZ4Compression, true, false},
+      {"new_key", 6, 7777, 9999, kNoCompression, false, true}};
 
   for (const auto& blob : blobs) {
     constexpr SequenceNumber seq = 123;

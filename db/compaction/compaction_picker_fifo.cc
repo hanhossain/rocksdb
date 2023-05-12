@@ -111,7 +111,7 @@ Compaction* FIFOCompactionPicker::PickTTLCompaction(
 
   Compaction* c = new Compaction(
       vstorage, ioptions_, mutable_cf_options, mutable_db_options,
-      std::move(inputs), 0, 0, 0, 0, CompressionType::NoCompression,
+      std::move(inputs), 0, 0, 0, 0, kNoCompression,
       mutable_cf_options.compression_opts, Temperature::Unknown,
       /* max_subcompactions */ 0, {}, /* is manual */ false,
       /* trim_ts */ "", vstorage->CompactionScore(0),
@@ -275,7 +275,7 @@ Compaction* FIFOCompactionPicker::PickSizeCompaction(
       std::move(inputs), last_level,
       /* target_file_size */ 0,
       /* max_compaction_bytes */ 0,
-      /* output_path_id */ 0, CompressionType::NoCompression,
+      /* output_path_id */ 0, kNoCompression,
       mutable_cf_options.compression_opts, Temperature::Unknown,
       /* max_subcompactions */ 0, {}, /* is manual */ false,
       /* trim_ts */ "", vstorage->CompactionScore(0),

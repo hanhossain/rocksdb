@@ -17,24 +17,24 @@ namespace ROCKSDB_NAMESPACE {
 enum CompressionType : unsigned char {
   // NOTE: do not change the values of existing entries, as these are
   // part of the persistent format on disk.
-  NoCompression = 0x0,
-  SnappyCompression = 0x1,
-  ZlibCompression = 0x2,
-  BZip2Compression = 0x3,
-  LZ4Compression = 0x4,
-  LZ4HCCompression = 0x5,
-  XpressCompression = 0x6,
-  ZSTD = 0x7,
+  kNoCompression = 0x0,
+  kSnappyCompression = 0x1,
+  kZlibCompression = 0x2,
+  kBZip2Compression = 0x3,
+  kLZ4Compression = 0x4,
+  kLZ4HCCompression = 0x5,
+  kXpressCompression = 0x6,
+  kZSTD = 0x7,
 
-  // Only use CompressionType::ZSTDNotFinalCompression if you have to use ZSTD lib older than
+  // Only use kZSTDNotFinalCompression if you have to use ZSTD lib older than
   // 0.8.0 or consider a possibility of downgrading the service or copying
   // the database files to another service running with an older version of
-  // RocksDB that doesn't have CompressionType::ZSTD. Otherwise, you should use CompressionType::ZSTD. We will
+  // RocksDB that doesn't have kZSTD. Otherwise, you should use kZSTD. We will
   // eventually remove the option from the public API.
-  ZSTDNotFinalCompression = 0x40,
+  kZSTDNotFinalCompression = 0x40,
 
-  // CompressionType::DisableCompressionOption is used to disable some compression options.
-  DisableCompressionOption = 0xff,
+  // kDisableCompressionOption is used to disable some compression options.
+  kDisableCompressionOption = 0xff,
 };
 
 }  // namespace ROCKSDB_NAMESPACE

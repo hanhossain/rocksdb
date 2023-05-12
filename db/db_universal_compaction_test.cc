@@ -541,7 +541,7 @@ TEST_P(DBTestUniversalCompaction, CompactFilesOnUniversalCompaction) {
   options.compaction_style = CompactionStyle::Level;
   options.num_levels = 1;
   options.target_file_size_base = options.write_buffer_size;
-  options.compression = CompressionType::NoCompression;
+  options.compression = kNoCompression;
   options = CurrentOptions(options);
   options.write_buffer_size = kEntrySize * kEntriesPerBuffer;
   CreateAndReopenWithCF({"pikachu"}, options);
@@ -1769,7 +1769,7 @@ TEST_P(DBTestUniversalCompaction, FinalSortedRunCompactFilesConflict) {
   opts.compaction_style = CompactionStyle::Universal;
   opts.compaction_options_universal.max_size_amplification_percent = 50;
   opts.compaction_options_universal.min_merge_width = 2;
-  opts.compression = CompressionType::NoCompression;
+  opts.compression = kNoCompression;
   opts.level0_file_num_compaction_trigger = 2;
   opts.max_background_compactions = 2;
   opts.num_levels = num_levels_;
@@ -1898,7 +1898,7 @@ TEST_F(DBTestUniversalCompaction2, BasicL0toL1) {
       NewCompactOnDeletionCollectorFactory(kWindowSize, kNumDelsTrigger));
   opts.compaction_style = CompactionStyle::Universal;
   opts.level0_file_num_compaction_trigger = 2;
-  opts.compression = CompressionType::NoCompression;
+  opts.compression = kNoCompression;
   opts.compaction_options_universal.size_ratio = 10;
   opts.compaction_options_universal.min_merge_width = 2;
   opts.compaction_options_universal.max_size_amplification_percent = 200;
@@ -1940,7 +1940,7 @@ TEST_F(DBTestUniversalCompaction2, SingleLevel) {
       NewCompactOnDeletionCollectorFactory(kWindowSize, kNumDelsTrigger));
   opts.compaction_style = CompactionStyle::Universal;
   opts.level0_file_num_compaction_trigger = 2;
-  opts.compression = CompressionType::NoCompression;
+  opts.compression = kNoCompression;
   opts.num_levels = 1;
   opts.compaction_options_universal.size_ratio = 10;
   opts.compaction_options_universal.min_merge_width = 2;
@@ -1979,7 +1979,7 @@ TEST_F(DBTestUniversalCompaction2, MultipleLevels) {
       NewCompactOnDeletionCollectorFactory(kWindowSize, kNumDelsTrigger));
   opts.compaction_style = CompactionStyle::Universal;
   opts.level0_file_num_compaction_trigger = 4;
-  opts.compression = CompressionType::NoCompression;
+  opts.compression = kNoCompression;
   opts.compaction_options_universal.size_ratio = 10;
   opts.compaction_options_universal.min_merge_width = 2;
   opts.compaction_options_universal.max_size_amplification_percent = 200;
@@ -2051,7 +2051,7 @@ TEST_F(DBTestUniversalCompaction2, OverlappingL0) {
       NewCompactOnDeletionCollectorFactory(kWindowSize, kNumDelsTrigger));
   opts.compaction_style = CompactionStyle::Universal;
   opts.level0_file_num_compaction_trigger = 5;
-  opts.compression = CompressionType::NoCompression;
+  opts.compression = kNoCompression;
   opts.compaction_options_universal.size_ratio = 10;
   opts.compaction_options_universal.min_merge_width = 2;
   opts.compaction_options_universal.max_size_amplification_percent = 200;
@@ -2092,7 +2092,7 @@ TEST_F(DBTestUniversalCompaction2, IngestBehind) {
       NewCompactOnDeletionCollectorFactory(kWindowSize, kNumDelsTrigger));
   opts.compaction_style = CompactionStyle::Universal;
   opts.level0_file_num_compaction_trigger = 2;
-  opts.compression = CompressionType::NoCompression;
+  opts.compression = kNoCompression;
   opts.allow_ingest_behind = true;
   opts.compaction_options_universal.size_ratio = 10;
   opts.compaction_options_universal.min_merge_width = 2;

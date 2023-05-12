@@ -135,7 +135,7 @@ Slice CompressBlock(const Slice& uncompressed_data, const CompressionInfo& info,
     // Sampling with a fast compression algorithm
     if (sampled_output_fast && (LZ4_Supported() || Snappy_Supported())) {
       CompressionType c =
-          LZ4_Supported() ? CompressionType::LZ4Compression : CompressionType::SnappyCompression;
+          LZ4_Supported() ? kLZ4Compression : kSnappyCompression;
       CompressionContext context(c);
       CompressionOptions options;
       CompressionInfo info_tmp(options, context,
@@ -149,7 +149,7 @@ Slice CompressBlock(const Slice& uncompressed_data, const CompressionInfo& info,
 
     // Sampling with a slow but high-compression algorithm
     if (sampled_output_slow && (ZSTD_Supported() || Zlib_Supported())) {
-      CompressionType c = ZSTD_Supported() ? CompressionType::ZSTD : CompressionType::ZlibCompression;
+      CompressionType c = ZSTD_Supported() ? kZSTD : kZlibCompression;
       CompressionContext context(c);
       CompressionOptions options;
       CompressionInfo info_tmp(options, context,
@@ -163,8 +163,8 @@ Slice CompressBlock(const Slice& uncompressed_data, const CompressionInfo& info,
   }
 
   int max_compressed_bytes_per_kb = info.options().max_compressed_bytes_per_kb;
-  if (info.type() == CompressionType::NoCompression || max_compressed_bytes_per_kb <= 0) {
-    *type = CompressionType::NoCompression;
+  if (info.type() == kNoCompression || max_compressed_bytes_per_kb <= 0) {
+    *type = kNoCompression;
     return uncompressed_data;
   }
 
@@ -173,7 +173,7 @@ Slice CompressBlock(const Slice& uncompressed_data, const CompressionInfo& info,
   if (!CompressData(uncompressed_data, info,
                     GetCompressFormatForVersion(format_version),
                     compressed_output)) {
-    *type = CompressionType::NoCompression;
+    *type = kNoCompression;
     return uncompressed_data;
   }
 
@@ -181,7 +181,7 @@ Slice CompressBlock(const Slice& uncompressed_data, const CompressionInfo& info,
   // uncompressed
   if (!GoodCompressionRatio(compressed_output->size(), uncompressed_data.size(),
                             max_compressed_bytes_per_kb)) {
-    *type = CompressionType::NoCompression;
+    *type = kNoCompression;
     return uncompressed_data;
   }
 
@@ -449,8 +449,8 @@ struct BlockBasedTableBuilder::Rep {
             table_options.flush_block_policy_factory->NewFlushBlockPolicy(
                 table_options, data_block)),
         create_context(&table_options, ioptions.stats,
-                       compression_type == CompressionType::ZSTD ||
-                           compression_type == CompressionType::ZSTDNotFinalCompression,
+                       compression_type == kZSTD ||
+                           compression_type == kZSTDNotFinalCompression,
                        tbo.moptions.block_protection_bytes_per_key,
                        tbo.internal_comparator.user_comparator(),
                        !use_delta_encoding_for_index_values,
@@ -1168,7 +1168,7 @@ void BlockBasedTableBuilder::CompressAndVerifyBlock(
     // Some of the compression algorithms are known to be unreliable. If
     // the verify_compression flag is set then try to de-compress the
     // compressed data and compare to the input.
-    if (*type != CompressionType::NoCompression && r->table_options.verify_compression) {
+    if (*type != kNoCompression && r->table_options.verify_compression) {
       // Retrieve the uncompressed contents into a new buffer
       const UncompressionDict* verify_dict;
       if (!is_data_block || r->verify_dict == nullptr) {
@@ -1192,13 +1192,13 @@ void BlockBasedTableBuilder::CompressAndVerifyBlock(
               "Decompressed block did not match pre-compression block";
           ROCKS_LOG_ERROR(r->ioptions.logger, "%s", msg);
           *out_status = Status::Corruption(msg);
-          *type = CompressionType::NoCompression;
+          *type = kNoCompression;
         }
       } else {
         // Decompression reported an error. abort.
         *out_status = Status::Corruption(std::string("Could not decompress: ") +
                                          uncompress_status.getState());
-        *type = CompressionType::NoCompression;
+        *type = kNoCompression;
       }
     }
     if (timer.IsStarted()) {
@@ -1211,7 +1211,7 @@ void BlockBasedTableBuilder::CompressAndVerifyBlock(
       r->uncompressible_input_data_bytes.fetch_add(
           uncompressed_block_data.size(), std::memory_order_relaxed);
     }
-    *type = CompressionType::NoCompression;
+    *type = kNoCompression;
   }
   if (is_data_block) {
     r->uncompressible_input_data_bytes.fetch_add(kBlockTrailerSize,
@@ -1220,7 +1220,7 @@ void BlockBasedTableBuilder::CompressAndVerifyBlock(
 
   // Abort compression if the block is too big, or did not pass
   // verification.
-  if (*type == CompressionType::NoCompression) {
+  if (*type == kNoCompression) {
     *block_contents = uncompressed_block_data;
     bool compression_attempted = !compressed_output->empty();
     RecordTick(r->ioptions.stats, compression_attempted
@@ -1256,7 +1256,7 @@ void BlockBasedTableBuilder::WriteMaybeCompressedBlock(
   assert(io_status().ok());
   if (uncompressed_block_data == nullptr) {
     uncompressed_block_data = &block_contents;
-    assert(comp_type == CompressionType::NoCompression);
+    assert(comp_type == kNoCompression);
   }
 
   {
@@ -1488,7 +1488,7 @@ void BlockBasedTableBuilder::WriteFilterBlock(
       BlockType btype = is_partitioned_filter && /* last */ s.ok()
                             ? BlockType::kFilterPartitionIndex
                             : BlockType::kFilter;
-      WriteMaybeCompressedBlock(filter_content, CompressionType::NoCompression,
+      WriteMaybeCompressedBlock(filter_content, kNoCompression,
                                 &filter_block_handle, btype);
     }
     rep_->filter_builder->ResetFilterBitsBuilder();
@@ -1535,7 +1535,7 @@ void BlockBasedTableBuilder::WriteIndexBlock(
                  BlockType::kIndex);
     } else {
       WriteMaybeCompressedBlock(index_blocks.index_block_contents,
-                                CompressionType::NoCompression, index_block_handle,
+                                kNoCompression, index_block_handle,
                                 BlockType::kIndex);
     }
   }
@@ -1561,7 +1561,7 @@ void BlockBasedTableBuilder::WriteIndexBlock(
                    BlockType::kIndex);
       } else {
         WriteMaybeCompressedBlock(index_blocks.index_block_contents,
-                                  CompressionType::NoCompression, index_block_handle,
+                                  kNoCompression, index_block_handle,
                                   BlockType::kIndex);
       }
       // The last index_block_handle will be for the partition index block
@@ -1650,7 +1650,7 @@ void BlockBasedTableBuilder::WritePropertiesBlock(
     Slice block_data = property_block_builder.Finish();
     TEST_SYNC_POINT_CALLBACK(
         "BlockBasedTableBuilder::WritePropertiesBlock:BlockData", &block_data);
-    WriteMaybeCompressedBlock(block_data, CompressionType::NoCompression,
+    WriteMaybeCompressedBlock(block_data, kNoCompression,
                               &properties_block_handle, BlockType::kProperties);
   }
   if (ok()) {
@@ -1682,7 +1682,7 @@ void BlockBasedTableBuilder::WriteCompressionDictBlock(
     BlockHandle compression_dict_block_handle;
     if (ok()) {
       WriteMaybeCompressedBlock(rep_->compression_dict->GetRawDict(),
-                                CompressionType::NoCompression, &compression_dict_block_handle,
+                                kNoCompression, &compression_dict_block_handle,
                                 BlockType::kCompressionDictionary);
 #ifndef NDEBUG
       Slice compression_dict = rep_->compression_dict->GetRawDict();
@@ -1702,7 +1702,7 @@ void BlockBasedTableBuilder::WriteRangeDelBlock(
     MetaIndexBuilder* meta_index_builder) {
   if (ok() && !rep_->range_del_block.empty()) {
     BlockHandle range_del_block_handle;
-    WriteMaybeCompressedBlock(rep_->range_del_block.Finish(), CompressionType::NoCompression,
+    WriteMaybeCompressedBlock(rep_->range_del_block.Finish(), kNoCompression,
                               &range_del_block_handle,
                               BlockType::kRangeDeletion);
     meta_index_builder->Add(kRangeDelBlockName, range_del_block_handle);
@@ -1797,8 +1797,8 @@ void BlockBasedTableBuilder::EnterUnbuffered() {
   r->compression_dict.reset(new CompressionDict(dict, r->compression_type,
                                                 r->compression_opts.level));
   r->verify_dict.reset(new UncompressionDict(
-      dict, r->compression_type == CompressionType::ZSTD ||
-                r->compression_type == CompressionType::ZSTDNotFinalCompression));
+      dict, r->compression_type == kZSTD ||
+                r->compression_type == kZSTDNotFinalCompression));
 
   auto get_iterator_for_block = [&r](size_t i) {
     auto& data_block = r->data_block_buffers[i];
@@ -1925,7 +1925,7 @@ Status BlockBasedTableBuilder::Finish() {
   WritePropertiesBlock(&meta_index_builder);
   if (ok()) {
     // flush the meta index block
-    WriteMaybeCompressedBlock(meta_index_builder.Finish(), CompressionType::NoCompression,
+    WriteMaybeCompressedBlock(meta_index_builder.Finish(), kNoCompression,
                               &metaindex_block_handle, BlockType::kMetaIndex);
   }
   if (ok()) {

@@ -21,10 +21,10 @@ class DBStatisticsTest : public DBTestBase {
 
 TEST_F(DBStatisticsTest, CompressionStatsTest) {
   for (CompressionType type : GetSupportedCompressions()) {
-    if (type == CompressionType::NoCompression) {
+    if (type == kNoCompression) {
       continue;
     }
-    if (type == CompressionType::BZip2Compression) {
+    if (type == kBZip2Compression) {
       // Weird behavior in this test
       continue;
     }
@@ -106,7 +106,7 @@ TEST_F(DBStatisticsTest, CompressionStatsTest) {
     EXPECT_EQ(0, PopStat(BYTES_DECOMPRESSED_TO));
 
     // Check when compression is disabled.
-    options.compression = CompressionType::NoCompression;
+    options.compression = kNoCompression;
     DestroyAndReopen(options);
 
     for (int i = 0; i < kNumKeysWritten; ++i) {
