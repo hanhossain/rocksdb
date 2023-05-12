@@ -8009,7 +8009,7 @@ TEST_P(DBCompactionTestBlobGC, CompactionWithBlobGCOverrides) {
   ASSERT_OK(db_->SetOptions({{"enable_blob_files", "false"}}));
 
   CompactRangeOptions cro;
-  cro.blob_garbage_collection_policy = BlobGarbageCollectionPolicy::Force;
+  cro.blob_garbage_collection_policy = rs::options::BlobGarbageCollectionPolicy::Force;
   cro.blob_garbage_collection_age_cutoff = blob_gc_age_cutoff_;
 
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));

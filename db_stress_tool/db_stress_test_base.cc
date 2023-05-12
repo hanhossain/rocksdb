@@ -2212,10 +2212,10 @@ void StressTest::TestCompactRange(ThreadState* thread, int64_t rand_key,
                           static_cast<uint32_t>(bottom_level_styles.size())];
   cro.allow_write_stall = static_cast<bool>(thread->rand.Next() % 2);
   cro.max_subcompactions = static_cast<uint32_t>(thread->rand.Next() % 4);
-  std::vector<BlobGarbageCollectionPolicy> blob_gc_policies = {
-      BlobGarbageCollectionPolicy::Force,
-      BlobGarbageCollectionPolicy::Disable,
-      BlobGarbageCollectionPolicy::UseDefault};
+  std::vector<rs::options::BlobGarbageCollectionPolicy> blob_gc_policies = {
+      rs::options::BlobGarbageCollectionPolicy::Force,
+      rs::options::BlobGarbageCollectionPolicy::Disable,
+      rs::options::BlobGarbageCollectionPolicy::UseDefault};
   cro.blob_garbage_collection_policy =
       blob_gc_policies[thread->rand.Next() %
                        static_cast<uint32_t>(blob_gc_policies.size())];

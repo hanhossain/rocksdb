@@ -83,8 +83,8 @@ class Compaction {
              double score = -1, bool deletion_compaction = false,
              bool l0_files_might_overlap = true,
              CompactionReason compaction_reason = CompactionReason::kUnknown,
-             BlobGarbageCollectionPolicy blob_garbage_collection_policy =
-                 BlobGarbageCollectionPolicy::UseDefault,
+             rs::options::BlobGarbageCollectionPolicy blob_garbage_collection_policy =
+                 rs::options::BlobGarbageCollectionPolicy::UseDefault,
              double blob_garbage_collection_age_cutoff = -1);
 
   // The type of the penultimate level output range

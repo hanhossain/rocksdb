@@ -216,7 +216,7 @@ Compaction::Compaction(
     bool _manual_compaction, const std::string& _trim_ts, double _score,
     bool _deletion_compaction, bool l0_files_might_overlap,
     CompactionReason _compaction_reason,
-    BlobGarbageCollectionPolicy _blob_garbage_collection_policy,
+    rs::options::BlobGarbageCollectionPolicy _blob_garbage_collection_policy,
     double _blob_garbage_collection_age_cutoff)
     : input_vstorage_(vstorage),
       start_level_(_inputs[0].level),
@@ -254,10 +254,10 @@ Compaction::Compaction(
       compaction_reason_(_compaction_reason),
       notify_on_compaction_completion_(false),
       enable_blob_garbage_collection_(
-          _blob_garbage_collection_policy == BlobGarbageCollectionPolicy::Force
+          _blob_garbage_collection_policy == rs::options::BlobGarbageCollectionPolicy::Force
               ? true
               : (_blob_garbage_collection_policy ==
-                         BlobGarbageCollectionPolicy::Disable
+                         rs::options::BlobGarbageCollectionPolicy::Disable
                      ? false
                      : mutable_cf_options()->enable_blob_garbage_collection)),
       blob_garbage_collection_age_cutoff_(

@@ -36,7 +36,6 @@
 #undef max
 #endif
 
-using rs::options::BlobGarbageCollectionPolicy;
 using rs::options::BottommostLevelCompaction;
 using rs::options::CompactionServiceJobStatus;
 using rs::options::ReadTier;
@@ -1826,8 +1825,8 @@ struct CompactRangeOptions {
   // to true; if set to kDisable, RocksDB will override it to false, and
   // kUseDefault leaves the setting in effect. This enables customers to both
   // force-enable and force-disable GC when calling CompactRange.
-  BlobGarbageCollectionPolicy blob_garbage_collection_policy =
-      BlobGarbageCollectionPolicy::UseDefault;
+  rs::options::BlobGarbageCollectionPolicy blob_garbage_collection_policy =
+      rs::options::BlobGarbageCollectionPolicy::UseDefault;
 
   // If set to < 0 or > 1, RocksDB leaves blob_garbage_collection_age_cutoff
   // from ColumnFamilyOptions in effect. Otherwise, it will override the
