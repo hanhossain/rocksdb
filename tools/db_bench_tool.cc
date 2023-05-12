@@ -1279,18 +1279,18 @@ static enum ROCKSDB_NAMESPACE::CompressionType FLAGS_compression_type_e =
 
 DEFINE_int64(sample_for_compression, 0, "Sample every N block for compression");
 
-DEFINE_int32(compression_level, rs::advanced_options::new_compression_options().level,
+DEFINE_int32(compression_level, ROCKSDB_NAMESPACE::CompressionOptions().level,
              "Compression level. The meaning of this value is library-"
              "dependent. If unset, we try to use the default for the library "
              "specified in `--compression_type`");
 
 DEFINE_int32(compression_max_dict_bytes,
-             rs::advanced_options::new_compression_options().max_dict_bytes,
+             ROCKSDB_NAMESPACE::CompressionOptions().max_dict_bytes,
              "Maximum size of dictionary used to prime the compression "
              "library.");
 
 DEFINE_int32(compression_zstd_max_train_bytes,
-             rs::advanced_options::new_compression_options().zstd_max_train_bytes,
+             ROCKSDB_NAMESPACE::CompressionOptions().zstd_max_train_bytes,
              "Maximum size of training data passed to zstd's dictionary "
              "trainer.");
 
@@ -1304,11 +1304,11 @@ DEFINE_int32(compression_parallel_threads, 1,
              "Number of threads for parallel compression.");
 
 DEFINE_uint64(compression_max_dict_buffer_bytes,
-              rs::advanced_options::new_compression_options().max_dict_buffer_bytes,
+              ROCKSDB_NAMESPACE::CompressionOptions().max_dict_buffer_bytes,
               "Maximum bytes to buffer to collect samples for dictionary.");
 
 DEFINE_bool(compression_use_zstd_dict_trainer,
-            rs::advanced_options::new_compression_options().use_zstd_dict_trainer,
+            ROCKSDB_NAMESPACE::CompressionOptions().use_zstd_dict_trainer,
             "If true, use ZSTD_TrainDictionary() to create dictionary, else"
             "use ZSTD_FinalizeDictionary() to create dictionary");
 
