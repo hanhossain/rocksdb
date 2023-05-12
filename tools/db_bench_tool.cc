@@ -513,7 +513,7 @@ DEFINE_int32(max_background_flushes,
              "The maximum number of concurrent background flushes"
              " that can occur in parallel.");
 
-static rs::advanced_options::CompactionStyle FLAGS_compaction_style_e;
+static rs::advanced_options::rs::advanced_options::CompactionStyle FLAGS_compaction_style_e;
 DEFINE_int32(compaction_style,
              (int32_t)ROCKSDB_NAMESPACE::Options().compaction_style,
              "style of compaction: level-based, universal and fifo");
@@ -5381,7 +5381,7 @@ class Benchmark {
   }
 
   Status DoDeterministicCompact(ThreadState* thread,
-                                CompactionStyle compaction_style,
+                                rs::advanced_options::CompactionStyle compaction_style,
                                 WriteMode write_mode) {
     ColumnFamilyMetaData meta;
     std::vector<DB*> db_list;
@@ -5395,7 +5395,7 @@ class Benchmark {
     std::vector<Options> options_list;
     for (auto db : db_list) {
       options_list.push_back(db->GetOptions());
-      if (compaction_style != CompactionStyle::FIFO) {
+      if (compaction_style != rs::advanced_options::CompactionStyle::FIFO) {
         db->SetOptions({{"disable_auto_compactions", "1"},
                         {"level0_slowdown_writes_trigger", "400000000"},
                         {"level0_stop_writes_trigger", "400000000"}});
@@ -5410,7 +5410,7 @@ class Benchmark {
     size_t output_level = open_options_.num_levels - 1;
     std::vector<std::vector<std::vector<SstFileMetaData>>> sorted_runs(num_db);
     std::vector<size_t> num_files_at_level0(num_db, 0);
-    if (compaction_style == CompactionStyle::Level) {
+    if (compaction_style == rs::advanced_options::CompactionStyle::Level) {
       if (num_levels == 0) {
         return Status::InvalidArgument("num_levels should be larger than 1");
       }
@@ -5472,7 +5472,7 @@ class Benchmark {
               static_cast<int>(output_level - j) /*level*/);
         }
       }
-    } else if (compaction_style == CompactionStyle::Universal) {
+    } else if (compaction_style == rs::advanced_options::CompactionStyle::Universal) {
       auto ratio = open_options_.compaction_options_universal.size_ratio;
       bool should_stop = false;
       while (!should_stop) {
@@ -5527,7 +5527,7 @@ class Benchmark {
                                 : 0) /*level*/);
         }
       }
-    } else if (compaction_style == CompactionStyle::FIFO) {
+    } else if (compaction_style == rs::advanced_options::CompactionStyle::FIFO) {
       if (num_levels != 1) {
         return Status::InvalidArgument(
             "num_levels should be 1 for FIFO compaction");
@@ -5576,12 +5576,12 @@ class Benchmark {
       auto db = db_list[k];
       db->GetColumnFamilyMetaData(&meta);
       // verify the number of sorted runs
-      if (compaction_style == CompactionStyle::Level) {
+      if (compaction_style == rs::advanced_options::CompactionStyle::Level) {
         assert(num_levels - 1 == sorted_runs[k].size());
-      } else if (compaction_style == CompactionStyle::Universal) {
+      } else if (compaction_style == rs::advanced_options::CompactionStyle::Universal) {
         assert(meta.levels[0].files.size() + num_levels - 1 ==
                sorted_runs[k].size());
-      } else if (compaction_style == CompactionStyle::FIFO) {
+      } else if (compaction_style == rs::advanced_options::CompactionStyle::FIFO) {
         // TODO(gzh): FIFO compaction
         db->GetColumnFamilyMetaData(&meta);
         auto total_size = meta.levels[0].size;
@@ -5616,8 +5616,8 @@ class Benchmark {
           }
           first_key = false;
         }
-        if (compaction_style == CompactionStyle::Level ||
-            (compaction_style == CompactionStyle::Universal && level > 0)) {
+        if (compaction_style == rs::advanced_options::CompactionStyle::Level ||
+            (compaction_style == rs::advanced_options::CompactionStyle::Universal && level > 0)) {
           SequenceNumber level_smallest_seqno = kMaxSequenceNumber;
           SequenceNumber level_largest_seqno = 0;
           for (auto fileMeta : meta.levels[level].files) {
@@ -5635,7 +5635,7 @@ class Benchmark {
             assert(sorted_run_smallest_seqno == level_smallest_seqno);
             assert(sorted_run_largest_seqno == level_largest_seqno);
           }
-        } else if (compaction_style == CompactionStyle::Universal) {
+        } else if (compaction_style == rs::advanced_options::CompactionStyle::Universal) {
           // level <= 0 means sorted runs on level 0
           auto level0_file =
               meta.levels[0].files[sorted_runs[k].size() - 1 - i];
@@ -8428,7 +8428,7 @@ int db_bench_tool(int argc, char** argv) {
   }
   ParseCommandLineFlags(&argc, &argv, true);
   FLAGS_compaction_style_e =
-      (rs::advanced_options::CompactionStyle)FLAGS_compaction_style;
+      (rs::advanced_options::rs::advanced_options::CompactionStyle)FLAGS_compaction_style;
   if (FLAGS_statistics && !FLAGS_statistics_string.empty()) {
     fprintf(stderr,
             "Cannot provide both --statistics and --statistics_string.\n");

@@ -99,7 +99,7 @@ class KeepFilterFactory : public CompactionFilterFactory {
 TEST_P(DBTestUniversalCompaction, UniversalCompactionSingleSortedRun) {
   Options options = CurrentOptions();
 
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.num_levels = num_levels_;
   // Config universal compaction to always compact to one single sorted run.
   options.level0_file_num_compaction_trigger = 0;
@@ -136,7 +136,7 @@ TEST_P(DBTestUniversalCompaction, UniversalCompactionSingleSortedRun) {
 
 TEST_P(DBTestUniversalCompaction, OptimizeFiltersForHits) {
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.compaction_options_universal.size_ratio = 5;
   options.num_levels = num_levels_;
   options.write_buffer_size = 105 << 10;  // 105KB
@@ -205,7 +205,7 @@ TEST_P(DBTestUniversalCompaction, OptimizeFiltersForHits) {
 //     time to time.
 TEST_P(DBTestUniversalCompaction, UniversalCompactionTrigger) {
   Options options;
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.compaction_options_universal.size_ratio = 5;
   options.num_levels = num_levels_;
   options.write_buffer_size = 105 << 10;  // 105KB
@@ -312,7 +312,7 @@ TEST_P(DBTestUniversalCompaction, UniversalCompactionTrigger) {
 
 TEST_P(DBTestUniversalCompaction, UniversalCompactionSizeAmplification) {
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.num_levels = num_levels_;
   options.write_buffer_size = 100 << 10;     // 100KB
   options.target_file_size_base = 32 << 10;  // 32KB
@@ -354,7 +354,7 @@ TEST_P(DBTestUniversalCompaction, UniversalCompactionSizeAmplification) {
 
 TEST_P(DBTestUniversalCompaction, DynamicUniversalCompactionSizeAmplification) {
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.num_levels = 1;
   options.write_buffer_size = 100 << 10;     // 100KB
   options.target_file_size_base = 32 << 10;  // 32KB
@@ -434,7 +434,7 @@ TEST_P(DBTestUniversalCompaction, DynamicUniversalCompactionSizeAmplification) {
 
 TEST_P(DBTestUniversalCompaction, DynamicUniversalCompactionReadAmplification) {
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.num_levels = 1;
   options.write_buffer_size = 100 << 10;     // 100KB
   options.target_file_size_base = 32 << 10;  // 32KB
@@ -538,14 +538,14 @@ TEST_P(DBTestUniversalCompaction, CompactFilesOnUniversalCompaction) {
   ChangeCompactOptions();
   Options options;
   options.create_if_missing = true;
-  options.compaction_style = CompactionStyle::Level;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Level;
   options.num_levels = 1;
   options.target_file_size_base = options.write_buffer_size;
   options.compression = kNoCompression;
   options = CurrentOptions(options);
   options.write_buffer_size = kEntrySize * kEntriesPerBuffer;
   CreateAndReopenWithCF({"pikachu"}, options);
-  ASSERT_EQ(options.compaction_style, CompactionStyle::Universal);
+  ASSERT_EQ(options.compaction_style, rs::advanced_options::CompactionStyle::Universal);
   Random rnd(301);
   for (int key = 1024 * kEntriesPerBuffer; key >= 0; --key) {
     ASSERT_OK(Put(1, std::to_string(key), rnd.RandomString(kTestValueSize)));
@@ -596,7 +596,7 @@ TEST_P(DBTestUniversalCompaction, CompactFilesOnUniversalCompaction) {
 
 TEST_P(DBTestUniversalCompaction, UniversalCompactionTargetLevel) {
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.write_buffer_size = 100 << 10;  // 100KB
   options.num_levels = 7;
   options.disable_auto_compactions = true;
@@ -640,7 +640,7 @@ class DBTestUniversalCompactionMultiLevels
 
 TEST_P(DBTestUniversalCompactionMultiLevels, UniversalCompactionMultiLevels) {
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.num_levels = num_levels_;
   options.write_buffer_size = 100 << 10;  // 100KB
   options.level0_file_num_compaction_trigger = 8;
@@ -683,7 +683,7 @@ TEST_P(DBTestUniversalCompactionMultiLevels, UniversalCompactionTrivialMove) {
   ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
 
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.compaction_options_universal.allow_trivial_move = true;
   options.num_levels = 3;
   options.write_buffer_size = 100 << 10;  // 100KB
@@ -727,7 +727,7 @@ class DBTestUniversalCompactionParallel : public DBTestUniversalCompactionBase {
 
 TEST_P(DBTestUniversalCompactionParallel, UniversalCompactionParallel) {
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.num_levels = num_levels_;
   options.env = env_;
   options.write_buffer_size = 1 << 10;  // 1KB
@@ -788,7 +788,7 @@ TEST_P(DBTestUniversalCompactionParallel, UniversalCompactionParallel) {
 
 TEST_P(DBTestUniversalCompactionParallel, PickByFileNumberBug) {
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.num_levels = num_levels_;
   options.write_buffer_size = 1 * 1024;  // 1KB
   options.level0_file_num_compaction_trigger = 7;
@@ -910,7 +910,7 @@ INSTANTIATE_TEST_CASE_P(Parallel, DBTestUniversalCompactionParallel,
 
 TEST_P(DBTestUniversalCompaction, UniversalCompactionOptions) {
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.write_buffer_size = 105 << 10;     // 105KB
   options.arena_block_size = 4 << 10;        // 4KB
   options.target_file_size_base = 32 << 10;  // 32KB
@@ -942,7 +942,7 @@ TEST_P(DBTestUniversalCompaction, UniversalCompactionOptions) {
 
 TEST_P(DBTestUniversalCompaction, UniversalCompactionStopStyleSimilarSize) {
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.write_buffer_size = 105 << 10;     // 105KB
   options.arena_block_size = 4 << 10;        // 4KB
   options.target_file_size_base = 32 << 10;  // 32KB
@@ -1030,7 +1030,7 @@ TEST_P(DBTestUniversalCompaction, UniversalCompactionCompressRatio1) {
   }
 
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.write_buffer_size = 100 << 10;     // 100KB
   options.target_file_size_base = 32 << 10;  // 32KB
   options.level0_file_num_compaction_trigger = 2;
@@ -1097,7 +1097,7 @@ TEST_P(DBTestUniversalCompaction, UniversalCompactionCompressRatio2) {
     return;
   }
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.write_buffer_size = 100 << 10;     // 100KB
   options.target_file_size_base = 32 << 10;  // 32KB
   options.level0_file_num_compaction_trigger = 2;
@@ -1140,7 +1140,7 @@ TEST_P(DBTestUniversalCompaction, UniversalCompactionTrivialMoveTest1) {
   ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
 
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.compaction_options_universal.allow_trivial_move = true;
   options.num_levels = 2;
   options.write_buffer_size = 100 << 10;  // 100KB
@@ -1186,7 +1186,7 @@ TEST_P(DBTestUniversalCompaction, UniversalCompactionTrivialMoveTest2) {
   ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
 
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.compaction_options_universal.allow_trivial_move = true;
   options.num_levels = 15;
   options.write_buffer_size = 100 << 10;  // 100KB
@@ -1225,7 +1225,7 @@ TEST_P(DBTestUniversalCompaction, UniversalCompactionFourPaths) {
   options.db_paths.emplace_back(dbname_ + "_4", 1024 * 1024 * 1024);
   options.memtable_factory.reset(
       test::NewSpecialSkipListFactory(KNumKeysByGenerateNewFile - 1));
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.compaction_options_universal.size_ratio = 5;
   options.write_buffer_size = 111 << 10;  // 114KB
   options.arena_block_size = 4 << 10;
@@ -1329,7 +1329,7 @@ TEST_P(DBTestUniversalCompaction, UniversalCompactionCFPathUse) {
   options.db_paths.emplace_back(dbname_ + "_4", 1024 * 1024 * 1024);
   options.memtable_factory.reset(
       test::NewSpecialSkipListFactory(KNumKeysByGenerateNewFile - 1));
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.compaction_options_universal.size_ratio = 10;
   options.write_buffer_size = 111 << 10;  // 114KB
   options.arena_block_size = 4 << 10;
@@ -1488,7 +1488,7 @@ TEST_P(DBTestUniversalCompaction, IncreaseUniversalCompactionNumLevels) {
 
   // Stage 1: open a DB with universal compaction, num_levels=1
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.num_levels = 1;
   options.write_buffer_size = 200 << 10;  // 200KB
   options.level0_file_num_compaction_trigger = 3;
@@ -1507,7 +1507,7 @@ TEST_P(DBTestUniversalCompaction, IncreaseUniversalCompactionNumLevels) {
   ASSERT_OK(dbfull()->TEST_WaitForCompact());
 
   // Stage 2: reopen with universal compaction, num_levels=4
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.num_levels = 4;
   options = CurrentOptions(options);
   ReopenWithColumnFamilies({"default", "pikachu"}, options);
@@ -1542,7 +1542,7 @@ TEST_P(DBTestUniversalCompaction, IncreaseUniversalCompactionNumLevels) {
   // Need to restart it once to remove higher level records in manifest.
   ReopenWithColumnFamilies({"default", "pikachu"}, options);
   // Final reopen
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.num_levels = 1;
   options = CurrentOptions(options);
   ReopenWithColumnFamilies({"default", "pikachu"}, options);
@@ -1566,7 +1566,7 @@ TEST_P(DBTestUniversalCompaction, UniversalCompactionSecondPathRatio) {
   Options options = CurrentOptions();
   options.db_paths.emplace_back(dbname_, 500 * 1024);
   options.db_paths.emplace_back(dbname_ + "_2", 1024 * 1024 * 1024);
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.compaction_options_universal.size_ratio = 5;
   options.write_buffer_size = 111 << 10;  // 114KB
   options.arena_block_size = 4 << 10;
@@ -1670,7 +1670,7 @@ TEST_P(DBTestUniversalCompaction, ConcurrentBottomPriLowPriCompactions) {
   const int kNumFilesTrigger = 3;
   Env::Default()->SetBackgroundThreads(1, Env::Priority::BOTTOM);
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.max_background_compactions = 2;
   options.num_levels = num_levels_;
   options.write_buffer_size = 100 << 10;     // 100KB
@@ -1732,7 +1732,7 @@ TEST_P(DBTestUniversalCompaction, RecalculateScoreAfterPicking) {
   options.compaction_options_universal.max_merge_width = kNumFilesTrigger / 2;
   options.compaction_options_universal.max_size_amplification_percent =
       static_cast<unsigned int>(-1);
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.level0_file_num_compaction_trigger = kNumFilesTrigger;
   options.num_levels = num_levels_;
   Reopen(options);
@@ -1766,7 +1766,7 @@ TEST_P(DBTestUniversalCompaction, FinalSortedRunCompactFilesConflict) {
   }
 
   Options opts = CurrentOptions();
-  opts.compaction_style = CompactionStyle::Universal;
+  opts.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   opts.compaction_options_universal.max_size_amplification_percent = 50;
   opts.compaction_options_universal.min_merge_width = 2;
   opts.compression = kNoCompression;
@@ -1831,7 +1831,7 @@ TEST_P(DBTestUniversalManualCompactionOutputPathId,
   options.create_if_missing = true;
   options.db_paths.emplace_back(dbname_, 1000000000);
   options.db_paths.emplace_back(dbname_ + "_2", 1000000000);
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.num_levels = num_levels_;
   options.target_file_size_base = 1 << 30;  // Big size
   options.level0_file_num_compaction_trigger = 10;
@@ -1896,7 +1896,7 @@ TEST_F(DBTestUniversalCompaction2, BasicL0toL1) {
   Options opts = CurrentOptions();
   opts.table_properties_collector_factories.emplace_back(
       NewCompactOnDeletionCollectorFactory(kWindowSize, kNumDelsTrigger));
-  opts.compaction_style = CompactionStyle::Universal;
+  opts.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   opts.level0_file_num_compaction_trigger = 2;
   opts.compression = kNoCompression;
   opts.compaction_options_universal.size_ratio = 10;
@@ -1938,7 +1938,7 @@ TEST_F(DBTestUniversalCompaction2, SingleLevel) {
   Options opts = CurrentOptions();
   opts.table_properties_collector_factories.emplace_back(
       NewCompactOnDeletionCollectorFactory(kWindowSize, kNumDelsTrigger));
-  opts.compaction_style = CompactionStyle::Universal;
+  opts.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   opts.level0_file_num_compaction_trigger = 2;
   opts.compression = kNoCompression;
   opts.num_levels = 1;
@@ -1977,7 +1977,7 @@ TEST_F(DBTestUniversalCompaction2, MultipleLevels) {
   Options opts = CurrentOptions();
   opts.table_properties_collector_factories.emplace_back(
       NewCompactOnDeletionCollectorFactory(kWindowSize, kNumDelsTrigger));
-  opts.compaction_style = CompactionStyle::Universal;
+  opts.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   opts.level0_file_num_compaction_trigger = 4;
   opts.compression = kNoCompression;
   opts.compaction_options_universal.size_ratio = 10;
@@ -2049,7 +2049,7 @@ TEST_F(DBTestUniversalCompaction2, OverlappingL0) {
   Options opts = CurrentOptions();
   opts.table_properties_collector_factories.emplace_back(
       NewCompactOnDeletionCollectorFactory(kWindowSize, kNumDelsTrigger));
-  opts.compaction_style = CompactionStyle::Universal;
+  opts.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   opts.level0_file_num_compaction_trigger = 5;
   opts.compression = kNoCompression;
   opts.compaction_options_universal.size_ratio = 10;
@@ -2090,7 +2090,7 @@ TEST_F(DBTestUniversalCompaction2, IngestBehind) {
   Options opts = CurrentOptions();
   opts.table_properties_collector_factories.emplace_back(
       NewCompactOnDeletionCollectorFactory(kWindowSize, kNumDelsTrigger));
-  opts.compaction_style = CompactionStyle::Universal;
+  opts.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   opts.level0_file_num_compaction_trigger = 2;
   opts.compression = kNoCompression;
   opts.allow_ingest_behind = true;
@@ -2127,7 +2127,7 @@ TEST_F(DBTestUniversalCompaction2, IngestBehind) {
 
 TEST_F(DBTestUniversalCompaction2, PeriodicCompactionDefault) {
   Options options;
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.env = env_;
   KeepFilterFactory* filter = new KeepFilterFactory(true);
   options.compaction_filter_factory.reset(filter);
@@ -2152,7 +2152,7 @@ TEST_F(DBTestUniversalCompaction2, PeriodicCompactionDefault) {
 TEST_F(DBTestUniversalCompaction2, PeriodicCompaction) {
   Options opts = CurrentOptions();
   opts.env = env_;
-  opts.compaction_style = CompactionStyle::Universal;
+  opts.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   opts.level0_file_num_compaction_trigger = 10;
   opts.max_open_files = -1;
   opts.compaction_options_universal.size_ratio = 10;

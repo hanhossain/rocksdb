@@ -2357,8 +2357,8 @@ ChangeCompactionStyleCommand::ChangeCompactionStyleCommand(
       new_compaction_style_(-1) {
   ParseIntOption(option_map_, ARG_OLD_COMPACTION_STYLE, old_compaction_style_,
                  exec_state_);
-  if (old_compaction_style_ != (char)CompactionStyle::Level &&
-      old_compaction_style_ != (char)CompactionStyle::Universal) {
+  if (old_compaction_style_ != (char)rs::advanced_options::CompactionStyle::Level &&
+      old_compaction_style_ != (char)rs::advanced_options::CompactionStyle::Universal) {
     exec_state_ = LDBCommandExecuteResult::Failed(
         "Use --" + ARG_OLD_COMPACTION_STYLE + " to specify old compaction " +
         "style. Check ldb help for proper compaction style value.\n");
@@ -2367,8 +2367,8 @@ ChangeCompactionStyleCommand::ChangeCompactionStyleCommand(
 
   ParseIntOption(option_map_, ARG_NEW_COMPACTION_STYLE, new_compaction_style_,
                  exec_state_);
-  if (new_compaction_style_ != (char)CompactionStyle::Level &&
-      new_compaction_style_ != (char)CompactionStyle::Universal) {
+  if (new_compaction_style_ != (char)rs::advanced_options::CompactionStyle::Level &&
+      new_compaction_style_ != (char)rs::advanced_options::CompactionStyle::Universal) {
     exec_state_ = LDBCommandExecuteResult::Failed(
         "Use --" + ARG_NEW_COMPACTION_STYLE + " to specify new compaction " +
         "style. Check ldb help for proper compaction style value.\n");
@@ -2382,8 +2382,8 @@ ChangeCompactionStyleCommand::ChangeCompactionStyleCommand(
     return;
   }
 
-  if (old_compaction_style_ == (char)CompactionStyle::Universal &&
-      new_compaction_style_ == (char)CompactionStyle::Level) {
+  if (old_compaction_style_ == (char)rs::advanced_options::CompactionStyle::Universal &&
+      new_compaction_style_ == (char)rs::advanced_options::CompactionStyle::Level) {
     exec_state_ = LDBCommandExecuteResult::Failed(
         "Convert from universal compaction to level compaction. "
         "Nothing to do.\n");
@@ -2404,8 +2404,8 @@ void ChangeCompactionStyleCommand::Help(std::string& ret) {
 void ChangeCompactionStyleCommand::OverrideBaseCFOptions(
     ColumnFamilyOptions* cf_opts) {
   LDBCommand::OverrideBaseCFOptions(cf_opts);
-  if (old_compaction_style_ == (char)CompactionStyle::Level &&
-      new_compaction_style_ == (char)CompactionStyle::Universal) {
+  if (old_compaction_style_ == (char)rs::advanced_options::CompactionStyle::Level &&
+      new_compaction_style_ == (char)rs::advanced_options::CompactionStyle::Universal) {
     // In order to convert from level compaction to universal compaction, we
     // need to compact all data into a single file and move it to level 0.
     cf_opts->disable_auto_compactions = true;

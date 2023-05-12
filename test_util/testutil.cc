@@ -327,7 +327,7 @@ void RandomInitDBOptions(DBOptions* db_opt, Random* rnd) {
 
 void RandomInitCFOptions(ColumnFamilyOptions* cf_opt, DBOptions& db_options,
                          Random* rnd) {
-  cf_opt->compaction_style = (CompactionStyle)(rnd->Uniform(4));
+  cf_opt->compaction_style = (rs::advanced_options::CompactionStyle)(rnd->Uniform(4));
 
   // boolean options
   cf_opt->report_bg_io_stats = rnd->Uniform(2);

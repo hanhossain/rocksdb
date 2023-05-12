@@ -451,7 +451,7 @@ TEST_F(DBRangeDelTest, ValidUniversalSubcompactionBoundaries) {
   options.compaction_options_universal.min_merge_width = kFilesPerLevel;
   options.compaction_options_universal.max_merge_width = kFilesPerLevel;
   options.compaction_options_universal.size_ratio = 10;
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.level0_file_num_compaction_trigger = kFilesPerLevel;
   options.max_subcompactions = 4;
   options.memtable_factory.reset(test::NewSpecialSkipListFactory(kNumPerFile));

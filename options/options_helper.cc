@@ -317,12 +317,12 @@ void UpdateColumnFamilyOptions(const ImmutableCFOptions& ioptions,
   // * max_file_size
 }
 
-std::map<CompactionStyle, std::string>
+std::map<rs::advanced_options::CompactionStyle, std::string>
     OptionsHelper::compaction_style_to_string = {
-        {CompactionStyle::Level, "kCompactionStyleLevel"},
-        {CompactionStyle::Universal, "kCompactionStyleUniversal"},
-        {CompactionStyle::FIFO, "kCompactionStyleFIFO"},
-        {CompactionStyle::None, "kCompactionStyleNone"}};
+        {rs::advanced_options::CompactionStyle::Level, "kCompactionStyleLevel"},
+        {rs::advanced_options::CompactionStyle::Universal, "kCompactionStyleUniversal"},
+        {rs::advanced_options::CompactionStyle::FIFO, "kCompactionStyleFIFO"},
+        {rs::advanced_options::CompactionStyle::None, "kCompactionStyleNone"}};
 
 std::map<rs::advanced_options::CompactionPri, std::string> OptionsHelper::compaction_pri_to_string = {
     {rs::advanced_options::CompactionPri::ByCompensatedSize, "kByCompensatedSize"},
@@ -433,9 +433,9 @@ static bool ParseOptionHelper(void* opt_address, const OptionType& opt_type,
       *static_cast<double*>(opt_address) = ParseDouble(value);
       break;
     case OptionType::kCompactionStyle:
-      return ParseEnum<CompactionStyle>(
+      return ParseEnum<rs::advanced_options::CompactionStyle>(
           compaction_style_string_map, value,
-          static_cast<CompactionStyle*>(opt_address));
+          static_cast<rs::advanced_options::CompactionStyle*>(opt_address));
     case OptionType::kCompactionPri:
       return ParseEnum<rs::advanced_options::CompactionPri>(compaction_pri_string_map, value,
                                       static_cast<rs::advanced_options::CompactionPri*>(opt_address));
@@ -520,9 +520,9 @@ bool SerializeSingleOptionHelper(const void* opt_address,
           EscapeOptionString(*(static_cast<const std::string*>(opt_address)));
       break;
     case OptionType::kCompactionStyle:
-      return SerializeEnum<CompactionStyle>(
+      return SerializeEnum<rs::advanced_options::CompactionStyle>(
           compaction_style_string_map,
-          *(static_cast<const CompactionStyle*>(opt_address)), value);
+          *(static_cast<const rs::advanced_options::CompactionStyle*>(opt_address)), value);
     case OptionType::kCompactionPri:
       return SerializeEnum<rs::advanced_options::CompactionPri>(
           compaction_pri_string_map,
@@ -780,12 +780,12 @@ std::unordered_map<std::string, EncodingType>
     OptionsHelper::encoding_type_string_map = {{"kPlain", kPlain},
                                                {"kPrefix", kPrefix}};
 
-std::unordered_map<std::string, CompactionStyle>
+std::unordered_map<std::string, rs::advanced_options::CompactionStyle>
     OptionsHelper::compaction_style_string_map = {
-        {"kCompactionStyleLevel", CompactionStyle::Level},
-        {"kCompactionStyleUniversal", CompactionStyle::Universal},
-        {"kCompactionStyleFIFO", CompactionStyle::FIFO},
-        {"kCompactionStyleNone", CompactionStyle::None}};
+        {"kCompactionStyleLevel", rs::advanced_options::CompactionStyle::Level},
+        {"kCompactionStyleUniversal", rs::advanced_options::CompactionStyle::Universal},
+        {"kCompactionStyleFIFO", rs::advanced_options::CompactionStyle::FIFO},
+        {"kCompactionStyleNone", rs::advanced_options::CompactionStyle::None}};
 
 std::unordered_map<std::string, rs::advanced_options::CompactionPri>
     OptionsHelper::compaction_pri_string_map = {
@@ -1169,7 +1169,7 @@ static bool AreOptionsEqual(OptionType type, const void* this_offset,
       return AreEqualDoubles(*static_cast<const double*>(this_offset),
                              *static_cast<const double*>(that_offset));
     case OptionType::kCompactionStyle:
-      return IsOptionEqual<CompactionStyle>(this_offset, that_offset);
+      return IsOptionEqual<rs::advanced_options::CompactionStyle>(this_offset, that_offset);
     case OptionType::kCompactionStopStyle:
       return IsOptionEqual<CompactionStopStyle>(this_offset, that_offset);
     case OptionType::kCompactionPri:

@@ -265,7 +265,7 @@ BENCHMARK(DBClose)->Iterations(200);  // specify iteration number as the db size
                                       // is impacted by iteration number
 
 static void DBPut(benchmark::State& state) {
-  auto compaction_style = static_cast<CompactionStyle>(state.range(0));
+  auto compaction_style = static_cast<rs::advanced_options::CompactionStyle>(state.range(0));
   uint64_t max_data = state.range(1);
   uint64_t per_key_size = state.range(2);
   bool enable_statistics = state.range(3);
@@ -343,7 +343,7 @@ BENCHMARK(DBPut)->Threads(1)->Iterations(DBPutNum)->Apply(DBPutArguments);
 BENCHMARK(DBPut)->Threads(8)->Iterations(DBPutNum / 8)->Apply(DBPutArguments);
 
 static void ManualCompaction(benchmark::State& state) {
-  auto compaction_style = static_cast<CompactionStyle>(state.range(0));
+  auto compaction_style = static_cast<rs::advanced_options::CompactionStyle>(state.range(0));
   uint64_t max_data = state.range(1);
   uint64_t per_key_size = state.range(2);
   bool enable_statistics = state.range(3);
@@ -539,7 +539,7 @@ static void ManualFlushArguments(benchmark::internal::Benchmark* b) {
 BENCHMARK(ManualFlush)->Iterations(1)->Apply(ManualFlushArguments);
 
 static void DBGet(benchmark::State& state) {
-  auto compaction_style = static_cast<CompactionStyle>(state.range(0));
+  auto compaction_style = static_cast<rs::advanced_options::CompactionStyle>(state.range(0));
   uint64_t max_data = state.range(1);
   uint64_t per_key_size = state.range(2);
   bool enable_statistics = state.range(3);
@@ -1069,7 +1069,7 @@ static void DataBlockSeek(benchmark::State& state) {
 BENCHMARK(DataBlockSeek)->Iterations(1000000);
 
 static void IteratorSeek(benchmark::State& state) {
-  auto compaction_style = static_cast<CompactionStyle>(state.range(0));
+  auto compaction_style = static_cast<rs::advanced_options::CompactionStyle>(state.range(0));
   uint64_t max_data = state.range(1);
   uint64_t per_key_size = state.range(2);
   bool enable_statistics = state.range(3);
@@ -1173,7 +1173,7 @@ BENCHMARK(IteratorSeek)
     ->Apply(IteratorSeekArguments);
 
 static void IteratorNext(benchmark::State& state) {
-  auto compaction_style = static_cast<CompactionStyle>(state.range(0));
+  auto compaction_style = static_cast<rs::advanced_options::CompactionStyle>(state.range(0));
   uint64_t max_data = state.range(1);
   uint64_t per_key_size = state.range(2);
   uint64_t key_num = max_data / per_key_size;
@@ -1334,7 +1334,7 @@ static void IteratorNextWithPerfContext(benchmark::State& state) {
 BENCHMARK(IteratorNextWithPerfContext)->Iterations(100000);
 
 static void IteratorPrev(benchmark::State& state) {
-  auto compaction_style = static_cast<CompactionStyle>(state.range(0));
+  auto compaction_style = static_cast<rs::advanced_options::CompactionStyle>(state.range(0));
   uint64_t max_data = state.range(1);
   uint64_t per_key_size = state.range(2);
   uint64_t key_num = max_data / per_key_size;
@@ -1414,7 +1414,7 @@ BENCHMARK(IteratorPrev)
     ->Apply(IteratorPrevArguments);
 
 static void PrefixSeek(benchmark::State& state) {
-  auto compaction_style = static_cast<CompactionStyle>(state.range(0));
+  auto compaction_style = static_cast<rs::advanced_options::CompactionStyle>(state.range(0));
   uint64_t max_data = state.range(1);
   uint64_t per_key_size = state.range(2);
   bool enable_statistics = state.range(3);

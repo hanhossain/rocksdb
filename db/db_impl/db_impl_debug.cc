@@ -102,8 +102,8 @@ Status DBImpl::TEST_CompactRange(int level, const Slice* begin,
     cfd = cfh->cfd();
   }
   int output_level =
-      (cfd->ioptions()->compaction_style == CompactionStyle::Universal ||
-       cfd->ioptions()->compaction_style == CompactionStyle::FIFO)
+      (cfd->ioptions()->compaction_style == rs::advanced_options::CompactionStyle::Universal ||
+       cfd->ioptions()->compaction_style == rs::advanced_options::CompactionStyle::FIFO)
           ? level
           : level + 1;
   return RunManualCompaction(

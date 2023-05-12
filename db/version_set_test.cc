@@ -127,7 +127,7 @@ class VersionStorageInfoTestBase : public testing::Test {
         options_(GetOptionsWithNumLevels(6, logger_)),
         ioptions_(options_),
         mutable_cf_options_(options_),
-        vstorage_(&icmp_, ucmp_, 6, CompactionStyle::Level,
+        vstorage_(&icmp_, ucmp_, 6, rs::advanced_options::CompactionStyle::Level,
                   /*src_vstorage=*/nullptr,
                   /*_force_consistency_checks=*/false) {}
 

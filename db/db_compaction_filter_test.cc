@@ -657,7 +657,7 @@ TEST_F(DBTestCompactionFilter, CompactionFilterContextManual) {
   KeepFilterFactory* filter = new KeepFilterFactory(true, true);
 
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.compaction_filter_factory.reset(filter);
   options.compression = kNoCompression;
   options.level0_file_num_compaction_trigger = 8;

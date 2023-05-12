@@ -155,7 +155,7 @@ struct ConfigOptions {
 //   [Example]:
 //   - CompressionType: valid values are "kNoCompression",
 //     "kSnappyCompression", "kZlibCompression", "kBZip2Compression", ...
-//   - CompactionStyle: valid values are "kCompactionStyleLevel",
+//   - rs::advanced_options::CompactionStyle: valid values are "kCompactionStyleLevel",
 //     "kCompactionStyleUniversal", "kCompactionStyleFIFO", and
 //     "kCompactionStyleNone".
 //

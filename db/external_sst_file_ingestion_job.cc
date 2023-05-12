@@ -837,14 +837,14 @@ Status ExternalSstFileIngestionJob::GetIngestedFileInfo(
 }
 
 Status ExternalSstFileIngestionJob::AssignLevelAndSeqnoForIngestedFile(
-    SuperVersion* sv, bool force_global_seqno, CompactionStyle compaction_style,
+    SuperVersion* sv, bool force_global_seqno, rs::advanced_options::CompactionStyle compaction_style,
     SequenceNumber last_seqno, IngestedFileInfo* file_to_ingest,
     SequenceNumber* assigned_seqno) {
   Status status;
   *assigned_seqno = 0;
   if (force_global_seqno) {
     *assigned_seqno = last_seqno + 1;
-    if (compaction_style == CompactionStyle::Universal || files_overlap_) {
+    if (compaction_style == rs::advanced_options::CompactionStyle::Universal || files_overlap_) {
       if (ingestion_options_.fail_if_not_bottommost_level) {
         status = Status::TryAgain(
             "Files cannot be ingested to Lmax. Please make sure key range of "
@@ -894,7 +894,7 @@ Status ExternalSstFileIngestionJob::AssignLevelAndSeqnoForIngestedFile(
         break;
       }
 
-      if (compaction_style == CompactionStyle::Universal && lvl != 0) {
+      if (compaction_style == rs::advanced_options::CompactionStyle::Universal && lvl != 0) {
         const std::vector<FileMetaData*>& level_files =
             vstorage->LevelFiles(lvl);
         const SequenceNumber level_largest_seqno =
@@ -913,7 +913,7 @@ Status ExternalSstFileIngestionJob::AssignLevelAndSeqnoForIngestedFile(
           continue;
         }
       }
-    } else if (compaction_style == CompactionStyle::Universal) {
+    } else if (compaction_style == rs::advanced_options::CompactionStyle::Universal) {
       continue;
     }
 

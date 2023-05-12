@@ -340,7 +340,7 @@ TEST_P(DBCompactionTestWithParam, CompactionDeletionTrigger) {
       options.skip_stats_update_on_db_open = true;
     } else if (tid == 2) {
       // third pass with universal compaction
-      options.compaction_style = CompactionStyle::Universal;
+      options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
       options.num_levels = 1;
     }
 
@@ -364,7 +364,7 @@ TEST_P(DBCompactionTestWithParam, CompactionDeletionTrigger) {
     ASSERT_OK(dbfull()->TEST_WaitForCompact());
     ASSERT_OK(Size(Key(0), Key(kTestSize - 1), &db_size[1]));
 
-    if (options.compaction_style == CompactionStyle::Universal) {
+    if (options.compaction_style == rs::advanced_options::CompactionStyle::Universal) {
       // Claim: in universal compaction none of the original data will remain
       // once compactions settle.
       //
@@ -545,7 +545,7 @@ TEST_P(DBCompactionTestWithParam, CompactionDeletionTriggerReopen) {
 
     if (tid == 1) {
       // second pass with universal compaction
-      options.compaction_style = CompactionStyle::Universal;
+      options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
       options.num_levels = 1;
     }
 
@@ -932,7 +932,7 @@ TEST_F(DBCompactionTest, MinorCompactionsHappen) {
 
 TEST_F(DBCompactionTest, UserKeyCrossFile1) {
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Level;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Level;
   options.level0_file_num_compaction_trigger = 3;
 
   DestroyAndReopen(options);
@@ -965,7 +965,7 @@ TEST_F(DBCompactionTest, UserKeyCrossFile1) {
 
 TEST_F(DBCompactionTest, UserKeyCrossFile2) {
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Level;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Level;
   options.level0_file_num_compaction_trigger = 3;
 
   DestroyAndReopen(options);
@@ -998,7 +998,7 @@ TEST_F(DBCompactionTest, UserKeyCrossFile2) {
 
 TEST_F(DBCompactionTest, CompactionSstPartitioner) {
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Level;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Level;
   options.level0_file_num_compaction_trigger = 3;
   std::shared_ptr<SstPartitionerFactory> factory(
       NewSstPartitionerFixedPrefixFactory(4));
@@ -1028,7 +1028,7 @@ TEST_F(DBCompactionTest, CompactionSstPartitioner) {
 
 TEST_F(DBCompactionTest, CompactionSstPartitionWithManualCompaction) {
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Level;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Level;
   options.level0_file_num_compaction_trigger = 3;
 
   DestroyAndReopen(options);
@@ -1092,7 +1092,7 @@ TEST_F(DBCompactionTest, CompactionSstPartitionWithManualCompaction) {
 
 TEST_F(DBCompactionTest, CompactionSstPartitionerNonTrivial) {
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Level;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Level;
   options.level0_file_num_compaction_trigger = 1;
   std::shared_ptr<SstPartitionerFactory> factory(
       NewSstPartitionerFixedPrefixFactory(4));
@@ -1116,7 +1116,7 @@ TEST_F(DBCompactionTest, CompactionSstPartitionerNonTrivial) {
 
 TEST_F(DBCompactionTest, ZeroSeqIdCompaction) {
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Level;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Level;
   options.level0_file_num_compaction_trigger = 3;
 
   FlushedFileCollector* collector = new FlushedFileCollector();
@@ -1172,7 +1172,7 @@ TEST_F(DBCompactionTest, ZeroSeqIdCompaction) {
 TEST_F(DBCompactionTest, ManualCompactionUnknownOutputSize) {
   // github issue #2249
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Level;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Level;
   options.level0_file_num_compaction_trigger = 3;
   DestroyAndReopen(options);
 
@@ -2167,7 +2167,7 @@ TEST_P(DBCompactionTestWithParam, LevelCompactionThirdPath) {
   options.db_paths.emplace_back(dbname_ + "_3", 1024 * 1024 * 1024);
   options.memtable_factory.reset(
       test::NewSpecialSkipListFactory(KNumKeysByGenerateNewFile - 1));
-  options.compaction_style = CompactionStyle::Level;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Level;
   options.write_buffer_size = 110 << 10;  // 110KB
   options.arena_block_size = 4 << 10;
   options.level0_file_num_compaction_trigger = 2;
@@ -2276,7 +2276,7 @@ TEST_P(DBCompactionTestWithParam, LevelCompactionPathUse) {
   options.db_paths.emplace_back(dbname_ + "_3", 1024 * 1024 * 1024);
   options.memtable_factory.reset(
       test::NewSpecialSkipListFactory(KNumKeysByGenerateNewFile - 1));
-  options.compaction_style = CompactionStyle::Level;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Level;
   options.write_buffer_size = 110 << 10;  // 110KB
   options.arena_block_size = 4 << 10;
   options.level0_file_num_compaction_trigger = 2;
@@ -2386,7 +2386,7 @@ TEST_P(DBCompactionTestWithParam, LevelCompactionCFPathUse) {
   options.db_paths.emplace_back(dbname_ + "_3", 1024 * 1024 * 1024);
   options.memtable_factory.reset(
       test::NewSpecialSkipListFactory(KNumKeysByGenerateNewFile - 1));
-  options.compaction_style = CompactionStyle::Level;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Level;
   options.write_buffer_size = 110 << 10;  // 110KB
   options.arena_block_size = 4 << 10;
   options.level0_file_num_compaction_trigger = 2;
@@ -2559,7 +2559,7 @@ TEST_P(DBCompactionTestWithParam, ConvertCompactionStyle) {
 
   // Stage 2: reopen with universal compaction - should fail
   options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.num_levels = 1;
   options = CurrentOptions(options);
   Status s = TryReopenWithColumnFamilies({"default", "pikachu"}, options);
@@ -2592,7 +2592,7 @@ TEST_P(DBCompactionTestWithParam, ConvertCompactionStyle) {
 
   // Stage 4: re-open in universal compaction style and do some db operations
   options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.num_levels = 4;
   options.write_buffer_size = 110 << 10;  // 110KB
   options.arena_block_size = 4 << 10;
@@ -2890,7 +2890,7 @@ TEST_P(DBCompactionTestWithParam, DISABLED_CompactFilesOnLevelCompaction) {
   Options options;
   options.create_if_missing = true;
   options.write_buffer_size = kEntrySize * kEntriesPerBuffer;
-  options.compaction_style = CompactionStyle::Level;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Level;
   options.target_file_size_base = options.write_buffer_size;
   options.max_bytes_for_level_base = options.target_file_size_base * 2;
   options.level0_stop_writes_trigger = 2;
@@ -3106,7 +3106,7 @@ TEST_P(DBCompactionTestWithParam, CompressLevelCompaction) {
   Options options = CurrentOptions();
   options.memtable_factory.reset(
       test::NewSpecialSkipListFactory(KNumKeysByGenerateNewFile - 1));
-  options.compaction_style = CompactionStyle::Level;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Level;
   options.write_buffer_size = 110 << 10;  // 110KB
   options.arena_block_size = 4 << 10;
   options.level0_file_num_compaction_trigger = 2;
@@ -3235,7 +3235,7 @@ TEST_F(DBCompactionTest, SanitizeCompactionOptionsTest) {
 // running parallel L0-L1 compactions
 TEST_F(DBCompactionTest, SuggestCompactRangeNoTwoLevel0Compactions) {
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Level;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Level;
   options.write_buffer_size = 110 << 10;
   options.arena_block_size = 4 << 10;
   options.level0_file_num_compaction_trigger = 4;
@@ -3549,9 +3549,9 @@ TEST_P(DBCompactionTestWithParam, FullCompactionInBottomPriThreadPool) {
   for (bool use_universal_compaction : {false, true}) {
     Options options = CurrentOptions();
     if (use_universal_compaction) {
-      options.compaction_style = CompactionStyle::Universal;
+      options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
     } else {
-      options.compaction_style = CompactionStyle::Level;
+      options.compaction_style = rs::advanced_options::CompactionStyle::Level;
       options.level_compaction_dynamic_level_bytes = true;
     }
     options.num_levels = 4;
@@ -3597,7 +3597,7 @@ TEST_F(DBCompactionTest, CancelCompactionWaitingOnConflict) {
   const int kNumSortedRuns = 4;
 
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.level0_file_num_compaction_trigger = kNumSortedRuns;
   options.memtable_factory.reset(
       test::NewSpecialSkipListFactory(KNumKeysByGenerateNewFile - 1));
@@ -6390,7 +6390,7 @@ class DBCompactionTestWithOngoingFileIngestionParam
     } else {
       options_.num_levels = 3;
     }
-    options_.compaction_style = CompactionStyle::Level;
+    options_.compaction_style = rs::advanced_options::CompactionStyle::Level;
     if (compaction_path_to_test_ == "AutoCompaction") {
       options_.disable_auto_compactions = false;
       options_.level0_file_num_compaction_trigger = 1;
@@ -6694,7 +6694,7 @@ void IngestOneKeyValue(DBImpl* db, const std::string& key,
 class DBCompactionTestL0FilesMisorderCorruption : public DBCompactionTest {
  public:
   DBCompactionTestL0FilesMisorderCorruption() : DBCompactionTest() {}
-  void SetupOptions(const CompactionStyle compaciton_style,
+  void SetupOptions(const rs::advanced_options::CompactionStyle compaciton_style,
                     const std::string& compaction_path_to_test = "") {
     options_ = CurrentOptions();
     options_.create_if_missing = true;
@@ -6703,7 +6703,7 @@ class DBCompactionTestL0FilesMisorderCorruption : public DBCompactionTest {
     options_.force_consistency_checks = true;
     options_.compaction_style = compaciton_style;
 
-    if (compaciton_style == CompactionStyle::Level) {
+    if (compaciton_style == rs::advanced_options::CompactionStyle::Level) {
       options_.num_levels = 7;
       // Level compaction's PickIntraL0Compaction() impl detail requires
       // `options.level0_file_num_compaction_trigger` to be
@@ -6713,7 +6713,7 @@ class DBCompactionTestL0FilesMisorderCorruption : public DBCompactionTest {
       options_.max_background_compactions = 2;
       options_.write_buffer_size = 2 << 20;
       options_.max_write_buffer_number = 6;
-    } else if (compaciton_style == CompactionStyle::Universal) {
+    } else if (compaciton_style == rs::advanced_options::CompactionStyle::Universal) {
       // TODO: expand test coverage to num_lvels > 1 for universal compacion,
       // which requires careful unit test design to compact to level 0 despite
       // num_levels > 1
@@ -6731,7 +6731,7 @@ class DBCompactionTestL0FilesMisorderCorruption : public DBCompactionTest {
         universal_options.min_merge_width = 6;
       }
       options_.compaction_options_universal = universal_options;
-    } else if (compaciton_style == CompactionStyle::FIFO) {
+    } else if (compaciton_style == rs::advanced_options::CompactionStyle::FIFO) {
       options_.max_open_files = -1;
       options_.num_levels = 1;
       options_.level0_file_num_compaction_trigger = 3;
@@ -6767,7 +6767,7 @@ class DBCompactionTestL0FilesMisorderCorruption : public DBCompactionTest {
 
   void Reopen(const Options& options) {
     DBTestBase::Reopen(options);
-    if (options.compaction_style != CompactionStyle::Level) {
+    if (options.compaction_style != rs::advanced_options::CompactionStyle::Level) {
       // To force assigning the global seqno to ingested file
       // for our test purpose.
       assert(snapshot_ == nullptr);
@@ -6797,7 +6797,7 @@ class DBCompactionTestL0FilesMisorderCorruption : public DBCompactionTest {
 
   void AddFilesMarkedForPeriodicCompaction(const size_t num_files) {
     assert(options_.compaction_style ==
-           CompactionStyle::Universal);
+           rs::advanced_options::CompactionStyle::Universal);
     VersionSet* const versions = dbfull()->GetVersionSet();
     assert(versions);
     ColumnFamilyData* const cfd = versions->GetColumnFamilySet()->GetDefault();
@@ -6818,7 +6818,7 @@ class DBCompactionTestL0FilesMisorderCorruption : public DBCompactionTest {
 
   void AddFilesMarkedForCompaction(const size_t num_files) {
     assert(options_.compaction_style ==
-           CompactionStyle::Universal);
+           rs::advanced_options::CompactionStyle::Universal);
     VersionSet* const versions = dbfull()->GetVersionSet();
     assert(versions);
     ColumnFamilyData* const cfd = versions->GetColumnFamilySet()->GetDefault();
@@ -6840,7 +6840,7 @@ class DBCompactionTestL0FilesMisorderCorruption : public DBCompactionTest {
   void SetupSyncPoints(const std::string& compaction_path_to_test) {
     compaction_path_sync_point_called_.store(false);
     if (compaction_path_to_test == "FindIntraL0Compaction" &&
-        options_.compaction_style == CompactionStyle::Level) {
+        options_.compaction_style == rs::advanced_options::CompactionStyle::Level) {
       ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
           "PostPickFileToCompact", [&](void* arg) {
             bool* picked_file_to_compact = (bool*)arg;
@@ -6855,7 +6855,7 @@ class DBCompactionTestL0FilesMisorderCorruption : public DBCompactionTest {
 
     } else if (compaction_path_to_test == "PickPeriodicCompaction") {
       assert(options_.compaction_style ==
-             CompactionStyle::Universal);
+             rs::advanced_options::CompactionStyle::Universal);
       ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
           "PostPickPeriodicCompaction", [&](void* compaction_arg) {
             Compaction* compaction = (Compaction*)compaction_arg;
@@ -6865,14 +6865,14 @@ class DBCompactionTestL0FilesMisorderCorruption : public DBCompactionTest {
           });
     } else if (compaction_path_to_test == "PickCompactionToReduceSizeAmp") {
       assert(options_.compaction_style ==
-             CompactionStyle::Universal);
+             rs::advanced_options::CompactionStyle::Universal);
       ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
           "PickCompactionToReduceSizeAmpReturnNonnullptr", [&](void* /*arg*/) {
             compaction_path_sync_point_called_.store(true);
           });
     } else if (compaction_path_to_test == "PickCompactionToReduceSortedRuns") {
       assert(options_.compaction_style ==
-             CompactionStyle::Universal);
+             rs::advanced_options::CompactionStyle::Universal);
       ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
           "PickCompactionToReduceSortedRunsReturnNonnullptr",
           [&](void* /*arg*/) {
@@ -6880,7 +6880,7 @@ class DBCompactionTestL0FilesMisorderCorruption : public DBCompactionTest {
           });
     } else if (compaction_path_to_test == "PickDeleteTriggeredCompaction") {
       assert(options_.compaction_style ==
-             CompactionStyle::Universal);
+             rs::advanced_options::CompactionStyle::Universal);
       ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
           "PickDeleteTriggeredCompactionReturnNonnullptr", [&](void* /*arg*/) {
             compaction_path_sync_point_called_.store(true);
@@ -6888,7 +6888,7 @@ class DBCompactionTestL0FilesMisorderCorruption : public DBCompactionTest {
     } else if ((compaction_path_to_test == "FindIntraL0Compaction" ||
                 compaction_path_to_test == "CompactRange") &&
                options_.compaction_style ==
-                   CompactionStyle::FIFO) {
+                   rs::advanced_options::CompactionStyle::FIFO) {
       ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
           "FindIntraL0Compaction", [&](void* /*arg*/) {
             compaction_path_sync_point_called_.store(true);
@@ -6941,7 +6941,7 @@ class DBCompactionTestL0FilesMisorderCorruption : public DBCompactionTest {
 
 TEST_F(DBCompactionTestL0FilesMisorderCorruption,
        FlushAfterIntraL0LevelCompactionWithIngestedFile) {
-  SetupOptions(CompactionStyle::Level, "");
+  SetupOptions(rs::advanced_options::CompactionStyle::Level, "");
   DestroyAndReopen(options_);
   // Prevents trivial move
   for (int i = 0; i < 10; ++i) {
@@ -7027,7 +7027,7 @@ TEST_F(DBCompactionTestL0FilesMisorderCorruption,
   for (const std::string compaction_path_to_test :
        {"PickPeriodicCompaction", "PickCompactionToReduceSizeAmp",
         "PickCompactionToReduceSortedRuns", "PickDeleteTriggeredCompaction"}) {
-    SetupOptions(CompactionStyle::Universal,
+    SetupOptions(rs::advanced_options::CompactionStyle::Universal,
                  compaction_path_to_test);
     DestroyAndReopen(options_);
 
@@ -7118,7 +7118,7 @@ TEST_F(DBCompactionTestL0FilesMisorderCorruption,
 TEST_F(DBCompactionTestL0FilesMisorderCorruption,
        FlushAfterIntraL0FIFOCompactionWithIngestedFile) {
   for (const std::string compaction_path_to_test : {"FindIntraL0Compaction"}) {
-    SetupOptions(CompactionStyle::FIFO,
+    SetupOptions(rs::advanced_options::CompactionStyle::FIFO,
                  compaction_path_to_test);
     DestroyAndReopen(options_);
 
@@ -7192,20 +7192,20 @@ TEST_F(DBCompactionTestL0FilesMisorderCorruption,
 
 class DBCompactionTestL0FilesMisorderCorruptionWithParam
     : public DBCompactionTestL0FilesMisorderCorruption,
-      public testing::WithParamInterface<CompactionStyle> {
+      public testing::WithParamInterface<rs::advanced_options::CompactionStyle> {
  public:
   DBCompactionTestL0FilesMisorderCorruptionWithParam()
       : DBCompactionTestL0FilesMisorderCorruption() {}
 };
 
-// TODO: add `CompactionStyle::Level` to testing parameter,
+// TODO: add `rs::advanced_options::CompactionStyle::Level` to testing parameter,
 // which requires careful unit test
 // design for ingesting file to L0 and CompactRange()/CompactFile() to L0
 INSTANTIATE_TEST_CASE_P(
     DBCompactionTestL0FilesMisorderCorruptionWithParam,
     DBCompactionTestL0FilesMisorderCorruptionWithParam,
-    ::testing::Values(CompactionStyle::Universal,
-                      CompactionStyle::FIFO));
+    ::testing::Values(rs::advanced_options::CompactionStyle::Universal,
+                      rs::advanced_options::CompactionStyle::FIFO));
 
 TEST_P(DBCompactionTestL0FilesMisorderCorruptionWithParam,
        FlushAfterIntraL0CompactFileWithIngestedFile) {
@@ -7300,7 +7300,7 @@ TEST_P(DBCompactionTestL0FilesMisorderCorruptionWithParam,
   // Up to now, L0 contains s0, s1, s2
   ASSERT_EQ(3, NumTableFilesAtLevel(0));
 
-  if (options_.compaction_style == CompactionStyle::FIFO) {
+  if (options_.compaction_style == rs::advanced_options::CompactionStyle::FIFO) {
     SetupSyncPoints("CompactRange");
   }
   // `start` and `end` is carefully chosen so that compact range:
@@ -7312,7 +7312,7 @@ TEST_P(DBCompactionTestL0FilesMisorderCorruptionWithParam,
   //
   // memtable: m1 [                 k2:new@4, k1:new@3]
   // L0: s3[k5:dummy@6, k4:dummy@5, k3:old@2, k1:old@1]
-  if (options_.compaction_style == CompactionStyle::FIFO) {
+  if (options_.compaction_style == rs::advanced_options::CompactionStyle::FIFO) {
     ASSERT_TRUE(SyncPointsCalled());
     DisableSyncPoints();
   }
@@ -7343,7 +7343,7 @@ TEST_P(DBCompactionTestL0FilesMisorderCorruptionWithParam,
 TEST_F(DBCompactionTest, SingleLevelUniveresal) {
   // Tests that manual compaction works with single level universal compaction.
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.disable_auto_compactions = true;
   options.num_levels = 1;
   DestroyAndReopen(options);
@@ -7505,7 +7505,7 @@ TEST_F(DBCompactionTest, UpdateLevelSubCompactionTest) {
 TEST_F(DBCompactionTest, UpdateUniversalSubCompactionTest) {
   Options options = CurrentOptions();
   options.max_subcompactions = 10;
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.target_file_size_base = 1 << 10;  // 1KB
   DestroyAndReopen(options);
 
@@ -8595,7 +8595,7 @@ TEST_F(DBCompactionTest, CompactionWithChecksumHandoffManifest2) {
 
 TEST_F(DBCompactionTest, FIFOWarm) {
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::FIFO;
+  options.compaction_style = rs::advanced_options::CompactionStyle::FIFO;
   options.num_levels = 1;
   options.max_open_files = -1;
   options.level0_file_num_compaction_trigger = 2;
@@ -9152,7 +9152,7 @@ TEST_F(DBCompactionTest, BottommostFileCompactionAllowIngestBehind) {
   // compaction loop with reason kBottommostFiles.
   Options options = CurrentOptions();
   options.env = env_;
-  options.compaction_style = CompactionStyle::Level;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Level;
   options.allow_ingest_behind = true;
   options.comparator = BytewiseComparator();
   DestroyAndReopen(options);
@@ -9185,7 +9185,7 @@ TEST_F(DBCompactionTest, BottommostFileCompactionAllowIngestBehind) {
 
 TEST_F(DBCompactionTest, TurnOnLevelCompactionDynamicLevelBytes) {
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Level;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Level;
   options.allow_ingest_behind = false;
   options.level_compaction_dynamic_level_bytes = false;
   options.num_levels = 6;
@@ -9249,7 +9249,7 @@ TEST_F(DBCompactionTest, TurnOnLevelCompactionDynamicLevelBytesUCToLC) {
   // Basic test for migrating from UC to LC.
   // DB has non-empty L1 that should be pushed down to last level (L49).
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.allow_ingest_behind = false;
   options.level_compaction_dynamic_level_bytes = false;
   options.num_levels = 50;
@@ -9266,7 +9266,7 @@ TEST_F(DBCompactionTest, TurnOnLevelCompactionDynamicLevelBytesUCToLC) {
   ASSERT_OK(db_->CompactRange(compact_options, handles_[1], nullptr, nullptr));
   ASSERT_EQ("0,1", FilesPerLevel(1));
 
-  options.compaction_style = CompactionStyle::Level;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Level;
   options.level_compaction_dynamic_level_bytes = true;
   ReopenWithColumnFamilies({"default", "pikachu"}, options);
   std::string expected_lsm = "";

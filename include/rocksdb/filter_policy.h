@@ -53,7 +53,7 @@ struct FilterBuildingContext {
   const BlockBasedTableOptions& table_options;
 
   // BEGIN from (DB|ColumnFamily)Options in effect at table creation time
-  CompactionStyle compaction_style = CompactionStyle::Level;
+  rs::advanced_options::CompactionStyle compaction_style = rs::advanced_options::CompactionStyle::Level;
 
   // Number of LSM levels, or -1 if unknown
   int num_levels = -1;

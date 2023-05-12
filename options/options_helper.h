@@ -72,7 +72,7 @@ extern Status StringToMap(
 struct OptionsHelper {
   static const std::string kCFOptionsName /*= "ColumnFamilyOptions"*/;
   static const std::string kDBOptionsName /*= "DBOptions" */;
-  static std::map<CompactionStyle, std::string> compaction_style_to_string;
+  static std::map<rs::advanced_options::CompactionStyle, std::string> compaction_style_to_string;
   static std::map<rs::advanced_options::CompactionPri, std::string> compaction_pri_to_string;
   static std::map<CompactionStopStyle, std::string>
       compaction_stop_style_to_string;
@@ -85,7 +85,7 @@ struct OptionsHelper {
   static std::unordered_map<std::string, CompactionStopStyle>
       compaction_stop_style_string_map;
   static std::unordered_map<std::string, EncodingType> encoding_type_string_map;
-  static std::unordered_map<std::string, CompactionStyle>
+  static std::unordered_map<std::string, rs::advanced_options::CompactionStyle>
       compaction_style_string_map;
   static std::unordered_map<std::string, rs::advanced_options::CompactionPri>
       compaction_pri_string_map;

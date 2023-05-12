@@ -645,7 +645,7 @@ ColumnFamilyOptions* ColumnFamilyOptions::OptimizeLevelStyleCompaction(
   max_bytes_for_level_base = memtable_memory_budget;
 
   // level style compaction
-  compaction_style = CompactionStyle::Level;
+  compaction_style = rs::advanced_options::CompactionStyle::Level;
 
   // only compress levels >= 2
   compression_per_level.resize(num_levels);
@@ -671,7 +671,7 @@ ColumnFamilyOptions* ColumnFamilyOptions::OptimizeUniversalStyleCompaction(
   // write stalls.
   max_write_buffer_number = 6;
   // universal style compaction
-  compaction_style = CompactionStyle::Universal;
+  compaction_style = rs::advanced_options::CompactionStyle::Universal;
   compaction_options_universal.compression_size_percent = 80;
   return this;
 }

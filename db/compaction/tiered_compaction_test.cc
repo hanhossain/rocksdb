@@ -179,7 +179,7 @@ TEST_P(TieredCompactionTest, SequenceBasedTieredStorageUniversal) {
   const int kLastLevel = kNumLevels - 1;
 
   auto options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   SetColdTemperature(options);
   options.level0_file_num_compaction_trigger = kNumTrigger;
   options.statistics = CreateDBStatistics();
@@ -341,7 +341,7 @@ TEST_P(TieredCompactionTest, RangeBasedTieredStorageUniversal) {
   const int kLastLevel = kNumLevels - 1;
 
   auto options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   SetColdTemperature(options);
   options.level0_file_num_compaction_trigger = kNumTrigger;
   options.statistics = CreateDBStatistics();
@@ -751,7 +751,7 @@ TEST_P(TieredCompactionTest, UniversalRangeDelete) {
   auto factory = std::make_shared<SingleKeySstPartitionerFactory>();
 
   auto options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   SetColdTemperature(options);
   options.level0_file_num_compaction_trigger = kNumTrigger;
   options.statistics = CreateDBStatistics();
@@ -1242,7 +1242,7 @@ TEST_F(PrecludeLastLevelTest, MigrationFromPreserveTimeManualCompaction) {
   const int kKeyPerSec = 10;
 
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.preserve_internal_time_seconds = 10000;
   options.env = mock_env_.get();
   options.level0_file_num_compaction_trigger = kNumTrigger;
@@ -1304,7 +1304,7 @@ TEST_F(PrecludeLastLevelTest, MigrationFromPreserveTimeAutoCompaction) {
   const int kKeyPerSec = 10;
 
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.preserve_internal_time_seconds = 10000;
   options.env = mock_env_.get();
   options.level0_file_num_compaction_trigger = kNumTrigger;
@@ -1380,7 +1380,7 @@ TEST_F(PrecludeLastLevelTest, MigrationFromPreserveTimePartial) {
   const int kKeyPerSec = 10;
 
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.preserve_internal_time_seconds = 2000;
   options.env = mock_env_.get();
   options.level0_file_num_compaction_trigger = kNumTrigger;
@@ -1452,7 +1452,7 @@ TEST_F(PrecludeLastLevelTest, SmallPrecludeTime) {
   const int kNumKeys = 100;
 
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.preclude_last_level_data_seconds = 60;
   options.preserve_internal_time_seconds = 0;
   options.env = mock_env_.get();
@@ -1507,7 +1507,7 @@ TEST_F(PrecludeLastLevelTest, LastLevelOnlyCompactionPartial) {
   const int kKeyPerSec = 10;
 
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.preserve_internal_time_seconds = 2000;
   options.env = mock_env_.get();
   options.level0_file_num_compaction_trigger = kNumTrigger;
@@ -1585,7 +1585,7 @@ TEST_P(PrecludeLastLevelTestWithParms, LastLevelOnlyCompactionNoPreclude) {
   bool enable_preclude_last_level = GetParam();
 
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.preserve_internal_time_seconds = 2000;
   options.env = mock_env_.get();
   options.level0_file_num_compaction_trigger = kNumTrigger;
@@ -1734,7 +1734,7 @@ TEST_P(PrecludeLastLevelTestWithParms, PeriodicCompactionToPenultimateLevel) {
   bool enable_preclude_last_level = GetParam();
 
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.preserve_internal_time_seconds = 20000;
   options.env = mock_env_.get();
   options.level0_file_num_compaction_trigger = kNumTrigger;
@@ -1899,7 +1899,7 @@ TEST_F(PrecludeLastLevelTest, PartialPenultimateLevelCompaction) {
   const int kKeyPerSec = 10;
 
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.env = mock_env_.get();
   options.level0_file_num_compaction_trigger = kNumTrigger;
   options.preserve_internal_time_seconds = 10000;
@@ -2008,7 +2008,7 @@ TEST_F(PrecludeLastLevelTest, RangeDelsCauseFileEndpointsToOverlap) {
   const int kNumKeys = kNumFiles * kNumKeysPerFile;
 
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.env = mock_env_.get();
   options.last_level_temperature = Temperature::Cold;
   options.preserve_internal_time_seconds = 600;

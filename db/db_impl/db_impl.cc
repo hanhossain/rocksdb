@@ -121,7 +121,7 @@ CompressionType GetCompressionFlush(
   // Compressing memtable flushes might not help unless the sequential load
   // optimization is used for leveled compaction. Otherwise the CPU and
   // latency overhead is not offset by saving much space.
-  if (ioptions.compaction_style == CompactionStyle::Universal &&
+  if (ioptions.compaction_style == rs::advanced_options::CompactionStyle::Universal &&
       mutable_cf_options.compaction_options_universal
               .compression_size_percent >= 0) {
     return kNoCompression;

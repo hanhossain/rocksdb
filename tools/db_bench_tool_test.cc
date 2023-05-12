@@ -59,7 +59,7 @@ class DBBenchTest : public testing::Test {
   // Note that db_bench may change some of the default option values and that
   // the database might as well.  The options changed by db_bench are
   // specified here; the ones by the DB are set via SanitizeOptions
-  Options GetDefaultOptions(CompactionStyle style = kCompactionStyleLevel,
+  Options GetDefaultOptions(rs::advanced_options::CompactionStyle style = kCompactionStyleLevel,
                             int levels = 7) const {
     Options opt;
 

@@ -903,7 +903,7 @@ TEST_P(CompactionJobStatsTest, UniversalCompactionTest) {
   options.compression = kNoCompression;
   options.level0_file_num_compaction_trigger = 2;
   options.target_file_size_base = num_keys_per_table * 1000;
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.compaction_options_universal.size_ratio = 1;
   options.compaction_options_universal.max_size_amplification_percent = 1000;
   options.max_subcompactions = max_subcompactions_;

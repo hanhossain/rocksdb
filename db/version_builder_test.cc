@@ -36,7 +36,7 @@ class VersionBuilderTest : public testing::Test {
         icmp_(ucmp_),
         ioptions_(options_),
         mutable_cf_options_(options_),
-        vstorage_(&icmp_, ucmp_, options_.num_levels, CompactionStyle::Level,
+        vstorage_(&icmp_, ucmp_, options_.num_levels, rs::advanced_options::CompactionStyle::Level,
                   nullptr, false),
         file_num_(1) {
     mutable_cf_options_.RefreshDerivedOptions(ioptions_);
@@ -198,7 +198,7 @@ TEST_F(VersionBuilderTest, ApplyAndSaveTo) {
                                  &vstorage_, version_set);
 
   VersionStorageInfo new_vstorage(&icmp_, ucmp_, options_.num_levels,
-                                  CompactionStyle::Level, nullptr, false);
+                                  rs::advanced_options::CompactionStyle::Level, nullptr, false);
   ASSERT_OK(version_builder.Apply(&version_edit));
   ASSERT_OK(version_builder.SaveTo(&new_vstorage));
 
@@ -247,7 +247,7 @@ TEST_F(VersionBuilderTest, ApplyAndSaveToDynamic) {
                                  &vstorage_, version_set);
 
   VersionStorageInfo new_vstorage(&icmp_, ucmp_, options_.num_levels,
-                                  CompactionStyle::Level, nullptr, false);
+                                  rs::advanced_options::CompactionStyle::Level, nullptr, false);
   ASSERT_OK(version_builder.Apply(&version_edit));
   ASSERT_OK(version_builder.SaveTo(&new_vstorage));
 
@@ -300,7 +300,7 @@ TEST_F(VersionBuilderTest, ApplyAndSaveToDynamic2) {
                                  &vstorage_, version_set);
 
   VersionStorageInfo new_vstorage(&icmp_, ucmp_, options_.num_levels,
-                                  CompactionStyle::Level, nullptr, false);
+                                  rs::advanced_options::CompactionStyle::Level, nullptr, false);
   ASSERT_OK(version_builder.Apply(&version_edit));
   ASSERT_OK(version_builder.SaveTo(&new_vstorage));
 
@@ -351,7 +351,7 @@ TEST_F(VersionBuilderTest, ApplyMultipleAndSaveTo) {
                                  &vstorage_, version_set);
 
   VersionStorageInfo new_vstorage(&icmp_, ucmp_, options_.num_levels,
-                                  CompactionStyle::Level, nullptr, false);
+                                  rs::advanced_options::CompactionStyle::Level, nullptr, false);
   ASSERT_OK(version_builder.Apply(&version_edit));
   ASSERT_OK(version_builder.SaveTo(&new_vstorage));
 
@@ -373,7 +373,7 @@ TEST_F(VersionBuilderTest, ApplyDeleteAndSaveTo) {
                                  &vstorage_, version_set);
 
   VersionStorageInfo new_vstorage(&icmp_, ucmp_, options_.num_levels,
-                                  CompactionStyle::Level, nullptr, false);
+                                  rs::advanced_options::CompactionStyle::Level, nullptr, false);
 
   VersionEdit version_edit;
   version_edit.AddFile(
@@ -532,7 +532,7 @@ TEST_F(VersionBuilderTest, ApplyFileDeletionAndAddition) {
 
   constexpr bool force_consistency_checks = false;
   VersionStorageInfo new_vstorage(&icmp_, ucmp_, options_.num_levels,
-                                  CompactionStyle::Level, &vstorage_,
+                                  rs::advanced_options::CompactionStyle::Level, &vstorage_,
                                   force_consistency_checks);
 
   ASSERT_OK(builder.SaveTo(&new_vstorage));
@@ -672,7 +672,7 @@ TEST_F(VersionBuilderTest, ApplyFileAdditionAndDeletion) {
 
   constexpr bool force_consistency_checks = false;
   VersionStorageInfo new_vstorage(&icmp_, ucmp_, options_.num_levels,
-                                  CompactionStyle::Level, &vstorage_,
+                                  rs::advanced_options::CompactionStyle::Level, &vstorage_,
                                   force_consistency_checks);
 
   ASSERT_OK(builder.SaveTo(&new_vstorage));
@@ -716,7 +716,7 @@ TEST_F(VersionBuilderTest, ApplyBlobFileAddition) {
 
   constexpr bool force_consistency_checks = false;
   VersionStorageInfo new_vstorage(&icmp_, ucmp_, options_.num_levels,
-                                  CompactionStyle::Level, &vstorage_,
+                                  rs::advanced_options::CompactionStyle::Level, &vstorage_,
                                   force_consistency_checks);
 
   ASSERT_OK(builder.SaveTo(&new_vstorage));
@@ -855,7 +855,7 @@ TEST_F(VersionBuilderTest, ApplyBlobFileGarbageFileInBase) {
 
   constexpr bool force_consistency_checks = false;
   VersionStorageInfo new_vstorage(&icmp_, ucmp_, options_.num_levels,
-                                  CompactionStyle::Level, &vstorage_,
+                                  rs::advanced_options::CompactionStyle::Level, &vstorage_,
                                   force_consistency_checks);
 
   ASSERT_OK(builder.SaveTo(&new_vstorage));
@@ -928,7 +928,7 @@ TEST_F(VersionBuilderTest, ApplyBlobFileGarbageFileAdditionApplied) {
 
   constexpr bool force_consistency_checks = false;
   VersionStorageInfo new_vstorage(&icmp_, ucmp_, options_.num_levels,
-                                  CompactionStyle::Level, &vstorage_,
+                                  rs::advanced_options::CompactionStyle::Level, &vstorage_,
                                   force_consistency_checks);
 
   ASSERT_OK(builder.SaveTo(&new_vstorage));
@@ -1108,7 +1108,7 @@ TEST_F(VersionBuilderTest, SaveBlobFilesTo) {
 
   constexpr bool force_consistency_checks = false;
   VersionStorageInfo new_vstorage(&icmp_, ucmp_, options_.num_levels,
-                                  CompactionStyle::Level, &vstorage_,
+                                  rs::advanced_options::CompactionStyle::Level, &vstorage_,
                                   force_consistency_checks);
 
   ASSERT_OK(builder.SaveTo(&new_vstorage));
@@ -1156,7 +1156,7 @@ TEST_F(VersionBuilderTest, SaveBlobFilesTo) {
   ASSERT_OK(second_builder.Apply(&second_edit));
 
   VersionStorageInfo newer_vstorage(&icmp_, ucmp_, options_.num_levels,
-                                    CompactionStyle::Level, &new_vstorage,
+                                    rs::advanced_options::CompactionStyle::Level, &new_vstorage,
                                     force_consistency_checks);
 
   ASSERT_OK(second_builder.SaveTo(&newer_vstorage));
@@ -1241,7 +1241,7 @@ TEST_F(VersionBuilderTest, SaveBlobFilesToConcurrentJobs) {
 
   constexpr bool force_consistency_checks = true;
   VersionStorageInfo new_vstorage(&icmp_, ucmp_, options_.num_levels,
-                                  CompactionStyle::Level, &vstorage_,
+                                  rs::advanced_options::CompactionStyle::Level, &vstorage_,
                                   force_consistency_checks);
 
   ASSERT_OK(builder.SaveTo(&new_vstorage));
@@ -1342,7 +1342,7 @@ TEST_F(VersionBuilderTest, CheckConsistencyForBlobFiles) {
   // Save to a new version in order to trigger consistency checks.
   constexpr bool force_consistency_checks = true;
   VersionStorageInfo new_vstorage(&icmp_, ucmp_, options_.num_levels,
-                                  CompactionStyle::Level, &vstorage_,
+                                  rs::advanced_options::CompactionStyle::Level, &vstorage_,
                                   force_consistency_checks);
 
   ASSERT_OK(builder.SaveTo(&new_vstorage));
@@ -1381,7 +1381,7 @@ TEST_F(VersionBuilderTest, CheckConsistencyForBlobFilesInconsistentLinks) {
   // Save to a new version in order to trigger consistency checks.
   constexpr bool force_consistency_checks = true;
   VersionStorageInfo new_vstorage(&icmp_, ucmp_, options_.num_levels,
-                                  CompactionStyle::Level, &vstorage_,
+                                  rs::advanced_options::CompactionStyle::Level, &vstorage_,
                                   force_consistency_checks);
 
   const Status s = builder.SaveTo(&new_vstorage);
@@ -1422,7 +1422,7 @@ TEST_F(VersionBuilderTest, CheckConsistencyForBlobFilesAllGarbage) {
   // Save to a new version in order to trigger consistency checks.
   constexpr bool force_consistency_checks = true;
   VersionStorageInfo new_vstorage(&icmp_, ucmp_, options_.num_levels,
-                                  CompactionStyle::Level, &vstorage_,
+                                  rs::advanced_options::CompactionStyle::Level, &vstorage_,
                                   force_consistency_checks);
 
   const Status s = builder.SaveTo(&new_vstorage);
@@ -1471,7 +1471,7 @@ TEST_F(VersionBuilderTest, CheckConsistencyForBlobFilesAllGarbageLinkedSsts) {
   // Save to a new version in order to trigger consistency checks.
   constexpr bool force_consistency_checks = true;
   VersionStorageInfo new_vstorage(&icmp_, ucmp_, options_.num_levels,
-                                  CompactionStyle::Level, &vstorage_,
+                                  rs::advanced_options::CompactionStyle::Level, &vstorage_,
                                   force_consistency_checks);
 
   const Status s = builder.SaveTo(&new_vstorage);
@@ -1629,7 +1629,7 @@ TEST_F(VersionBuilderTest, MaintainLinkedSstsForBlobFiles) {
 
   constexpr bool force_consistency_checks = true;
   VersionStorageInfo new_vstorage(&icmp_, ucmp_, options_.num_levels,
-                                  CompactionStyle::Level, &vstorage_,
+                                  rs::advanced_options::CompactionStyle::Level, &vstorage_,
                                   force_consistency_checks);
 
   ASSERT_OK(builder.SaveTo(&new_vstorage));
@@ -1680,7 +1680,7 @@ TEST_F(VersionBuilderTest, CheckConsistencyForFileDeletedTwice) {
   VersionBuilder version_builder(env_options, &ioptions_, table_cache,
                                  &vstorage_, version_set);
   VersionStorageInfo new_vstorage(&icmp_, ucmp_, options_.num_levels,
-                                  CompactionStyle::Level, nullptr,
+                                  rs::advanced_options::CompactionStyle::Level, nullptr,
                                   true /* force_consistency_checks */);
   ASSERT_OK(version_builder.Apply(&version_edit));
   ASSERT_OK(version_builder.SaveTo(&new_vstorage));
@@ -1690,7 +1690,7 @@ TEST_F(VersionBuilderTest, CheckConsistencyForFileDeletedTwice) {
   VersionBuilder version_builder2(env_options, &ioptions_, table_cache,
                                   &new_vstorage, version_set);
   VersionStorageInfo new_vstorage2(&icmp_, ucmp_, options_.num_levels,
-                                   CompactionStyle::Level, nullptr,
+                                   rs::advanced_options::CompactionStyle::Level, nullptr,
                                    true /* force_consistency_checks */);
   ASSERT_NOK(version_builder2.Apply(&version_edit));
 
@@ -1728,7 +1728,7 @@ TEST_F(VersionBuilderTest, CheckConsistencyForL0FilesSortedByEpochNumber) {
                                    nullptr /* table_cache */, &vstorage_,
                                    nullptr /* file_metadata_cache_res_mgr */);
   VersionStorageInfo new_vstorage_1(
-      &icmp_, ucmp_, options_.num_levels, CompactionStyle::Level,
+      &icmp_, ucmp_, options_.num_levels, rs::advanced_options::CompactionStyle::Level,
       nullptr /* src_vstorage */, true /* force_consistency_checks */);
 
   ASSERT_OK(version_builder_1.Apply(&version_edit_1));
@@ -1765,7 +1765,7 @@ TEST_F(VersionBuilderTest, CheckConsistencyForL0FilesSortedByEpochNumber) {
                                    nullptr /* table_cache */, &vstorage_,
                                    nullptr /* file_metadata_cache_res_mgr */);
   VersionStorageInfo new_vstorage_2(
-      &icmp_, ucmp_, options_.num_levels, CompactionStyle::Level,
+      &icmp_, ucmp_, options_.num_levels, rs::advanced_options::CompactionStyle::Level,
       nullptr /* src_vstorage */, true /* force_consistency_checks */);
 
   ASSERT_OK(version_builder_2.Apply(&version_edit_2));

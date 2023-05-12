@@ -129,7 +129,7 @@ class VersionStorageInfo {
  public:
   VersionStorageInfo(const InternalKeyComparator* internal_comparator,
                      const Comparator* user_comparator, int num_levels,
-                     CompactionStyle compaction_style,
+                     rs::advanced_options::CompactionStyle compaction_style,
                      VersionStorageInfo* src_vstorage,
                      bool _force_consistency_checks,
                      EpochNumberRequirement epoch_number_requirement =
@@ -632,7 +632,7 @@ class VersionStorageInfo {
   FileIndexer file_indexer_;
   Arena arena_;  // Used to allocate space for file_levels_
 
-  CompactionStyle compaction_style_;
+  rs::advanced_options::CompactionStyle compaction_style_;
 
   // List of files per level, files in each level are arranged
   // in increasing order of keys

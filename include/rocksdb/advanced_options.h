@@ -16,7 +16,6 @@
 #include "rocksdb/memtablerep.h"
 #include "rocksdb/universal_compaction.h"
 
-using rs::advanced_options::CompactionStyle;
 using rs::advanced_options::PrepopulateBlobCache;
 using rs::advanced_options::Temperature;
 using rs::advanced_options::UpdateStatus;
@@ -642,10 +641,10 @@ struct AdvancedColumnFamilyOptions {
   // Dynamically changeable through SetOptions() API
   uint64_t hard_pending_compaction_bytes_limit = 256 * 1073741824ull;
 
-  // The compaction style. Default: CompactionStyle::Level
-  CompactionStyle compaction_style = CompactionStyle::Level;
+  // The compaction style. Default: rs::advanced_options::CompactionStyle::Level
+  rs::advanced_options::CompactionStyle compaction_style = rs::advanced_options::CompactionStyle::Level;
 
-  // If level compaction_style = CompactionStyle::Level, for each level,
+  // If level compaction_style = rs::advanced_options::CompactionStyle::Level, for each level,
   // which files are prioritized to be picked to compact.
   // Default: rs::advanced_options::CompactionPri::MinOverlappingRatio
   rs::advanced_options::CompactionPri compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio;

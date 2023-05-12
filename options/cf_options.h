@@ -25,7 +25,7 @@ struct ImmutableCFOptions {
   explicit ImmutableCFOptions();
   explicit ImmutableCFOptions(const ColumnFamilyOptions& cf_options);
 
-  CompactionStyle compaction_style;
+  rs::advanced_options::CompactionStyle compaction_style;
 
   rs::advanced_options::CompactionPri compaction_pri;
 
@@ -229,7 +229,7 @@ struct MutableCFOptions {
   explicit MutableCFOptions(const Options& options);
 
   // Must be called after any change to MutableCFOptions
-  void RefreshDerivedOptions(int num_levels, CompactionStyle compaction_style);
+  void RefreshDerivedOptions(int num_levels, rs::advanced_options::CompactionStyle compaction_style);
 
   void RefreshDerivedOptions(const ImmutableCFOptions& ioptions) {
     RefreshDerivedOptions(ioptions.num_levels, ioptions.compaction_style);
@@ -328,7 +328,7 @@ uint64_t MultiplyCheckOverflow(uint64_t op1, double op2);
 
 // Get the max file size in a given level.
 uint64_t MaxFileSizeForLevel(const MutableCFOptions& cf_options,
-    int level, CompactionStyle compaction_style, int base_level = 1,
+    int level, rs::advanced_options::CompactionStyle compaction_style, int base_level = 1,
     bool level_compaction_dynamic_level_bytes = false);
 
 // Get the max size of an L0 file for which we will pin its meta-blocks when

@@ -551,7 +551,7 @@ Status DBImpl::Recover(
       // Note that files moved in this step may not respect the compression
       // option in target level.
       if (cfd->ioptions()->compaction_style ==
-              CompactionStyle::Level &&
+              rs::advanced_options::CompactionStyle::Level &&
           cfd->ioptions()->level_compaction_dynamic_level_bytes &&
           !cfd->GetLatestMutableCFOptions()->disable_auto_compactions) {
         int to_level = cfd->ioptions()->num_levels - 1;

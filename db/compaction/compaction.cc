@@ -310,7 +310,7 @@ Compaction::Compaction(
   // Every compaction regardless of any compaction reason may respect the
   // existing compact cursor in the output level to split output files
   output_split_key_ = nullptr;
-  if (immutable_options_.compaction_style == CompactionStyle::Level &&
+  if (immutable_options_.compaction_style == rs::advanced_options::CompactionStyle::Level &&
       immutable_options_.compaction_pri == rs::advanced_options::CompactionPri::RoundRobin) {
     const InternalKey* cursor =
         &input_vstorage_->GetCompactCursors()[output_level_];
@@ -344,7 +344,7 @@ void Compaction::PopulatePenultimateLevelOutputRange() {
   // For universal compaction, the penultimate_output_range could be extended if
   // all penultimate level files are included in the compaction (which includes
   // the case that the penultimate level is empty).
-  if (immutable_options_.compaction_style == CompactionStyle::Universal) {
+  if (immutable_options_.compaction_style == rs::advanced_options::CompactionStyle::Universal) {
     exclude_level = kInvalidLevel;
     penultimate_output_range_type_ = PenultimateOutputRangeType::kFullRange;
     std::set<uint64_t> penultimate_inputs;
@@ -469,7 +469,7 @@ bool Compaction::IsTrivialMove() const {
   // input files are non overlapping
   if ((mutable_cf_options_.compaction_options_universal.allow_trivial_move) &&
       (output_level_ != 0) &&
-      (cfd_->ioptions()->compaction_style == CompactionStyle::Universal)) {
+      (cfd_->ioptions()->compaction_style == rs::advanced_options::CompactionStyle::Universal)) {
     return is_trivial_move_;
   }
 
@@ -528,7 +528,7 @@ bool Compaction::KeyNotExistsBeyondOutputLevel(
   if (bottommost_level_) {
     return true;
   } else if (output_level_ != 0 &&
-             cfd_->ioptions()->compaction_style == CompactionStyle::Level) {
+             cfd_->ioptions()->compaction_style == rs::advanced_options::CompactionStyle::Level) {
     // Maybe use binary search to find right entry instead of linear search?
     const Comparator* user_cmp = cfd_->user_comparator();
     for (int lvl = output_level_ + 1; lvl < number_levels_; lvl++) {
@@ -673,7 +673,7 @@ uint64_t Compaction::OutputFilePreallocationSize() const {
   }
 
   if (max_output_file_size_ != std::numeric_limits<uint64_t>::max() &&
-      (immutable_options_.compaction_style == CompactionStyle::Level ||
+      (immutable_options_.compaction_style == rs::advanced_options::CompactionStyle::Level ||
        output_level() > 0)) {
     preallocation_size = std::min(max_output_file_size_, preallocation_size);
   }
@@ -731,7 +731,7 @@ bool Compaction::ShouldFormSubcompactions() const {
   // Round-Robin pri under leveled compaction allows subcompactions by default
   // and the number of subcompactions can be larger than max_subcompactions_
   if (cfd_->ioptions()->compaction_pri == rs::advanced_options::CompactionPri::RoundRobin &&
-      cfd_->ioptions()->compaction_style == CompactionStyle::Level) {
+      cfd_->ioptions()->compaction_style == rs::advanced_options::CompactionStyle::Level) {
     return output_level_ > 0;
   }
 
@@ -739,9 +739,9 @@ bool Compaction::ShouldFormSubcompactions() const {
     return false;
   }
 
-  if (cfd_->ioptions()->compaction_style == CompactionStyle::Level) {
+  if (cfd_->ioptions()->compaction_style == rs::advanced_options::CompactionStyle::Level) {
     return (start_level_ == 0 || is_manual_compaction_) && output_level_ > 0;
-  } else if (cfd_->ioptions()->compaction_style == CompactionStyle::Universal) {
+  } else if (cfd_->ioptions()->compaction_style == rs::advanced_options::CompactionStyle::Universal) {
     return number_levels_ > 1 && output_level_ > 0;
   } else {
     return false;
@@ -810,8 +810,8 @@ int Compaction::EvaluatePenultimateLevel(
     const int output_level) {
   // TODO: currently per_key_placement feature only support level and universal
   //  compaction
-  if (immutable_options.compaction_style != CompactionStyle::Level &&
-      immutable_options.compaction_style != CompactionStyle::Universal) {
+  if (immutable_options.compaction_style != rs::advanced_options::CompactionStyle::Level &&
+      immutable_options.compaction_style != rs::advanced_options::CompactionStyle::Universal) {
     return kInvalidLevel;
   }
   if (output_level != immutable_options.num_levels - 1) {
@@ -831,7 +831,7 @@ int Compaction::EvaluatePenultimateLevel(
   //  compaction output key range. For simplicity, it just check if there's any
   //  file on the penultimate level.
   if (start_level == immutable_options.num_levels - 1 &&
-      (immutable_options.compaction_style != CompactionStyle::Universal ||
+      (immutable_options.compaction_style != rs::advanced_options::CompactionStyle::Universal ||
        !vstorage->LevelFiles(penultimate_level).empty())) {
     return kInvalidLevel;
   }

@@ -1052,7 +1052,7 @@ Status DBImpl::CompactRangeInternal(const CompactRangeOptions& options,
   constexpr int kInvalidLevel = -1;
   int final_output_level = kInvalidLevel;
   bool exclusive = options.exclusive_manual_compaction;
-  if (cfd->ioptions()->compaction_style == CompactionStyle::Universal &&
+  if (cfd->ioptions()->compaction_style == rs::advanced_options::CompactionStyle::Universal &&
       cfd->NumberLevels() > 1) {
     // Always compact all files together.
     final_output_level = cfd->NumberLevels() - 1;
@@ -1151,8 +1151,8 @@ Status DBImpl::CompactRangeInternal(const CompactRangeOptions& options,
       CleanupSuperVersion(super_version);
     }
     if (s.ok() && first_overlapped_level != kInvalidLevel) {
-      if (cfd->ioptions()->compaction_style == CompactionStyle::Universal ||
-          cfd->ioptions()->compaction_style == CompactionStyle::FIFO) {
+      if (cfd->ioptions()->compaction_style == rs::advanced_options::CompactionStyle::Universal ||
+          cfd->ioptions()->compaction_style == rs::advanced_options::CompactionStyle::FIFO) {
         assert(first_overlapped_level == 0);
         s = RunManualCompaction(
             cfd, first_overlapped_level, first_overlapped_level, options, begin,
@@ -1161,7 +1161,7 @@ Status DBImpl::CompactRangeInternal(const CompactRangeOptions& options,
             trim_ts);
         final_output_level = max_overlapped_level;
       } else {
-        assert(cfd->ioptions()->compaction_style == CompactionStyle::Level);
+        assert(cfd->ioptions()->compaction_style == rs::advanced_options::CompactionStyle::Level);
         uint64_t next_file_number = versions_->current_next_file_number();
         // Start compaction from `first_overlapped_level`, one level down at a
         // time, until output level >= max_overlapped_level.
@@ -1893,16 +1893,16 @@ Status DBImpl::RunManualCompaction(
   // For universal compaction, we enforce every manual compaction to compact
   // all files.
   if (begin == nullptr ||
-      cfd->ioptions()->compaction_style == CompactionStyle::Universal ||
-      cfd->ioptions()->compaction_style == CompactionStyle::FIFO) {
+      cfd->ioptions()->compaction_style == rs::advanced_options::CompactionStyle::Universal ||
+      cfd->ioptions()->compaction_style == rs::advanced_options::CompactionStyle::FIFO) {
     manual.begin = nullptr;
   } else {
     begin_storage.SetMinPossibleForUserKey(*begin);
     manual.begin = &begin_storage;
   }
   if (end == nullptr ||
-      cfd->ioptions()->compaction_style == CompactionStyle::Universal ||
-      cfd->ioptions()->compaction_style == CompactionStyle::FIFO) {
+      cfd->ioptions()->compaction_style == rs::advanced_options::CompactionStyle::Universal ||
+      cfd->ioptions()->compaction_style == rs::advanced_options::CompactionStyle::FIFO) {
     manual.end = nullptr;
   } else {
     end_storage.SetMaxPossibleForUserKey(*end);
@@ -3403,7 +3403,7 @@ Status DBImpl::BackgroundCompaction(bool* made_progress,
                              c->column_family_data());
     assert(c->num_input_files(1) == 0);
     assert(c->column_family_data()->ioptions()->compaction_style ==
-           CompactionStyle::FIFO);
+           rs::advanced_options::CompactionStyle::FIFO);
 
     compaction_job_stats.num_input_files = c->num_input_files(0);
 
@@ -3676,9 +3676,9 @@ Status DBImpl::BackgroundCompaction(bool* made_progress,
       // to the range that is left to be compacted.
       // Universal and FIFO compactions should always compact the whole range
       assert(m->cfd->ioptions()->compaction_style !=
-                 CompactionStyle::Universal ||
+                 rs::advanced_options::CompactionStyle::Universal ||
              m->cfd->ioptions()->num_levels > 1);
-      assert(m->cfd->ioptions()->compaction_style != CompactionStyle::FIFO);
+      assert(m->cfd->ioptions()->compaction_style != rs::advanced_options::CompactionStyle::FIFO);
       m->tmp_storage = *m->manual_end;
       m->begin = &m->tmp_storage;
       m->incomplete = true;

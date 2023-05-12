@@ -241,7 +241,7 @@ TEST_F(OptionsTest, GetOptionsFromMapTest) {
   ASSERT_EQ(new_cf_opt.hard_pending_compaction_bytes_limit, 211);
   ASSERT_EQ(new_cf_opt.arena_block_size, 22U);
   ASSERT_EQ(new_cf_opt.disable_auto_compactions, true);
-  ASSERT_EQ(new_cf_opt.compaction_style, CompactionStyle::Level);
+  ASSERT_EQ(new_cf_opt.compaction_style, rs::advanced_options::CompactionStyle::Level);
   ASSERT_EQ(new_cf_opt.compaction_pri, rs::advanced_options::CompactionPri::OldestSmallestSeqFirst);
   ASSERT_EQ(new_cf_opt.compaction_options_fifo.max_table_files_size,
             static_cast<uint64_t>(23));
@@ -2433,7 +2433,7 @@ TEST_F(OptionsOldApiTest, GetOptionsFromMapTest) {
   ASSERT_EQ(new_cf_opt.hard_pending_compaction_bytes_limit, 211);
   ASSERT_EQ(new_cf_opt.arena_block_size, 22U);
   ASSERT_EQ(new_cf_opt.disable_auto_compactions, true);
-  ASSERT_EQ(new_cf_opt.compaction_style, CompactionStyle::Level);
+  ASSERT_EQ(new_cf_opt.compaction_style, rs::advanced_options::CompactionStyle::Level);
   ASSERT_EQ(new_cf_opt.compaction_pri, rs::advanced_options::CompactionPri::OldestSmallestSeqFirst);
   ASSERT_EQ(new_cf_opt.compaction_options_fifo.max_table_files_size,
             static_cast<uint64_t>(23));
@@ -4603,10 +4603,10 @@ TEST_F(OptionTypeInfoTest, TestCustomEnum) {
 TEST_F(OptionTypeInfoTest, TestBuiltinEnum) {
   ConfigOptions config_options;
   for (auto iter : OptionsHelper::compaction_style_string_map) {
-    CompactionStyle e1, e2;
+    rs::advanced_options::CompactionStyle e1, e2;
     TestParseAndCompareOption(config_options,
                               OptionTypeInfo(0, OptionType::kCompactionStyle),
-                              "CompactionStyle", iter.first, &e1, &e2);
+                              "rs::advanced_options::CompactionStyle", iter.first, &e1, &e2);
     ASSERT_EQ(e1, iter.second);
   }
   for (auto iter : OptionsHelper::compaction_pri_string_map) {

@@ -970,10 +970,10 @@ uint64_t MultiplyCheckOverflow(uint64_t op1, double op2) {
 // is used, the base level is not always L1, so precomupted max_file_size can
 // no longer be used. Recompute file_size_for_level from base level.
 uint64_t MaxFileSizeForLevel(const MutableCFOptions& cf_options,
-    int level, CompactionStyle compaction_style, int base_level,
+    int level, rs::advanced_options::CompactionStyle compaction_style, int base_level,
     bool level_compaction_dynamic_level_bytes) {
   if (!level_compaction_dynamic_level_bytes || level < base_level ||
-      compaction_style != CompactionStyle::Level) {
+      compaction_style != rs::advanced_options::CompactionStyle::Level) {
     assert(level >= 0);
     assert(level < (int)cf_options.max_file_size.size());
     return cf_options.max_file_size[level];
@@ -997,10 +997,10 @@ size_t MaxFileSizeForL0MetaPin(const MutableCFOptions& cf_options) {
 }
 
 void MutableCFOptions::RefreshDerivedOptions(int num_levels,
-                                             CompactionStyle compaction_style) {
+                                             rs::advanced_options::CompactionStyle compaction_style) {
   max_file_size.resize(num_levels);
   for (int i = 0; i < num_levels; ++i) {
-    if (i == 0 && compaction_style == CompactionStyle::Universal) {
+    if (i == 0 && compaction_style == rs::advanced_options::CompactionStyle::Universal) {
       max_file_size[i] = ULLONG_MAX;
     } else if (i > 1) {
       max_file_size[i] = MultiplyCheckOverflow(max_file_size[i - 1],

@@ -74,7 +74,7 @@ class CompactionPickerTestBase : public testing::Test {
 
   ~CompactionPickerTestBase() override {}
 
-  void NewVersionStorage(int num_levels, CompactionStyle style) {
+  void NewVersionStorage(int num_levels, rs::advanced_options::CompactionStyle style) {
     DeleteVersionStorage();
     options_.num_levels = num_levels;
     vstorage_.reset(new VersionStorageInfo(
@@ -216,7 +216,7 @@ class CompactionPickerU64TsTest : public CompactionPickerTestBase {
 };
 
 TEST_F(CompactionPickerTest, Empty) {
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   UpdateVersionStorageInfo();
   std::unique_ptr<Compaction> compaction(level_compaction_picker.PickCompaction(
       cf_name_, mutable_cf_options_, mutable_db_options_, vstorage_.get(),
@@ -225,7 +225,7 @@ TEST_F(CompactionPickerTest, Empty) {
 }
 
 TEST_F(CompactionPickerTest, Single) {
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   mutable_cf_options_.level0_file_num_compaction_trigger = 2;
   Add(0, 1U, "p", "q");
   UpdateVersionStorageInfo();
@@ -237,7 +237,7 @@ TEST_F(CompactionPickerTest, Single) {
 }
 
 TEST_F(CompactionPickerTest, Level0Trigger) {
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   mutable_cf_options_.level0_file_num_compaction_trigger = 2;
   Add(0, 1U, "150", "200");
   Add(0, 2U, "200", "250");
@@ -254,7 +254,7 @@ TEST_F(CompactionPickerTest, Level0Trigger) {
 }
 
 TEST_F(CompactionPickerTest, Level1Trigger) {
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   Add(1, 66U, "150", "200", 1000000000U);
   UpdateVersionStorageInfo();
 
@@ -269,7 +269,7 @@ TEST_F(CompactionPickerTest, Level1Trigger) {
 TEST_F(CompactionPickerTest, Level1Trigger2) {
   mutable_cf_options_.target_file_size_base = 10000000000;
   mutable_cf_options_.RefreshDerivedOptions(ioptions_);
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   Add(1, 66U, "150", "200", 1000000001U);
   Add(1, 88U, "201", "300", 1000000000U);
   Add(2, 6U, "150", "179", 1000000000U);
@@ -290,7 +290,7 @@ TEST_F(CompactionPickerTest, Level1Trigger2) {
 }
 
 TEST_F(CompactionPickerTest, LevelMaxScore) {
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   mutable_cf_options_.target_file_size_base = 10000000;
   mutable_cf_options_.max_bytes_for_level_base = 10 * 1024 * 1024;
   mutable_cf_options_.RefreshDerivedOptions(ioptions_);
@@ -325,11 +325,11 @@ TEST_F(CompactionPickerTest, NeedsCompactionLevel) {
   const int kFileCount = 20;
 
   for (int level = 0; level < kLevels - 1; ++level) {
-    NewVersionStorage(kLevels, CompactionStyle::Level);
+    NewVersionStorage(kLevels, rs::advanced_options::CompactionStyle::Level);
     uint64_t file_size = vstorage_->MaxBytesForLevel(level) * 2 / kFileCount;
     for (int file_count = 1; file_count <= kFileCount; ++file_count) {
       // start a brand new version in each test.
-      NewVersionStorage(kLevels, CompactionStyle::Level);
+      NewVersionStorage(kLevels, rs::advanced_options::CompactionStyle::Level);
       for (int i = 0; i < file_count; ++i) {
         Add(level, i, std::to_string((i + 100) * 1000).c_str(),
             std::to_string((i + 100) * 1000 + 999).c_str(), file_size, 0,
@@ -351,7 +351,7 @@ TEST_F(CompactionPickerTest, Level0TriggerDynamic) {
   mutable_cf_options_.level0_file_num_compaction_trigger = 2;
   mutable_cf_options_.max_bytes_for_level_base = 200;
   mutable_cf_options_.max_bytes_for_level_multiplier = 10;
-  NewVersionStorage(num_levels, CompactionStyle::Level);
+  NewVersionStorage(num_levels, rs::advanced_options::CompactionStyle::Level);
   Add(0, 1U, "150", "200");
   Add(0, 2U, "200", "250");
 
@@ -374,7 +374,7 @@ TEST_F(CompactionPickerTest, Level0TriggerDynamic2) {
   mutable_cf_options_.level0_file_num_compaction_trigger = 2;
   mutable_cf_options_.max_bytes_for_level_base = 200;
   mutable_cf_options_.max_bytes_for_level_multiplier = 10;
-  NewVersionStorage(num_levels, CompactionStyle::Level);
+  NewVersionStorage(num_levels, rs::advanced_options::CompactionStyle::Level);
   Add(0, 1U, "150", "200");
   Add(0, 2U, "200", "250");
   Add(num_levels - 1, 3U, "200", "250", 300U);
@@ -399,7 +399,7 @@ TEST_F(CompactionPickerTest, Level0TriggerDynamic3) {
   mutable_cf_options_.level0_file_num_compaction_trigger = 2;
   mutable_cf_options_.max_bytes_for_level_base = 200;
   mutable_cf_options_.max_bytes_for_level_multiplier = 10;
-  NewVersionStorage(num_levels, CompactionStyle::Level);
+  NewVersionStorage(num_levels, rs::advanced_options::CompactionStyle::Level);
   Add(0, 1U, "150", "200");
   Add(0, 2U, "200", "250");
   Add(num_levels - 1, 3U, "200", "250", 300U);
@@ -426,7 +426,7 @@ TEST_F(CompactionPickerTest, Level0TriggerDynamic4) {
   mutable_cf_options_.max_bytes_for_level_base = 200;
   mutable_cf_options_.max_bytes_for_level_multiplier = 10;
 
-  NewVersionStorage(num_levels, CompactionStyle::Level);
+  NewVersionStorage(num_levels, rs::advanced_options::CompactionStyle::Level);
   Add(0, 1U, "150", "200");
   Add(0, 2U, "200", "250");
   Add(num_levels - 1, 3U, "200", "250", 300U);
@@ -460,7 +460,7 @@ TEST_F(CompactionPickerTest, LevelTriggerDynamic4) {
   mutable_cf_options_.level0_file_num_compaction_trigger = 2;
   mutable_cf_options_.max_bytes_for_level_base = 200;
   mutable_cf_options_.max_bytes_for_level_multiplier = 10;
-  NewVersionStorage(num_levels, CompactionStyle::Level);
+  NewVersionStorage(num_levels, rs::advanced_options::CompactionStyle::Level);
   Add(0, 1U, "150", "200");
   Add(num_levels - 1, 2U, "200", "250", 300U);
   Add(num_levels - 1, 3U, "300", "350", 3000U);
@@ -483,7 +483,7 @@ TEST_F(CompactionPickerTest, LevelTriggerDynamic4) {
 }
 
 TEST_F(CompactionPickerTest, NeedsCompactionUniversal) {
-  NewVersionStorage(1, CompactionStyle::Universal);
+  NewVersionStorage(1, rs::advanced_options::CompactionStyle::Universal);
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
   UpdateVersionStorageInfo();
   // must return false when there's no files.
@@ -493,7 +493,7 @@ TEST_F(CompactionPickerTest, NeedsCompactionUniversal) {
   // verify the trigger given different number of L0 files.
   for (int i = 1;
        i <= mutable_cf_options_.level0_file_num_compaction_trigger * 2; ++i) {
-    NewVersionStorage(1, CompactionStyle::Universal);
+    NewVersionStorage(1, rs::advanced_options::CompactionStyle::Universal);
     Add(0, i, std::to_string((i + 100) * 1000).c_str(),
         std::to_string((i + 100) * 1000 + 999).c_str(), 1000000, 0, i * 100,
         i * 100 + 99);
@@ -505,7 +505,7 @@ TEST_F(CompactionPickerTest, NeedsCompactionUniversal) {
 
 TEST_F(CompactionPickerTest, CompactionUniversalIngestBehindReservedLevel) {
   const uint64_t kFileSize = 100000;
-  NewVersionStorage(1, CompactionStyle::Universal);
+  NewVersionStorage(1, rs::advanced_options::CompactionStyle::Universal);
   ioptions_.allow_ingest_behind = true;
   ioptions_.num_levels = 3;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
@@ -514,7 +514,7 @@ TEST_F(CompactionPickerTest, CompactionUniversalIngestBehindReservedLevel) {
   ASSERT_EQ(universal_compaction_picker.NeedsCompaction(vstorage_.get()),
             false);
 
-  NewVersionStorage(3, CompactionStyle::Universal);
+  NewVersionStorage(3, rs::advanced_options::CompactionStyle::Universal);
 
   Add(0, 1U, "150", "200", kFileSize, 0, 500, 550);
   Add(0, 2U, "201", "250", kFileSize, 0, 401, 450);
@@ -542,14 +542,14 @@ TEST_F(CompactionPickerTest, CannotTrivialMoveUniversal) {
   const uint64_t kFileSize = 100000;
 
   mutable_cf_options_.compaction_options_universal.allow_trivial_move = true;
-  NewVersionStorage(1, CompactionStyle::Universal);
+  NewVersionStorage(1, rs::advanced_options::CompactionStyle::Universal);
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
   UpdateVersionStorageInfo();
   // must return false when there's no files.
   ASSERT_EQ(universal_compaction_picker.NeedsCompaction(vstorage_.get()),
             false);
 
-  NewVersionStorage(3, CompactionStyle::Universal);
+  NewVersionStorage(3, rs::advanced_options::CompactionStyle::Universal);
 
   Add(0, 1U, "150", "200", kFileSize, 0, 500, 550);
   Add(0, 2U, "201", "250", kFileSize, 0, 401, 450);
@@ -577,7 +577,7 @@ TEST_F(CompactionPickerTest, AllowsTrivialMoveUniversal) {
   mutable_cf_options_.compaction_options_universal.allow_trivial_move = true;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
 
-  NewVersionStorage(3, CompactionStyle::Universal);
+  NewVersionStorage(3, rs::advanced_options::CompactionStyle::Universal);
 
   Add(0, 1U, "150", "200", kFileSize, 0, 500, 550);
   Add(0, 2U, "201", "250", kFileSize, 0, 401, 450);
@@ -603,7 +603,7 @@ TEST_F(CompactionPickerTest, UniversalPeriodicCompaction1) {
   mutable_cf_options_.periodic_compaction_seconds = 1000;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
 
-  NewVersionStorage(5, CompactionStyle::Universal);
+  NewVersionStorage(5, rs::advanced_options::CompactionStyle::Universal);
 
   Add(0, 1U, "150", "200", kFileSize, 0, 500, 550);
   Add(0, 2U, "201", "250", kFileSize, 0, 401, 450);
@@ -636,7 +636,7 @@ TEST_F(CompactionPickerTest, UniversalPeriodicCompaction2) {
   mutable_cf_options_.periodic_compaction_seconds = 1000;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
 
-  NewVersionStorage(5, CompactionStyle::Universal);
+  NewVersionStorage(5, rs::advanced_options::CompactionStyle::Universal);
 
   Add(0, 1U, "150", "200", kFileSize, 0, 500, 550);
   Add(3, 5U, "010", "080", kFileSize, 0, 200, 251);
@@ -664,7 +664,7 @@ TEST_F(CompactionPickerTest, UniversalPeriodicCompaction3) {
   mutable_cf_options_.periodic_compaction_seconds = 1000;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
 
-  NewVersionStorage(5, CompactionStyle::Universal);
+  NewVersionStorage(5, rs::advanced_options::CompactionStyle::Universal);
 
   Add(0, 1U, "150", "200", kFileSize, 0, 500, 550);
   Add(0, 5U, "010", "080", kFileSize, 0, 200, 251);
@@ -693,7 +693,7 @@ TEST_F(CompactionPickerTest, UniversalPeriodicCompaction4) {
   mutable_cf_options_.periodic_compaction_seconds = 1000;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
 
-  NewVersionStorage(5, CompactionStyle::Universal);
+  NewVersionStorage(5, rs::advanced_options::CompactionStyle::Universal);
 
   Add(0, 1U, "150", "200", kFileSize, 0, 500, 550);
   Add(2, 2U, "010", "080", kFileSize, 0, 200, 251);
@@ -720,7 +720,7 @@ TEST_F(CompactionPickerTest, UniversalPeriodicCompaction5) {
   mutable_cf_options_.periodic_compaction_seconds = 1000;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
 
-  NewVersionStorage(5, CompactionStyle::Universal);
+  NewVersionStorage(5, rs::advanced_options::CompactionStyle::Universal);
 
   Add(0, 6U, "150", "200", kFileSize, 0, 500, 550);
   UpdateVersionStorageInfo();
@@ -744,7 +744,7 @@ TEST_F(CompactionPickerTest, UniversalPeriodicCompaction6) {
   mutable_cf_options_.periodic_compaction_seconds = 1000;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
 
-  NewVersionStorage(5, CompactionStyle::Universal);
+  NewVersionStorage(5, rs::advanced_options::CompactionStyle::Universal);
 
   Add(4, 5U, "150", "200", kFileSize, 0, 500, 550);
   Add(4, 6U, "350", "400", kFileSize, 0, 500, 550);
@@ -772,7 +772,7 @@ TEST_F(CompactionPickerTest, UniversalIncrementalSpace1) {
       .max_size_amplification_percent = 30;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
 
-  NewVersionStorage(5, CompactionStyle::Universal);
+  NewVersionStorage(5, rs::advanced_options::CompactionStyle::Universal);
 
   Add(0, 1U, "150", "200", kFileSize, 0, 500, 550);
   Add(2, 2U, "010", "080", kFileSize, 0, 200, 251);
@@ -815,7 +815,7 @@ TEST_F(CompactionPickerTest, UniversalIncrementalSpace2) {
       .max_size_amplification_percent = 30;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
 
-  NewVersionStorage(5, CompactionStyle::Universal);
+  NewVersionStorage(5, rs::advanced_options::CompactionStyle::Universal);
 
   Add(0, 1U, "150", "200", kFileSize, 0, 500, 550);
   Add(1, 2U, "010", "080", kFileSize, 0, 200, 251);
@@ -855,7 +855,7 @@ TEST_F(CompactionPickerTest, UniversalIncrementalSpace3) {
       .max_size_amplification_percent = 30;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
 
-  NewVersionStorage(5, CompactionStyle::Universal);
+  NewVersionStorage(5, rs::advanced_options::CompactionStyle::Universal);
 
   Add(0, 1U, "150", "200", kFileSize, 0, 500, 550);
   Add(2, 2U, "010", "080", kFileSize, 0, 200, 251);
@@ -898,7 +898,7 @@ TEST_F(CompactionPickerTest, UniversalIncrementalSpace4) {
       .max_size_amplification_percent = 30;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
 
-  NewVersionStorage(5, CompactionStyle::Universal);
+  NewVersionStorage(5, rs::advanced_options::CompactionStyle::Universal);
 
   Add(0, 1U, "150", "200", kFileSize, 0, 500, 550);
   Add(2, 2U, "010", "080", kFileSize, 0, 200, 251);
@@ -945,7 +945,7 @@ TEST_F(CompactionPickerTest, UniversalIncrementalSpace5) {
       .max_size_amplification_percent = 30;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
 
-  NewVersionStorage(5, CompactionStyle::Universal);
+  NewVersionStorage(5, rs::advanced_options::CompactionStyle::Universal);
 
   Add(0, 1U, "150", "200", kFileSize, 0, 500, 550);
   Add(2, 2U, "010", "080", kFileSize, 0, 200, 251);
@@ -979,7 +979,7 @@ TEST_F(CompactionPickerTest, UniversalIncrementalSpace5) {
 }
 
 TEST_F(CompactionPickerTest, NeedsCompactionFIFO) {
-  NewVersionStorage(1, CompactionStyle::FIFO);
+  NewVersionStorage(1, rs::advanced_options::CompactionStyle::FIFO);
   const int kFileCount =
       mutable_cf_options_.level0_file_num_compaction_trigger * 3;
   const uint64_t kFileSize = 100000;
@@ -995,7 +995,7 @@ TEST_F(CompactionPickerTest, NeedsCompactionFIFO) {
   // verify whether compaction is needed based on the current
   // size of L0 files.
   for (int i = 1; i <= kFileCount; ++i) {
-    NewVersionStorage(1, CompactionStyle::FIFO);
+    NewVersionStorage(1, rs::advanced_options::CompactionStyle::FIFO);
     Add(0, i, std::to_string((i + 100) * 1000).c_str(),
         std::to_string((i + 100) * 1000 + 999).c_str(), kFileSize, 0, i * 100,
         i * 100 + 99);
@@ -1006,7 +1006,7 @@ TEST_F(CompactionPickerTest, NeedsCompactionFIFO) {
 }
 
 TEST_F(CompactionPickerTest, FIFOToWarm1) {
-  NewVersionStorage(1, CompactionStyle::FIFO);
+  NewVersionStorage(1, rs::advanced_options::CompactionStyle::FIFO);
   const uint64_t kFileSize = 100000;
   const uint64_t kMaxSize = kFileSize * 100000;
   uint64_t kWarmThreshold = 2000;
@@ -1042,7 +1042,7 @@ TEST_F(CompactionPickerTest, FIFOToWarm1) {
 }
 
 TEST_F(CompactionPickerTest, FIFOToWarm2) {
-  NewVersionStorage(1, CompactionStyle::FIFO);
+  NewVersionStorage(1, rs::advanced_options::CompactionStyle::FIFO);
   const uint64_t kFileSize = 100000;
   const uint64_t kMaxSize = kFileSize * 100000;
   uint64_t kWarmThreshold = 2000;
@@ -1081,7 +1081,7 @@ TEST_F(CompactionPickerTest, FIFOToWarm2) {
 }
 
 TEST_F(CompactionPickerTest, FIFOToWarmMaxSize) {
-  NewVersionStorage(1, CompactionStyle::FIFO);
+  NewVersionStorage(1, rs::advanced_options::CompactionStyle::FIFO);
   const uint64_t kFileSize = 100000;
   const uint64_t kMaxSize = kFileSize * 100000;
   uint64_t kWarmThreshold = 2000;
@@ -1122,7 +1122,7 @@ TEST_F(CompactionPickerTest, FIFOToWarmMaxSize) {
 }
 
 TEST_F(CompactionPickerTest, FIFOToWarmWithExistingWarm) {
-  NewVersionStorage(1, CompactionStyle::FIFO);
+  NewVersionStorage(1, rs::advanced_options::CompactionStyle::FIFO);
   const uint64_t kFileSize = 100000;
   const uint64_t kMaxSize = kFileSize * 100000;
   uint64_t kWarmThreshold = 2000;
@@ -1163,7 +1163,7 @@ TEST_F(CompactionPickerTest, FIFOToWarmWithExistingWarm) {
 }
 
 TEST_F(CompactionPickerTest, FIFOToWarmWithOngoing) {
-  NewVersionStorage(1, CompactionStyle::FIFO);
+  NewVersionStorage(1, rs::advanced_options::CompactionStyle::FIFO);
   const uint64_t kFileSize = 100000;
   const uint64_t kMaxSize = kFileSize * 100000;
   uint64_t kWarmThreshold = 2000;
@@ -1203,7 +1203,7 @@ TEST_F(CompactionPickerTest, FIFOToWarmWithOngoing) {
 }
 
 TEST_F(CompactionPickerTest, FIFOToWarmWithHotBetweenWarms) {
-  NewVersionStorage(1, CompactionStyle::FIFO);
+  NewVersionStorage(1, rs::advanced_options::CompactionStyle::FIFO);
   const uint64_t kFileSize = 100000;
   const uint64_t kMaxSize = kFileSize * 100000;
   uint64_t kWarmThreshold = 2000;
@@ -1245,7 +1245,7 @@ TEST_F(CompactionPickerTest, FIFOToWarmWithHotBetweenWarms) {
 
 
 TEST_F(CompactionPickerTest, CompactionPriMinOverlapping1) {
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   ioptions_.compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio;
   mutable_cf_options_.target_file_size_base = 100000000000;
   mutable_cf_options_.target_file_size_multiplier = 10;
@@ -1276,7 +1276,7 @@ TEST_F(CompactionPickerTest, CompactionPriMinOverlapping1) {
 }
 
 TEST_F(CompactionPickerTest, CompactionPriMinOverlapping2) {
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   ioptions_.compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio;
   mutable_cf_options_.target_file_size_base = 10000000;
   mutable_cf_options_.target_file_size_multiplier = 10;
@@ -1307,7 +1307,7 @@ TEST_F(CompactionPickerTest, CompactionPriMinOverlapping2) {
 }
 
 TEST_F(CompactionPickerTest, CompactionPriMinOverlapping3) {
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   ioptions_.compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio;
   mutable_cf_options_.max_bytes_for_level_base = 10000000;
   mutable_cf_options_.max_bytes_for_level_multiplier = 10;
@@ -1335,7 +1335,7 @@ TEST_F(CompactionPickerTest, CompactionPriMinOverlapping3) {
 }
 
 TEST_F(CompactionPickerTest, CompactionPriMinOverlapping4) {
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   ioptions_.compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio;
   mutable_cf_options_.max_bytes_for_level_base = 10000000;
   mutable_cf_options_.max_bytes_for_level_multiplier = 10;
@@ -1376,7 +1376,7 @@ TEST_F(CompactionPickerTest, CompactionPriRoundRobin) {
   mutable_cf_options_.max_bytes_for_level_multiplier = 10;
   for (size_t i = 0; i < test_cursors.size(); i++) {
     // start a brand new version in each test.
-    NewVersionStorage(6, CompactionStyle::Level);
+    NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
     vstorage_->ResizeCompactCursors(6);
     // Set the cursor
     vstorage_->AddCursorForOneLevel(2, test_cursors[i]);
@@ -1412,7 +1412,7 @@ TEST_F(CompactionPickerTest, CompactionPriMultipleFilesRoundRobin1) {
   mutable_cf_options_.max_bytes_for_level_base = 120;
   mutable_cf_options_.max_bytes_for_level_multiplier = 10;
   // start a brand new version in each test.
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   vstorage_->ResizeCompactCursors(6);
   // Set the cursor (file picking should start with 7U)
   vstorage_->AddCursorForOneLevel(2, InternalKey("199", 100, kTypeValue));
@@ -1455,7 +1455,7 @@ TEST_F(CompactionPickerTest, CompactionPriMultipleFilesRoundRobin2) {
   mutable_cf_options_.max_bytes_for_level_base = 120;
   mutable_cf_options_.max_bytes_for_level_multiplier = 10;
   // start a brand new version in each test.
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   vstorage_->ResizeCompactCursors(6);
   // Set the cursor (file picking should start with 6U)
   vstorage_->AddCursorForOneLevel(2, InternalKey("1000", 100, kTypeValue));
@@ -1499,7 +1499,7 @@ TEST_F(CompactionPickerTest, CompactionPriMultipleFilesRoundRobin3) {
   mutable_cf_options_.max_bytes_for_level_base = 120;
   mutable_cf_options_.max_bytes_for_level_multiplier = 10;
   // start a brand new version in each test.
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   vstorage_->ResizeCompactCursors(6);
   // Set the cursor (file picking should start with 9U)
   vstorage_->AddCursorForOneLevel(2, InternalKey("700", 100, kTypeValue));
@@ -1533,7 +1533,7 @@ TEST_F(CompactionPickerTest, CompactionPriMultipleFilesRoundRobin3) {
 }
 
 TEST_F(CompactionPickerTest, CompactionPriMinOverlappingManyFiles) {
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   ioptions_.compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio;
   mutable_cf_options_.max_bytes_for_level_base = 15000000;
   mutable_cf_options_.max_bytes_for_level_multiplier = 10;
@@ -1593,7 +1593,7 @@ TEST_F(CompactionPickerTest, ParentIndexResetBug) {
   int num_levels = ioptions_.num_levels;
   mutable_cf_options_.level0_file_num_compaction_trigger = 2;
   mutable_cf_options_.max_bytes_for_level_base = 200;
-  NewVersionStorage(num_levels, CompactionStyle::Level);
+  NewVersionStorage(num_levels, rs::advanced_options::CompactionStyle::Level);
   Add(0, 1U, "150", "200");       // <- marked for compaction
   Add(1, 3U, "400", "500", 600);  // <- this one needs compacting
   Add(2, 4U, "150", "200");
@@ -1614,7 +1614,7 @@ TEST_F(CompactionPickerTest, ParentIndexResetBug) {
 // This test checks ExpandWhileOverlapping() by having overlapping user keys
 // ranges (with different sequence numbers) in the input files.
 TEST_F(CompactionPickerTest, OverlappingUserKeys) {
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   ioptions_.compaction_pri = rs::advanced_options::CompactionPri::ByCompensatedSize;
 
   Add(1, 1U, "100", "150", 1U);
@@ -1635,7 +1635,7 @@ TEST_F(CompactionPickerTest, OverlappingUserKeys) {
 }
 
 TEST_F(CompactionPickerTest, OverlappingUserKeys2) {
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   // Overlapping user keys on same level and output level
   Add(1, 1U, "200", "400", 1000000000U);
   Add(1, 2U, "400", "500", 1U, 0, 0);
@@ -1659,7 +1659,7 @@ TEST_F(CompactionPickerTest, OverlappingUserKeys2) {
 }
 
 TEST_F(CompactionPickerTest, OverlappingUserKeys3) {
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   // Chain of overlapping user key ranges (forces ExpandWhileOverlapping() to
   // expand multiple times)
   Add(1, 1U, "100", "150", 1U);
@@ -1689,7 +1689,7 @@ TEST_F(CompactionPickerTest, OverlappingUserKeys3) {
 }
 
 TEST_F(CompactionPickerTest, OverlappingUserKeys4) {
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   mutable_cf_options_.max_bytes_for_level_base = 1000000;
 
   Add(1, 1U, "100", "150", 1U);
@@ -1715,7 +1715,7 @@ TEST_F(CompactionPickerTest, OverlappingUserKeys4) {
 }
 
 TEST_F(CompactionPickerTest, OverlappingUserKeys5) {
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   // Overlapping user keys on same level and output level
   Add(1, 1U, "200", "400", 1000000000U);
   Add(1, 2U, "400", "500", 1U, 0, 0);
@@ -1734,7 +1734,7 @@ TEST_F(CompactionPickerTest, OverlappingUserKeys5) {
 }
 
 TEST_F(CompactionPickerTest, OverlappingUserKeys6) {
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   // Overlapping user keys on same level and output level
   Add(1, 1U, "200", "400", 1U, 0, 0);
   Add(1, 2U, "401", "500", 1U, 0, 0);
@@ -1759,7 +1759,7 @@ TEST_F(CompactionPickerTest, OverlappingUserKeys6) {
 }
 
 TEST_F(CompactionPickerTest, OverlappingUserKeys7) {
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   mutable_cf_options_.max_compaction_bytes = 100000000000u;
   // Overlapping user keys on same level and output level
   Add(1, 1U, "200", "400", 1U, 0, 0);
@@ -1782,7 +1782,7 @@ TEST_F(CompactionPickerTest, OverlappingUserKeys7) {
 }
 
 TEST_F(CompactionPickerTest, OverlappingUserKeys8) {
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   mutable_cf_options_.max_compaction_bytes = 100000000000u;
   // grow the number of inputs in "level" without
   // changing the number of "level+1" files we pick up
@@ -1814,7 +1814,7 @@ TEST_F(CompactionPickerTest, OverlappingUserKeys8) {
 }
 
 TEST_F(CompactionPickerTest, OverlappingUserKeys9) {
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   mutable_cf_options_.max_compaction_bytes = 100000000000u;
   // grow the number of inputs in "level" without
   // changing the number of "level+1" files we pick up
@@ -1850,7 +1850,7 @@ TEST_F(CompactionPickerTest, OverlappingUserKeys9) {
 TEST_F(CompactionPickerTest, OverlappingUserKeys10) {
   // Locked file encountered when pulling in extra input-level files with same
   // user keys. Verify we pick the next-best file from the same input level.
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   mutable_cf_options_.max_compaction_bytes = 100000000000u;
 
   // file_number 2U is largest and thus first choice. But it overlaps with
@@ -1887,7 +1887,7 @@ TEST_F(CompactionPickerTest, OverlappingUserKeys10) {
 TEST_F(CompactionPickerTest, OverlappingUserKeys11) {
   // Locked file encountered when pulling in extra output-level files with same
   // user keys. Expected to skip that compaction and pick the next-best choice.
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   mutable_cf_options_.max_compaction_bytes = 100000000000u;
 
   // score(L1) = 3.7
@@ -1984,7 +1984,7 @@ TEST_F(CompactionPickerTest, FileTtlBooster) {
 }
 
 TEST_F(CompactionPickerTest, NotScheduleL1IfL0WithHigherPri1) {
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   mutable_cf_options_.level0_file_num_compaction_trigger = 2;
   mutable_cf_options_.max_bytes_for_level_base = 900000000U;
 
@@ -2017,7 +2017,7 @@ TEST_F(CompactionPickerTest, NotScheduleL1IfL0WithHigherPri1) {
 }
 
 TEST_F(CompactionPickerTest, NotScheduleL1IfL0WithHigherPri2) {
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   mutable_cf_options_.level0_file_num_compaction_trigger = 2;
   mutable_cf_options_.max_bytes_for_level_base = 900000000U;
 
@@ -2048,7 +2048,7 @@ TEST_F(CompactionPickerTest, NotScheduleL1IfL0WithHigherPri2) {
 }
 
 TEST_F(CompactionPickerTest, NotScheduleL1IfL0WithHigherPri3) {
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   mutable_cf_options_.level0_file_num_compaction_trigger = 2;
   mutable_cf_options_.max_bytes_for_level_base = 900000000U;
 
@@ -2087,7 +2087,7 @@ TEST_F(CompactionPickerTest, EstimateCompactionBytesNeeded1) {
   mutable_cf_options_.level0_file_num_compaction_trigger = 4;
   mutable_cf_options_.max_bytes_for_level_base = 1000;
   mutable_cf_options_.max_bytes_for_level_multiplier = 10;
-  NewVersionStorage(num_levels, CompactionStyle::Level);
+  NewVersionStorage(num_levels, rs::advanced_options::CompactionStyle::Level);
   Add(0, 1U, "150", "200", 200);
   Add(0, 2U, "150", "200", 200);
   Add(0, 3U, "150", "200", 200);
@@ -2120,7 +2120,7 @@ TEST_F(CompactionPickerTest, EstimateCompactionBytesNeeded2) {
   mutable_cf_options_.level0_file_num_compaction_trigger = 3;
   mutable_cf_options_.max_bytes_for_level_base = 1000;
   mutable_cf_options_.max_bytes_for_level_multiplier = 10;
-  NewVersionStorage(num_levels, CompactionStyle::Level);
+  NewVersionStorage(num_levels, rs::advanced_options::CompactionStyle::Level);
   Add(0, 1U, "150", "200", 200);
   Add(0, 2U, "150", "200", 200);
   Add(0, 4U, "150", "200", 200);
@@ -2147,7 +2147,7 @@ TEST_F(CompactionPickerTest, EstimateCompactionBytesNeeded3) {
   mutable_cf_options_.level0_file_num_compaction_trigger = 3;
   mutable_cf_options_.max_bytes_for_level_base = 1000;
   mutable_cf_options_.max_bytes_for_level_multiplier = 10;
-  NewVersionStorage(num_levels, CompactionStyle::Level);
+  NewVersionStorage(num_levels, rs::advanced_options::CompactionStyle::Level);
   Add(0, 1U, "150", "200", 2000);
   Add(0, 2U, "150", "200", 2000);
   Add(0, 4U, "150", "200", 2000);
@@ -2170,7 +2170,7 @@ TEST_F(CompactionPickerTest, EstimateCompactionBytesNeededDynamicLevel) {
   mutable_cf_options_.level0_file_num_compaction_trigger = 3;
   mutable_cf_options_.max_bytes_for_level_base = 1000;
   mutable_cf_options_.max_bytes_for_level_multiplier = 10;
-  NewVersionStorage(num_levels, CompactionStyle::Level);
+  NewVersionStorage(num_levels, rs::advanced_options::CompactionStyle::Level);
 
   // Set Last level size 50000
   // num_levels - 1 target 5000
@@ -2199,7 +2199,7 @@ TEST_F(CompactionPickerTest, EstimateCompactionBytesNeededDynamicLevel) {
 
 TEST_F(CompactionPickerTest, IsBottommostLevelTest) {
   // case 1: Higher levels are empty
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   Add(0, 1U, "a", "m");
   Add(0, 2U, "c", "z");
   Add(1, 3U, "d", "e");
@@ -2215,7 +2215,7 @@ TEST_F(CompactionPickerTest, IsBottommostLevelTest) {
   ASSERT_TRUE(result);
 
   // case 2: Higher levels have no overlap
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   Add(0, 1U, "a", "m");
   Add(0, 2U, "c", "z");
   Add(1, 3U, "d", "e");
@@ -2234,7 +2234,7 @@ TEST_F(CompactionPickerTest, IsBottommostLevelTest) {
   ASSERT_TRUE(result);
 
   // case 3.1: Higher levels (level 3) have overlap
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   Add(0, 1U, "a", "m");
   Add(0, 2U, "c", "z");
   Add(1, 3U, "d", "e");
@@ -2254,7 +2254,7 @@ TEST_F(CompactionPickerTest, IsBottommostLevelTest) {
 
   // case 3.2: Higher levels (level 5) have overlap
   DeleteVersionStorage();
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   Add(0, 1U, "a", "m");
   Add(0, 2U, "c", "z");
   Add(1, 3U, "d", "e");
@@ -2277,7 +2277,7 @@ TEST_F(CompactionPickerTest, IsBottommostLevelTest) {
 
   // case 3.3: Higher levels (level 5) have overlap, but it's only overlapping
   // one key ("d")
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   Add(0, 1U, "a", "m");
   Add(0, 2U, "c", "z");
   Add(1, 3U, "d", "e");
@@ -2299,7 +2299,7 @@ TEST_F(CompactionPickerTest, IsBottommostLevelTest) {
   ASSERT_FALSE(result);
 
   // Level 0 files overlap
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   Add(0, 1U, "s", "t");
   Add(0, 2U, "a", "m");
   Add(0, 3U, "b", "z");
@@ -2315,7 +2315,7 @@ TEST_F(CompactionPickerTest, IsBottommostLevelTest) {
   ASSERT_FALSE(result);
 
   // Level 0 files don't overlap
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   Add(0, 1U, "s", "t");
   Add(0, 2U, "a", "m");
   Add(0, 3U, "b", "k");
@@ -2331,7 +2331,7 @@ TEST_F(CompactionPickerTest, IsBottommostLevelTest) {
   ASSERT_TRUE(result);
 
   // Level 1 files overlap
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   Add(0, 1U, "s", "t");
   Add(0, 2U, "a", "m");
   Add(0, 3U, "b", "k");
@@ -2360,7 +2360,7 @@ TEST_F(CompactionPickerTest, MaxCompactionBytesHit) {
   mutable_cf_options_.max_compaction_bytes = 800000u;
   mutable_cf_options_.ignore_max_compaction_bytes_for_input = false;
   ioptions_.level_compaction_dynamic_level_bytes = false;
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   // A compaction should be triggered and pick file 2 and 5.
   // It can expand because adding file 1 and 3, the compaction size will
   // exceed mutable_cf_options_.max_bytes_for_level_base.
@@ -2387,7 +2387,7 @@ TEST_F(CompactionPickerTest, MaxCompactionBytesNotHit) {
   mutable_cf_options_.max_compaction_bytes = 1000000u;
   mutable_cf_options_.ignore_max_compaction_bytes_for_input = false;
   ioptions_.level_compaction_dynamic_level_bytes = false;
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   // A compaction should be triggered and pick file 2 and 5.
   // and it expands to file 1 and 3 too.
   Add(1, 1U, "100", "150", 300000U);
@@ -2414,7 +2414,7 @@ TEST_F(CompactionPickerTest, IsTrivialMoveOn) {
   mutable_cf_options_.max_bytes_for_level_base = 10000u;
   mutable_cf_options_.max_compaction_bytes = 10001u;
   ioptions_.level_compaction_dynamic_level_bytes = false;
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   // A compaction should be triggered and pick file 2
   Add(1, 1U, "100", "150", 3000U);
   Add(1, 2U, "151", "200", 3001U);
@@ -2439,7 +2439,7 @@ TEST_F(CompactionPickerTest, L0TrivialMove1) {
   mutable_cf_options_.level0_file_num_compaction_trigger = 4;
   mutable_cf_options_.max_compaction_bytes = 10000000u;
   ioptions_.level_compaction_dynamic_level_bytes = false;
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
 
   Add(0, 1U, "100", "150", 3000U, 0, 710, 800);
   Add(0, 2U, "151", "200", 3001U, 0, 610, 700);
@@ -2468,7 +2468,7 @@ TEST_F(CompactionPickerTest, L0TrivialMoveOneFile) {
   mutable_cf_options_.level0_file_num_compaction_trigger = 4;
   mutable_cf_options_.max_compaction_bytes = 10000000u;
   ioptions_.level_compaction_dynamic_level_bytes = false;
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
 
   Add(0, 1U, "100", "150", 3000U, 0, 710, 800);
   Add(0, 2U, "551", "600", 3001U, 0, 610, 700);
@@ -2496,7 +2496,7 @@ TEST_F(CompactionPickerTest, L0TrivialMoveWholeL0) {
   mutable_cf_options_.level0_file_num_compaction_trigger = 4;
   mutable_cf_options_.max_compaction_bytes = 10000000u;
   ioptions_.level_compaction_dynamic_level_bytes = false;
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
 
   Add(0, 1U, "300", "350", 3000U, 0, 710, 800);
   Add(0, 2U, "651", "600", 3001U, 0, 610, 700);
@@ -2525,7 +2525,7 @@ TEST_F(CompactionPickerTest, NonL0TrivialMoveExtendBothDirection) {
   mutable_cf_options_.level0_file_num_compaction_trigger = 4;
   mutable_cf_options_.max_compaction_bytes = 10000000u;
   ioptions_.level_compaction_dynamic_level_bytes = false;
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
 
   Add(1, 1U, "300", "350", 3000U, 0, 710, 800, 3000U);
   Add(1, 2U, "600", "651", 3001U, 0, 610, 700, 3001U);
@@ -2552,7 +2552,7 @@ TEST_F(CompactionPickerTest, L0TrivialMoveToEmptyLevel) {
   mutable_cf_options_.level0_file_num_compaction_trigger = 4;
   mutable_cf_options_.max_compaction_bytes = 10000000u;
   ioptions_.level_compaction_dynamic_level_bytes = false;
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
 
   // File 2 will be picked first, which by itself is trivial movable.
   // There was a bug before where compaction also picks file 3 and 4,
@@ -2580,7 +2580,7 @@ TEST_F(CompactionPickerTest, IsTrivialMoveOffSstPartitioned) {
   mutable_cf_options_.max_compaction_bytes = 10001u;
   ioptions_.level_compaction_dynamic_level_bytes = false;
   ioptions_.sst_partitioner_factory = NewSstPartitionerFixedPrefixFactory(1);
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   // A compaction should be triggered and pick file 2
   Add(1, 1U, "100", "150", 3000U);
   Add(1, 2U, "151", "200", 3001U);
@@ -2605,7 +2605,7 @@ TEST_F(CompactionPickerTest, IsTrivialMoveOff) {
   mutable_cf_options_.max_bytes_for_level_base = 1000000u;
   mutable_cf_options_.max_compaction_bytes = 10000u;
   ioptions_.level_compaction_dynamic_level_bytes = false;
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   // A compaction should be triggered and pick all files from level 1
   Add(1, 1U, "100", "150", 300000U, 0, 0);
   Add(1, 2U, "150", "200", 300000U, 0, 0);
@@ -2628,7 +2628,7 @@ TEST_F(CompactionPickerTest, TrivialMoveMultipleFiles1) {
   mutable_cf_options_.max_compaction_bytes = 10000001u;
   ioptions_.level_compaction_dynamic_level_bytes = false;
   ioptions_.compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio;
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
 
   Add(2, 1U, "100", "150", 3000U);
   Add(2, 2U, "151", "200", 3001U);
@@ -2663,7 +2663,7 @@ TEST_F(CompactionPickerTest, TrivialMoveMultipleFiles2) {
   mutable_cf_options_.max_compaction_bytes = 10000001u;
   ioptions_.level_compaction_dynamic_level_bytes = false;
   ioptions_.compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio;
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
 
   Add(2, 1U, "100", "150", 3000U);
   Add(2, 2U, "151", "160", 3001U);
@@ -2695,7 +2695,7 @@ TEST_F(CompactionPickerTest, TrivialMoveMultipleFiles3) {
   mutable_cf_options_.max_compaction_bytes = 10000001u;
   ioptions_.level_compaction_dynamic_level_bytes = false;
   ioptions_.compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio;
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
 
   // Even if consecutive files can be trivial moved, we don't pick them
   // since in case trivial move can't be issued for a reason, we cannot
@@ -2727,7 +2727,7 @@ TEST_F(CompactionPickerTest, TrivialMoveMultipleFiles4) {
   mutable_cf_options_.max_compaction_bytes = 10000001u;
   ioptions_.level_compaction_dynamic_level_bytes = false;
   ioptions_.compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio;
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
 
   Add(2, 1U, "100", "150", 4000U);
   Add(2, 2U, "151", "160", 4001U);
@@ -2754,7 +2754,7 @@ TEST_F(CompactionPickerTest, TrivialMoveMultipleFiles5) {
   mutable_cf_options_.max_compaction_bytes = 10000001u;
   ioptions_.level_compaction_dynamic_level_bytes = false;
   ioptions_.compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio;
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
 
   // File 4 and 5 aren't clean cut, so only 2 and 3 are picked.
   Add(2, 1U, "100", "150", 4000U);
@@ -2784,7 +2784,7 @@ TEST_F(CompactionPickerTest, TrivialMoveMultipleFiles6) {
   mutable_cf_options_.max_compaction_bytes = 10000001u;
   ioptions_.level_compaction_dynamic_level_bytes = false;
   ioptions_.compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio;
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
 
   Add(2, 1U, "100", "150", 3000U);
   Add(2, 2U, "151", "200", 3001U);
@@ -2815,7 +2815,7 @@ TEST_F(CompactionPickerTest, TrivialMoveMultipleFiles6) {
 }
 
 TEST_F(CompactionPickerTest, CacheNextCompactionIndex) {
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   mutable_cf_options_.max_compaction_bytes = 100000000000u;
 
   Add(1 /* level */, 1U /* file_number */, "100" /* smallest */,
@@ -2869,7 +2869,7 @@ TEST_F(CompactionPickerTest, IntraL0MaxCompactionBytesNotHit) {
   // level0_file_num_compaction_trigger + 2 L0 files.
   mutable_cf_options_.level0_file_num_compaction_trigger = 3;
   mutable_cf_options_.max_compaction_bytes = 1000000u;
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
 
   // All 5 L0 files will be picked for intra L0 compaction. The one L1 file
   // spans entire L0 key range and is marked as being compacted to avoid
@@ -2899,7 +2899,7 @@ TEST_F(CompactionPickerTest, IntraL0MaxCompactionBytesHit) {
   // level0_file_num_compaction_trigger + 2 L0 files.
   mutable_cf_options_.level0_file_num_compaction_trigger = 3;
   mutable_cf_options_.max_compaction_bytes = 999999u;
-  NewVersionStorage(6, CompactionStyle::Level);
+  NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
 
   // 4 out of 5 L0 files will be picked for intra L0 compaction due to
   // max_compaction_bytes limit (the minimum number of files for triggering
@@ -2928,13 +2928,13 @@ TEST_F(CompactionPickerTest, IntraL0MaxCompactionBytesHit) {
 TEST_F(CompactionPickerTest, UniversalMarkedCompactionFullOverlap) {
   const uint64_t kFileSize = 100000;
 
-  ioptions_.compaction_style = CompactionStyle::Universal;
+  ioptions_.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
 
   // This test covers the case where a "regular" universal compaction is
   // scheduled first, followed by a delete triggered compaction. The latter
   // should fail
-  NewVersionStorage(5, CompactionStyle::Universal);
+  NewVersionStorage(5, rs::advanced_options::CompactionStyle::Universal);
 
   Add(0, 1U, "150", "200", kFileSize, 0, 500, 550, /*compensated_file_size*/ 0,
       /*marked_for_compact*/ false, /* temperature*/ Temperature::Unknown,
@@ -2991,13 +2991,13 @@ TEST_F(CompactionPickerTest, UniversalMarkedCompactionFullOverlap) {
 TEST_F(CompactionPickerTest, UniversalMarkedCompactionFullOverlap2) {
   const uint64_t kFileSize = 100000;
 
-  ioptions_.compaction_style = CompactionStyle::Universal;
+  ioptions_.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
 
   // This test covers the case where a delete triggered compaction is
   // scheduled first, followed by a "regular" compaction. The latter
   // should fail
-  NewVersionStorage(5, CompactionStyle::Universal);
+  NewVersionStorage(5, rs::advanced_options::CompactionStyle::Universal);
 
   // Mark file number 4 for compaction
   Add(0, 4U, "260", "300", 4 * kFileSize, 0, 260, 300, 0, true,
@@ -3050,7 +3050,7 @@ TEST_F(CompactionPickerTest, UniversalMarkedCompactionStartOutputOverlap) {
   // with some newer files being compacted.
   const uint64_t kFileSize = 100000;
 
-  ioptions_.compaction_style = CompactionStyle::Universal;
+  ioptions_.compaction_style = rs::advanced_options::CompactionStyle::Universal;
 
   bool input_level_overlap = false;
   bool output_level_overlap = false;
@@ -3068,7 +3068,7 @@ TEST_F(CompactionPickerTest, UniversalMarkedCompactionStartOutputOverlap) {
     // Ensure that the L0 file gets picked first
     random_index = !input_level_overlap ? 0 : 1;
     UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
-    NewVersionStorage(5, CompactionStyle::Universal);
+    NewVersionStorage(5, rs::advanced_options::CompactionStyle::Universal);
 
     Add(0, 1U, "260", "300", 4 * kFileSize, 0, 260, 300, 0, true);
     Add(3, 2U, "010", "020", 2 * kFileSize, 0, 201, 248);
@@ -3122,12 +3122,12 @@ TEST_F(CompactionPickerTest, UniversalMarkedCompactionStartOutputOverlap) {
 TEST_F(CompactionPickerTest, UniversalMarkedL0NoOverlap) {
   const uint64_t kFileSize = 100000;
 
-  ioptions_.compaction_style = CompactionStyle::Universal;
+  ioptions_.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
 
   // This test covers the case where a delete triggered compaction is
   // scheduled and should result in a full compaction
-  NewVersionStorage(1, CompactionStyle::Universal);
+  NewVersionStorage(1, rs::advanced_options::CompactionStyle::Universal);
 
   // Mark file number 4 for compaction
   Add(0, 4U, "260", "300", 1 * kFileSize, 0, 260, 300, 0, true);
@@ -3157,13 +3157,13 @@ TEST_F(CompactionPickerTest, UniversalMarkedL0NoOverlap) {
 TEST_F(CompactionPickerTest, UniversalMarkedL0WithOverlap) {
   const uint64_t kFileSize = 100000;
 
-  ioptions_.compaction_style = CompactionStyle::Universal;
+  ioptions_.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
 
   // This test covers the case where a file is being compacted, and a
   // delete triggered compaction is then scheduled. The latter should stop
   // at the first file being compacted
-  NewVersionStorage(1, CompactionStyle::Universal);
+  NewVersionStorage(1, rs::advanced_options::CompactionStyle::Universal);
 
   // Mark file number 4 for compaction
   Add(0, 4U, "260", "300", 1 * kFileSize, 0, 260, 300, 0, true);
@@ -3192,13 +3192,13 @@ TEST_F(CompactionPickerTest, UniversalMarkedL0WithOverlap) {
 TEST_F(CompactionPickerTest, UniversalMarkedL0Overlap2) {
   const uint64_t kFileSize = 100000;
 
-  ioptions_.compaction_style = CompactionStyle::Universal;
+  ioptions_.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
 
   // This test covers the case where a delete triggered compaction is
   // scheduled first, followed by a "regular" compaction. The latter
   // should fail
-  NewVersionStorage(1, CompactionStyle::Universal);
+  NewVersionStorage(1, rs::advanced_options::CompactionStyle::Universal);
 
   // Mark file number 5 for compaction
   Add(0, 4U, "260", "300", 1 * kFileSize, 0, 260, 300,
@@ -3274,10 +3274,10 @@ TEST_F(CompactionPickerTest, UniversalMarkedManualCompaction) {
 
   // This test makes sure the `files_marked_for_compaction_` is updated after
   // creating manual compaction.
-  ioptions_.compaction_style = CompactionStyle::Universal;
+  ioptions_.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
 
-  NewVersionStorage(kNumLevels, CompactionStyle::Universal);
+  NewVersionStorage(kNumLevels, rs::advanced_options::CompactionStyle::Universal);
 
   // Add 3 files marked for compaction
   Add(0, 3U, "301", "350", 4 * kFileSize, 0, 101, 150, 0, true);
@@ -3320,13 +3320,13 @@ TEST_F(CompactionPickerTest, UniversalSizeAmpTierCompactionNonLastLevel) {
   const int kNumLevels = 7;
   const int kLastLevel = kNumLevels - 1;
 
-  ioptions_.compaction_style = CompactionStyle::Universal;
+  ioptions_.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   ioptions_.preclude_last_level_data_seconds = 1000;
   mutable_cf_options_.compaction_options_universal
       .max_size_amplification_percent = 200;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
 
-  NewVersionStorage(kNumLevels, CompactionStyle::Universal);
+  NewVersionStorage(kNumLevels, rs::advanced_options::CompactionStyle::Universal);
   Add(0, 100U, "100", "300", 1 * kFileSize);
   Add(0, 101U, "200", "400", 1 * kFileSize);
   Add(4, 90U, "100", "600", 4 * kFileSize);
@@ -3356,13 +3356,13 @@ TEST_F(CompactionPickerTest, UniversalSizeRatioTierCompactionLastLevel) {
   const int kLastLevel = kNumLevels - 1;
   const int kPenultimateLevel = kLastLevel - 1;
 
-  ioptions_.compaction_style = CompactionStyle::Universal;
+  ioptions_.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   ioptions_.preclude_last_level_data_seconds = 1000;
   mutable_cf_options_.compaction_options_universal
       .max_size_amplification_percent = 200;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
 
-  NewVersionStorage(kNumLevels, CompactionStyle::Universal);
+  NewVersionStorage(kNumLevels, rs::advanced_options::CompactionStyle::Universal);
   Add(0, 100U, "100", "300", 1 * kFileSize);
   Add(0, 101U, "200", "400", 1 * kFileSize);
   Add(5, 90U, "100", "600", 4 * kFileSize);
@@ -3393,13 +3393,13 @@ TEST_F(CompactionPickerTest, UniversalSizeAmpTierCompactionNotSuport) {
   const int kNumLevels = 2;
   const int kLastLevel = kNumLevels - 1;
 
-  ioptions_.compaction_style = CompactionStyle::Universal;
+  ioptions_.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   ioptions_.preclude_last_level_data_seconds = 1000;
   mutable_cf_options_.compaction_options_universal
       .max_size_amplification_percent = 200;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
 
-  NewVersionStorage(kNumLevels, CompactionStyle::Universal);
+  NewVersionStorage(kNumLevels, rs::advanced_options::CompactionStyle::Universal);
   Add(0, 100U, "100", "300", 1 * kFileSize);
   Add(0, 101U, "200", "400", 1 * kFileSize);
   Add(0, 90U, "100", "600", 4 * kFileSize);
@@ -3427,13 +3427,13 @@ TEST_F(CompactionPickerTest, UniversalSizeAmpTierCompactionLastLevel) {
   const int kLastLevel = kNumLevels - 1;
   const int kPenultimateLevel = kLastLevel - 1;
 
-  ioptions_.compaction_style = CompactionStyle::Universal;
+  ioptions_.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   ioptions_.preclude_last_level_data_seconds = 1000;
   mutable_cf_options_.compaction_options_universal
       .max_size_amplification_percent = 200;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
 
-  NewVersionStorage(kNumLevels, CompactionStyle::Universal);
+  NewVersionStorage(kNumLevels, rs::advanced_options::CompactionStyle::Universal);
   Add(0, 100U, "100", "300", 3 * kFileSize);
   Add(0, 101U, "200", "400", 2 * kFileSize);
   Add(5, 90U, "100", "600", 2 * kFileSize);
@@ -3457,7 +3457,7 @@ TEST_F(CompactionPickerTest, UniversalSizeAmpTierCompactionLastLevel) {
 
 TEST_F(CompactionPickerU64TsTest, Overlap) {
   int num_levels = ioptions_.num_levels;
-  NewVersionStorage(num_levels, CompactionStyle::Level);
+  NewVersionStorage(num_levels, rs::advanced_options::CompactionStyle::Level);
 
   constexpr int level = 0;
   constexpr uint64_t file_number = 20ULL;
@@ -3521,7 +3521,7 @@ TEST_F(CompactionPickerU64TsTest, CannotTrivialMoveUniversal) {
 
   mutable_cf_options_.level0_file_num_compaction_trigger = 2;
   mutable_cf_options_.compaction_options_universal.allow_trivial_move = true;
-  NewVersionStorage(1, CompactionStyle::Universal);
+  NewVersionStorage(1, rs::advanced_options::CompactionStyle::Universal);
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
   UpdateVersionStorageInfo();
   // must return false when there's no files.
@@ -3536,7 +3536,7 @@ TEST_F(CompactionPickerU64TsTest, CannotTrivialMoveUniversal) {
   std::string ts4;
   PutFixed64(&ts4, 6000);
 
-  NewVersionStorage(3, CompactionStyle::Universal);
+  NewVersionStorage(3, rs::advanced_options::CompactionStyle::Universal);
   // A compaction should be triggered and pick file 2
   Add(1, 1U, "150", "150", kFileSize, /*path_id=*/0, /*smallest_seq=*/100,
       /*largest_seq=*/100, /*compensated_file_size=*/kFileSize,
@@ -3577,7 +3577,7 @@ TEST_P(PerKeyPlacementCompactionPickerTest, OverlapWithNormalCompaction) {
   SyncPoint::GetInstance()->EnableProcessing();
 
   int num_levels = ioptions_.num_levels;
-  NewVersionStorage(num_levels, CompactionStyle::Level);
+  NewVersionStorage(num_levels, rs::advanced_options::CompactionStyle::Level);
 
   Add(0, 21U, "100", "150", 60000000U);
   Add(0, 22U, "300", "350", 60000000U);
@@ -3620,7 +3620,7 @@ TEST_P(PerKeyPlacementCompactionPickerTest, NormalCompactionOverlap) {
   SyncPoint::GetInstance()->EnableProcessing();
 
   int num_levels = ioptions_.num_levels;
-  NewVersionStorage(num_levels, CompactionStyle::Level);
+  NewVersionStorage(num_levels, rs::advanced_options::CompactionStyle::Level);
 
   Add(0, 21U, "100", "150", 60000000U);
   Add(0, 22U, "300", "350", 60000000U);
@@ -3665,7 +3665,7 @@ TEST_P(PerKeyPlacementCompactionPickerTest,
 
   int num_levels = ioptions_.num_levels;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
-  NewVersionStorage(num_levels, CompactionStyle::Universal);
+  NewVersionStorage(num_levels, rs::advanced_options::CompactionStyle::Universal);
 
   Add(0, 21U, "100", "150", 60000000U);
   Add(0, 22U, "300", "350", 60000000U);
@@ -3709,7 +3709,7 @@ TEST_P(PerKeyPlacementCompactionPickerTest, NormalCompactionOverlapUniversal) {
 
   int num_levels = ioptions_.num_levels;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
-  NewVersionStorage(num_levels, CompactionStyle::Universal);
+  NewVersionStorage(num_levels, rs::advanced_options::CompactionStyle::Universal);
 
   Add(0, 21U, "100", "150", 60000000U);
   Add(0, 22U, "300", "350", 60000000U);
@@ -3751,9 +3751,9 @@ TEST_P(PerKeyPlacementCompactionPickerTest, PenultimateOverlapUniversal) {
   }
 
   int num_levels = ioptions_.num_levels;
-  ioptions_.compaction_style = CompactionStyle::Universal;
+  ioptions_.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
-  NewVersionStorage(num_levels, CompactionStyle::Universal);
+  NewVersionStorage(num_levels, rs::advanced_options::CompactionStyle::Universal);
 
   // L4:   [200, 220]  [230, 250]       [360, 380]
   // L5:
@@ -3806,9 +3806,9 @@ TEST_P(PerKeyPlacementCompactionPickerTest, LastLevelOnlyOverlapUniversal) {
   }
 
   int num_levels = ioptions_.num_levels;
-  ioptions_.compaction_style = CompactionStyle::Universal;
+  ioptions_.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
-  NewVersionStorage(num_levels, CompactionStyle::Universal);
+  NewVersionStorage(num_levels, rs::advanced_options::CompactionStyle::Universal);
 
   // L4:   [200, 220]  [230, 250]       [360, 380]
   // L5:
@@ -3865,9 +3865,9 @@ TEST_P(PerKeyPlacementCompactionPickerTest,
   }
 
   int num_levels = ioptions_.num_levels;
-  ioptions_.compaction_style = CompactionStyle::Universal;
+  ioptions_.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
-  NewVersionStorage(num_levels, CompactionStyle::Universal);
+  NewVersionStorage(num_levels, rs::advanced_options::CompactionStyle::Universal);
 
   // L4:   [200, 220]
   // L5:              [230, 250]
@@ -3919,9 +3919,9 @@ TEST_P(PerKeyPlacementCompactionPickerTest,
   }
 
   int num_levels = ioptions_.num_levels;
-  ioptions_.compaction_style = CompactionStyle::Universal;
+  ioptions_.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
-  NewVersionStorage(num_levels, CompactionStyle::Universal);
+  NewVersionStorage(num_levels, rs::advanced_options::CompactionStyle::Universal);
 
   // L4:   [200, 220]  [230, 250]       [360, 380]
   // L5:
@@ -3979,9 +3979,9 @@ TEST_P(PerKeyPlacementCompactionPickerTest,
   }
 
   int num_levels = ioptions_.num_levels;
-  ioptions_.compaction_style = CompactionStyle::Universal;
+  ioptions_.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   UniversalCompactionPicker universal_compaction_picker(ioptions_, &icmp_);
-  NewVersionStorage(num_levels, CompactionStyle::Universal);
+  NewVersionStorage(num_levels, rs::advanced_options::CompactionStyle::Universal);
 
   // L4:   [200, 220]  [230, 250]       [360, 380]
   // L5:

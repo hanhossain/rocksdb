@@ -384,7 +384,7 @@ TEST_P(DBTestTailingIterator, TailingIteratorIncomplete) {
 
 TEST_P(DBTestTailingIterator, TailingIteratorSeekToSame) {
   Options options = CurrentOptions();
-  options.compaction_style = CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.write_buffer_size = 1000;
   CreateAndReopenWithCF({"pikachu"}, options);
 

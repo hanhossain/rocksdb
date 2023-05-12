@@ -66,7 +66,7 @@ TEST_F(CompactFilesTest, L0ConflictsFiles) {
   const int kWriteBufferSize = 10000;
   const int kLevel0Trigger = 2;
   options.create_if_missing = true;
-  options.compaction_style = CompactionStyle::Level;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Level;
   // Small slowdown and stop trigger for experimental purpose.
   options.level0_slowdown_writes_trigger = 20;
   options.level0_stop_writes_trigger = 20;
@@ -199,7 +199,7 @@ TEST_F(CompactFilesTest, ObsoleteFiles) {
   const int kWriteBufferSize = 65536;
   options.create_if_missing = true;
   // Disable RocksDB background compaction.
-  options.compaction_style = CompactionStyle::None;
+  options.compaction_style = rs::advanced_options::CompactionStyle::None;
   options.level0_slowdown_writes_trigger = (1 << 30);
   options.level0_stop_writes_trigger = (1 << 30);
   options.write_buffer_size = kWriteBufferSize;
@@ -237,7 +237,7 @@ TEST_F(CompactFilesTest, NotCutOutputOnLevel0) {
   Options options;
   options.create_if_missing = true;
   // Disable RocksDB background compaction.
-  options.compaction_style = CompactionStyle::None;
+  options.compaction_style = rs::advanced_options::CompactionStyle::None;
   options.level0_slowdown_writes_trigger = 1000;
   options.level0_stop_writes_trigger = 1000;
   options.write_buffer_size = 65536;
@@ -279,7 +279,7 @@ TEST_F(CompactFilesTest, CapturingPendingFiles) {
   Options options;
   options.create_if_missing = true;
   // Disable RocksDB background compaction.
-  options.compaction_style = CompactionStyle::None;
+  options.compaction_style = rs::advanced_options::CompactionStyle::None;
   // Always do full scans for obsolete files (needed to reproduce the issue).
   options.delete_obsolete_files_period_micros = 0;
 
@@ -396,9 +396,9 @@ TEST_F(CompactFilesTest, SentinelCompressionType) {
   }
   // Check that passing `CompressionType::kDisableCompressionOption` to
   // `CompactFiles` causes it to use the column family compression options.
-  for (auto compaction_style : {CompactionStyle::Level,
-                                CompactionStyle::Universal,
-                                CompactionStyle::None}) {
+  for (auto compaction_style : {rs::advanced_options::CompactionStyle::Level,
+                                rs::advanced_options::CompactionStyle::Universal,
+                                rs::advanced_options::CompactionStyle::None}) {
     ASSERT_OK(DestroyDB(db_name_, Options()));
     Options options;
     options.compaction_style = compaction_style;
@@ -440,7 +440,7 @@ TEST_F(CompactFilesTest, GetCompactionJobInfo) {
   Options options;
   options.create_if_missing = true;
   // Disable RocksDB background compaction.
-  options.compaction_style = CompactionStyle::None;
+  options.compaction_style = rs::advanced_options::CompactionStyle::None;
   options.level0_slowdown_writes_trigger = 1000;
   options.level0_stop_writes_trigger = 1000;
   options.write_buffer_size = 65536;

@@ -143,7 +143,7 @@ int main() {
   Options options;
   options.create_if_missing = true;
   // Disable RocksDB background compaction.
-  options.compaction_style = CompactionStyle::None;
+  options.compaction_style = rs::advanced_options::CompactionStyle::None;
   // Small slowdown and stop trigger for experimental purpose.
   options.level0_slowdown_writes_trigger = 3;
   options.level0_stop_writes_trigger = 5;

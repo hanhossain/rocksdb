@@ -1255,7 +1255,7 @@ TEST_P(ColumnFamilyTest, DifferentCompactionStyles) {
   ColumnFamilyOptions default_cf, one, two;
   db_options_.max_open_files = 20;  // only 10 files in file cache
 
-  default_cf.compaction_style = CompactionStyle::Level;
+  default_cf.compaction_style = rs::advanced_options::CompactionStyle::Level;
   default_cf.num_levels = 3;
   default_cf.write_buffer_size = 64 << 10;  // 64KB
   default_cf.target_file_size_base = 30 << 10;
@@ -1265,14 +1265,14 @@ TEST_P(ColumnFamilyTest, DifferentCompactionStyles) {
   table_options.no_block_cache = true;
   default_cf.table_factory.reset(NewBlockBasedTableFactory(table_options));
 
-  one.compaction_style = CompactionStyle::Universal;
+  one.compaction_style = rs::advanced_options::CompactionStyle::Universal;
 
   one.num_levels = 1;
   // trigger compaction if there are >= 4 files
   one.level0_file_num_compaction_trigger = 4;
   one.write_buffer_size = 120000;
 
-  two.compaction_style = CompactionStyle::Level;
+  two.compaction_style = rs::advanced_options::CompactionStyle::Level;
   two.num_levels = 4;
   two.level0_file_num_compaction_trigger = 3;
   two.write_buffer_size = 100000;
@@ -1326,7 +1326,7 @@ TEST_P(ColumnFamilyTest, MultipleManualCompactions) {
   db_options_.max_open_files = 20;  // only 10 files in file cache
   db_options_.max_background_compactions = 3;
 
-  default_cf.compaction_style = CompactionStyle::Level;
+  default_cf.compaction_style = rs::advanced_options::CompactionStyle::Level;
   default_cf.num_levels = 3;
   default_cf.write_buffer_size = 64 << 10;  // 64KB
   default_cf.target_file_size_base = 30 << 10;
@@ -1335,14 +1335,14 @@ TEST_P(ColumnFamilyTest, MultipleManualCompactions) {
   table_options.no_block_cache = true;
   default_cf.table_factory.reset(NewBlockBasedTableFactory(table_options));
 
-  one.compaction_style = CompactionStyle::Universal;
+  one.compaction_style = rs::advanced_options::CompactionStyle::Universal;
 
   one.num_levels = 1;
   // trigger compaction if there are >= 4 files
   one.level0_file_num_compaction_trigger = 4;
   one.write_buffer_size = 120000;
 
-  two.compaction_style = CompactionStyle::Level;
+  two.compaction_style = rs::advanced_options::CompactionStyle::Level;
   two.num_levels = 4;
   two.level0_file_num_compaction_trigger = 3;
   two.write_buffer_size = 100000;
@@ -1424,7 +1424,7 @@ TEST_P(ColumnFamilyTest, AutomaticAndManualCompactions) {
   db_options_.max_open_files = 20;  // only 10 files in file cache
   db_options_.max_background_compactions = 3;
 
-  default_cf.compaction_style = CompactionStyle::Level;
+  default_cf.compaction_style = rs::advanced_options::CompactionStyle::Level;
   default_cf.num_levels = 3;
   default_cf.write_buffer_size = 64 << 10;  // 64KB
   default_cf.target_file_size_base = 30 << 10;
@@ -1434,14 +1434,14 @@ TEST_P(ColumnFamilyTest, AutomaticAndManualCompactions) {
   table_options.no_block_cache = true;
   default_cf.table_factory.reset(NewBlockBasedTableFactory(table_options));
 
-  one.compaction_style = CompactionStyle::Universal;
+  one.compaction_style = rs::advanced_options::CompactionStyle::Universal;
 
   one.num_levels = 1;
   // trigger compaction if there are >= 4 files
   one.level0_file_num_compaction_trigger = 4;
   one.write_buffer_size = 120000;
 
-  two.compaction_style = CompactionStyle::Level;
+  two.compaction_style = rs::advanced_options::CompactionStyle::Level;
   two.num_levels = 4;
   two.level0_file_num_compaction_trigger = 3;
   two.write_buffer_size = 100000;
@@ -1519,7 +1519,7 @@ TEST_P(ColumnFamilyTest, ManualAndAutomaticCompactions) {
   db_options_.max_open_files = 20;  // only 10 files in file cache
   db_options_.max_background_compactions = 3;
 
-  default_cf.compaction_style = CompactionStyle::Level;
+  default_cf.compaction_style = rs::advanced_options::CompactionStyle::Level;
   default_cf.num_levels = 3;
   default_cf.write_buffer_size = 64 << 10;  // 64KB
   default_cf.target_file_size_base = 30 << 10;
@@ -1529,14 +1529,14 @@ TEST_P(ColumnFamilyTest, ManualAndAutomaticCompactions) {
   table_options.no_block_cache = true;
   default_cf.table_factory.reset(NewBlockBasedTableFactory(table_options));
 
-  one.compaction_style = CompactionStyle::Universal;
+  one.compaction_style = rs::advanced_options::CompactionStyle::Universal;
 
   one.num_levels = 1;
   // trigger compaction if there are >= 4 files
   one.level0_file_num_compaction_trigger = 4;
   one.write_buffer_size = 120000;
 
-  two.compaction_style = CompactionStyle::Level;
+  two.compaction_style = rs::advanced_options::CompactionStyle::Level;
   two.num_levels = 4;
   two.level0_file_num_compaction_trigger = 3;
   two.write_buffer_size = 100000;
@@ -1616,7 +1616,7 @@ TEST_P(ColumnFamilyTest, SameCFManualManualCompactions) {
   db_options_.max_open_files = 20;  // only 10 files in file cache
   db_options_.max_background_compactions = 3;
 
-  default_cf.compaction_style = CompactionStyle::Level;
+  default_cf.compaction_style = rs::advanced_options::CompactionStyle::Level;
   default_cf.num_levels = 3;
   default_cf.write_buffer_size = 64 << 10;  // 64KB
   default_cf.target_file_size_base = 30 << 10;
@@ -1626,7 +1626,7 @@ TEST_P(ColumnFamilyTest, SameCFManualManualCompactions) {
   table_options.no_block_cache = true;
   default_cf.table_factory.reset(NewBlockBasedTableFactory(table_options));
 
-  one.compaction_style = CompactionStyle::Universal;
+  one.compaction_style = rs::advanced_options::CompactionStyle::Universal;
 
   one.num_levels = 1;
   // trigger compaction if there are >= 4 files
@@ -1716,7 +1716,7 @@ TEST_P(ColumnFamilyTest, SameCFManualAutomaticCompactions) {
   db_options_.max_open_files = 20;  // only 10 files in file cache
   db_options_.max_background_compactions = 3;
 
-  default_cf.compaction_style = CompactionStyle::Level;
+  default_cf.compaction_style = rs::advanced_options::CompactionStyle::Level;
   default_cf.num_levels = 3;
   default_cf.write_buffer_size = 64 << 10;  // 64KB
   default_cf.target_file_size_base = 30 << 10;
@@ -1726,7 +1726,7 @@ TEST_P(ColumnFamilyTest, SameCFManualAutomaticCompactions) {
   table_options.no_block_cache = true;
   default_cf.table_factory.reset(NewBlockBasedTableFactory(table_options));
 
-  one.compaction_style = CompactionStyle::Universal;
+  one.compaction_style = rs::advanced_options::CompactionStyle::Universal;
 
   one.num_levels = 1;
   // trigger compaction if there are >= 4 files
@@ -1807,7 +1807,7 @@ TEST_P(ColumnFamilyTest, SameCFManualAutomaticCompactionsLevel) {
   db_options_.max_open_files = 20;  // only 10 files in file cache
   db_options_.max_background_compactions = 3;
 
-  default_cf.compaction_style = CompactionStyle::Level;
+  default_cf.compaction_style = rs::advanced_options::CompactionStyle::Level;
   default_cf.num_levels = 3;
   default_cf.write_buffer_size = 64 << 10;  // 64KB
   default_cf.target_file_size_base = 30 << 10;
@@ -1817,7 +1817,7 @@ TEST_P(ColumnFamilyTest, SameCFManualAutomaticCompactionsLevel) {
   table_options.no_block_cache = true;
   default_cf.table_factory.reset(NewBlockBasedTableFactory(table_options));
 
-  one.compaction_style = CompactionStyle::Level;
+  one.compaction_style = rs::advanced_options::CompactionStyle::Level;
 
   one.num_levels = 1;
   // trigger compaction if there are >= 4 files
@@ -1904,7 +1904,7 @@ TEST_P(ColumnFamilyTest, SameCFAutomaticManualCompactions) {
   db_options_.max_open_files = 20;  // only 10 files in file cache
   db_options_.max_background_compactions = 3;
 
-  default_cf.compaction_style = CompactionStyle::Level;
+  default_cf.compaction_style = rs::advanced_options::CompactionStyle::Level;
   default_cf.num_levels = 3;
   default_cf.write_buffer_size = 64 << 10;  // 64KB
   default_cf.target_file_size_base = 30 << 10;
@@ -1914,7 +1914,7 @@ TEST_P(ColumnFamilyTest, SameCFAutomaticManualCompactions) {
   table_options.no_block_cache = true;
   default_cf.table_factory.reset(NewBlockBasedTableFactory(table_options));
 
-  one.compaction_style = CompactionStyle::Universal;
+  one.compaction_style = rs::advanced_options::CompactionStyle::Universal;
 
   one.num_levels = 1;
   // trigger compaction if there are >= 4 files
@@ -2168,13 +2168,13 @@ TEST_P(ColumnFamilyTest, CreateMissingColumnFamilies) {
 
 TEST_P(ColumnFamilyTest, SanitizeOptions) {
   DBOptions db_options;
-  for (int s = (int)CompactionStyle::Level; s <= (int)CompactionStyle::Universal; ++s) {
+  for (int s = (int)rs::advanced_options::CompactionStyle::Level; s <= (int)rs::advanced_options::CompactionStyle::Universal; ++s) {
     for (int l = 0; l <= 2; l++) {
       for (int i = 1; i <= 3; i++) {
         for (int j = 1; j <= 3; j++) {
           for (int k = 1; k <= 3; k++) {
             ColumnFamilyOptions original;
-            original.compaction_style = static_cast<CompactionStyle>(s);
+            original.compaction_style = static_cast<rs::advanced_options::CompactionStyle>(s);
             original.num_levels = l;
             original.level0_stop_writes_trigger = i;
             original.level0_slowdown_writes_trigger = j;
@@ -2190,7 +2190,7 @@ TEST_P(ColumnFamilyTest, SanitizeOptions) {
                         result.level0_file_num_compaction_trigger);
             ASSERT_TRUE(result.level0_file_num_compaction_trigger ==
                         original.level0_file_num_compaction_trigger);
-            if (s == (int)CompactionStyle::Level) {
+            if (s == (int)rs::advanced_options::CompactionStyle::Level) {
               ASSERT_GE(result.num_levels, 2);
             } else {
               ASSERT_GE(result.num_levels, 1);

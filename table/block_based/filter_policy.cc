@@ -1742,8 +1742,8 @@ FilterBitsBuilder* RibbonFilterPolicy::GetBuilderWithContext(
   int levelish = INT_MAX;
 
   switch (context.compaction_style) {
-    case CompactionStyle::Level:
-    case CompactionStyle::Universal: {
+    case rs::advanced_options::CompactionStyle::Level:
+    case rs::advanced_options::CompactionStyle::Universal: {
       if (context.reason == TableFileCreationReason::kFlush) {
         // Treat flush as level -1
         assert(context.level_at_creation == 0);
@@ -1756,8 +1756,8 @@ FilterBitsBuilder* RibbonFilterPolicy::GetBuilderWithContext(
       }
       break;
     }
-    case CompactionStyle::FIFO:
-    case CompactionStyle::None:
+    case rs::advanced_options::CompactionStyle::FIFO:
+    case rs::advanced_options::CompactionStyle::None:
       // Treat as bottommost
       assert(levelish == INT_MAX);
       break;

@@ -490,7 +490,7 @@ TEST_P(DBTablePropertiesTest, DeletionTriggeredCompactionMarking) {
   opts.table_properties_collector_factories.emplace_back(compact_on_del);
 
   if (GetParam() == "kCompactionStyleUniversal") {
-    opts.compaction_style = CompactionStyle::Universal;
+    opts.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   }
   Reopen(opts);
 

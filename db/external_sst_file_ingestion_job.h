@@ -172,7 +172,7 @@ class ExternalSstFileIngestionJob {
   // REQUIRES: Mutex held
   Status AssignLevelAndSeqnoForIngestedFile(SuperVersion* sv,
                                             bool force_global_seqno,
-                                            CompactionStyle compaction_style,
+                                            rs::advanced_options::CompactionStyle compaction_style,
                                             SequenceNumber last_seqno,
                                             IngestedFileInfo* file_to_ingest,
                                             SequenceNumber* assigned_seqno);

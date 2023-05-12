@@ -2061,7 +2061,7 @@ Status Version::OverlapWithLevelIterator(const ReadOptions& read_options,
 VersionStorageInfo::VersionStorageInfo(
     const InternalKeyComparator* internal_comparator,
     const Comparator* user_comparator, int levels,
-    CompactionStyle compaction_style, VersionStorageInfo* ref_vstorage,
+    rs::advanced_options::CompactionStyle compaction_style, VersionStorageInfo* ref_vstorage,
     bool _force_consistency_checks,
     EpochNumberRequirement epoch_number_requirement)
     : internal_comparator_(internal_comparator),
@@ -2129,7 +2129,7 @@ Version::Version(ColumnFamilyData* column_family_data, VersionSet* vset,
           (cfd_ == nullptr) ? nullptr : &cfd_->internal_comparator(),
           (cfd_ == nullptr) ? nullptr : cfd_->user_comparator(),
           cfd_ == nullptr ? 0 : cfd_->NumberLevels(),
-          cfd_ == nullptr ? CompactionStyle::Level
+          cfd_ == nullptr ? rs::advanced_options::CompactionStyle::Level
                           : cfd_->ioptions()->compaction_style,
           (cfd_ == nullptr || cfd_->current() == nullptr)
               ? nullptr
@@ -3161,7 +3161,7 @@ void VersionStorageInfo::ComputeCompensatedSizes() {
 }
 
 int VersionStorageInfo::MaxInputLevel() const {
-  if (compaction_style_ == CompactionStyle::Level) {
+  if (compaction_style_ == rs::advanced_options::CompactionStyle::Level) {
     return num_levels() - 2;
   }
   return 0;
@@ -3178,7 +3178,7 @@ int VersionStorageInfo::MaxOutputLevel(bool allow_ingest_behind) const {
 void VersionStorageInfo::EstimateCompactionBytesNeeded(
     const MutableCFOptions& mutable_cf_options) {
   // Only implemented for level-based compaction
-  if (compaction_style_ != CompactionStyle::Level) {
+  if (compaction_style_ != rs::advanced_options::CompactionStyle::Level) {
     estimated_compaction_needed_bytes_ = 0;
     return;
   }
@@ -3320,7 +3320,7 @@ void VersionStorageInfo::ComputeCompactionScore(
           num_sorted_runs++;
         }
       }
-      if (compaction_style_ == CompactionStyle::Universal) {
+      if (compaction_style_ == rs::advanced_options::CompactionStyle::Universal) {
         // For universal compaction, we use level0 score to indicate
         // compaction score for the whole DB. Adding other levels as if
         // they are L0 files.
@@ -3336,7 +3336,7 @@ void VersionStorageInfo::ComputeCompactionScore(
         }
       }
 
-      if (compaction_style_ == CompactionStyle::FIFO) {
+      if (compaction_style_ == rs::advanced_options::CompactionStyle::FIFO) {
         score = static_cast<double>(total_size) /
                 mutable_cf_options.compaction_options_fifo.max_table_files_size;
         if (mutable_cf_options.compaction_options_fifo.allow_compaction ||
@@ -3359,7 +3359,7 @@ void VersionStorageInfo::ComputeCompactionScore(
       } else {
         score = static_cast<double>(num_sorted_runs) /
                 mutable_cf_options.level0_file_num_compaction_trigger;
-        if (compaction_style_ == CompactionStyle::Level && num_levels() > 1) {
+        if (compaction_style_ == rs::advanced_options::CompactionStyle::Level && num_levels() > 1) {
           // Level-based involves L0->L0 compactions that can lead to oversized
           // L0 files. Take into account size as well to avoid later giant
           // compactions to the base level.
@@ -3748,7 +3748,7 @@ void VersionStorageInfo::SetFinalized() {
   finalized_ = true;
 
 #ifndef NDEBUG
-  if (compaction_style_ != CompactionStyle::Level) {
+  if (compaction_style_ != rs::advanced_options::CompactionStyle::Level) {
     // Not level based compaction.
     return;
   }
@@ -3914,9 +3914,9 @@ void SortFileByRoundRobin(const InternalKeyComparator& icmp,
 
 void VersionStorageInfo::UpdateFilesByCompactionPri(
     const ImmutableOptions& ioptions, const MutableCFOptions& options) {
-  if (compaction_style_ == CompactionStyle::None ||
-      compaction_style_ == CompactionStyle::FIFO ||
-      compaction_style_ == CompactionStyle::Universal) {
+  if (compaction_style_ == rs::advanced_options::CompactionStyle::None ||
+      compaction_style_ == rs::advanced_options::CompactionStyle::FIFO ||
+      compaction_style_ == rs::advanced_options::CompactionStyle::Universal) {
     // don't need this
     return;
   }
@@ -4334,7 +4334,7 @@ uint64_t VersionStorageInfo::NumLevelBytes(int level) const {
 const char* VersionStorageInfo::LevelSummary(
     LevelSummaryStorage* scratch) const {
   int len = 0;
-  if (compaction_style_ == CompactionStyle::Level && num_levels() > 1) {
+  if (compaction_style_ == rs::advanced_options::CompactionStyle::Level && num_levels() > 1) {
     assert(base_level_ < static_cast<int>(level_max_bytes_.size()));
     if (level_multiplier_ != 0.0) {
       len = snprintf(
@@ -4485,7 +4485,7 @@ void VersionStorageInfo::CalculateBaseBytes(const ImmutableOptions& ioptions,
   // Special logic to set number of sorted runs.
   // It is to match the previous behavior when all files are in L0.
   int num_l0_count = static_cast<int>(files_[0].size());
-  if (compaction_style_ == CompactionStyle::Universal) {
+  if (compaction_style_ == rs::advanced_options::CompactionStyle::Universal) {
     // For universal compaction, we use level0 score to indicate
     // compaction score for the whole DB. Adding other levels as if
     // they are L0 files.
@@ -4499,11 +4499,11 @@ void VersionStorageInfo::CalculateBaseBytes(const ImmutableOptions& ioptions,
 
   level_max_bytes_.resize(ioptions.num_levels);
   if (!ioptions.level_compaction_dynamic_level_bytes) {
-    base_level_ = (ioptions.compaction_style == CompactionStyle::Level) ? 1 : -1;
+    base_level_ = (ioptions.compaction_style == rs::advanced_options::CompactionStyle::Level) ? 1 : -1;
 
     // Calculate for static bytes base case
     for (int i = 0; i < ioptions.num_levels; ++i) {
-      if (i == 0 && ioptions.compaction_style == CompactionStyle::Universal) {
+      if (i == 0 && ioptions.compaction_style == rs::advanced_options::CompactionStyle::Universal) {
         level_max_bytes_[i] = options.max_bytes_for_level_base;
       } else if (i > 1) {
         level_max_bytes_[i] = MultiplyCheckOverflow(
@@ -4515,7 +4515,7 @@ void VersionStorageInfo::CalculateBaseBytes(const ImmutableOptions& ioptions,
       }
     }
   } else {
-    assert(ioptions.compaction_style == CompactionStyle::Level);
+    assert(ioptions.compaction_style == rs::advanced_options::CompactionStyle::Level);
     uint64_t max_level_size = 0;
 
     int first_non_empty_level = -1;

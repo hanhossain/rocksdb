@@ -25,7 +25,6 @@ using ROCKSDB_NAMESPACE::ReadOptions;
 using ROCKSDB_NAMESPACE::Slice;
 using ROCKSDB_NAMESPACE::WriteBatch;
 using ROCKSDB_NAMESPACE::WriteOptions;
-using rs::advanced_options::CompactionStyle;
 
 
 namespace {
@@ -103,9 +102,9 @@ TEST_F(ManualCompactionTest, CompactTouchesAllKeys) {
     Options options;
     if (iter == 0) {  // level compaction
       options.num_levels = 3;
-      options.compaction_style = CompactionStyle::Level;
+      options.compaction_style = rs::advanced_options::CompactionStyle::Level;
     } else {  // universal compaction
-      options.compaction_style = CompactionStyle::Universal;
+      options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
     }
     options.create_if_missing = true;
     options.compression = CompressionType::kNoCompression;
@@ -194,7 +193,7 @@ TEST_F(ManualCompactionTest, SkipLevel) {
   options.num_levels = 3;
   // Initially, flushed L0 files won't exceed 100.
   options.level0_file_num_compaction_trigger = 100;
-  options.compaction_style = CompactionStyle::Level;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Level;
   options.create_if_missing = true;
   options.compression = CompressionType::kNoCompression;
   LogCompactionFilter* filter = new LogCompactionFilter();

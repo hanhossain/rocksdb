@@ -474,7 +474,7 @@ void CompactionJob::GenSubcompactionBoundaries() {
   auto* c = compact_->compaction;
   if (c->max_subcompactions() <= 1 &&
       !(c->immutable_options()->compaction_pri == rs::advanced_options::CompactionPri::RoundRobin &&
-        c->immutable_options()->compaction_style == CompactionStyle::Level)) {
+        c->immutable_options()->compaction_style == rs::advanced_options::CompactionStyle::Level)) {
     return;
   }
   auto* cfd = c->column_family_data();
@@ -546,7 +546,7 @@ void CompactionJob::GenSubcompactionBoundaries() {
   // and update extra_num_subcompaction_threads_reserved_ for round-robin
   uint64_t num_planned_subcompactions;
   if (c->immutable_options()->compaction_pri == rs::advanced_options::CompactionPri::RoundRobin &&
-      c->immutable_options()->compaction_style == CompactionStyle::Level) {
+      c->immutable_options()->compaction_style == rs::advanced_options::CompactionStyle::Level) {
     // For round-robin compaction prioity, we need to employ more
     // subcompactions (may exceed the max_subcompaction limit). The extra
     // subcompactions will be executed using reserved threads and taken into
