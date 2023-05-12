@@ -298,10 +298,10 @@ Status FileExpectedStateManager::SaveAtAndAfter(DB* db) {
   }
   if (s.ok()) {
     TraceOptions trace_opts;
-    trace_opts.filter |= (uint64_t)TraceFilterType::Get;
-    trace_opts.filter |= (uint64_t)TraceFilterType::MultiGet;
-    trace_opts.filter |= (uint64_t)TraceFilterType::IteratorSeek;
-    trace_opts.filter |= (uint64_t)TraceFilterType::IteratorSeekForPrev;
+    trace_opts.filter |= (uint64_t)rs::options::TraceFilterType::Get;
+    trace_opts.filter |= (uint64_t)rs::options::TraceFilterType::MultiGet;
+    trace_opts.filter |= (uint64_t)rs::options::TraceFilterType::IteratorSeek;
+    trace_opts.filter |= (uint64_t)rs::options::TraceFilterType::IteratorSeekForPrev;
     trace_opts.preserve_write_order = true;
     s = db->StartTrace(trace_opts, std::move(trace_writer));
   }
