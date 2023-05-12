@@ -3036,14 +3036,14 @@ void InitializeOptionsFromFlags(
   options.max_background_compactions = FLAGS_max_background_compactions;
   options.max_background_flushes = FLAGS_max_background_flushes;
   options.compaction_style =
-      static_cast<rs::advanced_options::rs::advanced_options::CompactionStyle>(FLAGS_compaction_style);
+      static_cast<rs::advanced_options::CompactionStyle>(FLAGS_compaction_style);
   if (options.compaction_style ==
-      rs::advanced_options::rs::advanced_options::CompactionStyle::FIFO) {
+      rs::advanced_options::CompactionStyle::FIFO) {
     options.compaction_options_fifo.allow_compaction =
         FLAGS_fifo_allow_compaction;
   }
   options.compaction_pri =
-      static_cast<rs::advanced_options::rs::advanced_options::CompactionPri>(FLAGS_compaction_pri);
+      static_cast<rs::advanced_options::CompactionPri>(FLAGS_compaction_pri);
   options.num_levels = FLAGS_num_levels;
   if (FLAGS_prefix_size >= 0) {
     options.prefix_extractor.reset(NewFixedPrefixTransform(FLAGS_prefix_size));

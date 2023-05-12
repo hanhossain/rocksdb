@@ -330,7 +330,7 @@ int main(int argc, char** argv) {
   options.create_if_missing = true;
   options.compression = ROCKSDB_NAMESPACE::CompressionType::kNoCompression;
   options.compaction_style =
-      rs::advanced_options::rs::advanced_options::CompactionStyle::None;
+      rs::advanced_options::CompactionStyle::None;
   options.level0_slowdown_writes_trigger = 99999;
   options.level0_stop_writes_trigger = 99999;
   options.use_direct_io_for_flush_and_compaction = true;

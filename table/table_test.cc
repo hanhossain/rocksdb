@@ -4678,7 +4678,7 @@ class TestPrefixExtractor : public ROCKSDB_NAMESPACE::SliceTransform {
 
 TEST_F(PrefixTest, PrefixAndWholeKeyTest) {
   ROCKSDB_NAMESPACE::Options options;
-  options.compaction_style = rs::advanced_options::rs::advanced_options::CompactionStyle::Universal;
+  options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.num_levels = 20;
   options.create_if_missing = true;
   options.optimize_filters_for_hits = false;

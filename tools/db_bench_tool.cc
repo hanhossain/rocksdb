@@ -513,12 +513,12 @@ DEFINE_int32(max_background_flushes,
              "The maximum number of concurrent background flushes"
              " that can occur in parallel.");
 
-static rs::advanced_options::rs::advanced_options::CompactionStyle FLAGS_compaction_style_e;
+static rs::advanced_options::CompactionStyle FLAGS_compaction_style_e;
 DEFINE_int32(compaction_style,
              (int32_t)ROCKSDB_NAMESPACE::Options().compaction_style,
              "style of compaction: level-based, universal and fifo");
 
-static rs::advanced_options::rs::advanced_options::CompactionPri FLAGS_compaction_pri_e;
+static rs::advanced_options::CompactionPri FLAGS_compaction_pri_e;
 DEFINE_int32(compaction_pri,
              (int32_t)ROCKSDB_NAMESPACE::Options().compaction_pri,
              "priority of files to compaction: by size or by data age");
@@ -8428,7 +8428,7 @@ int db_bench_tool(int argc, char** argv) {
   }
   ParseCommandLineFlags(&argc, &argv, true);
   FLAGS_compaction_style_e =
-      (rs::advanced_options::rs::advanced_options::CompactionStyle)FLAGS_compaction_style;
+      (rs::advanced_options::CompactionStyle)FLAGS_compaction_style;
   if (FLAGS_statistics && !FLAGS_statistics_string.empty()) {
     fprintf(stderr,
             "Cannot provide both --statistics and --statistics_string.\n");
@@ -8451,7 +8451,7 @@ int db_bench_tool(int argc, char** argv) {
     dbstats->set_stats_level(static_cast<StatsLevel>(FLAGS_stats_level));
   }
   FLAGS_compaction_pri_e =
-      (rs::advanced_options::rs::advanced_options::CompactionPri)FLAGS_compaction_pri;
+      (rs::advanced_options::CompactionPri)FLAGS_compaction_pri;
 
   std::vector<std::string> fanout = ROCKSDB_NAMESPACE::StringSplit(
       FLAGS_max_bytes_for_level_multiplier_additional, ',');

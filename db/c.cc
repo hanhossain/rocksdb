@@ -3801,7 +3801,7 @@ unsigned char rocksdb_options_get_report_bg_io_stats(rocksdb_options_t* opt) {
 
 void rocksdb_options_set_compaction_style(rocksdb_options_t* opt, int style) {
   opt->rep.compaction_style =
-      static_cast<rs::advanced_options::rs::advanced_options::CompactionStyle>(style);
+      static_cast<rs::advanced_options::CompactionStyle>(style);
 }
 
 int rocksdb_options_get_compaction_style(rocksdb_options_t* opt) {
@@ -4352,7 +4352,7 @@ void rocksdb_readoptions_set_iterate_lower_bound(rocksdb_readoptions_t* opt,
 }
 
 void rocksdb_readoptions_set_read_tier(rocksdb_readoptions_t* opt, int v) {
-  opt->rep.read_tier = static_cast<rs::options::rs::options::ReadTier>(v);
+  opt->rep.read_tier = static_cast<rs::options::ReadTier>(v);
 }
 
 int rocksdb_readoptions_get_read_tier(rocksdb_readoptions_t* opt) {
