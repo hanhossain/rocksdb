@@ -16,7 +16,6 @@
 #include "rocksdb/memtablerep.h"
 #include "rocksdb/universal_compaction.h"
 
-using rs::advanced_options::CompactionOptionsFIFO;
 using rs::advanced_options::CompactionPri;
 using rs::advanced_options::CompactionStyle;
 using rs::advanced_options::PrepopulateBlobCache;
@@ -664,7 +663,7 @@ struct AdvancedColumnFamilyOptions {
   // Dynamically changeable through SetOptions() API
   // Dynamic change example:
   // SetOptions("compaction_options_fifo", "{max_table_files_size=100;}")
-  CompactionOptionsFIFO compaction_options_fifo;
+  rs::advanced_options::CompactionOptionsFIFO compaction_options_fifo;
 
   // An iteration->Next() sequentially skips over keys with the same
   // user-key unless this option is set. This number specifies the number

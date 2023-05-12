@@ -178,18 +178,18 @@ static std::unordered_map<std::string, OptionTypeInfo>
 static std::unordered_map<std::string, OptionTypeInfo>
     fifo_compaction_options_type_info = {
         {"max_table_files_size",
-         {offsetof(struct CompactionOptionsFIFO, max_table_files_size),
+         {offsetof(struct rs::advanced_options::CompactionOptionsFIFO, max_table_files_size),
           OptionType::kUInt64T, OptionVerificationType::kNormal,
           OptionTypeFlags::kMutable}},
         {"age_for_warm",
-         {offsetof(struct CompactionOptionsFIFO, age_for_warm),
+         {offsetof(struct rs::advanced_options::CompactionOptionsFIFO, age_for_warm),
           OptionType::kUInt64T, OptionVerificationType::kNormal,
           OptionTypeFlags::kMutable}},
         {"ttl",
          {0, OptionType::kUInt64T, OptionVerificationType::kDeprecated,
           OptionTypeFlags::kNone}},
         {"allow_compaction",
-         {offsetof(struct CompactionOptionsFIFO, allow_compaction),
+         {offsetof(struct rs::advanced_options::CompactionOptionsFIFO, allow_compaction),
           OptionType::kBoolean, OptionVerificationType::kNormal,
           OptionTypeFlags::kMutable}},
 };
@@ -397,7 +397,7 @@ static std::unordered_map<std::string, OptionTypeInfo>
                if (name == "compaction_options_fifo" &&
                    value.find("=") == std::string::npos) {
                  // Old format. Parse just a single uint64_t value.
-                 auto options = static_cast<CompactionOptionsFIFO*>(addr);
+                 auto options = static_cast<rs::advanced_options::CompactionOptionsFIFO*>(addr);
                  options->max_table_files_size = ParseUint64(value);
                  return Status::OK();
                } else {

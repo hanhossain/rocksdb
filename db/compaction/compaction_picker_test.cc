@@ -40,7 +40,7 @@ class CompactionPickerTestBase : public testing::Test {
   CountingLogger logger_;
   LogBuffer log_buffer_;
   uint32_t file_num_;
-  CompactionOptionsFIFO fifo_options_;
+  rs::advanced_options::CompactionOptionsFIFO fifo_options_;
   std::unique_ptr<VersionStorageInfo> vstorage_;
   std::vector<std::unique_ptr<FileMetaData>> files_;
   // does not own FileMetaData

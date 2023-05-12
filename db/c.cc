@@ -124,7 +124,6 @@ using ROCKSDB_NAMESPACE::WriteBatch;
 using ROCKSDB_NAMESPACE::WriteBatchWithIndex;
 using ROCKSDB_NAMESPACE::WriteOptions;
 
-using rs::advanced_options::CompactionOptionsFIFO;
 using rs::advanced_options::PrepopulateBlobCache;
 
 using std::unordered_set;
@@ -160,7 +159,7 @@ struct rocksdb_flushoptions_t {
   FlushOptions rep;
 };
 struct rocksdb_fifo_compaction_options_t {
-  CompactionOptionsFIFO rep;
+  rs::advanced_options::CompactionOptionsFIFO rep;
 };
 struct rocksdb_readoptions_t {
   ReadOptions rep;
@@ -5147,7 +5146,7 @@ void rocksdb_universal_compaction_options_destroy(
 rocksdb_fifo_compaction_options_t* rocksdb_fifo_compaction_options_create() {
   rocksdb_fifo_compaction_options_t* result =
       new rocksdb_fifo_compaction_options_t;
-  result->rep = CompactionOptionsFIFO();
+  result->rep = rs::advanced_options::CompactionOptionsFIFO();
   return result;
 }
 

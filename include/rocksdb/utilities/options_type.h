@@ -354,7 +354,7 @@ class OptionTypeInfo {
   //   - <struct_name>       Meaning to process the entire struct.
   //   - <struct_name.field> Meaning to process the single field
   //   - <field>             Process the single fields
-  // The CompactionOptionsFIFO, CompactionOptionsUniversal, and LRUCacheOptions
+  // The rs::advanced_options::CompactionOptionsFIFO, CompactionOptionsUniversal, and LRUCacheOptions
   // are all examples of Struct options.
   //
   // To create an OptionTypeInfo that is a Struct, one should:

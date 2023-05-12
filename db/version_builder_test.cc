@@ -28,7 +28,7 @@ class VersionBuilderTest : public testing::Test {
   MutableCFOptions mutable_cf_options_;
   VersionStorageInfo vstorage_;
   uint32_t file_num_;
-  CompactionOptionsFIFO fifo_options_;
+  rs::advanced_options::CompactionOptionsFIFO fifo_options_;
   std::vector<uint64_t> size_being_compacted_;
 
   VersionBuilderTest()
