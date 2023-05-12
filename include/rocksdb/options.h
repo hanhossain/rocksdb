@@ -1335,7 +1335,7 @@ struct DBOptions {
   // both block cache and secondary cache.
   //
   // Default: kNonVolatileBlockTier
-  CacheTier lowest_used_cache_tier = CacheTier::NonVolatileBlockTier;
+  rs::advanced_options::CacheTier lowest_used_cache_tier = rs::advanced_options::CacheTier::NonVolatileBlockTier;
 
   // If set to false, when compaction or flush sees a SingleDelete followed by
   // a Delete for the same user key, compaction job will not fail.

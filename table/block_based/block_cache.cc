@@ -95,8 +95,8 @@ const std::array<const Cache::CacheItemHelper*,
 }  // namespace
 
 const Cache::CacheItemHelper* GetCacheItemHelper(
-    BlockType block_type, CacheTier lowest_used_cache_tier) {
-  if (lowest_used_cache_tier == CacheTier::NonVolatileBlockTier) {
+    BlockType block_type, rs::advanced_options::CacheTier lowest_used_cache_tier) {
+  if (lowest_used_cache_tier == rs::advanced_options::CacheTier::NonVolatileBlockTier) {
     return kCacheItemFullHelperForBlockType[static_cast<unsigned>(block_type)];
   } else {
     return kCacheItemBasicHelperForBlockType[static_cast<unsigned>(block_type)];

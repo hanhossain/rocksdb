@@ -2270,7 +2270,7 @@ TEST_P(DBSecondaryCacheTest, TestSecondaryCacheOptionBasic) {
   options.table_factory.reset(NewBlockBasedTableFactory(table_options));
   options.env = fault_env_.get();
   fault_fs_->SetFailGetUniqueId(true);
-  options.lowest_used_cache_tier = CacheTier::VolatileTier;
+  options.lowest_used_cache_tier = rs::advanced_options::CacheTier::VolatileTier;
 
   // Set the file paranoid check, so after flush, the file will be read
   // all the blocks will be accessed.
@@ -2365,7 +2365,7 @@ TEST_P(DBSecondaryCacheTest, TestSecondaryCacheOptionChange) {
   options.table_factory.reset(NewBlockBasedTableFactory(table_options));
   options.env = fault_env_.get();
   fault_fs_->SetFailGetUniqueId(true);
-  options.lowest_used_cache_tier = CacheTier::VolatileTier;
+  options.lowest_used_cache_tier = rs::advanced_options::CacheTier::VolatileTier;
 
   // Set the file paranoid check, so after flush, the file will be read
   // all the blocks will be accessed.
@@ -2421,7 +2421,7 @@ TEST_P(DBSecondaryCacheTest, TestSecondaryCacheOptionChange) {
   ASSERT_EQ(secondary_cache->num_lookups(), 0u);
 
   // Change the option to enable secondary cache after we Reopen the DB
-  options.lowest_used_cache_tier = CacheTier::NonVolatileBlockTier;
+  options.lowest_used_cache_tier = rs::advanced_options::CacheTier::NonVolatileBlockTier;
   Reopen(options);
 
   v = Get(Key(70));
@@ -2468,7 +2468,7 @@ TEST_P(DBSecondaryCacheTest, TestSecondaryCacheOptionTwoDB) {
   ASSERT_OK(DestroyDB(dbname2, options));
   DB* db2 = nullptr;
   Options options2 = options;
-  options2.lowest_used_cache_tier = CacheTier::VolatileTier;
+  options2.lowest_used_cache_tier = rs::advanced_options::CacheTier::VolatileTier;
   ASSERT_OK(DB::Open(options2, dbname2, &db2));
   fault_fs_->SetFailGetUniqueId(true);
 

@@ -16,7 +16,6 @@
 #include "rocksdb/memtablerep.h"
 #include "rocksdb/universal_compaction.h"
 
-using rs::advanced_options::CacheTier;
 using rs::advanced_options::CompactionOptionsFIFO;
 using rs::advanced_options::CompactionPri;
 using rs::advanced_options::CompactionStyle;

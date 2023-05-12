@@ -126,10 +126,10 @@ template <typename TBlocklike>
 using BlockCacheTypedHandle =
     typename BlockCacheInterface<TBlocklike>::TypedHandle;
 
-// Selects the right helper based on BlockType and CacheTier
+// Selects the right helper based on BlockType and rs::advanced_options::CacheTier
 const Cache::CacheItemHelper* GetCacheItemHelper(
     BlockType block_type,
-    CacheTier lowest_used_cache_tier = CacheTier::NonVolatileBlockTier);
+    rs::advanced_options::CacheTier lowest_used_cache_tier = rs::advanced_options::CacheTier::NonVolatileBlockTier);
 
 // For SFINAE check that a type is "blocklike" with a kCacheEntryRole member.
 // Can get difficult compiler/linker errors without a good check like this.

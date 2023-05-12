@@ -155,7 +155,7 @@ class BlobSource {
   // support block/blob cache (volatile tier) and secondary cache (this tier
   // isn't strictly speaking a non-volatile tier since the compressed cache in
   // this tier is in volatile memory).
-  const CacheTier lowest_used_cache_tier_;
+  const rs::advanced_options::CacheTier lowest_used_cache_tier_;
 };
 
 }  // namespace ROCKSDB_NAMESPACE

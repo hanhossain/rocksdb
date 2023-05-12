@@ -41,9 +41,9 @@ static std::unordered_map<std::string, DBOptions::AccessHint>
                               {"SEQUENTIAL", DBOptions::AccessHint::SEQUENTIAL},
                               {"WILLNEED", DBOptions::AccessHint::WILLNEED}};
 
-static std::unordered_map<std::string, CacheTier> cache_tier_string_map = {
-    {"kVolatileTier", CacheTier::VolatileTier},
-    {"kNonVolatileBlockTier", CacheTier::NonVolatileBlockTier}};
+static std::unordered_map<std::string, rs::advanced_options::CacheTier> cache_tier_string_map = {
+    {"kVolatileTier", rs::advanced_options::CacheTier::VolatileTier},
+    {"kNonVolatileBlockTier", rs::advanced_options::CacheTier::NonVolatileBlockTier}};
 
 static std::unordered_map<std::string, InfoLogLevel> info_log_level_string_map =
     {{"DEBUG_LEVEL", InfoLogLevel::DEBUG_LEVEL},
@@ -551,7 +551,7 @@ static std::unordered_map<std::string, OptionTypeInfo>
           },
           nullptr}},
         {"lowest_used_cache_tier",
-         OptionTypeInfo::Enum<CacheTier>(
+         OptionTypeInfo::Enum<rs::advanced_options::CacheTier>(
              offsetof(struct ImmutableDBOptions, lowest_used_cache_tier),
              &cache_tier_string_map, OptionTypeFlags::kNone)},
         {"enforce_single_del_contracts",

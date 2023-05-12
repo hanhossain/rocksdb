@@ -296,14 +296,14 @@ class FullTypedCacheInterface
   using BasicTypedCacheInterface<TValue, kRole,
                                  CachePtr>::BasicTypedCacheInterface;
 
-  // Insert with SecondaryCache compatibility (subject to CacheTier).
+  // Insert with SecondaryCache compatibility (subject to rs::advanced_options::CacheTier).
   // (Basic Insert() also inherited.)
   inline Status InsertFull(
       const Slice& key, TValuePtr value, size_t charge,
       TypedHandle** handle = nullptr, Priority priority = Priority::LOW,
-      CacheTier lowest_used_cache_tier = CacheTier::NonVolatileBlockTier) {
+      rs::advanced_options::CacheTier lowest_used_cache_tier = rs::advanced_options::CacheTier::NonVolatileBlockTier) {
     auto untyped_handle = reinterpret_cast<Handle**>(handle);
-    auto helper = lowest_used_cache_tier == CacheTier::NonVolatileBlockTier
+    auto helper = lowest_used_cache_tier == rs::advanced_options::CacheTier::NonVolatileBlockTier
                       ? GetFullHelper()
                       : GetBasicHelper();
     return this->cache_->Insert(key, UpCastValue(value), helper, charge,
@@ -311,11 +311,11 @@ class FullTypedCacheInterface
   }
 
   // Like SecondaryCache::InsertSaved, with SecondaryCache compatibility
-  // (subject to CacheTier).
+  // (subject to rs::advanced_options::CacheTier).
   inline Status InsertSaved(
       const Slice& key, const Slice& data, TCreateContext* create_context,
       Priority priority = Priority::LOW,
-      CacheTier lowest_used_cache_tier = CacheTier::NonVolatileBlockTier,
+      rs::advanced_options::CacheTier lowest_used_cache_tier = rs::advanced_options::CacheTier::NonVolatileBlockTier,
       size_t* out_charge = nullptr) {
     ObjectPtr value;
     size_t charge;
@@ -334,13 +334,13 @@ class FullTypedCacheInterface
     return st;
   }
 
-  // Lookup with SecondaryCache support (subject to CacheTier).
+  // Lookup with SecondaryCache support (subject to rs::advanced_options::CacheTier).
   // (Basic Lookup() also inherited.)
   inline TypedHandle* LookupFull(
       const Slice& key, TCreateContext* create_context = nullptr,
       Priority priority = Priority::LOW, Statistics* stats = nullptr,
-      CacheTier lowest_used_cache_tier = CacheTier::NonVolatileBlockTier) {
-    if (lowest_used_cache_tier == CacheTier::NonVolatileBlockTier) {
+      rs::advanced_options::CacheTier lowest_used_cache_tier = rs::advanced_options::CacheTier::NonVolatileBlockTier) {
+    if (lowest_used_cache_tier == rs::advanced_options::CacheTier::NonVolatileBlockTier) {
       return reinterpret_cast<TypedHandle*>(this->cache_->Lookup(
           key, GetFullHelper(), create_context, priority, stats));
     } else {
@@ -351,8 +351,8 @@ class FullTypedCacheInterface
 
   inline void StartAsyncLookupFull(
       TypedAsyncLookupHandle& async_handle,
-      CacheTier lowest_used_cache_tier = CacheTier::NonVolatileBlockTier) {
-    if (lowest_used_cache_tier == CacheTier::NonVolatileBlockTier) {
+      rs::advanced_options::CacheTier lowest_used_cache_tier = rs::advanced_options::CacheTier::NonVolatileBlockTier) {
+    if (lowest_used_cache_tier == rs::advanced_options::CacheTier::NonVolatileBlockTier) {
       async_handle.helper = GetFullHelper();
       this->cache_->StartAsyncLookup(async_handle);
     } else {
