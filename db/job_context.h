@@ -60,8 +60,8 @@ struct SuperVersionContext {
 #endif
   }
 
-  void PushWriteStallNotification(WriteStallCondition old_cond,
-                                  WriteStallCondition new_cond,
+  void PushWriteStallNotification(rs::types::WriteStallCondition old_cond,
+                                  rs::types::WriteStallCondition new_cond,
                                   const std::string& name,
                                   const ImmutableOptions* ioptions) {
 #if !defined(ROCKSDB_DISABLE_STALL_NOTIFICATION)

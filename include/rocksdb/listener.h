@@ -8,6 +8,7 @@
 
 #include <chrono>
 #include <memory>
+#include <rocksdb-rs-cxx/types.h>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -199,8 +200,8 @@ struct WriteStallInfo {
   std::string cf_name;
   // state of the write controller
   struct {
-    WriteStallCondition cur;
-    WriteStallCondition prev;
+    rs::types::WriteStallCondition cur;
+    rs::types::WriteStallCondition prev;
   } condition;
 };
 

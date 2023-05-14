@@ -16,23 +16,23 @@ extern const std::string& InvalidWriteStallHyphenString();
 extern const std::string& WriteStallCauseToHyphenString(WriteStallCause cause);
 
 extern const std::string& WriteStallConditionToHyphenString(
-    WriteStallCondition condition);
+    rs::types::WriteStallCondition condition);
 
 // REQUIRES:
 // cause` is CF-scope `WriteStallCause`, see `WriteStallCause` for more
 //
 // REQUIRES:
-// `condition` != `WriteStallCondition::kNormal`
+// `condition` != `rs::types::WriteStallCondition::kNormal`
 extern InternalStats::InternalCFStatsType InternalCFStat(
-    WriteStallCause cause, WriteStallCondition condition);
+    WriteStallCause cause, rs::types::WriteStallCondition condition);
 
 // REQUIRES:
 // cause` is DB-scope `WriteStallCause`, see `WriteStallCause` for more
 //
 // REQUIRES:
-// `condition` != `WriteStallCondition::kNormal`
+// `condition` != `rs::types::WriteStallCondition::kNormal`
 extern InternalStats::InternalDBStatsType InternalDBStat(
-    WriteStallCause cause, WriteStallCondition condition);
+    WriteStallCause cause, rs::types::WriteStallCondition condition);
 
 extern bool isCFScopeWriteStallCause(WriteStallCause cause);
 extern bool isDBScopeWriteStallCause(WriteStallCause cause);

@@ -2122,27 +2122,27 @@ TEST_F(DBPropertiesTest, WriteStallStatsSanityCheck) {
     }
   }
 
-  for (uint32_t i = 0; i < static_cast<uint32_t>(WriteStallCondition::kNormal);
+  for (uint32_t i = 0; i < static_cast<uint32_t>(rs::types::WriteStallCondition::Normal);
        ++i) {
-    WriteStallCondition condition = static_cast<WriteStallCondition>(i);
+    rs::types::WriteStallCondition condition = static_cast<rs::types::WriteStallCondition>(i);
     const std::string& str = WriteStallConditionToHyphenString(condition);
     ASSERT_TRUE(!str.empty())
-        << "Please ensure mapping from `WriteStallCondition` to "
+        << "Please ensure mapping from `rs::types::WriteStallCondition` to "
            "`WriteStallConditionToHyphenString` is complete";
   }
 
   for (uint32_t i = 0; i < static_cast<uint32_t>(WriteStallCause::kNone); ++i) {
     for (uint32_t j = 0;
-         j < static_cast<uint32_t>(WriteStallCondition::kNormal); ++j) {
+         j < static_cast<uint32_t>(rs::types::WriteStallCondition::Normal); ++j) {
       WriteStallCause cause = static_cast<WriteStallCause>(i);
-      WriteStallCondition condition = static_cast<WriteStallCondition>(j);
+      rs::types::WriteStallCondition condition = static_cast<rs::types::WriteStallCondition>(j);
 
       if (isCFScopeWriteStallCause(cause)) {
         ASSERT_TRUE(InternalCFStat(cause, condition) !=
                     InternalStats::INTERNAL_CF_STATS_ENUM_MAX)
             << "Please ensure the combination of WriteStallCause(" +
                    std::to_string(static_cast<uint32_t>(cause)) +
-                   ") + WriteStallCondition(" +
+                   ") + rs::types::WriteStallCondition(" +
                    std::to_string(static_cast<uint32_t>(condition)) +
                    ") is correctly mapped to a valid `InternalStats` or bypass "
                    "its check in this test";
@@ -2151,10 +2151,10 @@ TEST_F(DBPropertiesTest, WriteStallStatsSanityCheck) {
             InternalDBStat(cause, condition);
         if (internal_db_stat == InternalStats::kIntStatsNumMax) {
           ASSERT_TRUE(cause == WriteStallCause::kWriteBufferManagerLimit &&
-                      condition == WriteStallCondition::kDelayed)
+                      condition == rs::types::WriteStallCondition::Delayed)
               << "Please ensure the combination of WriteStallCause(" +
                      std::to_string(static_cast<uint32_t>(cause)) +
-                     ") + WriteStallCondition(" +
+                     ") + rs::types::WriteStallCondition(" +
                      std::to_string(static_cast<uint32_t>(condition)) +
                      ") is correctly mapped to a valid `InternalStats` or "
                      "bypass its check in this test";
@@ -2190,7 +2190,7 @@ TEST_F(DBPropertiesTest, GetMapPropertyWriteStallStats) {
                                          &db_values));
     ASSERT_EQ(std::stoi(db_values[WriteStallStatsMapKeys::CauseConditionCount(
                   WriteStallCause::kWriteBufferManagerLimit,
-                  WriteStallCondition::kStopped)]),
+                  rs::types::WriteStallCondition::Stopped)]),
               0);
 
     for (int cf = 0; cf <= 1; ++cf) {
@@ -2242,7 +2242,7 @@ TEST_F(DBPropertiesTest, GetMapPropertyWriteStallStats) {
                                            &db_values));
       EXPECT_EQ(std::stoi(db_values[WriteStallStatsMapKeys::CauseConditionCount(
                     WriteStallCause::kWriteBufferManagerLimit,
-                    WriteStallCondition::kStopped)]),
+                    rs::types::WriteStallCondition::Stopped)]),
                 1);
       // `WriteStallCause::kWriteBufferManagerLimit` should not result in any
       // CF-scope write stall stats changes
@@ -2265,14 +2265,14 @@ TEST_F(DBPropertiesTest, GetMapPropertyWriteStallStats) {
         EXPECT_EQ(
             std::stoi(cf_values[WriteStallStatsMapKeys::CauseConditionCount(
                 WriteStallCause::kMemtableLimit,
-                WriteStallCondition::kStopped)]),
+                rs::types::WriteStallCondition::Stopped)]),
             cf == 1 ? 1 : 0);
         EXPECT_EQ(std::stoi(cf_values[WriteStallStatsMapKeys::TotalDelays()]),
                   0);
         EXPECT_EQ(
             std::stoi(cf_values[WriteStallStatsMapKeys::CauseConditionCount(
                 WriteStallCause::kMemtableLimit,
-                WriteStallCondition::kDelayed)]),
+                rs::types::WriteStallCondition::Delayed)]),
             0);
       }
     }

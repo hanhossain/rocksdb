@@ -1898,9 +1898,9 @@ struct WriteStallStatsMapKeys {
   // `WriteStallCause::kDBScopeWriteStallCauseEnumMax`
   //
   // REQUIRES:
-  // `condition` isn't any of these: `WriteStallCondition::kNormal`
+  // `condition` isn't any of these: `rs::types::WriteStallCondition::kNormal`
   static std::string CauseConditionCount(WriteStallCause cause,
-                                         WriteStallCondition condition);
+                                         rs::types::WriteStallCondition condition);
 };
 
 // Overloaded operators for enum class SizeApproximationFlags.

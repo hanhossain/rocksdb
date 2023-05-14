@@ -84,11 +84,4 @@ enum class WriteStallCause {
   kNone,
 };
 
-enum class WriteStallCondition {
-  kDelayed,
-  kStopped,
-  // Always add new WriteStallCondition before `kNormal`
-  kNormal,
-};
-
 }  // namespace ROCKSDB_NAMESPACE
