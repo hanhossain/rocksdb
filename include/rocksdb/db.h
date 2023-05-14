@@ -1893,13 +1893,13 @@ struct WriteStallStatsMapKeys {
   static const std::string& CFL0FileCountLimitStopsWithOngoingCompaction();
 
   // REQUIRES:
-  // `cause` isn't any of these: `WriteStallCause::kNone`,
-  // `WriteStallCause::kCFScopeWriteStallCauseEnumMax`,
-  // `WriteStallCause::kDBScopeWriteStallCauseEnumMax`
+  // `cause` isn't any of these: `rs::types::WriteStallCause::kNone`,
+  // `rs::types::WriteStallCause::kCFScopeWriteStallCauseEnumMax`,
+  // `rs::types::WriteStallCause::kDBScopeWriteStallCauseEnumMax`
   //
   // REQUIRES:
   // `condition` isn't any of these: `rs::types::WriteStallCondition::kNormal`
-  static std::string CauseConditionCount(WriteStallCause cause,
+  static std::string CauseConditionCount(rs::types::WriteStallCause cause,
                                          rs::types::WriteStallCondition condition);
 };
 

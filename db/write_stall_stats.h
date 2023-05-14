@@ -13,35 +13,35 @@
 namespace ROCKSDB_NAMESPACE {
 extern const std::string& InvalidWriteStallHyphenString();
 
-extern const std::string& WriteStallCauseToHyphenString(WriteStallCause cause);
+extern const std::string& WriteStallCauseToHyphenString(rs::types::WriteStallCause cause);
 
 extern const std::string& WriteStallConditionToHyphenString(
     rs::types::WriteStallCondition condition);
 
 // REQUIRES:
-// cause` is CF-scope `WriteStallCause`, see `WriteStallCause` for more
+// cause` is CF-scope `rs::types::WriteStallCause`, see `rs::types::WriteStallCause` for more
 //
 // REQUIRES:
 // `condition` != `rs::types::WriteStallCondition::kNormal`
 extern InternalStats::InternalCFStatsType InternalCFStat(
-    WriteStallCause cause, rs::types::WriteStallCondition condition);
+    rs::types::WriteStallCause cause, rs::types::WriteStallCondition condition);
 
 // REQUIRES:
-// cause` is DB-scope `WriteStallCause`, see `WriteStallCause` for more
+// cause` is DB-scope `rs::types::WriteStallCause`, see `rs::types::WriteStallCause` for more
 //
 // REQUIRES:
 // `condition` != `rs::types::WriteStallCondition::kNormal`
 extern InternalStats::InternalDBStatsType InternalDBStat(
-    WriteStallCause cause, rs::types::WriteStallCondition condition);
+    rs::types::WriteStallCause cause, rs::types::WriteStallCondition condition);
 
-extern bool isCFScopeWriteStallCause(WriteStallCause cause);
-extern bool isDBScopeWriteStallCause(WriteStallCause cause);
+extern bool isCFScopeWriteStallCause(rs::types::WriteStallCause cause);
+extern bool isDBScopeWriteStallCause(rs::types::WriteStallCause cause);
 
 constexpr uint32_t kNumCFScopeWriteStallCauses =
-    static_cast<uint32_t>(WriteStallCause::kCFScopeWriteStallCauseEnumMax) -
-    static_cast<uint32_t>(WriteStallCause::kMemtableLimit);
+    static_cast<uint32_t>(rs::types::WriteStallCause::CFScopeWriteStallCauseEnumMax) -
+    static_cast<uint32_t>(rs::types::WriteStallCause::MemtableLimit);
 
 constexpr uint32_t kNumDBScopeWriteStallCauses =
-    static_cast<uint32_t>(WriteStallCause::kDBScopeWriteStallCauseEnumMax) -
-    static_cast<uint32_t>(WriteStallCause::kWriteBufferManagerLimit);
+    static_cast<uint32_t>(rs::types::WriteStallCause::DBScopeWriteStallCauseEnumMax) -
+    static_cast<uint32_t>(rs::types::WriteStallCause::WriteBufferManagerLimit);
 }  // namespace ROCKSDB_NAMESPACE

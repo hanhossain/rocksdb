@@ -141,7 +141,7 @@ class InternalStats {
     //
     // However, the word "write stall" includes both "delayed" and "stopped"
     // (see `rs::types::WriteStallCondition`) and DB-scope writes stalls (see
-    // `WriteStallCause`).
+    // `rs::types::WriteStallCause`).
     //
     // So we should improve, rename or clarify it
     kIntStatsWriteStallMicros,
