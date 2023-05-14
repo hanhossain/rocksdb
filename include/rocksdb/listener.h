@@ -77,17 +77,17 @@ struct BlobFileCreationBriefInfo : public FileCreationBriefInfo {
   BlobFileCreationBriefInfo(const std::string& _db_name,
                             const std::string& _cf_name,
                             const std::string& _file_path, int _job_id,
-                            BlobFileCreationReason _reason)
+                            rs::types::BlobFileCreationReason _reason)
       : FileCreationBriefInfo(_db_name, _cf_name, _file_path, _job_id),
         reason(_reason) {}
   // reason of creating the blob file.
-  BlobFileCreationReason reason;
+  rs::types::BlobFileCreationReason reason;
 };
 
 struct BlobFileCreationInfo : public BlobFileCreationBriefInfo {
   BlobFileCreationInfo(const std::string& _db_name, const std::string& _cf_name,
                        const std::string& _file_path, int _job_id,
-                       BlobFileCreationReason _reason,
+                       rs::types::BlobFileCreationReason _reason,
                        uint64_t _total_blob_count, uint64_t _total_blob_bytes,
                        Status _status, const std::string& _file_checksum,
                        const std::string& _file_checksum_func_name)

@@ -942,7 +942,7 @@ Status FlushJob::WriteLevel0Table() {
                      job_snapshot_seq, snapshot_checker_,
                      mutable_cf_options_.paranoid_file_checks,
                      cfd_->internal_stats(), &io_s, io_tracer_,
-                     BlobFileCreationReason::kFlush, seqno_to_time_mapping_,
+                     rs::types::BlobFileCreationReason::Flush, seqno_to_time_mapping_,
                      event_logger_, job_context_->job_id, io_priority,
                      &table_properties_, write_hint, full_history_ts_low,
                      blob_callback_, base_, &num_input_entries,

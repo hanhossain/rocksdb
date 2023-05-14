@@ -27,10 +27,4 @@ enum class TableFileCreationReason {
   kMisc,
 };
 
-enum class BlobFileCreationReason {
-  kFlush,
-  kCompaction,
-  kRecovery,
-};
-
 }  // namespace ROCKSDB_NAMESPACE

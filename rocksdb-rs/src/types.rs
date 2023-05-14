@@ -1,5 +1,11 @@
 #[cxx::bridge(namespace = "rs::types")]
 mod ffi {
+    enum BlobFileCreationReason {
+        Flush,
+        Compaction,
+        Recovery,
+    }
+
     /// The types of files RocksDB uses in a DB directory. (Available for
     /// advanced options.)
     #[repr(i32)]
