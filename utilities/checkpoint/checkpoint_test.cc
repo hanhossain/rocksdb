@@ -338,9 +338,9 @@ TEST_F(CheckpointTest, CheckpointWithBlob) {
   bool blob_file_found = false;
   for (const auto& file : files) {
     uint64_t number = 0;
-    FileType type = kWalFile;
+    rs::types::FileType type = rs::types::FileType::WalFile;
 
-    if (ParseFileName(file, &number, &type) && type == kBlobFile) {
+    if (ParseFileName(file, &number, &type) && type == rs::types::FileType::BlobFile) {
       blob_file_found = true;
       break;
     }
@@ -705,9 +705,9 @@ TEST_F(CheckpointTest, CurrentFileModifiedWhileCheckpointing2PC) {
   int num_log_files = 0;
   for (auto& file : files) {
     uint64_t num;
-    FileType type;
+    rs::types::FileType type;
     WalFileType log_type;
-    if (ParseFileName(file, &num, &type, &log_type) && type == kWalFile) {
+    if (ParseFileName(file, &num, &type, &log_type) && type == rs::types::FileType::WalFile) {
       num_log_files++;
     }
   }

@@ -204,7 +204,7 @@ void DBImpl::FindObsoleteFiles(JobContext* job_context, bool force,
       s.PermitUncheckedError();  // TODO: What should we do on error?
       for (const std::string& file : files) {
         uint64_t number;
-        FileType type;
+        rs::types::FileType type;
         // 1. If we cannot parse the file name, we skip;
         // 2. If the file with file_number equals number has already been
         // grabbed for purge by another compaction job, or it has already been
@@ -349,17 +349,17 @@ void DBImpl::FindObsoleteFiles(JobContext* job_context, bool force,
 // Delete obsolete files and log status and information of file deletion
 void DBImpl::DeleteObsoleteFileImpl(int job_id, const std::string& fname,
                                     const std::string& path_to_sync,
-                                    FileType type, uint64_t number) {
+                                    rs::types::FileType type, uint64_t number) {
   TEST_SYNC_POINT_CALLBACK("DBImpl::DeleteObsoleteFileImpl::BeforeDeletion",
                            const_cast<std::string*>(&fname));
 
   Status file_deletion_status;
-  if (type == kTableFile || type == kBlobFile || type == kWalFile) {
+  if (type == rs::types::FileType::TableFile || type == rs::types::FileType::BlobFile || type == rs::types::FileType::WalFile) {
     // Rate limit WAL deletion only if its in the DB dir
     file_deletion_status = DeleteDBFile(
         &immutable_db_options_, fname, path_to_sync,
         /*force_bg=*/false,
-        /*force_fg=*/(type == kWalFile) ? !wal_in_db_path_ : false);
+        /*force_fg=*/(type == rs::types::FileType::WalFile) ? !wal_in_db_path_ : false);
   } else {
     file_deletion_status = env_->DeleteFile(fname);
   }
@@ -383,12 +383,12 @@ void DBImpl::DeleteObsoleteFileImpl(int job_id, const std::string& fname,
                     job_id, fname.c_str(), type, number,
                     file_deletion_status.ToString().c_str());
   }
-  if (type == kTableFile) {
+  if (type == rs::types::FileType::TableFile) {
     EventHelpers::LogAndNotifyTableFileDeletion(
         &event_logger_, job_id, number, fname, file_deletion_status, GetName(),
         immutable_db_options_.listeners);
   }
-  if (type == kBlobFile) {
+  if (type == rs::types::FileType::BlobFile) {
     EventHelpers::LogAndNotifyBlobFileDeletion(
         &event_logger_, immutable_db_options_.listeners, job_id, number, fname,
         file_deletion_status, GetName());
@@ -486,9 +486,9 @@ void DBImpl::PurgeObsoleteFiles(JobContext& state, bool schedule_only) {
   for (const auto& candidate_file : candidate_files) {
     const std::string& fname = candidate_file.file_name;
     uint64_t number;
-    FileType type;
+    rs::types::FileType type;
     if (!ParseFileName(fname, &number, info_log_prefix.prefix, &type) ||
-        type != kOptionsFile) {
+        type != rs::types::FileType::OptionsFile) {
       continue;
     }
     if (number > optsfile_num1) {
@@ -511,7 +511,7 @@ void DBImpl::PurgeObsoleteFiles(JobContext& state, bool schedule_only) {
   for (const auto& candidate_file : candidate_files) {
     const std::string& to_delete = candidate_file.file_name;
     uint64_t number;
-    FileType type;
+    rs::types::FileType type;
     // Ignore file if we cannot recognize it.
     if (!ParseFileName(to_delete, &number, info_log_prefix.prefix, &type)) {
       continue;
@@ -519,18 +519,18 @@ void DBImpl::PurgeObsoleteFiles(JobContext& state, bool schedule_only) {
 
     bool keep = true;
     switch (type) {
-      case kWalFile:
+      case rs::types::FileType::WalFile:
         keep = ((number >= state.log_number) ||
                 (number == state.prev_log_number) ||
                 (log_recycle_files_set.find(number) !=
                  log_recycle_files_set.end()));
         break;
-      case kDescriptorFile:
+      case rs::types::FileType::DescriptorFile:
         // Keep my manifest file, and any newer incarnations'
         // (can happen during manifest roll)
         keep = (number >= state.manifest_file_number);
         break;
-      case kTableFile:
+      case rs::types::FileType::TableFile:
         // If the second condition is not there, this makes
         // DontDeletePendingOutputs fail
         keep = (sst_live_set.find(number) != sst_live_set.end()) ||
@@ -539,14 +539,14 @@ void DBImpl::PurgeObsoleteFiles(JobContext& state, bool schedule_only) {
           files_to_del.insert(number);
         }
         break;
-      case kBlobFile:
+      case rs::types::FileType::BlobFile:
         keep = number >= state.min_pending_output ||
                (blob_live_set.find(number) != blob_live_set.end());
         if (!keep) {
           files_to_del.insert(number);
         }
         break;
-      case kTempFile:
+      case rs::types::FileType::TempFile:
         // Any temp files that are currently being written to must
         // be recorded in pending_outputs_, which is inserted into "live".
         // Also, SetCurrentFile creates a temp file when writing out new
@@ -560,19 +560,19 @@ void DBImpl::PurgeObsoleteFiles(JobContext& state, bool schedule_only) {
                (number == state.pending_manifest_file_number) ||
                (to_delete.find(kOptionsFileNamePrefix) != std::string::npos);
         break;
-      case kInfoLogFile:
+      case rs::types::FileType::InfoLogFile:
         keep = true;
         if (number != 0) {
           old_info_log_files.push_back(to_delete);
         }
         break;
-      case kOptionsFile:
+      case rs::types::FileType::OptionsFile:
         keep = (number >= optsfile_num2);
         break;
-      case kCurrentFile:
-      case kDBLockFile:
-      case kIdentityFile:
-      case kMetaDatabase:
+      case rs::types::FileType::CurrentFile:
+      case rs::types::FileType::DBLockFile:
+      case rs::types::FileType::IdentityFile:
+      case rs::types::FileType::MetaDatabase:
         keep = true;
         break;
     }
@@ -583,16 +583,16 @@ void DBImpl::PurgeObsoleteFiles(JobContext& state, bool schedule_only) {
 
     std::string fname;
     std::string dir_to_sync;
-    if (type == kTableFile) {
+    if (type == rs::types::FileType::TableFile) {
       // evict from cache
       TableCache::Evict(table_cache_.get(), number);
       fname = MakeTableFileName(candidate_file.file_path, number);
       dir_to_sync = candidate_file.file_path;
-    } else if (type == kBlobFile) {
+    } else if (type == rs::types::FileType::BlobFile) {
       fname = BlobFileName(candidate_file.file_path, number);
       dir_to_sync = candidate_file.file_path;
     } else {
-      dir_to_sync = (type == kWalFile) ? wal_dir : dbname_;
+      dir_to_sync = (type == rs::types::FileType::WalFile) ? wal_dir : dbname_;
       fname = dir_to_sync +
               ((!dir_to_sync.empty() && dir_to_sync.back() == '/') ||
                        (!to_delete.empty() && to_delete.front() == '/')
@@ -601,7 +601,7 @@ void DBImpl::PurgeObsoleteFiles(JobContext& state, bool schedule_only) {
               to_delete;
     }
 
-    if (type == kWalFile && (immutable_db_options_.WAL_ttl_seconds > 0 ||
+    if (type == rs::types::FileType::WalFile && (immutable_db_options_.WAL_ttl_seconds > 0 ||
                              immutable_db_options_.WAL_size_limit_MB > 0)) {
       wal_manager_.ArchiveWALFile(fname, number);
       continue;
@@ -980,14 +980,14 @@ Status DBImpl::DeleteUnreferencedSstFiles(RecoveryContext* recovery_ctx) {
     }
     for (const auto& fname : files) {
       uint64_t number = 0;
-      FileType type;
+      rs::types::FileType type;
       if (!ParseFileName(fname, &number, &type)) {
         continue;
       }
       // path ends with '/' or '\\'
       const std::string normalized_fpath = path + fname;
       largest_file_number = std::max(largest_file_number, number);
-      if (type == kTableFile && number >= next_file_number &&
+      if (type == rs::types::FileType::TableFile && number >= next_file_number &&
           recovery_ctx->files_to_delete_.find(normalized_fpath) ==
               recovery_ctx->files_to_delete_.end()) {
         recovery_ctx->files_to_delete_.emplace(normalized_fpath);

@@ -305,18 +305,18 @@ class Repairer {
       }
 
       uint64_t number;
-      FileType type;
+      rs::types::FileType type;
       for (size_t i = 0; i < filenames.size(); i++) {
         if (ParseFileName(filenames[i], &number, &type)) {
-          if (type == kDescriptorFile) {
+          if (type == rs::types::FileType::DescriptorFile) {
             manifests_.push_back(filenames[i]);
           } else {
             if (number + 1 > next_file_number_) {
               next_file_number_ = number + 1;
             }
-            if (type == kWalFile) {
+            if (type == rs::types::FileType::WalFile) {
               logs_.push_back(number);
-            } else if (type == kTableFile) {
+            } else if (type == rs::types::FileType::TableFile) {
               table_fds_.emplace_back(number, static_cast<uint32_t>(path_id),
                                       0);
             } else {

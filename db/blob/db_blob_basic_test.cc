@@ -1141,9 +1141,9 @@ TEST_F(DBBlobBasicTest, BestEffortsRecovery_MissingNewestBlobFile) {
   uint64_t max_blob_file_num = kInvalidBlobFileNumber;
   for (const auto& fname : files) {
     uint64_t file_num = 0;
-    FileType type;
+    rs::types::FileType type;
     if (ParseFileName(fname, &file_num, /*info_log_name_prefix=*/"", &type) &&
-        type == kBlobFile) {
+        type == rs::types::FileType::BlobFile) {
       if (file_num > max_blob_file_num) {
         max_blob_file_num = file_num;
         blob_file_path = dbname_ + "/" + fname;

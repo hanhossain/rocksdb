@@ -1767,12 +1767,12 @@ TEST_F(DBPropertiesTest, MinObsoleteSstNumberToKeep) {
         // Verify the property indicates that SSTs created by a running
         // compaction cannot be deleted.
         uint64_t created_file_num;
-        FileType created_file_type;
+        rs::types::FileType created_file_type;
         std::string filename =
             info.file_path.substr(info.file_path.rfind('/') + 1);
         ASSERT_TRUE(
             ParseFileName(filename, &created_file_num, &created_file_type));
-        ASSERT_EQ(kTableFile, created_file_type);
+        ASSERT_EQ(rs::types::FileType::TableFile, created_file_type);
 
         uint64_t keep_sst_lower_bound;
         ASSERT_TRUE(

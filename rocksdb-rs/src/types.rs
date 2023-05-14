@@ -1,5 +1,23 @@
 #[cxx::bridge(namespace = "rs::types")]
 mod ffi {
+    /// The types of files RocksDB uses in a DB directory. (Available for
+    /// advanced options.)
+    #[repr(i32)]
+    enum FileType {
+        WalFile,
+        DBLockFile,
+        TableFile,
+        DescriptorFile,
+        CurrentFile,
+        TempFile,
+        /// Either the current one, or an old one
+        InfoLogFile,
+        MetaDatabase,
+        IdentityFile,
+        OptionsFile,
+        BlobFile,
+    }
+
     /// User-oriented representation of internal key types.
     /// Ordering of this enum entries should not change.
     enum EntryType {

@@ -169,7 +169,7 @@ Status BuildTable(
           std::move(file), fname, file_options, ioptions.clock, io_tracer,
           ioptions.stats, ioptions.listeners,
           ioptions.file_checksum_gen_factory.get(),
-          tmp_set.Contains(FileType::kTableFile), false));
+          tmp_set.Contains(rs::types::FileType::TableFile), false));
 
       builder = NewTableBuilder(tboptions, file_writer.get());
     }

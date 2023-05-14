@@ -212,12 +212,12 @@ class CorruptionTest : public testing::Test {
     ASSERT_GE(max_expected, correct);
   }
 
-  void Corrupt(FileType filetype, int offset, int bytes_to_corrupt) {
+  void Corrupt(rs::types::FileType filetype, int offset, int bytes_to_corrupt) {
     // Pick file to corrupt
     std::vector<std::string> filenames;
     ASSERT_OK(env_->GetChildren(dbname_, &filenames));
     uint64_t number;
-    FileType type;
+    rs::types::FileType type;
     std::string fname;
     int picked_number = -1;
     for (size_t i = 0; i < filenames.size(); i++) {
@@ -227,10 +227,10 @@ class CorruptionTest : public testing::Test {
         picked_number = static_cast<int>(number);
       }
     }
-    ASSERT_TRUE(!fname.empty()) << filetype;
+    ASSERT_TRUE(!fname.empty()) << (int)filetype;
 
     ASSERT_OK(test::CorruptFile(env_.get(), fname, offset, bytes_to_corrupt,
-                                /*verify_checksum*/ filetype == kTableFile));
+                                /*verify_checksum*/ filetype == rs::types::FileType::TableFile));
   }
 
   // corrupts exactly one file at level `level`. if no file found at level,
@@ -284,21 +284,21 @@ class CorruptionTest : public testing::Test {
   void GetSortedWalFiles(std::vector<uint64_t>& file_nums) {
     std::vector<std::string> tmp_files;
     ASSERT_OK(env_->GetChildren(dbname_, &tmp_files));
-    FileType type = kWalFile;
+    rs::types::FileType type = rs::types::FileType::WalFile;
     for (const auto& file : tmp_files) {
       uint64_t number = 0;
-      if (ParseFileName(file, &number, &type) && type == kWalFile) {
+      if (ParseFileName(file, &number, &type) && type == rs::types::FileType::WalFile) {
         file_nums.push_back(number);
       }
     }
     std::sort(file_nums.begin(), file_nums.end());
   }
 
-  void CorruptFileWithTruncation(FileType file, uint64_t number,
+  void CorruptFileWithTruncation(rs::types::FileType file, uint64_t number,
                                  uint64_t bytes_to_truncate = 0) {
     std::string path;
     switch (file) {
-      case FileType::kWalFile:
+      case rs::types::FileType::WalFile:
         path = LogFileName(dbname_, number);
         break;
       // TODO: Add other file types as this method is being used for those file
@@ -331,8 +331,8 @@ TEST_F(CorruptionTest, Recovery) {
   // is not available for WAL though.
   CloseDb();
 #endif
-  Corrupt(kWalFile, 19, 1);  // WriteBatch tag for first record
-  Corrupt(kWalFile, log::kBlockSize + 1000, 1);  // Somewhere in second block
+  Corrupt(rs::types::FileType::WalFile, 19, 1);  // WriteBatch tag for first record
+  Corrupt(rs::types::FileType::WalFile, log::kBlockSize + 1000, 1);  // Somewhere in second block
   ASSERT_TRUE(!TryReopen().ok());
   options_.paranoid_checks = false;
   Reopen(&options_);
@@ -372,7 +372,7 @@ TEST_F(CorruptionTest, PostPITRCorruptionWALsRetained) {
     CloseDb();
   }
 
-  CorruptFileWithTruncation(FileType::kWalFile, log_num,
+  CorruptFileWithTruncation(rs::types::FileType::WalFile, log_num,
                             /*bytes_to_truncate=*/1);
 
   {
@@ -443,7 +443,7 @@ TEST_F(CorruptionTest, TableFile) {
   ASSERT_OK(dbi->TEST_CompactRange(0, nullptr, nullptr));
   ASSERT_OK(dbi->TEST_CompactRange(1, nullptr, nullptr));
 
-  Corrupt(kTableFile, 100, 1);
+  Corrupt(rs::types::FileType::TableFile, 100, 1);
   Check(99, 99);
   ASSERT_NOK(dbi->VerifyChecksum());
 }
@@ -512,7 +512,7 @@ TEST_F(CorruptionTest, TableFileIndexData) {
   ASSERT_OK(dbi->TEST_FlushMemTable());
 
   // corrupt an index block of an entire file
-  Corrupt(kTableFile, -2000, 500);
+  Corrupt(rs::types::FileType::TableFile, -2000, 500);
   options.paranoid_checks = false;
   Reopen(&options);
   dbi = static_cast_with_check<DBImpl>(db_);
@@ -531,7 +531,7 @@ TEST_F(CorruptionTest, TableFileFooterMagic) {
   ASSERT_OK(dbi->TEST_FlushMemTable());
   Check(100, 100);
   // Corrupt the whole footer
-  Corrupt(kTableFile, -100, 100);
+  Corrupt(rs::types::FileType::TableFile, -100, 100);
   Status s = TryReopen();
   ASSERT_TRUE(s.IsCorruption());
   // Contains useful message, and magic number should be the first thing
@@ -547,7 +547,7 @@ TEST_F(CorruptionTest, TableFileFooterNotMagic) {
   ASSERT_OK(dbi->TEST_FlushMemTable());
   Check(100, 100);
   // Corrupt footer except magic number
-  Corrupt(kTableFile, -100, 92);
+  Corrupt(rs::types::FileType::TableFile, -100, 92);
   Status s = TryReopen();
   ASSERT_TRUE(s.IsCorruption());
   // The next thing checked after magic number is format_version
@@ -646,7 +646,7 @@ TEST_F(CorruptionTest, CorruptedDescriptor) {
   ASSERT_OK(
       dbi->CompactRange(cro, dbi->DefaultColumnFamily(), nullptr, nullptr));
 
-  Corrupt(kDescriptorFile, 0, 1000);
+  Corrupt(rs::types::FileType::DescriptorFile, 0, 1000);
   Status s = TryReopen();
   ASSERT_TRUE(!s.ok());
 
@@ -668,7 +668,7 @@ TEST_F(CorruptionTest, CompactionInputError) {
   ASSERT_OK(dbi->TEST_CompactRange(1, nullptr, nullptr));
   ASSERT_EQ(1, Property("rocksdb.num-files-at-level2"));
 
-  Corrupt(kTableFile, 100, 1);
+  Corrupt(rs::types::FileType::TableFile, 100, 1);
   Check(9, 9);
   ASSERT_NOK(dbi->VerifyChecksum());
 
@@ -729,7 +729,7 @@ TEST_F(CorruptionTest, UnrelatedKeys) {
   Build(10);
   DBImpl* dbi = static_cast_with_check<DBImpl>(db_);
   ASSERT_OK(dbi->TEST_FlushMemTable());
-  Corrupt(kTableFile, 100, 1);
+  Corrupt(rs::types::FileType::TableFile, 100, 1);
   ASSERT_NOK(dbi->VerifyChecksum());
 
   std::string tmp1, tmp2;
@@ -1110,7 +1110,7 @@ TEST_F(CorruptionTest, VerifyWholeTableChecksum) {
   CloseDb();
 
   // Corrupt the first byte of each table file, this must be data block.
-  Corrupt(kTableFile, 0, 1);
+  Corrupt(rs::types::FileType::TableFile, 0, 1);
 
   ASSERT_OK(TryReopen(&options));
 
@@ -1241,7 +1241,7 @@ TEST_P(CrashDuringRecoveryWithCorruptionTest, CrashDuringRecovery) {
     size_t size = file_nums.size();
     assert(size >= 2);
     uint64_t log_num = file_nums[size - 2];
-    CorruptFileWithTruncation(FileType::kWalFile, log_num,
+    CorruptFileWithTruncation(rs::types::FileType::WalFile, log_num,
                               /*bytes_to_truncate=*/8);
   }
 
@@ -1430,7 +1430,7 @@ TEST_P(CrashDuringRecoveryWithCorruptionTest, TxnDbCrashDuringRecovery) {
     size_t size = file_nums.size();
     assert(size >= 2);
     uint64_t log_num = file_nums[size - 2];
-    CorruptFileWithTruncation(FileType::kWalFile, log_num,
+    CorruptFileWithTruncation(rs::types::FileType::WalFile, log_num,
                               /*bytes_to_truncate=*/8);
   }
 
@@ -1470,7 +1470,7 @@ TEST_P(CrashDuringRecoveryWithCorruptionTest, TxnDbCrashDuringRecovery) {
     GetSortedWalFiles(file_nums);
     size_t size = file_nums.size();
     uint64_t log_num = file_nums[size - 1];
-    CorruptFileWithTruncation(FileType::kWalFile, log_num);
+    CorruptFileWithTruncation(rs::types::FileType::WalFile, log_num);
   }
 
   // 5. After second crash reopen the db with second corruption. Default family
@@ -1601,7 +1601,7 @@ TEST_P(CrashDuringRecoveryWithCorruptionTest, CrashDuringRecoveryWithFlush) {
     GetSortedWalFiles(file_nums);
     size_t size = file_nums.size();
     uint64_t log_num = file_nums[size - 1];
-    CorruptFileWithTruncation(FileType::kWalFile, log_num,
+    CorruptFileWithTruncation(rs::types::FileType::WalFile, log_num,
                               /*bytes_to_truncate=*/8);
   }
 

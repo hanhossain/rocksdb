@@ -5261,8 +5261,8 @@ Status VersionSet::ProcessManifestWrites(
         std::unique_ptr<WritableFileWriter> file_writer(new WritableFileWriter(
             std::move(descriptor_file), descriptor_fname, opt_file_opts, clock_,
             io_tracer_, nullptr, db_options_->listeners, nullptr,
-            tmp_set.Contains(FileType::kDescriptorFile),
-            tmp_set.Contains(FileType::kDescriptorFile)));
+            tmp_set.Contains(rs::types::FileType::DescriptorFile),
+            tmp_set.Contains(rs::types::FileType::DescriptorFile)));
         descriptor_log_.reset(
             new log::Writer(std::move(file_writer), 0, false));
         s = WriteCurrentStateToManifest(curr_state, wal_additions,
@@ -5708,9 +5708,9 @@ Status VersionSet::GetCurrentManifestPath(const std::string& dbname,
   }
   // remove the trailing '\n'
   fname.resize(fname.size() - 1);
-  FileType type;
+  rs::types::FileType type;
   bool parse_ok = ParseFileName(fname, manifest_file_number, &type);
-  if (!parse_ok || type != kDescriptorFile) {
+  if (!parse_ok || type != rs::types::FileType::DescriptorFile) {
     return Status::Corruption("CURRENT file corrupted");
   }
   *manifest_path = dbname;
@@ -5825,9 +5825,9 @@ ManifestPicker::ManifestPicker(const std::string& dbname,
   assert(!files_in_dbname.empty());
   for (const auto& fname : files_in_dbname) {
     uint64_t file_num = 0;
-    FileType file_type;
+    rs::types::FileType file_type;
     bool parse_ok = ParseFileName(fname, &file_num, &file_type);
-    if (parse_ok && file_type == kDescriptorFile) {
+    if (parse_ok && file_type == rs::types::FileType::DescriptorFile) {
       manifest_files_.push_back(fname);
     }
   }
@@ -5836,8 +5836,8 @@ ManifestPicker::ManifestPicker(const std::string& dbname,
             [](const std::string& lhs, const std::string& rhs) {
               uint64_t num1 = 0;
               uint64_t num2 = 0;
-              FileType type1;
-              FileType type2;
+              rs::types::FileType type1;
+              rs::types::FileType type2;
               bool parse_ok1 = ParseFileName(lhs, &num1, &type1);
               bool parse_ok2 = ParseFileName(rhs, &num2, &type2);
 #ifndef NDEBUG
@@ -5863,9 +5863,9 @@ std::string ManifestPicker::GetNextManifest(uint64_t* number,
     }
     ret.append(*manifest_file_iter_);
     if (number) {
-      FileType type;
+      rs::types::FileType type;
       bool parse = ParseFileName(*manifest_file_iter_, number, &type);
-      assert(type == kDescriptorFile);
+      assert(type == rs::types::FileType::DescriptorFile);
 #ifndef NDEBUG
       assert(parse);
 #else

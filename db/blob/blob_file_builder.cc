@@ -216,7 +216,7 @@ Status BlobFileBuilder::OpenBlobFileIfNeeded() {
       immutable_options_->clock, io_tracer_, statistics,
       immutable_options_->listeners,
       immutable_options_->file_checksum_gen_factory.get(),
-      tmp_set.Contains(FileType::kBlobFile), false));
+      tmp_set.Contains(rs::types::FileType::BlobFile), false));
 
   constexpr bool do_flush = false;
 

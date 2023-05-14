@@ -1870,7 +1870,7 @@ Status CompactionJob::OpenCompactionOutputFile(SubcompactionState* sub_compact,
   outputs.AssignFileWriter(new WritableFileWriter(
       std::move(writable_file), fname, fo_copy, db_options_.clock, io_tracer_,
       db_options_.stats, listeners, db_options_.file_checksum_gen_factory.get(),
-      tmp_set.Contains(FileType::kTableFile), false));
+      tmp_set.Contains(rs::types::FileType::TableFile), false));
 
   TableBuilderOptions tboptions(
       *cfd->ioptions(), *(sub_compact->compaction->mutable_cf_options()),

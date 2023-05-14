@@ -3111,9 +3111,9 @@ TEST_F(DBBasicTest, LastSstFileNotInManifest) {
   ASSERT_EQ(files.size(), 1);
   const std::string fname = files[0].erase(0, (dbname_ + "/").size());
   uint64_t number = 0;
-  FileType type = kTableFile;
+  rs::types::FileType type = rs::types::FileType::TableFile;
   ASSERT_TRUE(ParseFileName(fname, &number, &type));
-  ASSERT_EQ(type, kTableFile);
+  ASSERT_EQ(type, rs::types::FileType::TableFile);
   ASSERT_GT(number, kSstFileNumber);
 }
 
@@ -3244,8 +3244,8 @@ TEST_F(DBBasicTest, RecoverWithNoManifest) {
     ASSERT_OK(env_->GetChildren(dbname_, &files));
     for (const auto& file : files) {
       uint64_t number = 0;
-      FileType type = kWalFile;
-      if (ParseFileName(file, &number, &type) && type == kDescriptorFile) {
+      rs::types::FileType type = rs::types::FileType::WalFile;
+      if (ParseFileName(file, &number, &type) && type == rs::types::FileType::DescriptorFile) {
         ASSERT_OK(env_->DeleteFile(dbname_ + "/" + file));
       }
     }
@@ -4513,11 +4513,11 @@ TEST_F(DBBasicTest, VerifyFileChecksumsReadahead) {
   std::string sst_name;
   uint64_t sst_size;
   uint64_t number;
-  FileType type;
+  rs::types::FileType type;
   ASSERT_OK(env_->GetChildren(dbname_, &filenames));
   for (auto name : filenames) {
     if (ParseFileName(name, &number, &type)) {
-      if (type == kTableFile) {
+      if (type == rs::types::FileType::TableFile) {
         sst_cnt++;
         sst_name = name;
       }

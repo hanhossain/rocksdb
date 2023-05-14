@@ -33,20 +33,4 @@ enum class BlobFileCreationReason {
   kRecovery,
 };
 
-// The types of files RocksDB uses in a DB directory. (Available for
-// advanced options.)
-enum FileType {
-  kWalFile,
-  kDBLockFile,
-  kTableFile,
-  kDescriptorFile,
-  kCurrentFile,
-  kTempFile,
-  kInfoLogFile,  // Either the current one, or an old one
-  kMetaDatabase,
-  kIdentityFile,
-  kOptionsFile,
-  kBlobFile
-};
-
 }  // namespace ROCKSDB_NAMESPACE

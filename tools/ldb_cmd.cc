@@ -1410,9 +1410,9 @@ void ManifestDumpCommand::DoCommand() {
         fname = file_path;
       }
       uint64_t file_num = 0;
-      FileType file_type = kWalFile;  // Just for initialization
+      rs::types::FileType file_type = rs::types::FileType::WalFile;  // Just for initialization
       if (ParseFileName(fname, &file_num, &file_type) &&
-          file_type == kDescriptorFile) {
+          file_type == rs::types::FileType::DescriptorFile) {
         if (!matched_file.empty()) {
           exec_state_ = LDBCommandExecuteResult::Failed(
               "Multiple MANIFEST files found; use --path to select one");
@@ -2023,7 +2023,7 @@ void DBDumperCommand::DoCommand() {
     assert(!path_.empty());
     std::string fileName = GetFileNameFromPath(path_);
     uint64_t number;
-    FileType type;
+    rs::types::FileType type;
 
     exec_state_ = LDBCommandExecuteResult::Succeed("");
 
@@ -2034,21 +2034,21 @@ void DBDumperCommand::DoCommand() {
     }
 
     switch (type) {
-      case kWalFile:
+      case rs::types::FileType::WalFile:
         // TODO(myabandeh): allow configuring is_write_commited
         DumpWalFile(options_, path_, /* print_header_ */ true,
                     /* print_values_ */ true, true /* is_write_commited */,
                     &exec_state_);
         break;
-      case kTableFile:
+      case rs::types::FileType::TableFile:
         DumpSstFile(options_, path_, is_key_hex_, /* show_properties */ true,
                     decode_blob_index_, from_, to_);
         break;
-      case kDescriptorFile:
+      case rs::types::FileType::DescriptorFile:
         DumpManifestFile(options_, path_, /* verbose_ */ false, is_key_hex_,
                          /*  json_ */ false);
         break;
-      case kBlobFile:
+      case rs::types::FileType::BlobFile:
         DumpBlobFile(path_, is_key_hex_, is_value_hex_,
                      dump_uncompressed_blobs_);
         break;
@@ -2621,7 +2621,7 @@ void DumpWalFile(Options options, std::string wal_file, bool print_header,
   } else {
     StdErrReporter reporter;
     uint64_t log_number;
-    FileType type;
+    rs::types::FileType type;
 
     // we need the log number, but ParseFilename expects dbname/NNN.log.
     std::string sanitized = wal_file;

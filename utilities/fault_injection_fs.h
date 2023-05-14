@@ -318,7 +318,7 @@ class FaultInjectionTestFS : public FileSystemWrapper {
     if (filesystem_writable_) {
       return true;
     }
-    FileType file_type = kTempFile;
+    rs::types::FileType file_type = rs::types::FileType::TempFile;
     uint64_t file_number = 0;
     if (!TryParseFileName(file_name, &file_number, &file_type)) {
       return false;
@@ -426,7 +426,7 @@ class FaultInjectionTestFS : public FileSystemWrapper {
   // error (e.g., Wal files, SST files), which is empty by default.
   void SetRandomWriteError(uint32_t seed, int one_in, IOStatus error,
                            bool inject_for_all_file_types,
-                           const std::vector<FileType>& types) {
+                           const std::vector<rs::types::FileType>& types) {
     MutexLock l(&mutex_);
     Random tmp_rand(seed);
     error.PermitUncheckedError();
@@ -437,7 +437,7 @@ class FaultInjectionTestFS : public FileSystemWrapper {
     write_error_allowed_types_ = types;
   }
 
-  void SetSkipDirectWritableTypes(const std::set<FileType>& types) {
+  void SetSkipDirectWritableTypes(const std::set<rs::types::FileType>& types) {
     MutexLock l(&mutex_);
     skip_direct_writable_types_ = types;
   }
@@ -577,9 +577,9 @@ class FaultInjectionTestFS : public FileSystemWrapper {
   int metadata_write_error_one_in_;
   std::atomic<int> read_error_one_in_;
   bool inject_for_all_file_types_;
-  std::vector<FileType> write_error_allowed_types_;
+  std::vector<rs::types::FileType> write_error_allowed_types_;
   // File types where direct writable is skipped.
-  std::set<FileType> skip_direct_writable_types_;
+  std::set<rs::types::FileType> skip_direct_writable_types_;
   bool ingest_data_corruption_before_write_;
   ChecksumType checksum_handoff_func_tpye_;
   bool fail_get_file_unique_id_;
@@ -587,7 +587,7 @@ class FaultInjectionTestFS : public FileSystemWrapper {
   // Extract number of type from file name. Return false if failing to fine
   // them.
   bool TryParseFileName(const std::string& file_name, uint64_t* number,
-                        FileType* type);
+                        rs::types::FileType* type);
 };
 
 }  // namespace ROCKSDB_NAMESPACE

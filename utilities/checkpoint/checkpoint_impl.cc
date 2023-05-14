@@ -121,7 +121,7 @@ Status CheckpointImpl::CreateCheckpoint(const std::string& checkpoint_dir,
     if (s.ok() || s.IsNotSupported()) {
       s = CreateCustomCheckpoint(
           [&](const std::string& src_dirname, const std::string& fname,
-              FileType) {
+              rs::types::FileType) {
             ROCKS_LOG_INFO(db_options.info_log, "Hard Linking %s",
                            fname.c_str());
             return db_->GetFileSystem()->LinkFile(
@@ -129,7 +129,7 @@ Status CheckpointImpl::CreateCheckpoint(const std::string& checkpoint_dir,
                 IOOptions(), nullptr);
           } /* link_file_cb */,
           [&](const std::string& src_dirname, const std::string& fname,
-              uint64_t size_limit_bytes, FileType,
+              uint64_t size_limit_bytes, rs::types::FileType,
               const std::string& /* checksum_func_name */,
               const std::string& /* checksum_val */,
               const rs::advanced_options::Temperature temperature) {
@@ -138,7 +138,7 @@ Status CheckpointImpl::CreateCheckpoint(const std::string& checkpoint_dir,
                             full_private_path + "/" + fname, size_limit_bytes,
                             db_options.use_fsync, nullptr, temperature);
           } /* copy_file_cb */,
-          [&](const std::string& fname, const std::string& contents, FileType) {
+          [&](const std::string& fname, const std::string& contents, rs::types::FileType) {
             ROCKS_LOG_INFO(db_options.info_log, "Creating %s", fname.c_str());
             return CreateFile(db_->GetFileSystem(),
                               full_private_path + "/" + fname, contents,
@@ -189,16 +189,16 @@ Status CheckpointImpl::CreateCheckpoint(const std::string& checkpoint_dir,
 
 Status CheckpointImpl::CreateCustomCheckpoint(
     std::function<Status(const std::string& src_dirname,
-                         const std::string& src_fname, FileType type)>
+                         const std::string& src_fname, rs::types::FileType type)>
         link_file_cb,
     std::function<
         Status(const std::string& src_dirname, const std::string& src_fname,
-               uint64_t size_limit_bytes, FileType type,
+               uint64_t size_limit_bytes, rs::types::FileType type,
                const std::string& checksum_func_name,
                const std::string& checksum_val, const rs::advanced_options::Temperature temperature)>
         copy_file_cb,
     std::function<Status(const std::string& fname, const std::string& contents,
-                         FileType type)>
+                         rs::types::FileType type)>
         create_file_cb,
     uint64_t* sequence_number, uint64_t log_size_for_flush,
     bool get_live_table_checksum) {
@@ -220,7 +220,7 @@ Status CheckpointImpl::CreateCustomCheckpoint(
   // (db_paths / cf_paths not supported)
   std::unordered_set<std::string> dirs;
   for (auto& info : infos) {
-    if (info.file_type != kWalFile) {
+    if (info.file_type != rs::types::FileType::WalFile) {
       dirs.insert(info.directory);
     }
   }
@@ -235,7 +235,7 @@ Status CheckpointImpl::CreateCustomCheckpoint(
     Status s;
     if (!info.replacement_contents.empty()) {
       // Currently should only be used for CURRENT file.
-      assert(info.file_type == kCurrentFile);
+      assert(info.file_type == rs::types::FileType::CurrentFile);
 
       if (info.size != info.replacement_contents.size()) {
         s = Status::Corruption("Inconsistent size metadata for " +
@@ -432,7 +432,7 @@ Status CheckpointImpl::ExportFilesInMetaData(
   for (const auto& level_metadata : metadata.levels) {
     for (const auto& file_metadata : level_metadata.files) {
       uint64_t number;
-      FileType type;
+      rs::types::FileType type;
       const auto ok = ParseFileName(file_metadata.name, &number, &type);
       if (!ok) {
         s = Status::Corruption("Could not parse file name");
@@ -440,7 +440,7 @@ Status CheckpointImpl::ExportFilesInMetaData(
       }
 
       // We should only get sst files here.
-      assert(type == kTableFile);
+      assert(type == rs::types::FileType::TableFile);
       assert(file_metadata.size > 0 && file_metadata.name[0] == '/');
       const auto src_fname = file_metadata.name;
       ++num_files;

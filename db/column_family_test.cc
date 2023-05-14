@@ -3180,10 +3180,10 @@ TEST_P(ColumnFamilyTest, DISABLED_LogTruncationTest) {
   std::vector<std::string> logfs;
   for (size_t i = 0; i < filenames.size(); i++) {
     uint64_t number;
-    FileType type;
+    rs::types::FileType type;
     if (!(ParseFileName(filenames[i], &number, &type))) continue;
 
-    if (type != kWalFile) continue;
+    if (type != rs::types::FileType::WalFile) continue;
 
     logfs.push_back(filenames[i]);
   }
