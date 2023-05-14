@@ -11,6 +11,7 @@
 #include <stdio.h>
 
 #include <memory>
+#include <rocksdb-rs-cxx/types.h>
 #include <string>
 #include <utility>
 
@@ -165,7 +166,7 @@ inline void UnPackSequenceAndType(uint64_t packed, uint64_t* seq,
   // assert(IsExtendedValueType(*t));
 }
 
-EntryType GetEntryType(ValueType value_type);
+rs::types::EntryType GetEntryType(ValueType value_type);
 
 // Append the serialization of "key" to *result.
 extern void AppendInternalKey(std::string* result,

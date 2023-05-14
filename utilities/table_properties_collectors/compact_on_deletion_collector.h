@@ -19,7 +19,7 @@ class CompactOnDeletionCollector : public TablePropertiesCollector {
   // @params value  the value that is inserted into the table.
   // @params file_size  file size up to now
   virtual Status AddUserKey(const Slice& key, const Slice& value,
-                            EntryType type, SequenceNumber seq,
+                            rs::types::EntryType type, SequenceNumber seq,
                             uint64_t file_size) override;
 
   // Finish() will be called when a table has already been built and is ready

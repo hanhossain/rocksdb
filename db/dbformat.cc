@@ -30,26 +30,26 @@ const ValueType kValueTypeForSeek = kTypeWideColumnEntity;
 const ValueType kValueTypeForSeekForPrev = kTypeDeletion;
 const std::string kDisableUserTimestamp("");
 
-EntryType GetEntryType(ValueType value_type) {
+rs::types::EntryType GetEntryType(ValueType value_type) {
   switch (value_type) {
     case kTypeValue:
-      return kEntryPut;
+      return rs::types::EntryType::Put;
     case kTypeDeletion:
-      return kEntryDelete;
+      return rs::types::EntryType::Delete;
     case kTypeDeletionWithTimestamp:
-      return kEntryDeleteWithTimestamp;
+      return rs::types::EntryType::DeleteWithTimestamp;
     case kTypeSingleDeletion:
-      return kEntrySingleDelete;
+      return rs::types::EntryType::SingleDelete;
     case kTypeMerge:
-      return kEntryMerge;
+      return rs::types::EntryType::Merge;
     case kTypeRangeDeletion:
-      return kEntryRangeDeletion;
+      return rs::types::EntryType::RangeDeletion;
     case kTypeBlobIndex:
-      return kEntryBlobIndex;
+      return rs::types::EntryType::BlobIndex;
     case kTypeWideColumnEntity:
-      return kEntryWideColumnEntity;
+      return rs::types::EntryType::WideColumnEntity;
     default:
-      return kEntryOther;
+      return rs::types::EntryType::Other;
   }
 }
 

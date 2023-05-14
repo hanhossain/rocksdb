@@ -88,17 +88,17 @@ class RegularKeysStartWithA : public TablePropertiesCollector {
   }
 
   Status AddUserKey(const Slice& user_key, const Slice& /*value*/,
-                    EntryType type, SequenceNumber /*seq*/,
+                    rs::types::EntryType type, SequenceNumber /*seq*/,
                     uint64_t file_size) override {
     // simply asssume all user keys are not empty.
     if (user_key.data()[0] == 'A') {
       ++count_;
     }
-    if (type == kEntryPut) {
+    if (type == rs::types::EntryType::Put) {
       num_puts_++;
-    } else if (type == kEntryDelete) {
+    } else if (type == rs::types::EntryType::Delete) {
       num_deletes_++;
-    } else if (type == kEntrySingleDelete) {
+    } else if (type == rs::types::EntryType::SingleDelete) {
       num_single_deletes_++;
     }
     if (file_size < file_size_) {

@@ -49,18 +49,4 @@ enum FileType {
   kBlobFile
 };
 
-// User-oriented representation of internal key types.
-// Ordering of this enum entries should not change.
-enum EntryType {
-  kEntryPut,
-  kEntryDelete,
-  kEntrySingleDelete,
-  kEntryMerge,
-  kEntryRangeDeletion,
-  kEntryBlobIndex,
-  kEntryDeleteWithTimestamp,
-  kEntryWideColumnEntity,
-  kEntryOther,
-};
-
 }  // namespace ROCKSDB_NAMESPACE

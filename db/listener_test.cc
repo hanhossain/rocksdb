@@ -56,7 +56,7 @@ struct TestPropertiesCollector
   ROCKSDB_NAMESPACE::Status AddUserKey(
       const ROCKSDB_NAMESPACE::Slice& /*key*/,
       const ROCKSDB_NAMESPACE::Slice& /*value*/,
-      ROCKSDB_NAMESPACE::EntryType /*type*/,
+      rs::types::EntryType /*type*/,
       ROCKSDB_NAMESPACE::SequenceNumber /*seq*/,
       uint64_t /*file_size*/) override {
     return Status::OK();
