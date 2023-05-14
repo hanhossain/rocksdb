@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include <memory>
+#include <rocksdb-rs-cxx/types.h>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -77,7 +78,7 @@ struct FilterBuildingContext {
   bool is_bottommost = false;
 
   // Reason for creating the file with the filter
-  TableFileCreationReason reason = TableFileCreationReason::kMisc;
+  rs::types::TableFileCreationReason reason = rs::types::TableFileCreationReason::Misc;
 };
 
 // Determines what kind of filter (if any) to generate in SST files, and under

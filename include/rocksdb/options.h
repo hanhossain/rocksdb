@@ -61,7 +61,7 @@ class FileSystem;
 struct Options;
 struct DbPath;
 
-using FileTypeSet = SmallEnumSet<FileType, FileType::kBlobFile>;
+using FileTypeSet = SmallEnumSet<rs::types::FileType, rs::types::FileType::BlobFile>;
 
 struct ColumnFamilyOptions : public AdvancedColumnFamilyOptions {
   // The function recovers options to a previous version. Only 4.6 or later
@@ -151,13 +151,13 @@ struct ColumnFamilyOptions : public AdvancedColumnFamilyOptions {
   // Unlike the `compaction_filter` option, which is used when compaction
   // creates a table file, this factory allows using a `CompactionFilter` when a
   // table file is created for various reasons. The factory can decide what
-  // `TableFileCreationReason`s use a `CompactionFilter`. For compatibility, by
+  // `rs::types::TableFileCreationReason`s use a `CompactionFilter`. For compatibility, by
   // default the decision is to use a `CompactionFilter` for
-  // `TableFileCreationReason::kCompaction` only.
+  // `rs::types::TableFileCreationReason::Compaction` only.
   //
   // Each thread of work involving creating table files will create a new
   // `CompactionFilter` when it will be used according to the above
-  // `TableFileCreationReason`-based decision. This allows the application to
+  // `rs::types::TableFileCreationReason`-based decision. This allows the application to
   // know about the different ongoing threads of work and makes it unnecessary
   // for `CompactionFilter` to provide thread-safety.
   //
@@ -1309,7 +1309,7 @@ struct DBOptions {
   // Use this if your DB want to enable checksum handoff for specific file
   // types writes. Make sure that the File_system you use support the
   // crc32c checksum verification
-  // Currently supported file tyes: kWALFile, kTableFile, kDescriptorFile.
+  // Currently supported file tyes: kWALFile, rs::types::FileType::TableFile, rs::types::FileType::DescriptorFile.
   // NOTE: currently RocksDB only generates crc32c based checksum for the
   // handoff. If the storage layer has different checksum support, user
   // should enble this set as empty. Otherwise,it may cause unexpected

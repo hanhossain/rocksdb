@@ -708,9 +708,9 @@ class FileTemperatureTestFS : public FileSystemWrapper {
                              IODebugContext* dbg) override {
     IOStatus s = target()->NewSequentialFile(fname, opts, result, dbg);
     uint64_t number;
-    FileType type;
+    rs::types::FileType type;
     if (ParseFileName(GetFileName(fname), &number, &type) &&
-        type == kTableFile) {
+        type == rs::types::FileType::TableFile) {
       MutexLock lock(&mu_);
       requested_sst_file_temperatures_.emplace_back(number, opts.temperature);
       if (s.ok()) {
@@ -737,9 +737,9 @@ class FileTemperatureTestFS : public FileSystemWrapper {
                                IODebugContext* dbg) override {
     IOStatus s = target()->NewRandomAccessFile(fname, opts, result, dbg);
     uint64_t number;
-    FileType type;
+    rs::types::FileType type;
     if (ParseFileName(GetFileName(fname), &number, &type) &&
-        type == kTableFile) {
+        type == rs::types::FileType::TableFile) {
       MutexLock lock(&mu_);
       requested_sst_file_temperatures_.emplace_back(number, opts.temperature);
       if (s.ok()) {
@@ -775,9 +775,9 @@ class FileTemperatureTestFS : public FileSystemWrapper {
                            std::unique_ptr<FSWritableFile>* result,
                            IODebugContext* dbg) override {
     uint64_t number;
-    FileType type;
+    rs::types::FileType type;
     if (ParseFileName(GetFileName(fname), &number, &type) &&
-        type == kTableFile) {
+        type == rs::types::FileType::TableFile) {
       MutexLock lock(&mu_);
       current_sst_file_temperatures_[number] = opts.temperature;
     }
@@ -1291,7 +1291,7 @@ class DBTestBase : public testing::Test {
   void CopyFile(const std::string& source, const std::string& destination,
                 uint64_t size = 0);
 
-  Status GetAllDataFiles(const FileType file_type,
+  Status GetAllDataFiles(const rs::types::FileType file_type,
                          std::unordered_map<std::string, uint64_t>* sst_files,
                          uint64_t* total_size = nullptr);
 

@@ -80,8 +80,8 @@ const std::map<InternalStats::InternalDBStatsType, DBStatInfo>
          DBStatInfo{"db.user_write_stall_micros"}},
         {InternalStats::kIntStatsWriteBufferManagerLimitStopsCounts,
          DBStatInfo{WriteStallStatsMapKeys::CauseConditionCount(
-             WriteStallCause::kWriteBufferManagerLimit,
-             WriteStallCondition::kStopped)}},
+             rs::types::WriteStallCause::WriteBufferManagerLimit,
+             rs::types::WriteStallCondition::Stopped)}},
 };
 
 namespace {
@@ -1652,15 +1652,15 @@ void InternalStats::DumpDBStats(std::string* value) {
 void InternalStats::DumpDBMapStatsWriteStall(
     std::map<std::string, std::string>* value) {
   constexpr uint32_t max_db_scope_write_stall_cause =
-      static_cast<uint32_t>(WriteStallCause::kDBScopeWriteStallCauseEnumMax);
+      static_cast<uint32_t>(rs::types::WriteStallCause::DBScopeWriteStallCauseEnumMax);
 
   for (uint32_t i =
            max_db_scope_write_stall_cause - kNumDBScopeWriteStallCauses;
        i < max_db_scope_write_stall_cause; ++i) {
     for (uint32_t j = 0;
-         j < static_cast<uint32_t>(WriteStallCondition::kNormal); ++j) {
-      WriteStallCause cause = static_cast<WriteStallCause>(i);
-      WriteStallCondition condition = static_cast<WriteStallCondition>(j);
+         j < static_cast<uint32_t>(rs::types::WriteStallCondition::Normal); ++j) {
+      rs::types::WriteStallCause cause = static_cast<rs::types::WriteStallCause>(i);
+      rs::types::WriteStallCondition condition = static_cast<rs::types::WriteStallCondition>(j);
       InternalStats::InternalDBStatsType internal_db_stat =
           InternalDBStat(cause, condition);
 
@@ -1816,15 +1816,15 @@ void InternalStats::DumpCFMapStatsWriteStall(
   uint64_t total_delays = 0;
   uint64_t total_stops = 0;
   constexpr uint32_t max_cf_scope_write_stall_cause =
-      static_cast<uint32_t>(WriteStallCause::kCFScopeWriteStallCauseEnumMax);
+      static_cast<uint32_t>(rs::types::WriteStallCause::CFScopeWriteStallCauseEnumMax);
 
   for (uint32_t i =
            max_cf_scope_write_stall_cause - kNumCFScopeWriteStallCauses;
        i < max_cf_scope_write_stall_cause; ++i) {
     for (uint32_t j = 0;
-         j < static_cast<uint32_t>(WriteStallCondition::kNormal); ++j) {
-      WriteStallCause cause = static_cast<WriteStallCause>(i);
-      WriteStallCondition condition = static_cast<WriteStallCondition>(j);
+         j < static_cast<uint32_t>(rs::types::WriteStallCondition::Normal); ++j) {
+      rs::types::WriteStallCause cause = static_cast<rs::types::WriteStallCause>(i);
+      rs::types::WriteStallCondition condition = static_cast<rs::types::WriteStallCondition>(j);
       InternalStats::InternalCFStatsType internal_cf_stat =
           InternalCFStat(cause, condition);
 
@@ -1838,9 +1838,9 @@ void InternalStats::DumpCFMapStatsWriteStall(
           cf_stats_count_[static_cast<std::size_t>(internal_cf_stat)];
       (*value)[name] = std::to_string(stat);
 
-      if (condition == WriteStallCondition::kDelayed) {
+      if (condition == rs::types::WriteStallCondition::Delayed) {
         total_delays += stat;
-      } else if (condition == WriteStallCondition::kStopped) {
+      } else if (condition == rs::types::WriteStallCondition::Stopped) {
         total_stops += stat;
       }
     }

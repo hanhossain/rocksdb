@@ -140,8 +140,8 @@ class InternalStats {
     // `WriteBufferManager`).
     //
     // However, the word "write stall" includes both "delayed" and "stopped"
-    // (see `WriteStallCondition`) and DB-scope writes stalls (see
-    // `WriteStallCause`).
+    // (see `rs::types::WriteStallCondition`) and DB-scope writes stalls (see
+    // `rs::types::WriteStallCause`).
     //
     // So we should improve, rename or clarify it
     kIntStatsWriteStallMicros,

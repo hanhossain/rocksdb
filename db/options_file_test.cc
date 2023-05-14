@@ -26,10 +26,10 @@ void UpdateOptionsFiles(DB* db,
   std::vector<std::string> filenames;
   EXPECT_OK(db->GetEnv()->GetChildren(db->GetName(), &filenames));
   uint64_t number;
-  FileType type;
+  rs::types::FileType type;
   *options_files_count = 0;
   for (auto filename : filenames) {
-    if (ParseFileName(filename, &number, &type) && type == kOptionsFile) {
+    if (ParseFileName(filename, &number, &type) && type == rs::types::FileType::OptionsFile) {
       filename_history->insert(filename);
       (*options_files_count)++;
     }
@@ -43,9 +43,9 @@ void VerifyOptionsFileName(
   std::unordered_set<std::string> current_filenames;
   EXPECT_OK(db->GetEnv()->GetChildren(db->GetName(), &filenames));
   uint64_t number;
-  FileType type;
+  rs::types::FileType type;
   for (auto filename : filenames) {
-    if (ParseFileName(filename, &number, &type) && type == kOptionsFile) {
+    if (ParseFileName(filename, &number, &type) && type == rs::types::FileType::OptionsFile) {
       current_filenames.insert(filename);
     }
   }
@@ -82,11 +82,11 @@ TEST_F(OptionsFileTest, NumberOfOptionsFiles) {
 TEST_F(OptionsFileTest, OptionsFileName) {
   const uint64_t kOptionsFileNum = 12345;
   uint64_t number;
-  FileType type;
+  rs::types::FileType type;
 
   auto options_file_name = OptionsFileName("", kOptionsFileNum);
   ASSERT_TRUE(ParseFileName(options_file_name, &number, &type, nullptr));
-  ASSERT_EQ(type, kOptionsFile);
+  ASSERT_EQ(type, rs::types::FileType::OptionsFile);
   ASSERT_EQ(number, kOptionsFileNum);
 
   const uint64_t kTempOptionsFileNum = 54352;
@@ -94,7 +94,7 @@ TEST_F(OptionsFileTest, OptionsFileName) {
   ASSERT_TRUE(ParseFileName(temp_options_file_name, &number, &type, nullptr));
   ASSERT_NE(temp_options_file_name.find(kTempFileNameSuffix),
             std::string::npos);
-  ASSERT_EQ(type, kTempFile);
+  ASSERT_EQ(type, rs::types::FileType::TempFile);
   ASSERT_EQ(number, kTempOptionsFileNum);
 }
 }  // namespace ROCKSDB_NAMESPACE

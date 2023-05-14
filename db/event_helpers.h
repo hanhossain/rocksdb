@@ -22,7 +22,7 @@ class EventHelpers {
   static void NotifyTableFileCreationStarted(
       const std::vector<std::shared_ptr<EventListener>>& listeners,
       const std::string& db_name, const std::string& cf_name,
-      const std::string& file_path, int job_id, TableFileCreationReason reason);
+      const std::string& file_path, int job_id, rs::types::TableFileCreationReason reason);
   static void NotifyOnBackgroundError(
       const std::vector<std::shared_ptr<EventListener>>& listeners,
       BackgroundErrorReason reason, Status* bg_error,
@@ -33,7 +33,7 @@ class EventHelpers {
       const std::string& db_name, const std::string& cf_name,
       const std::string& file_path, int job_id, const FileDescriptor& fd,
       uint64_t oldest_blob_file_number, const TableProperties& table_properties,
-      TableFileCreationReason reason, const Status& s,
+      rs::types::TableFileCreationReason reason, const Status& s,
       const std::string& file_checksum,
       const std::string& file_checksum_func_name);
   static void LogAndNotifyTableFileDeletion(
@@ -50,14 +50,14 @@ class EventHelpers {
       const std::vector<std::shared_ptr<EventListener>>& listeners,
       const std::string& db_name, const std::string& cf_name,
       const std::string& file_path, int job_id,
-      BlobFileCreationReason creation_reason);
+      rs::types::BlobFileCreationReason creation_reason);
 
   static void LogAndNotifyBlobFileCreationFinished(
       EventLogger* event_logger,
       const std::vector<std::shared_ptr<EventListener>>& listeners,
       const std::string& db_name, const std::string& cf_name,
       const std::string& file_path, int job_id, uint64_t file_number,
-      BlobFileCreationReason creation_reason, const Status& s,
+      rs::types::BlobFileCreationReason creation_reason, const Status& s,
       const std::string& file_checksum,
       const std::string& file_checksum_func_name, uint64_t total_blob_count,
       uint64_t total_blob_bytes);

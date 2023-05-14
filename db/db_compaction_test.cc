@@ -2501,7 +2501,7 @@ TEST_P(DBCompactionTestWithParam, LevelCompactionCFPathUse) {
     ASSERT_OK(db_->GetLiveFilesStorageInfo(lfsio, &new_infos));
     std::unordered_map<std::string, int> live_sst_by_dir;
     for (auto& info : new_infos) {
-      if (info.file_type == kTableFile) {
+      if (info.file_type == rs::types::FileType::TableFile) {
         live_sst_by_dir[info.directory]++;
         // Verify file on disk (no directory confusion)
         uint64_t size;
@@ -8315,7 +8315,7 @@ TEST_F(DBCompactionTest, CompactionWithChecksumHandoff1) {
   options.num_levels = 3;
   options.env = fault_fs_env.get();
   options.create_if_missing = true;
-  options.checksum_handoff_file_types.Add(FileType::kTableFile);
+  options.checksum_handoff_file_types.Add(rs::types::FileType::TableFile);
   Status s;
   Reopen(options);
 
@@ -8496,7 +8496,7 @@ TEST_F(DBCompactionTest, CompactionWithChecksumHandoffManifest1) {
   options.num_levels = 3;
   options.env = fault_fs_env.get();
   options.create_if_missing = true;
-  options.checksum_handoff_file_types.Add(FileType::kDescriptorFile);
+  options.checksum_handoff_file_types.Add(rs::types::FileType::DescriptorFile);
   Status s;
   fault_fs->SetChecksumHandoffFuncType(ChecksumType::kCRC32c);
   Reopen(options);
@@ -8551,7 +8551,7 @@ TEST_F(DBCompactionTest, CompactionWithChecksumHandoffManifest2) {
   options.num_levels = 3;
   options.env = fault_fs_env.get();
   options.create_if_missing = true;
-  options.checksum_handoff_file_types.Add(FileType::kDescriptorFile);
+  options.checksum_handoff_file_types.Add(rs::types::FileType::DescriptorFile);
   Status s;
   fault_fs->SetChecksumHandoffFuncType(ChecksumType::kNoChecksum);
   Reopen(options);

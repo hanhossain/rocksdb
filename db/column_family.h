@@ -210,7 +210,7 @@ struct SuperVersion {
   MutableCFOptions mutable_cf_options;
   // Version number of the current SuperVersion
   uint64_t version_number;
-  WriteStallCondition write_stall_condition;
+  rs::types::WriteStallCondition write_stall_condition;
 
   // should be called outside the mutex
   SuperVersion() = default;
@@ -462,7 +462,7 @@ class ColumnFamilyData {
   bool queued_for_flush() { return queued_for_flush_; }
   bool queued_for_compaction() { return queued_for_compaction_; }
 
-  static std::pair<WriteStallCondition, WriteStallCause>
+  static std::pair<rs::types::WriteStallCondition, rs::types::WriteStallCause>
   GetWriteStallConditionAndCause(
       int num_unflushed_memtables, int num_l0_files,
       uint64_t num_compaction_needed_bytes,
@@ -471,7 +471,7 @@ class ColumnFamilyData {
 
   // Recalculate some stall conditions, which are changed only during
   // compaction, adding new memtable and/or recalculation of compaction score.
-  WriteStallCondition RecalculateWriteStallConditions(
+  rs::types::WriteStallCondition RecalculateWriteStallConditions(
       const MutableCFOptions& mutable_cf_options);
 
   void set_initialized() { initialized_.store(true); }

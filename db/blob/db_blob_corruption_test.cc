@@ -14,12 +14,12 @@ class DBBlobCorruptionTest : public DBTestBase {
   DBBlobCorruptionTest()
       : DBTestBase("db_blob_corruption_test", /* env_do_fsync */ false) {}
 
-  void Corrupt(FileType filetype, int offset, int bytes_to_corrupt) {
+  void Corrupt(rs::types::FileType filetype, int offset, int bytes_to_corrupt) {
     // Pick file to corrupt
     std::vector<std::string> filenames;
     ASSERT_OK(env_->GetChildren(dbname_, &filenames));
     uint64_t number;
-    FileType type;
+    rs::types::FileType type;
     std::string fname;
     uint64_t picked_number = kInvalidBlobFileNumber;
     for (size_t i = 0; i < filenames.size(); i++) {
@@ -29,7 +29,7 @@ class DBBlobCorruptionTest : public DBTestBase {
         picked_number = number;
       }
     }
-    ASSERT_TRUE(!fname.empty()) << filetype;
+    ASSERT_TRUE(!fname.empty()) << (int)filetype;
     ASSERT_OK(test::CorruptFile(env_, fname, offset, bytes_to_corrupt));
   }
 };
@@ -50,7 +50,7 @@ TEST_F(DBBlobCorruptionTest, VerifyWholeBlobFileChecksum) {
   ASSERT_OK(db_->VerifyFileChecksums(ReadOptions()));
   Close();
 
-  Corrupt(kBlobFile, 0, 2);
+  Corrupt(rs::types::FileType::BlobFile, 0, 2);
 
   ASSERT_OK(TryReopen(options));
 

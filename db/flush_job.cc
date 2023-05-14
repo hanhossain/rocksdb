@@ -437,12 +437,12 @@ Status FlushJob::MemPurge() {
     std::unique_ptr<CompactionFilter> compaction_filter;
     if (ioptions->compaction_filter_factory != nullptr &&
         ioptions->compaction_filter_factory->ShouldFilterTableFileCreation(
-            TableFileCreationReason::kFlush)) {
+            rs::types::TableFileCreationReason::Flush)) {
       CompactionFilter::Context ctx;
       ctx.is_full_compaction = false;
       ctx.is_manual_compaction = false;
       ctx.column_family_id = cfd_->GetID();
-      ctx.reason = TableFileCreationReason::kFlush;
+      ctx.reason = rs::types::TableFileCreationReason::Flush;
       compaction_filter =
           ioptions->compaction_filter_factory->CreateCompactionFilter(ctx);
       if (compaction_filter != nullptr &&
@@ -929,7 +929,7 @@ Status FlushJob::WriteLevel0Table() {
           cfd_->int_tbl_prop_collector_factories(), output_compression_,
           mutable_cf_options_.compression_opts, cfd_->GetID(), cfd_->GetName(),
           0 /* level */, false /* is_bottommost */,
-          TableFileCreationReason::kFlush, oldest_key_time, current_time,
+          rs::types::TableFileCreationReason::Flush, oldest_key_time, current_time,
           db_id_, db_session_id_, 0 /* target_file_size */,
           meta_.fd.GetNumber());
       const SequenceNumber job_snapshot_seq =
@@ -942,7 +942,7 @@ Status FlushJob::WriteLevel0Table() {
                      job_snapshot_seq, snapshot_checker_,
                      mutable_cf_options_.paranoid_file_checks,
                      cfd_->internal_stats(), &io_s, io_tracer_,
-                     BlobFileCreationReason::kFlush, seqno_to_time_mapping_,
+                     rs::types::BlobFileCreationReason::Flush, seqno_to_time_mapping_,
                      event_logger_, job_context_->job_id, io_priority,
                      &table_properties_, write_hint, full_history_ts_low,
                      blob_callback_, base_, &num_input_entries,
@@ -961,7 +961,7 @@ Status FlushJob::WriteLevel0Table() {
           s = Status::Corruption(msg);
         }
       }
-      if (tboptions.reason == TableFileCreationReason::kFlush) {
+      if (tboptions.reason == rs::types::TableFileCreationReason::Flush) {
         TEST_SYNC_POINT("DBImpl::FlushJob:Flush");
         RecordTick(stats_, MEMTABLE_PAYLOAD_BYTES_AT_FLUSH,
                    memtable_payload_bytes);

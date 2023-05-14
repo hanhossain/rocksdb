@@ -329,7 +329,7 @@ struct BlockBasedTableBuilder::Rep {
   const bool use_delta_encoding_for_index_values;
   std::unique_ptr<FilterBlockBuilder> filter_builder;
   OffsetableCacheKey base_cache_key;
-  const TableFileCreationReason reason;
+  const rs::types::TableFileCreationReason reason;
 
   BlockHandle pending_handle;  // Handle to add to index block
 
@@ -518,7 +518,7 @@ struct BlockBasedTableBuilder::Rep {
 
       // Only populate other fields if known to be in LSM rather than
       // generating external SST file
-      if (reason != TableFileCreationReason::kMisc) {
+      if (reason != rs::types::TableFileCreationReason::Misc) {
         filter_context.compaction_style = ioptions.compaction_style;
         filter_context.num_levels = ioptions.num_levels;
         filter_context.level_at_creation = tbo.level_at_creation;
@@ -1297,7 +1297,7 @@ void BlockBasedTableBuilder::WriteMaybeCompressedBlock(
     bool warm_cache;
     switch (r->table_options.prepopulate_block_cache) {
       case BlockBasedTableOptions::PrepopulateBlockCache::kFlushOnly:
-        warm_cache = (r->reason == TableFileCreationReason::kFlush);
+        warm_cache = (r->reason == rs::types::TableFileCreationReason::Flush);
         break;
       case BlockBasedTableOptions::PrepopulateBlockCache::kDisable:
         warm_cache = false;

@@ -329,7 +329,7 @@ Status SstFileWriter::Open(const std::string& file_path) {
       r->ioptions, r->mutable_cf_options, r->internal_comparator,
       &int_tbl_prop_collector_factories, compression_type, compression_opts,
       cf_id, r->column_family_name, unknown_level, false /* is_bottommost */,
-      TableFileCreationReason::kMisc, 0 /* oldest_key_time */,
+      rs::types::TableFileCreationReason::Misc, 0 /* oldest_key_time */,
       0 /* file_creation_time */, "SST Writer" /* db_id */, r->db_session_id,
       0 /* target_file_size */, r->next_file_number);
   // External SST files used to each get a unique session id. Now for
@@ -345,7 +345,7 @@ Status SstFileWriter::Open(const std::string& file_path) {
       std::move(sst_file), file_path, r->env_options, r->ioptions.clock,
       nullptr /* io_tracer */, nullptr /* stats */, r->ioptions.listeners,
       r->ioptions.file_checksum_gen_factory.get(),
-      tmp_set.Contains(FileType::kTableFile), false));
+      tmp_set.Contains(rs::types::FileType::TableFile), false));
 
   // TODO(tec) : If table_factory is using compressed block cache, we will
   // be adding the external sst file blocks into it, which is wasteful.

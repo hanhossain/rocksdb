@@ -32,7 +32,7 @@ struct FileStorageInfo {
   // a number (e.g. CURRENT)
   uint64_t file_number = 0;
   // The type of the file as part of a DB.
-  FileType file_type = kTempFile;
+  rs::types::FileType file_type = rs::types::FileType::TempFile;
 
   // File size in bytes. See also `trim_to_size`.
   uint64_t size = 0;
@@ -72,7 +72,7 @@ struct LiveFileStorageInfo : public FileStorageInfo {
 // The metadata that describes an SST file. (Does not need to extend
 // LiveFileStorageInfo because SST files are always immutable.)
 struct SstFileMetaData : public FileStorageInfo {
-  SstFileMetaData() { file_type = kTableFile; }
+  SstFileMetaData() { file_type = rs::types::FileType::TableFile; }
 
   SstFileMetaData(const std::string& _file_name, uint64_t _file_number,
                   const std::string& _directory, uint64_t _size,
@@ -111,7 +111,7 @@ struct SstFileMetaData : public FileStorageInfo {
     directory = _directory;
     db_path = _directory;  // Deprecated field
     file_number = _file_number;
-    file_type = kTableFile;
+    file_type = rs::types::FileType::TableFile;
     size = _size;
     temperature = _temperature;
     file_checksum = _file_checksum;

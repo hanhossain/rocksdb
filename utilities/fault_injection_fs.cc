@@ -1007,7 +1007,7 @@ IOStatus FaultInjectionTestFS::InjectThreadSpecificReadError(
 }
 
 bool FaultInjectionTestFS::TryParseFileName(const std::string& file_name,
-                                            uint64_t* number, FileType* type) {
+                                            uint64_t* number, rs::types::FileType* type) {
   std::size_t found = file_name.find_last_of("/");
   std::string file = file_name.substr(found);
   return ParseFileName(file, number, type);
@@ -1024,7 +1024,7 @@ IOStatus FaultInjectionTestFS::InjectWriteError(const std::string& file_name) {
     allowed_type = true;
   } else {
     uint64_t number;
-    FileType cur_type = kTempFile;
+    rs::types::FileType cur_type = rs::types::FileType::TempFile;
     if (TryParseFileName(file_name, &number, &cur_type)) {
       for (const auto& type : write_error_allowed_types_) {
         if (cur_type == type) {

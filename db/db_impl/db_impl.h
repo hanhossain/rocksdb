@@ -1665,10 +1665,10 @@ class DBImpl : public DB {
   struct PurgeFileInfo {
     std::string fname;
     std::string dir_to_sync;
-    FileType type;
+    rs::types::FileType type;
     uint64_t number;
     int job_id;
-    PurgeFileInfo(std::string fn, std::string d, FileType t, uint64_t num,
+    PurgeFileInfo(std::string fn, std::string d, rs::types::FileType t, uint64_t num,
                   int jid)
         : fname(fn), dir_to_sync(d), type(t), number(num), job_id(jid) {}
   };
@@ -1796,7 +1796,7 @@ class DBImpl : public DB {
   void DeleteObsoleteFiles();
   // Delete obsolete files and log status and information of file deletion
   void DeleteObsoleteFileImpl(int job_id, const std::string& fname,
-                              const std::string& path_to_sync, FileType type,
+                              const std::string& path_to_sync, rs::types::FileType type,
                               uint64_t number);
 
   // Background process needs to call
@@ -2065,7 +2065,7 @@ class DBImpl : public DB {
 
   void SchedulePendingCompaction(ColumnFamilyData* cfd);
   void SchedulePendingPurge(std::string fname, std::string dir_to_sync,
-                            FileType type, uint64_t number, int job_id);
+                            rs::types::FileType type, uint64_t number, int job_id);
   static void BGWorkCompaction(void* arg);
   // Runs a pre-chosen universal compaction involving bottom level in a
   // separate, bottom-pri thread pool.

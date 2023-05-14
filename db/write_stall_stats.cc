@@ -11,20 +11,20 @@ const std::string& InvalidWriteStallHyphenString() {
   return kInvalidWriteStallHyphenString;
 }
 
-const std::string& WriteStallCauseToHyphenString(WriteStallCause cause) {
+const std::string& WriteStallCauseToHyphenString(rs::types::WriteStallCause cause) {
   static const std::string kMemtableLimit = "memtable-limit";
   static const std::string kL0FileCountLimit = "l0-file-count-limit";
   static const std::string kPendingCompactionBytes = "pending-compaction-bytes";
   static const std::string kWriteBufferManagerLimit =
       "write-buffer-manager-limit";
   switch (cause) {
-    case WriteStallCause::kMemtableLimit:
+    case rs::types::WriteStallCause::MemtableLimit:
       return kMemtableLimit;
-    case WriteStallCause::kL0FileCountLimit:
+    case rs::types::WriteStallCause::L0FileCountLimit:
       return kL0FileCountLimit;
-    case WriteStallCause::kPendingCompactionBytes:
+    case rs::types::WriteStallCause::PendingCompactionBytes:
       return kPendingCompactionBytes;
-    case WriteStallCause::kWriteBufferManagerLimit:
+    case rs::types::WriteStallCause::WriteBufferManagerLimit:
       return kWriteBufferManagerLimit;
     default:
       break;
@@ -33,13 +33,13 @@ const std::string& WriteStallCauseToHyphenString(WriteStallCause cause) {
 }
 
 const std::string& WriteStallConditionToHyphenString(
-    WriteStallCondition condition) {
+    rs::types::WriteStallCondition condition) {
   static const std::string kDelayed = "delays";
   static const std::string kStopped = "stops";
   switch (condition) {
-    case WriteStallCondition::kDelayed:
+    case rs::types::WriteStallCondition::Delayed:
       return kDelayed;
-    case WriteStallCondition::kStopped:
+    case rs::types::WriteStallCondition::Stopped:
       return kStopped;
     default:
       break;
@@ -48,37 +48,37 @@ const std::string& WriteStallConditionToHyphenString(
 }
 
 InternalStats::InternalCFStatsType InternalCFStat(
-    WriteStallCause cause, WriteStallCondition condition) {
+    rs::types::WriteStallCause cause, rs::types::WriteStallCondition condition) {
   switch (cause) {
-    case WriteStallCause::kMemtableLimit: {
+    case rs::types::WriteStallCause::MemtableLimit: {
       switch (condition) {
-        case WriteStallCondition::kDelayed:
+        case rs::types::WriteStallCondition::Delayed:
           return InternalStats::MEMTABLE_LIMIT_DELAYS;
-        case WriteStallCondition::kStopped:
+        case rs::types::WriteStallCondition::Stopped:
           return InternalStats::MEMTABLE_LIMIT_STOPS;
-        case WriteStallCondition::kNormal:
+        case rs::types::WriteStallCondition::Normal:
           break;
       }
       break;
     }
-    case WriteStallCause::kL0FileCountLimit: {
+    case rs::types::WriteStallCause::L0FileCountLimit: {
       switch (condition) {
-        case WriteStallCondition::kDelayed:
+        case rs::types::WriteStallCondition::Delayed:
           return InternalStats::L0_FILE_COUNT_LIMIT_DELAYS;
-        case WriteStallCondition::kStopped:
+        case rs::types::WriteStallCondition::Stopped:
           return InternalStats::L0_FILE_COUNT_LIMIT_STOPS;
-        case WriteStallCondition::kNormal:
+        case rs::types::WriteStallCondition::Normal:
           break;
       }
       break;
     }
-    case WriteStallCause::kPendingCompactionBytes: {
+    case rs::types::WriteStallCause::PendingCompactionBytes: {
       switch (condition) {
-        case WriteStallCondition::kDelayed:
+        case rs::types::WriteStallCondition::Delayed:
           return InternalStats::PENDING_COMPACTION_BYTES_LIMIT_DELAYS;
-        case WriteStallCondition::kStopped:
+        case rs::types::WriteStallCondition::Stopped:
           return InternalStats::PENDING_COMPACTION_BYTES_LIMIT_STOPS;
-        case WriteStallCondition::kNormal:
+        case rs::types::WriteStallCondition::Normal:
           break;
       }
       break;
@@ -90,11 +90,11 @@ InternalStats::InternalCFStatsType InternalCFStat(
 }
 
 InternalStats::InternalDBStatsType InternalDBStat(
-    WriteStallCause cause, WriteStallCondition condition) {
+    rs::types::WriteStallCause cause, rs::types::WriteStallCondition condition) {
   switch (cause) {
-    case WriteStallCause::kWriteBufferManagerLimit: {
+    case rs::types::WriteStallCause::WriteBufferManagerLimit: {
       switch (condition) {
-        case WriteStallCondition::kStopped:
+        case rs::types::WriteStallCondition::Stopped:
           return InternalStats::kIntStatsWriteBufferManagerLimitStopsCounts;
         default:
           break;
@@ -107,24 +107,24 @@ InternalStats::InternalDBStatsType InternalDBStat(
   return InternalStats::kIntStatsNumMax;
 }
 
-bool isCFScopeWriteStallCause(WriteStallCause cause) {
+bool isCFScopeWriteStallCause(rs::types::WriteStallCause cause) {
   uint32_t int_cause = static_cast<uint32_t>(cause);
   uint32_t lower_bound =
-      static_cast<uint32_t>(WriteStallCause::kCFScopeWriteStallCauseEnumMax) -
+      static_cast<uint32_t>(rs::types::WriteStallCause::CFScopeWriteStallCauseEnumMax) -
       kNumCFScopeWriteStallCauses;
   uint32_t upper_bound =
-      static_cast<uint32_t>(WriteStallCause::kCFScopeWriteStallCauseEnumMax) -
+      static_cast<uint32_t>(rs::types::WriteStallCause::CFScopeWriteStallCauseEnumMax) -
       1;
   return lower_bound <= int_cause && int_cause <= upper_bound;
 }
 
-bool isDBScopeWriteStallCause(WriteStallCause cause) {
+bool isDBScopeWriteStallCause(rs::types::WriteStallCause cause) {
   uint32_t int_cause = static_cast<uint32_t>(cause);
   uint32_t lower_bound =
-      static_cast<uint32_t>(WriteStallCause::kDBScopeWriteStallCauseEnumMax) -
+      static_cast<uint32_t>(rs::types::WriteStallCause::DBScopeWriteStallCauseEnumMax) -
       kNumDBScopeWriteStallCauses;
   uint32_t upper_bound =
-      static_cast<uint32_t>(WriteStallCause::kDBScopeWriteStallCauseEnumMax) -
+      static_cast<uint32_t>(rs::types::WriteStallCause::DBScopeWriteStallCauseEnumMax) -
       1;
   return lower_bound <= int_cause && int_cause <= upper_bound;
 }
@@ -154,7 +154,7 @@ WriteStallStatsMapKeys::CFL0FileCountLimitStopsWithOngoingCompaction() {
 }
 
 std::string WriteStallStatsMapKeys::CauseConditionCount(
-    WriteStallCause cause, WriteStallCondition condition) {
+    rs::types::WriteStallCause cause, rs::types::WriteStallCondition condition) {
   std::string cause_condition_count_name;
 
   std::string cause_name;

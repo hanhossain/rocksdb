@@ -38,7 +38,7 @@ TEST(CompactOnDeletionCollector, DeletionRatio) {
       for (size_t i = 0; i < kTotalEntries; i++) {
         // All entries are deletion entries.
         ASSERT_OK(
-            collector->AddUserKey("hello", "rocksdb", kEntryDelete, 0, 0));
+            collector->AddUserKey("hello", "rocksdb", rs::types::EntryType::Delete, 0, 0));
         ASSERT_FALSE(collector->NeedCompact());
       }
       ASSERT_OK(collector->Finish(nullptr));
@@ -59,10 +59,10 @@ TEST(CompactOnDeletionCollector, DeletionRatio) {
         for (size_t i = 0; i < kTotalEntries; i++) {
           if (i < actual_deletion_entries) {
             ASSERT_OK(
-                collector->AddUserKey("hello", "rocksdb", kEntryDelete, 0, 0));
+                collector->AddUserKey("hello", "rocksdb", rs::types::EntryType::Delete, 0, 0));
           } else {
             ASSERT_OK(
-                collector->AddUserKey("hello", "rocksdb", kEntryPut, 0, 0));
+                collector->AddUserKey("hello", "rocksdb", rs::types::EntryType::Put, 0, 0));
           }
           ASSERT_FALSE(collector->NeedCompact());
         }
@@ -126,11 +126,11 @@ TEST(CompactOnDeletionCollector, SlidingWindow) {
         for (int i = 0; i < kPaddedWindowSize; ++i) {
           if (i % kSample < delete_rate) {
             ASSERT_OK(
-                collector->AddUserKey("hello", "rocksdb", kEntryDelete, 0, 0));
+                collector->AddUserKey("hello", "rocksdb", rs::types::EntryType::Delete, 0, 0));
             deletions++;
           } else {
             ASSERT_OK(
-                collector->AddUserKey("hello", "rocksdb", kEntryPut, 0, 0));
+                collector->AddUserKey("hello", "rocksdb", rs::types::EntryType::Put, 0, 0));
           }
         }
         if (collector->NeedCompact() != (deletions >= kNumDeletionTrigger) &&
@@ -159,24 +159,24 @@ TEST(CompactOnDeletionCollector, SlidingWindow) {
           int initial_entries = rnd.Uniform(kWindowSize) + kWindowSize;
           for (int i = 0; i < initial_entries; ++i) {
             ASSERT_OK(
-                collector->AddUserKey("hello", "rocksdb", kEntryPut, 0, 0));
+                collector->AddUserKey("hello", "rocksdb", rs::types::EntryType::Put, 0, 0));
           }
         }
         for (int i = 0; i < kPaddedWindowSize; ++i) {
           if (i % kSample < delete_rate) {
             ASSERT_OK(
-                collector->AddUserKey("hello", "rocksdb", kEntryDelete, 0, 0));
+                collector->AddUserKey("hello", "rocksdb", rs::types::EntryType::Delete, 0, 0));
             deletions++;
           } else {
             ASSERT_OK(
-                collector->AddUserKey("hello", "rocksdb", kEntryPut, 0, 0));
+                collector->AddUserKey("hello", "rocksdb", rs::types::EntryType::Put, 0, 0));
           }
         }
         for (int section = 0; section < 5; ++section) {
           int ending_entries = rnd.Uniform(kWindowSize) + kWindowSize;
           for (int i = 0; i < ending_entries; ++i) {
             ASSERT_OK(
-                collector->AddUserKey("hello", "rocksdb", kEntryPut, 0, 0));
+                collector->AddUserKey("hello", "rocksdb", rs::types::EntryType::Put, 0, 0));
           }
         }
         if (collector->NeedCompact() != (deletions >= kNumDeletionTrigger) &&
@@ -207,11 +207,11 @@ TEST(CompactOnDeletionCollector, SlidingWindow) {
         for (int section = 0; section < 200; ++section) {
           for (int i = 0; i < kPaddedWindowSize; ++i) {
             if (i < kDeletionsPerSection) {
-              ASSERT_OK(collector->AddUserKey("hello", "rocksdb", kEntryDelete,
+              ASSERT_OK(collector->AddUserKey("hello", "rocksdb", rs::types::EntryType::Delete,
                                               0, 0));
             } else {
               ASSERT_OK(
-                  collector->AddUserKey("hello", "rocksdb", kEntryPut, 0, 0));
+                  collector->AddUserKey("hello", "rocksdb", rs::types::EntryType::Put, 0, 0));
             }
           }
         }

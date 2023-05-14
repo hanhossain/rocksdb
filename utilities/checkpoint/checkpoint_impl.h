@@ -29,16 +29,16 @@ class CheckpointImpl : public Checkpoint {
   // or create.
   Status CreateCustomCheckpoint(
       std::function<Status(const std::string& src_dirname,
-                           const std::string& fname, FileType type)>
+                           const std::string& fname, rs::types::FileType type)>
           link_file_cb,
       std::function<Status(const std::string& src_dirname,
                            const std::string& fname, uint64_t size_limit_bytes,
-                           FileType type, const std::string& checksum_func_name,
+                           rs::types::FileType type, const std::string& checksum_func_name,
                            const std::string& checksum_val,
                            const rs::advanced_options::Temperature src_temperature)>
           copy_file_cb,
       std::function<Status(const std::string& fname,
-                           const std::string& contents, FileType type)>
+                           const std::string& contents, rs::types::FileType type)>
           create_file_cb,
       uint64_t* sequence_number, uint64_t log_size_for_flush,
       bool get_live_table_checksum = false);

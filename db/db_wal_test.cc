@@ -539,7 +539,7 @@ TEST_F(DBWALTest, WALWithChecksumHandoff) {
   do {
     Options options = CurrentOptions();
 
-    options.checksum_handoff_file_types.Add(FileType::kWalFile);
+    options.checksum_handoff_file_types.Add(rs::types::FileType::WalFile);
     options.env = fault_fs_env.get();
     fault_fs->SetChecksumHandoffFuncType(ChecksumType::kCRC32c);
 
@@ -687,14 +687,14 @@ TEST_P(DBRecoveryTestBlobError, RecoverWithBlobError) {
   ASSERT_OK(env_->GetChildren(dbname_, &files));
   for (const auto& file : files) {
     uint64_t number = 0;
-    FileType type = kTableFile;
+    rs::types::FileType type = rs::types::FileType::TableFile;
 
     if (!ParseFileName(file, &number, &type)) {
       continue;
     }
 
-    ASSERT_NE(type, kTableFile);
-    ASSERT_NE(type, kBlobFile);
+    ASSERT_NE(type, rs::types::FileType::TableFile);
+    ASSERT_NE(type, rs::types::FileType::BlobFile);
   }
 }
 
@@ -2189,9 +2189,9 @@ TEST_F(DBWALTest, TruncateLastLogAfterRecoverWALEmpty) {
   ASSERT_OK(env_->GetChildren(dbname_, &filenames));
   for (auto fname : filenames) {
     uint64_t number;
-    FileType type;
+    rs::types::FileType type;
     if (ParseFileName(fname, &number, &type, nullptr)) {
-      if (type == kWalFile && number > last_log_num) {
+      if (type == rs::types::FileType::WalFile && number > last_log_num) {
         last_log = fname;
       }
     }
@@ -2414,8 +2414,8 @@ TEST_F(DBWALTest, EmptyWalReopenTest) {
     ASSERT_OK(env_->GetChildren(dbname_, &files));
     for (const auto& file : files) {
       uint64_t number = 0;
-      FileType type = kWalFile;
-      if (ParseFileName(file, &number, &type) && type == kWalFile) {
+      rs::types::FileType type = rs::types::FileType::WalFile;
+      if (ParseFileName(file, &number, &type) && type == rs::types::FileType::WalFile) {
         num_wal_files++;
       }
     }

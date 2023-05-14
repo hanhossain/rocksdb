@@ -120,8 +120,8 @@ Status DBImplSecondary::FindNewLogNumbers(std::vector<uint64_t>* logs) {
   }
   for (size_t i = 0; i < filenames.size(); i++) {
     uint64_t number;
-    FileType type;
-    if (ParseFileName(filenames[i], &number, &type) && type == kWalFile &&
+    rs::types::FileType type;
+    if (ParseFileName(filenames[i], &number, &type) && type == rs::types::FileType::WalFile &&
         number >= log_number_min) {
       logs->push_back(number);
     }

@@ -108,11 +108,11 @@ class DeleteFileTest : public DBTestBase {
     int log_cnt = 0, sst_cnt = 0, manifest_cnt = 0;
     for (auto file : filenames) {
       uint64_t number;
-      FileType type;
+      rs::types::FileType type;
       if (ParseFileName(file, &number, &type)) {
-        log_cnt += (type == kWalFile);
-        sst_cnt += (type == kTableFile);
-        manifest_cnt += (type == kDescriptorFile);
+        log_cnt += (type == rs::types::FileType::WalFile);
+        sst_cnt += (type == rs::types::FileType::TableFile);
+        manifest_cnt += (type == rs::types::FileType::DescriptorFile);
       }
     }
     if (required_log >= 0) {

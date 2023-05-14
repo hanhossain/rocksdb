@@ -8,6 +8,7 @@
 
 #include <map>
 #include <memory>
+#include <rocksdb-rs-cxx/types.h>
 #include <string>
 
 #include "rocksdb/customizable.h"
@@ -104,7 +105,7 @@ class TablePropertiesCollector {
   // @params key    the user key that is inserted into the table.
   // @params value  the value that is inserted into the table.
   virtual Status AddUserKey(const Slice& key, const Slice& value,
-                            EntryType /*type*/, SequenceNumber /*seq*/,
+                            rs::types::EntryType /*type*/, SequenceNumber /*seq*/,
                             uint64_t /*file_size*/) {
     // For backwards-compatibility.
     return Add(key, value);

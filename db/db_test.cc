@@ -1189,7 +1189,7 @@ void CheckColumnFamilyMeta(
       ASSERT_GE(file_meta_from_cf.oldest_ancester_time, start_time);
       ASSERT_LE(file_meta_from_cf.oldest_ancester_time, end_time);
       // More from FileStorageInfo
-      ASSERT_EQ(file_meta_from_cf.file_type, kTableFile);
+      ASSERT_EQ(file_meta_from_cf.file_type, rs::types::FileType::TableFile);
       ASSERT_EQ(file_meta_from_cf.name,
                 "/" + file_meta_from_cf.relative_filename);
       ASSERT_EQ(file_meta_from_cf.directory, file_meta_from_cf.db_path);
@@ -1239,7 +1239,7 @@ void CheckLiveFilesMeta(
     ASSERT_EQ(meta.epoch_number, expected_meta.epoch_number);
 
     // More from FileStorageInfo
-    ASSERT_EQ(meta.file_type, kTableFile);
+    ASSERT_EQ(meta.file_type, rs::types::FileType::TableFile);
     ASSERT_EQ(meta.name, "/" + meta.relative_filename);
     ASSERT_EQ(meta.directory, meta.db_path);
 
@@ -2443,7 +2443,7 @@ TEST_F(DBTest, SnapshotFiles) {
     ASSERT_EQ(files.size(), 5U);
 
     uint64_t number = 0;
-    FileType type;
+    rs::types::FileType type;
 
     // copy these files to a new snapshot directory
     std::string snapdir = dbname_ + ".snapdir/";
@@ -2465,7 +2465,7 @@ TEST_F(DBTest, SnapshotFiles) {
       // record the number and the size of the
       // latest manifest file
       if (ParseFileName(files[i].substr(1), &number, &type)) {
-        if (type == kDescriptorFile) {
+        if (type == rs::types::FileType::DescriptorFile) {
           ASSERT_EQ(manifest_number, 0);
           manifest_number = number;
           ASSERT_GE(size, manifest_size);
@@ -2525,7 +2525,7 @@ TEST_F(DBTest, SnapshotFiles) {
       // record the lognumber and the size of the
       // latest manifest file
       if (ParseFileName(newfiles[i].substr(1), &number, &type)) {
-        if (type == kDescriptorFile) {
+        if (type == rs::types::FileType::DescriptorFile) {
           ASSERT_EQ(new_manifest_number, 0);
           uint64_t size;
           new_manifest_number = number;
@@ -2557,7 +2557,7 @@ TEST_F(DBTest, SnapshotFiles) {
       } else {
         ASSERT_EQ(info.size, size);
       }
-      if (info.file_type == kDescriptorFile) {
+      if (info.file_type == rs::types::FileType::DescriptorFile) {
         ASSERT_EQ(info.file_number, manifest_number);
       }
     }
@@ -2585,9 +2585,9 @@ TEST_F(DBTest, ReadonlyDBGetLiveManifestSize) {
 
     for (const std::string& f : files) {
       uint64_t number = 0;
-      FileType type;
+      rs::types::FileType type;
       if (ParseFileName(f.substr(1), &number, &type)) {
-        if (type == kDescriptorFile) {
+        if (type == rs::types::FileType::DescriptorFile) {
           uint64_t size_on_disk;
           ASSERT_OK(env_->GetFileSize(dbname_ + "/" + f, &size_on_disk));
           ASSERT_EQ(manifest_size, size_on_disk);
@@ -6609,19 +6609,19 @@ TEST_F(DBTest, HardLimit) {
 #if !defined(ROCKSDB_DISABLE_STALL_NOTIFICATION)
 class WriteStallListener : public EventListener {
  public:
-  WriteStallListener() : condition_(WriteStallCondition::kNormal) {}
+  WriteStallListener() : condition_(rs::types::WriteStallCondition::Normal) {}
   void OnStallConditionsChanged(const WriteStallInfo& info) override {
     MutexLock l(&mutex_);
     condition_ = info.condition.cur;
   }
-  bool CheckCondition(WriteStallCondition expected) {
+  bool CheckCondition(rs::types::WriteStallCondition expected) {
     MutexLock l(&mutex_);
     return expected == condition_;
   }
 
  private:
   port::Mutex mutex_;
-  WriteStallCondition condition_;
+  rs::types::WriteStallCondition condition_;
 };
 
 TEST_F(DBTest, SoftLimit) {
@@ -6717,7 +6717,7 @@ TEST_F(DBTest, SoftLimit) {
     WaitForFlush();
   }
   ASSERT_TRUE(dbfull()->TEST_write_controler().NeedsDelay());
-  ASSERT_TRUE(listener->CheckCondition(WriteStallCondition::kDelayed));
+  ASSERT_TRUE(listener->CheckCondition(rs::types::WriteStallCondition::Delayed));
 
   sleeping_task_low.WakeUp();
   sleeping_task_low.WaitUntilDone();
@@ -6732,7 +6732,7 @@ TEST_F(DBTest, SoftLimit) {
   // The L1 file size is around 30KB.
   ASSERT_EQ(NumTableFilesAtLevel(1), 1);
   ASSERT_TRUE(!dbfull()->TEST_write_controler().NeedsDelay());
-  ASSERT_TRUE(listener->CheckCondition(WriteStallCondition::kNormal));
+  ASSERT_TRUE(listener->CheckCondition(rs::types::WriteStallCondition::Normal));
 
   // Only allow one compactin going through.
   ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
@@ -6767,7 +6767,7 @@ TEST_F(DBTest, SoftLimit) {
   // doesn't trigger soft_pending_compaction_bytes_limit
   ASSERT_EQ(NumTableFilesAtLevel(1), 1);
   ASSERT_TRUE(!dbfull()->TEST_write_controler().NeedsDelay());
-  ASSERT_TRUE(listener->CheckCondition(WriteStallCondition::kNormal));
+  ASSERT_TRUE(listener->CheckCondition(rs::types::WriteStallCondition::Normal));
 
   // Create 3 L0 files, making score of L0 to be 3, higher than L0.
   for (int i = 0; i < 3; i++) {
@@ -6790,13 +6790,13 @@ TEST_F(DBTest, SoftLimit) {
   // triggerring soft_pending_compaction_bytes_limit
   ASSERT_EQ(NumTableFilesAtLevel(1), 1);
   ASSERT_TRUE(dbfull()->TEST_write_controler().NeedsDelay());
-  ASSERT_TRUE(listener->CheckCondition(WriteStallCondition::kDelayed));
+  ASSERT_TRUE(listener->CheckCondition(rs::types::WriteStallCondition::Delayed));
 
   sleeping_task_low.WakeUp();
   sleeping_task_low.WaitUntilSleeping();
 
   ASSERT_TRUE(!dbfull()->TEST_write_controler().NeedsDelay());
-  ASSERT_TRUE(listener->CheckCondition(WriteStallCondition::kNormal));
+  ASSERT_TRUE(listener->CheckCondition(rs::types::WriteStallCondition::Normal));
 
   // shrink level base so L2 will hit soft limit easier.
   ASSERT_OK(dbfull()->SetOptions({
@@ -6806,7 +6806,7 @@ TEST_F(DBTest, SoftLimit) {
   ASSERT_OK(Put("", ""));
   ASSERT_OK(Flush());
   ASSERT_TRUE(dbfull()->TEST_write_controler().NeedsDelay());
-  ASSERT_TRUE(listener->CheckCondition(WriteStallCondition::kDelayed));
+  ASSERT_TRUE(listener->CheckCondition(rs::types::WriteStallCondition::Delayed));
 
   sleeping_task_low.WaitUntilSleeping();
   ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();

@@ -1300,9 +1300,9 @@ void DBTestBase::GetSstFiles(Env* env, std::string path,
   files->erase(std::remove_if(files->begin(), files->end(),
                               [](std::string name) {
                                 uint64_t number;
-                                FileType type;
+                                rs::types::FileType type;
                                 return !(ParseFileName(name, &number, &type) &&
-                                         type == kTableFile);
+                                         type == rs::types::FileType::TableFile);
                               }),
                files->end());
 }
@@ -1490,7 +1490,7 @@ void DBTestBase::CopyFile(const std::string& source,
 }
 
 Status DBTestBase::GetAllDataFiles(
-    const FileType file_type, std::unordered_map<std::string, uint64_t>* files,
+    const rs::types::FileType file_type, std::unordered_map<std::string, uint64_t>* files,
     uint64_t* total_size /* = nullptr */) {
   if (total_size) {
     *total_size = 0;
@@ -1500,7 +1500,7 @@ Status DBTestBase::GetAllDataFiles(
   if (s.ok()) {
     for (auto& file_name : children) {
       uint64_t number;
-      FileType type;
+      rs::types::FileType type;
       if (ParseFileName(file_name, &number, &type) && type == file_type) {
         std::string file_path = dbname_ + "/" + file_name;
         uint64_t file_size = 0;
@@ -1524,10 +1524,10 @@ std::vector<std::uint64_t> DBTestBase::ListTableFiles(Env* env,
   std::vector<uint64_t> file_numbers;
   EXPECT_OK(env->GetChildren(path, &files));
   uint64_t number;
-  FileType type;
+  rs::types::FileType type;
   for (size_t i = 0; i < files.size(); ++i) {
     if (ParseFileName(files[i], &number, &type)) {
-      if (type == kTableFile) {
+      if (type == rs::types::FileType::TableFile) {
         file_numbers.push_back(number);
       }
     }

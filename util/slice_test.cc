@@ -176,17 +176,17 @@ class SmallEnumSetTest : public testing::Test {
 TEST_F(SmallEnumSetTest, SmallEnumSetTest1) {
   FileTypeSet fs;  // based on a legacy enum type
   ASSERT_TRUE(fs.empty());
-  ASSERT_TRUE(fs.Add(FileType::kIdentityFile));
+  ASSERT_TRUE(fs.Add(rs::types::FileType::IdentityFile));
   ASSERT_FALSE(fs.empty());
-  ASSERT_FALSE(fs.Add(FileType::kIdentityFile));
-  ASSERT_TRUE(fs.Add(FileType::kInfoLogFile));
-  ASSERT_TRUE(fs.Contains(FileType::kIdentityFile));
-  ASSERT_FALSE(fs.Contains(FileType::kDBLockFile));
+  ASSERT_FALSE(fs.Add(rs::types::FileType::IdentityFile));
+  ASSERT_TRUE(fs.Add(rs::types::FileType::InfoLogFile));
+  ASSERT_TRUE(fs.Contains(rs::types::FileType::IdentityFile));
+  ASSERT_FALSE(fs.Contains(rs::types::FileType::DBLockFile));
   ASSERT_FALSE(fs.empty());
-  ASSERT_FALSE(fs.Remove(FileType::kDBLockFile));
-  ASSERT_TRUE(fs.Remove(FileType::kIdentityFile));
+  ASSERT_FALSE(fs.Remove(rs::types::FileType::DBLockFile));
+  ASSERT_TRUE(fs.Remove(rs::types::FileType::IdentityFile));
   ASSERT_FALSE(fs.empty());
-  ASSERT_TRUE(fs.Remove(FileType::kInfoLogFile));
+  ASSERT_TRUE(fs.Remove(rs::types::FileType::InfoLogFile));
   ASSERT_TRUE(fs.empty());
 }
 

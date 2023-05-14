@@ -56,7 +56,7 @@ struct TestPropertiesCollector
   ROCKSDB_NAMESPACE::Status AddUserKey(
       const ROCKSDB_NAMESPACE::Slice& /*key*/,
       const ROCKSDB_NAMESPACE::Slice& /*value*/,
-      ROCKSDB_NAMESPACE::EntryType /*type*/,
+      rs::types::EntryType /*type*/,
       ROCKSDB_NAMESPACE::SequenceNumber /*seq*/,
       uint64_t /*file_size*/) override {
     return Status::OK();
@@ -738,13 +738,13 @@ class TableFileCreationListener : public EventListener {
     }
   }
 
-  int Index(TableFileCreationReason reason) {
+  int Index(rs::types::TableFileCreationReason reason) {
     int idx;
     switch (reason) {
-      case TableFileCreationReason::kFlush:
+      case rs::types::TableFileCreationReason::Flush:
         idx = 0;
         break;
-      case TableFileCreationReason::kCompaction:
+      case rs::types::TableFileCreationReason::Compaction:
         idx = 1;
         break;
       default:

@@ -152,11 +152,11 @@ extern std::string IdentityFileName(const std::string& dbname);
 // filename was successfully parsed, returns true.  Else return false.
 // info_log_name_prefix is the path of info logs.
 extern bool ParseFileName(const std::string& filename, uint64_t* number,
-                          const Slice& info_log_name_prefix, FileType* type,
+                          const Slice& info_log_name_prefix, rs::types::FileType* type,
                           WalFileType* log_type = nullptr);
 // Same as previous function, but skip info log files.
 extern bool ParseFileName(const std::string& filename, uint64_t* number,
-                          FileType* type, WalFileType* log_type = nullptr);
+                          rs::types::FileType* type, WalFileType* log_type = nullptr);
 
 // Make the CURRENT file point to the descriptor file with the
 // specified number. On its success and when dir_contains_current_file is not

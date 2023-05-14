@@ -39,7 +39,7 @@ BlobFileBuilder::BlobFileBuilder(
     Env::IOPriority io_priority, Env::WriteLifeTimeHint write_hint,
     const std::shared_ptr<IOTracer>& io_tracer,
     BlobFileCompletionCallback* blob_callback,
-    BlobFileCreationReason creation_reason,
+    rs::types::BlobFileCreationReason creation_reason,
     std::vector<std::string>* blob_file_paths,
     std::vector<BlobFileAddition>* blob_file_additions)
     : BlobFileBuilder([versions]() { return versions->NewFileNumber(); }, fs,
@@ -58,7 +58,7 @@ BlobFileBuilder::BlobFileBuilder(
     Env::IOPriority io_priority, Env::WriteLifeTimeHint write_hint,
     const std::shared_ptr<IOTracer>& io_tracer,
     BlobFileCompletionCallback* blob_callback,
-    BlobFileCreationReason creation_reason,
+    rs::types::BlobFileCreationReason creation_reason,
     std::vector<std::string>* blob_file_paths,
     std::vector<BlobFileAddition>* blob_file_additions)
     : file_number_generator_(std::move(file_number_generator)),
@@ -216,7 +216,7 @@ Status BlobFileBuilder::OpenBlobFileIfNeeded() {
       immutable_options_->clock, io_tracer_, statistics,
       immutable_options_->listeners,
       immutable_options_->file_checksum_gen_factory.get(),
-      tmp_set.Contains(FileType::kBlobFile), false));
+      tmp_set.Contains(rs::types::FileType::BlobFile), false));
 
   constexpr bool do_flush = false;
 
@@ -399,7 +399,7 @@ Status BlobFileBuilder::PutBlobIntoCacheIfNeeded(const Slice& blob,
   auto statistics = immutable_options_->statistics.get();
   bool warm_cache =
       prepopulate_blob_cache_ == rs::advanced_options::PrepopulateBlobCache::FlushOnly &&
-      creation_reason_ == BlobFileCreationReason::kFlush;
+      creation_reason_ == rs::types::BlobFileCreationReason::Flush;
 
   if (blob_cache && warm_cache) {
     const OffsetableCacheKey base_cache_key(db_id_, db_session_id_,

@@ -305,18 +305,18 @@ class Repairer {
       }
 
       uint64_t number;
-      FileType type;
+      rs::types::FileType type;
       for (size_t i = 0; i < filenames.size(); i++) {
         if (ParseFileName(filenames[i], &number, &type)) {
-          if (type == kDescriptorFile) {
+          if (type == rs::types::FileType::DescriptorFile) {
             manifests_.push_back(filenames[i]);
           } else {
             if (number + 1 > next_file_number_) {
               next_file_number_ = number + 1;
             }
-            if (type == kWalFile) {
+            if (type == rs::types::FileType::WalFile) {
               logs_.push_back(number);
-            } else if (type == kTableFile) {
+            } else if (type == rs::types::FileType::TableFile) {
               table_fds_.emplace_back(number, static_cast<uint32_t>(path_id),
                                       0);
             } else {
@@ -456,7 +456,7 @@ class Repairer {
           cfd->internal_comparator(), cfd->int_tbl_prop_collector_factories(),
           kNoCompression, default_compression, cfd->GetID(), cfd->GetName(),
           -1 /* level */, false /* is_bottommost */,
-          TableFileCreationReason::kRecovery, 0 /* oldest_key_time */,
+          rs::types::TableFileCreationReason::Recovery, 0 /* oldest_key_time */,
           0 /* file_creation_time */, "DB Repairer" /* db_id */, db_session_id_,
           0 /*target_file_size*/, meta.fd.GetNumber());
 
@@ -467,7 +467,7 @@ class Repairer {
           std::move(range_del_iters), &meta, nullptr /* blob_file_additions */,
           {}, kMaxSequenceNumber, kMaxSequenceNumber, snapshot_checker,
           false /* paranoid_file_checks*/, nullptr /* internal_stats */, &io_s,
-          nullptr /*IOTracer*/, BlobFileCreationReason::kRecovery,
+          nullptr /*IOTracer*/, rs::types::BlobFileCreationReason::Recovery,
           empty_seqno_time_mapping, nullptr /* event_logger */, 0 /* job_id */,
           Env::IO_HIGH, nullptr /* table_properties */, write_hint);
       ROCKS_LOG_INFO(db_options_.info_log,

@@ -1744,7 +1744,7 @@ FilterBitsBuilder* RibbonFilterPolicy::GetBuilderWithContext(
   switch (context.compaction_style) {
     case rs::advanced_options::CompactionStyle::Level:
     case rs::advanced_options::CompactionStyle::Universal: {
-      if (context.reason == TableFileCreationReason::kFlush) {
+      if (context.reason == rs::types::TableFileCreationReason::Flush) {
         // Treat flush as level -1
         assert(context.level_at_creation == 0);
         levelish = -1;

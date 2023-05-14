@@ -331,8 +331,8 @@ Status DBImpl::NewDB(std::vector<std::string>* new_filenames) {
     std::unique_ptr<WritableFileWriter> file_writer(new WritableFileWriter(
         std::move(file), manifest, file_options, immutable_db_options_.clock,
         io_tracer_, nullptr /* stats */, immutable_db_options_.listeners,
-        nullptr, tmp_set.Contains(FileType::kDescriptorFile),
-        tmp_set.Contains(FileType::kDescriptorFile)));
+        nullptr, tmp_set.Contains(rs::types::FileType::DescriptorFile),
+        tmp_set.Contains(rs::types::FileType::DescriptorFile)));
     log::Writer log(std::move(file_writer), 0, false);
     std::string record;
     new_db.EncodeTo(&record);
@@ -445,8 +445,8 @@ Status DBImpl::Recover(
       }
       for (const std::string& file : files_in_dbname) {
         uint64_t number = 0;
-        FileType type = kWalFile;  // initialize
-        if (ParseFileName(file, &number, &type) && type == kDescriptorFile) {
+        rs::types::FileType type = rs::types::FileType::WalFile;  // initialize
+        if (ParseFileName(file, &number, &type) && type == rs::types::FileType::DescriptorFile) {
           uint64_t bytes;
           s = env_->GetFileSize(DescriptorFileName(dbname_, number), &bytes);
           if (s.ok() && bytes != 0) {
@@ -690,8 +690,8 @@ Status DBImpl::Recover(
     std::unordered_map<uint64_t, std::string> wal_files;
     for (const auto& file : files_in_wal_dir) {
       uint64_t number;
-      FileType type;
-      if (ParseFileName(file, &number, &type) && type == kWalFile) {
+      rs::types::FileType type;
+      if (ParseFileName(file, &number, &type) && type == rs::types::FileType::WalFile) {
         if (is_new_db) {
           return Status::Corruption(
               "While creating a new Db, wal_dir contains "
@@ -796,9 +796,9 @@ Status DBImpl::Recover(
     if (s.ok()) {
       uint64_t number = 0;
       uint64_t options_file_number = 0;
-      FileType type;
+      rs::types::FileType type;
       for (const auto& fname : filenames) {
-        if (ParseFileName(fname, &number, &type) && type == kOptionsFile) {
+        if (ParseFileName(fname, &number, &type) && type == rs::types::FileType::OptionsFile) {
           options_file_number = std::max(number, options_file_number);
         }
       }
@@ -1632,7 +1632,7 @@ Status DBImpl::WriteLevel0TableForRecovery(int job_id, ColumnFamilyData* cfd,
           GetCompressionFlush(*cfd->ioptions(), mutable_cf_options),
           mutable_cf_options.compression_opts, cfd->GetID(), cfd->GetName(),
           0 /* level */, false /* is_bottommost */,
-          TableFileCreationReason::kRecovery, 0 /* oldest_key_time */,
+          rs::types::TableFileCreationReason::Recovery, 0 /* oldest_key_time */,
           0 /* file_creation_time */, db_id_, db_session_id_,
           0 /* target_file_size */, meta.fd.GetNumber());
       SeqnoToTimeMapping empty_seqno_time_mapping;
@@ -1645,7 +1645,7 @@ Status DBImpl::WriteLevel0TableForRecovery(int job_id, ColumnFamilyData* cfd,
           iter.get(), std::move(range_del_iters), &meta, &blob_file_additions,
           snapshot_seqs, earliest_write_conflict_snapshot, kMaxSequenceNumber,
           snapshot_checker, paranoid_file_checks, cfd->internal_stats(), &io_s,
-          io_tracer_, BlobFileCreationReason::kRecovery,
+          io_tracer_, rs::types::BlobFileCreationReason::Recovery,
           empty_seqno_time_mapping, &event_logger_, job_id, Env::IO_HIGH,
           nullptr /* table_properties */, write_hint,
           nullptr /*full_history_ts_low*/, &blob_callback_, version);
@@ -1852,8 +1852,8 @@ IOStatus DBImpl::CreateWAL(uint64_t log_file_num, uint64_t recycle_log_number,
     std::unique_ptr<WritableFileWriter> file_writer(new WritableFileWriter(
         std::move(lfile), log_fname, opt_file_options,
         immutable_db_options_.clock, io_tracer_, nullptr /* stats */, listeners,
-        nullptr, tmp_set.Contains(FileType::kWalFile),
-        tmp_set.Contains(FileType::kWalFile)));
+        nullptr, tmp_set.Contains(rs::types::FileType::WalFile),
+        tmp_set.Contains(rs::types::FileType::WalFile)));
     *new_log = new log::Writer(std::move(file_writer), log_file_num,
                                immutable_db_options_.recycle_log_file_num > 0,
                                immutable_db_options_.manual_wal_flush,
@@ -2131,10 +2131,10 @@ Status DBImpl::Open(const DBOptions& db_options, const std::string& dbname,
           .PermitUncheckedError();  //**TODO: What do to on error?
       for (auto& file_name : existing_files) {
         uint64_t file_number;
-        FileType file_type;
+        rs::types::FileType file_type;
         std::string file_path = path + "/" + file_name;
         if (ParseFileName(file_name, &file_number, &file_type) &&
-            (file_type == kTableFile || file_type == kBlobFile)) {
+            (file_type == rs::types::FileType::TableFile || file_type == rs::types::FileType::BlobFile)) {
           // TODO: Check for errors from OnAddFile?
           if (known_file_sizes.count(file_name)) {
             // We're assuming that each sst file name exists in at most one of

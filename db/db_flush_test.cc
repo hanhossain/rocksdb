@@ -1461,10 +1461,10 @@ class ConditionalUpdateFilterFactory : public CompactionFilterFactory {
   const char* Name() const override { return "ConditionalUpdateFilterFactory"; }
 
   bool ShouldFilterTableFileCreation(
-      TableFileCreationReason reason) const override {
+      rs::types::TableFileCreationReason reason) const override {
     // This compaction filter will be invoked
     // at flush time (and therefore at MemPurge time).
-    return (reason == TableFileCreationReason::kFlush);
+    return (reason == rs::types::TableFileCreationReason::Flush);
   }
 
  private:
@@ -2172,7 +2172,7 @@ TEST_F(DBFlushTest, FlushWithChecksumHandoff1) {
   options.min_write_buffer_number_to_merge = 3;
   options.disable_auto_compactions = true;
   options.env = fault_fs_env.get();
-  options.checksum_handoff_file_types.Add(FileType::kTableFile);
+  options.checksum_handoff_file_types.Add(rs::types::FileType::TableFile);
   Reopen(options);
 
   fault_fs->SetChecksumHandoffFuncType(ChecksumType::kCRC32c);
@@ -2290,7 +2290,7 @@ TEST_F(DBFlushTest, FlushWithChecksumHandoffManifest1) {
   options.min_write_buffer_number_to_merge = 3;
   options.disable_auto_compactions = true;
   options.env = fault_fs_env.get();
-  options.checksum_handoff_file_types.Add(FileType::kDescriptorFile);
+  options.checksum_handoff_file_types.Add(rs::types::FileType::DescriptorFile);
   fault_fs->SetChecksumHandoffFuncType(ChecksumType::kCRC32c);
   Reopen(options);
 
@@ -2330,7 +2330,7 @@ TEST_F(DBFlushTest, FlushWithChecksumHandoffManifest2) {
   options.min_write_buffer_number_to_merge = 3;
   options.disable_auto_compactions = true;
   options.env = fault_fs_env.get();
-  options.checksum_handoff_file_types.Add(FileType::kDescriptorFile);
+  options.checksum_handoff_file_types.Add(rs::types::FileType::DescriptorFile);
   fault_fs->SetChecksumHandoffFuncType(ChecksumType::kNoChecksum);
   Reopen(options);
   // The file system does not support checksum handoff. The check
@@ -2459,14 +2459,14 @@ TEST_P(DBFlushTestBlobError, FlushError) {
   ASSERT_OK(env_->GetChildren(dbname_, &files));
   for (const auto& file : files) {
     uint64_t number = 0;
-    FileType type = kTableFile;
+    rs::types::FileType type = rs::types::FileType::TableFile;
 
     if (!ParseFileName(file, &number, &type)) {
       continue;
     }
 
-    ASSERT_NE(type, kTableFile);
-    ASSERT_NE(type, kBlobFile);
+    ASSERT_NE(type, rs::types::FileType::TableFile);
+    ASSERT_NE(type, rs::types::FileType::BlobFile);
   }
 
   const InternalStats* const internal_stats = cfd->internal_stats();

@@ -1,5 +1,6 @@
 pub mod advanced_options;
 pub mod options;
+pub mod types;
 
 #[cxx::bridge(namespace = "rs")]
 mod ffi {

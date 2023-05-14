@@ -5753,8 +5753,8 @@ TEST_F(DBTest2, CrashInRecoveryMultipleCF) {
     ASSERT_OK(env_->GetChildren(dbname_, &filenames));
     for (const auto& f : filenames) {
       uint64_t number;
-      FileType type;
-      if (ParseFileName(f, &number, &type) && type == FileType::kWalFile) {
+      rs::types::FileType type;
+      if (ParseFileName(f, &number, &type) && type == rs::types::FileType::WalFile) {
         std::string fname = dbname_ + "/" + f;
         std::string file_content;
         ASSERT_OK(ReadFileToString(env_, fname, &file_content));
@@ -6604,9 +6604,9 @@ TEST_F(DBTest2, LastLevelTemperature) {
     void UpdateFileTemperature(const FileOperationInfo& info) {
       auto filename = GetFileName(info.path);
       uint64_t number;
-      FileType type;
+      rs::types::FileType type;
       ASSERT_TRUE(ParseFileName(filename, &number, &type));
-      if (type == kTableFile) {
+      if (type == rs::types::FileType::TableFile) {
         MutexLock l(&mutex_);
         auto ret = file_temperatures.insert({number, info.temperature});
         if (!ret.second) {
@@ -6665,7 +6665,7 @@ TEST_F(DBTest2, LastLevelTemperature) {
   SstFileMetaData meta = metadata.levels[kLastLevel].files[0];
   ASSERT_EQ(rs::advanced_options::Temperature::Warm, meta.temperature);
   uint64_t number;
-  FileType type;
+  rs::types::FileType type;
   ASSERT_TRUE(ParseFileName(meta.name, &number, &type));
   ASSERT_EQ(listener->file_temperatures.at(number), meta.temperature);
 

@@ -37,7 +37,7 @@ CompactOnDeletionCollector::CompactOnDeletionCollector(
 // @params file_size  file size up to now
 Status CompactOnDeletionCollector::AddUserKey(const Slice& /*key*/,
                                               const Slice& /*value*/,
-                                              EntryType type,
+                                              rs::types::EntryType type,
                                               SequenceNumber /*seq*/,
                                               uint64_t /*file_size*/) {
   assert(!finished_);
@@ -53,7 +53,7 @@ Status CompactOnDeletionCollector::AddUserKey(const Slice& /*key*/,
 
   if (deletion_ratio_enabled_) {
     total_entries_++;
-    if (type == kEntryDelete) {
+    if (type == rs::types::EntryType::Delete) {
       deletion_entries_++;
     }
   }
@@ -76,7 +76,7 @@ Status CompactOnDeletionCollector::AddUserKey(const Slice& /*key*/,
     }
 
     num_keys_in_current_bucket_++;
-    if (type == kEntryDelete) {
+    if (type == rs::types::EntryType::Delete) {
       num_deletions_in_observation_window_++;
       num_deletions_in_buckets_[current_bucket_]++;
       if (num_deletions_in_observation_window_ >= deletion_trigger_) {

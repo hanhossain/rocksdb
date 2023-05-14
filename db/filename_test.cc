@@ -19,7 +19,7 @@ class FileNameTest : public testing::Test {};
 
 TEST_F(FileNameTest, Parse) {
   Slice db;
-  FileType type;
+  rs::types::FileType type;
   uint64_t number;
 
   char kDefautInfoLogDir = 1;
@@ -31,25 +31,25 @@ TEST_F(FileNameTest, Parse) {
   static struct {
     const char* fname;
     uint64_t number;
-    FileType type;
+    rs::types::FileType type;
     char mode;
   } cases[] = {
-      {"100.log", 100, kWalFile, kAllMode},
-      {"0.log", 0, kWalFile, kAllMode},
-      {"0.sst", 0, kTableFile, kAllMode},
-      {"CURRENT", 0, kCurrentFile, kAllMode},
-      {"LOCK", 0, kDBLockFile, kAllMode},
-      {"MANIFEST-2", 2, kDescriptorFile, kAllMode},
-      {"MANIFEST-7", 7, kDescriptorFile, kAllMode},
-      {"METADB-2", 2, kMetaDatabase, kAllMode},
-      {"METADB-7", 7, kMetaDatabase, kAllMode},
-      {"LOG", 0, kInfoLogFile, kDefautInfoLogDir},
-      {"LOG.old", 0, kInfoLogFile, kDefautInfoLogDir},
-      {"LOG.old.6688", 6688, kInfoLogFile, kDefautInfoLogDir},
-      {"rocksdb_dir_LOG", 0, kInfoLogFile, kDifferentInfoLogDir},
-      {"rocksdb_dir_LOG.old", 0, kInfoLogFile, kDifferentInfoLogDir},
-      {"rocksdb_dir_LOG.old.6688", 6688, kInfoLogFile, kDifferentInfoLogDir},
-      {"18446744073709551615.log", 18446744073709551615ull, kWalFile, kAllMode},
+      {"100.log", 100, rs::types::FileType::WalFile, kAllMode},
+      {"0.log", 0, rs::types::FileType::WalFile, kAllMode},
+      {"0.sst", 0, rs::types::FileType::TableFile, kAllMode},
+      {"CURRENT", 0, rs::types::FileType::CurrentFile, kAllMode},
+      {"LOCK", 0, rs::types::FileType::DBLockFile, kAllMode},
+      {"MANIFEST-2", 2, rs::types::FileType::DescriptorFile, kAllMode},
+      {"MANIFEST-7", 7, rs::types::FileType::DescriptorFile, kAllMode},
+      {"METADB-2", 2, rs::types::FileType::MetaDatabase, kAllMode},
+      {"METADB-7", 7, rs::types::FileType::MetaDatabase, kAllMode},
+      {"LOG", 0, rs::types::FileType::InfoLogFile, kDefautInfoLogDir},
+      {"LOG.old", 0, rs::types::FileType::InfoLogFile, kDefautInfoLogDir},
+      {"LOG.old.6688", 6688, rs::types::FileType::InfoLogFile, kDefautInfoLogDir},
+      {"rocksdb_dir_LOG", 0, rs::types::FileType::InfoLogFile, kDifferentInfoLogDir},
+      {"rocksdb_dir_LOG.old", 0, rs::types::FileType::InfoLogFile, kDifferentInfoLogDir},
+      {"rocksdb_dir_LOG.old.6688", 6688, rs::types::FileType::InfoLogFile, kDifferentInfoLogDir},
+      {"18446744073709551615.log", 18446744073709551615ull, rs::types::FileType::WalFile, kAllMode},
   };
   for (char mode : {kDifferentInfoLogDir, kDefautInfoLogDir, kNoCheckLogDir}) {
     for (unsigned int i = 0; i < sizeof(cases) / sizeof(cases[0]); i++) {
@@ -120,26 +120,26 @@ TEST_F(FileNameTest, InfoLogFileName) {
 
 TEST_F(FileNameTest, Construction) {
   uint64_t number;
-  FileType type;
+  rs::types::FileType type;
   std::string fname;
 
   fname = CurrentFileName("foo");
   ASSERT_EQ("foo/", std::string(fname.data(), 4));
   ASSERT_TRUE(ParseFileName(fname.c_str() + 4, &number, &type));
   ASSERT_EQ(0U, number);
-  ASSERT_EQ(kCurrentFile, type);
+  ASSERT_EQ(rs::types::FileType::CurrentFile, type);
 
   fname = LockFileName("foo");
   ASSERT_EQ("foo/", std::string(fname.data(), 4));
   ASSERT_TRUE(ParseFileName(fname.c_str() + 4, &number, &type));
   ASSERT_EQ(0U, number);
-  ASSERT_EQ(kDBLockFile, type);
+  ASSERT_EQ(rs::types::FileType::DBLockFile, type);
 
   fname = LogFileName("foo", 192);
   ASSERT_EQ("foo/", std::string(fname.data(), 4));
   ASSERT_TRUE(ParseFileName(fname.c_str() + 4, &number, &type));
   ASSERT_EQ(192U, number);
-  ASSERT_EQ(kWalFile, type);
+  ASSERT_EQ(rs::types::FileType::WalFile, type);
 
   fname = TableFileName({DbPath("bar", 0)}, 200, 0);
   std::string fname1 =
@@ -148,25 +148,25 @@ TEST_F(FileNameTest, Construction) {
   ASSERT_EQ("bar/", std::string(fname.data(), 4));
   ASSERT_TRUE(ParseFileName(fname.c_str() + 4, &number, &type));
   ASSERT_EQ(200U, number);
-  ASSERT_EQ(kTableFile, type);
+  ASSERT_EQ(rs::types::FileType::TableFile, type);
 
   fname = DescriptorFileName("bar", 100);
   ASSERT_EQ("bar/", std::string(fname.data(), 4));
   ASSERT_TRUE(ParseFileName(fname.c_str() + 4, &number, &type));
   ASSERT_EQ(100U, number);
-  ASSERT_EQ(kDescriptorFile, type);
+  ASSERT_EQ(rs::types::FileType::DescriptorFile, type);
 
   fname = TempFileName("tmp", 999);
   ASSERT_EQ("tmp/", std::string(fname.data(), 4));
   ASSERT_TRUE(ParseFileName(fname.c_str() + 4, &number, &type));
   ASSERT_EQ(999U, number);
-  ASSERT_EQ(kTempFile, type);
+  ASSERT_EQ(rs::types::FileType::TempFile, type);
 
   fname = MetaDatabaseName("met", 100);
   ASSERT_EQ("met/", std::string(fname.data(), 4));
   ASSERT_TRUE(ParseFileName(fname.c_str() + 4, &number, &type));
   ASSERT_EQ(100U, number);
-  ASSERT_EQ(kMetaDatabase, type);
+  ASSERT_EQ(rs::types::FileType::MetaDatabase, type);
 }
 
 TEST_F(FileNameTest, NormalizePath) {

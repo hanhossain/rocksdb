@@ -2404,9 +2404,9 @@ Status DBImpl::WaitUntilFlushWouldNotStallWrites(ColumnFamilyData* cfd,
     *flush_needed = true;
     InstrumentedMutexLock l(&mutex_);
     uint64_t orig_active_memtable_id = cfd->mem()->GetID();
-    WriteStallCondition write_stall_condition = WriteStallCondition::kNormal;
+    rs::types::WriteStallCondition write_stall_condition = rs::types::WriteStallCondition::Normal;
     do {
-      if (write_stall_condition != WriteStallCondition::kNormal) {
+      if (write_stall_condition != rs::types::WriteStallCondition::Normal) {
         // Same error handling as user writes: Don't wait if there's a
         // background error, even if it's a soft error. We might wait here
         // indefinitely as the pending flushes/compactions may never finish
@@ -2461,7 +2461,7 @@ Status DBImpl::WaitUntilFlushWouldNotStallWrites(ColumnFamilyData* cfd,
                                   vstorage->estimated_compaction_needed_bytes(),
                                   mutable_cf_options, *cfd->ioptions())
                                   .first;
-    } while (write_stall_condition != WriteStallCondition::kNormal);
+    } while (write_stall_condition != rs::types::WriteStallCondition::Normal);
   }
   return Status::OK();
 }
@@ -2801,7 +2801,7 @@ void DBImpl::SchedulePendingCompaction(ColumnFamilyData* cfd) {
 }
 
 void DBImpl::SchedulePendingPurge(std::string fname, std::string dir_to_sync,
-                                  FileType type, uint64_t number, int job_id) {
+                                  rs::types::FileType type, uint64_t number, int job_id) {
   mutex_.AssertHeld();
   PurgeFileInfo file_info(fname, dir_to_sync, type, number, job_id);
   purge_files_.insert({{number, std::move(file_info)}});

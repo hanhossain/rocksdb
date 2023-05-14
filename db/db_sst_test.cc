@@ -358,14 +358,14 @@ TEST_F(DBSSTTest, DBWithSstFileManager) {
     ASSERT_OK(dbfull()->TEST_WaitForCompact());
     // Verify that we are tracking all sst files in dbname_
     std::unordered_map<std::string, uint64_t> files_in_db;
-    ASSERT_OK(GetAllDataFiles(kTableFile, &files_in_db));
+    ASSERT_OK(GetAllDataFiles(rs::types::FileType::TableFile, &files_in_db));
     ASSERT_EQ(sfm->GetTrackedFiles(), files_in_db);
   }
   ASSERT_OK(db_->CompactRange(CompactRangeOptions(), nullptr, nullptr));
   ASSERT_OK(dbfull()->TEST_WaitForCompact());
 
   std::unordered_map<std::string, uint64_t> files_in_db;
-  ASSERT_OK(GetAllDataFiles(kTableFile, &files_in_db));
+  ASSERT_OK(GetAllDataFiles(rs::types::FileType::TableFile, &files_in_db));
   // Verify that we are tracking all sst files in dbname_
   ASSERT_EQ(sfm->GetTrackedFiles(), files_in_db);
   // Verify the total files size
@@ -455,8 +455,8 @@ TEST_F(DBSSTTest, DBWithSstFileManagerForBlobFiles) {
 
     // Verify that we are tracking all sst and blob files in dbname_
     std::unordered_map<std::string, uint64_t> files_in_db;
-    ASSERT_OK(GetAllDataFiles(kTableFile, &files_in_db));
-    ASSERT_OK(GetAllDataFiles(kBlobFile, &files_in_db));
+    ASSERT_OK(GetAllDataFiles(rs::types::FileType::TableFile, &files_in_db));
+    ASSERT_OK(GetAllDataFiles(rs::types::FileType::BlobFile, &files_in_db));
     ASSERT_EQ(sfm->GetTrackedFiles(), files_in_db);
   }
 
@@ -472,8 +472,8 @@ TEST_F(DBSSTTest, DBWithSstFileManagerForBlobFiles) {
   ASSERT_OK(dbfull()->TEST_WaitForCompact());
 
   std::unordered_map<std::string, uint64_t> files_in_db;
-  ASSERT_OK(GetAllDataFiles(kTableFile, &files_in_db));
-  ASSERT_OK(GetAllDataFiles(kBlobFile, &files_in_db));
+  ASSERT_OK(GetAllDataFiles(rs::types::FileType::TableFile, &files_in_db));
+  ASSERT_OK(GetAllDataFiles(rs::types::FileType::BlobFile, &files_in_db));
 
   // Verify that we are tracking all sst and blob files in dbname_
   ASSERT_EQ(sfm->GetTrackedFiles(), files_in_db);
@@ -596,8 +596,8 @@ TEST_F(DBSSTTest, DBWithSstFileManagerForBlobFilesWithGC) {
   {
     // Verify that we are tracking all sst and blob files in dbname_
     std::unordered_map<std::string, uint64_t> files_in_db;
-    ASSERT_OK(GetAllDataFiles(kTableFile, &files_in_db));
-    ASSERT_OK(GetAllDataFiles(kBlobFile, &files_in_db));
+    ASSERT_OK(GetAllDataFiles(rs::types::FileType::TableFile, &files_in_db));
+    ASSERT_OK(GetAllDataFiles(rs::types::FileType::BlobFile, &files_in_db));
     ASSERT_EQ(sfm->GetTrackedFiles(), files_in_db);
   }
 
@@ -642,8 +642,8 @@ TEST_F(DBSSTTest, DBWithSstFileManagerForBlobFilesWithGC) {
   {
     // Verify that we are tracking all sst and blob files in dbname_
     std::unordered_map<std::string, uint64_t> files_in_db;
-    ASSERT_OK(GetAllDataFiles(kTableFile, &files_in_db));
-    ASSERT_OK(GetAllDataFiles(kBlobFile, &files_in_db));
+    ASSERT_OK(GetAllDataFiles(rs::types::FileType::TableFile, &files_in_db));
+    ASSERT_OK(GetAllDataFiles(rs::types::FileType::BlobFile, &files_in_db));
     ASSERT_EQ(sfm->GetTrackedFiles(), files_in_db);
   }
 
@@ -1112,7 +1112,7 @@ TEST_F(DBSSTTest, DBWithMaxSpaceAllowed) {
 
   uint64_t first_file_size = 0;
   std::unordered_map<std::string, uint64_t> files_in_db;
-  ASSERT_OK(GetAllDataFiles(kTableFile, &files_in_db, &first_file_size));
+  ASSERT_OK(GetAllDataFiles(rs::types::FileType::TableFile, &files_in_db, &first_file_size));
   ASSERT_EQ(sfm->GetTotalSize(), first_file_size);
 
   // Set the maximum allowed space usage to the current total size
@@ -1145,11 +1145,11 @@ TEST_F(DBSSTTest, DBWithMaxSpaceAllowedWithBlobFiles) {
   uint64_t total_files_size = 0;
   std::unordered_map<std::string, uint64_t> files_in_db;
 
-  ASSERT_OK(GetAllDataFiles(kBlobFile, &files_in_db, &files_size));
+  ASSERT_OK(GetAllDataFiles(rs::types::FileType::BlobFile, &files_in_db, &files_size));
   // Make sure blob files are considered by SSTFileManage in size limits.
   ASSERT_GT(files_size, 0);
   total_files_size = files_size;
-  ASSERT_OK(GetAllDataFiles(kTableFile, &files_in_db, &files_size));
+  ASSERT_OK(GetAllDataFiles(rs::types::FileType::TableFile, &files_in_db, &files_size));
   total_files_size += files_size;
   ASSERT_EQ(sfm->GetTotalSize(), total_files_size);
 
@@ -1215,7 +1215,7 @@ TEST_F(DBSSTTest, CancellingCompactionsWorks) {
   ASSERT_OK(Flush());
   uint64_t total_file_size = 0;
   std::unordered_map<std::string, uint64_t> files_in_db;
-  ASSERT_OK(GetAllDataFiles(kTableFile, &files_in_db, &total_file_size));
+  ASSERT_OK(GetAllDataFiles(rs::types::FileType::TableFile, &files_in_db, &total_file_size));
   // Set the maximum allowed space usage to the current total size
   sfm->SetMaxAllowedSpaceUsage(2 * total_file_size + 1);
 
@@ -1265,7 +1265,7 @@ TEST_F(DBSSTTest, CancellingManualCompactionsWorks) {
   ASSERT_OK(Flush());
   uint64_t total_file_size = 0;
   std::unordered_map<std::string, uint64_t> files_in_db;
-  ASSERT_OK(GetAllDataFiles(kTableFile, &files_in_db, &total_file_size));
+  ASSERT_OK(GetAllDataFiles(rs::types::FileType::TableFile, &files_in_db, &total_file_size));
   // Set the maximum allowed space usage to the current total size
   sfm->SetMaxAllowedSpaceUsage(2 * total_file_size + 1);
 
@@ -1382,7 +1382,7 @@ TEST_F(DBSSTTest, DBWithMaxSpaceAllowedRandomized) {
     ASSERT_TRUE(bg_error_set);
     uint64_t total_sst_files_size = 0;
     std::unordered_map<std::string, uint64_t> files_in_db;
-    ASSERT_OK(GetAllDataFiles(kTableFile, &files_in_db, &total_sst_files_size));
+    ASSERT_OK(GetAllDataFiles(rs::types::FileType::TableFile, &files_in_db, &total_sst_files_size));
     ASSERT_GE(total_sst_files_size, limit_mb * 1024 * 1024);
     ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
   }

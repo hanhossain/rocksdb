@@ -556,7 +556,7 @@ class SstFileWriterCollector : public TablePropertiesCollector {
   }
 
   Status AddUserKey(const Slice& /*user_key*/, const Slice& /*value*/,
-                    EntryType /*type*/, SequenceNumber /*seq*/,
+                    rs::types::EntryType /*type*/, SequenceNumber /*seq*/,
                     uint64_t /*file_size*/) override {
     ++count_;
     return Status::OK();
@@ -1297,8 +1297,8 @@ TEST_F(ExternalSSTFileTest, IngestNonExistingFile) {
   int num_sst_files = 0;
   for (auto& f : files) {
     uint64_t number;
-    FileType type;
-    if (ParseFileName(f, &number, &type) && type == kTableFile) {
+    rs::types::FileType type;
+    if (ParseFileName(f, &number, &type) && type == rs::types::FileType::TableFile) {
       num_sst_files++;
     }
   }

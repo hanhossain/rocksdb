@@ -66,7 +66,7 @@ Status BuildTable(
     SequenceNumber job_snapshot, SnapshotChecker* snapshot_checker,
     bool paranoid_file_checks, InternalStats* internal_stats,
     IOStatus* io_status, const std::shared_ptr<IOTracer>& io_tracer,
-    BlobFileCreationReason blob_creation_reason,
+    rs::types::BlobFileCreationReason blob_creation_reason,
     const SeqnoToTimeMapping& seqno_to_time_mapping, EventLogger* event_logger,
     int job_id, const Env::IOPriority io_priority,
     TableProperties* table_properties, Env::WriteLifeTimeHint write_hint,
@@ -169,7 +169,7 @@ Status BuildTable(
           std::move(file), fname, file_options, ioptions.clock, io_tracer,
           ioptions.stats, ioptions.listeners,
           ioptions.file_checksum_gen_factory.get(),
-          tmp_set.Contains(FileType::kTableFile), false));
+          tmp_set.Contains(rs::types::FileType::TableFile), false));
 
       builder = NewTableBuilder(tboptions, file_writer.get());
     }
