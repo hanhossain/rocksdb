@@ -20,11 +20,4 @@ using SequenceNumber = uint64_t;
 
 const SequenceNumber kMinUnCommittedSeq = 1;  // 0 is always committed
 
-enum class TableFileCreationReason {
-  kFlush,
-  kCompaction,
-  kRecovery,
-  kMisc,
-};
-
 }  // namespace ROCKSDB_NAMESPACE

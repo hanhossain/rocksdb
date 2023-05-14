@@ -738,13 +738,13 @@ class TableFileCreationListener : public EventListener {
     }
   }
 
-  int Index(TableFileCreationReason reason) {
+  int Index(rs::types::TableFileCreationReason reason) {
     int idx;
     switch (reason) {
-      case TableFileCreationReason::kFlush:
+      case rs::types::TableFileCreationReason::Flush:
         idx = 0;
         break;
-      case TableFileCreationReason::kCompaction:
+      case rs::types::TableFileCreationReason::Compaction:
         idx = 1;
         break;
       default:

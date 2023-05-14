@@ -195,19 +195,19 @@ class KeepFilterFactory : public CompactionFilterFactory {
   bool compaction_filter_created_;
 };
 
-// This filter factory is configured with a `TableFileCreationReason`. Only
+// This filter factory is configured with a `rs::types::TableFileCreationReason`. Only
 // table files created for that reason will undergo filtering. This
 // configurability makes it useful to tests for filtering non-compaction table
 // files, such as "CompactionFilterFlush" and "CompactionFilterRecovery".
 class DeleteFilterFactory : public CompactionFilterFactory {
  public:
-  explicit DeleteFilterFactory(TableFileCreationReason reason)
+  explicit DeleteFilterFactory(rs::types::TableFileCreationReason reason)
       : reason_(reason) {}
 
   std::unique_ptr<CompactionFilter> CreateCompactionFilter(
       const CompactionFilter::Context& context) override {
     EXPECT_EQ(reason_, context.reason);
-    if (context.reason == TableFileCreationReason::kCompaction &&
+    if (context.reason == rs::types::TableFileCreationReason::Compaction &&
         !context.is_manual_compaction) {
       // Table files created by automatic compaction do not undergo filtering.
       // Presumably some tests rely on this.
@@ -217,14 +217,14 @@ class DeleteFilterFactory : public CompactionFilterFactory {
   }
 
   bool ShouldFilterTableFileCreation(
-      TableFileCreationReason reason) const override {
+      rs::types::TableFileCreationReason reason) const override {
     return reason_ == reason;
   }
 
   const char* Name() const override { return "DeleteFilterFactory"; }
 
  private:
-  const TableFileCreationReason reason_;
+  const rs::types::TableFileCreationReason reason_;
 };
 
 // Delete Filter Factory which ignores snapshots
@@ -370,7 +370,7 @@ TEST_F(DBTestCompactionFilter, CompactionFilter) {
   // create a new database with the compaction
   // filter in such a way that it deletes all keys
   options.compaction_filter_factory = std::make_shared<DeleteFilterFactory>(
-      TableFileCreationReason::kCompaction);
+      rs::types::TableFileCreationReason::Compaction);
   options.create_if_missing = true;
   DestroyAndReopen(options);
   CreateAndReopenWithCF({"pikachu"}, options);
@@ -441,7 +441,7 @@ TEST_F(DBTestCompactionFilter, CompactionFilter) {
 TEST_F(DBTestCompactionFilter, CompactionFilterDeletesAll) {
   Options options = CurrentOptions();
   options.compaction_filter_factory = std::make_shared<DeleteFilterFactory>(
-      TableFileCreationReason::kCompaction);
+      rs::types::TableFileCreationReason::Compaction);
   options.disable_auto_compactions = true;
   options.create_if_missing = true;
   DestroyAndReopen(options);
@@ -474,7 +474,7 @@ TEST_F(DBTestCompactionFilter, CompactionFilterFlush) {
   // by flush.
   Options options = CurrentOptions();
   options.compaction_filter_factory =
-      std::make_shared<DeleteFilterFactory>(TableFileCreationReason::kFlush);
+      std::make_shared<DeleteFilterFactory>(rs::types::TableFileCreationReason::Flush);
   options.merge_operator = MergeOperators::CreateStringAppendOperator();
   Reopen(options);
 
@@ -503,7 +503,7 @@ TEST_F(DBTestCompactionFilter, CompactionFilterRecovery) {
   // by recovery.
   Options options = CurrentOptions();
   options.compaction_filter_factory =
-      std::make_shared<DeleteFilterFactory>(TableFileCreationReason::kRecovery);
+      std::make_shared<DeleteFilterFactory>(rs::types::TableFileCreationReason::Recovery);
   options.merge_operator = MergeOperators::CreateStringAppendOperator();
   Reopen(options);
 
@@ -915,11 +915,11 @@ TEST_F(DBTestCompactionFilter, IgnoreSnapshotsFalse) {
 
 class TestNotSupportedFilterFactory : public CompactionFilterFactory {
  public:
-  explicit TestNotSupportedFilterFactory(TableFileCreationReason reason)
+  explicit TestNotSupportedFilterFactory(rs::types::TableFileCreationReason reason)
       : reason_(reason) {}
 
   bool ShouldFilterTableFileCreation(
-      TableFileCreationReason reason) const override {
+      rs::types::TableFileCreationReason reason) const override {
     return reason_ == reason;
   }
 
@@ -931,14 +931,14 @@ class TestNotSupportedFilterFactory : public CompactionFilterFactory {
   const char* Name() const override { return "TestNotSupportedFilterFactory"; }
 
  private:
-  const TableFileCreationReason reason_;
+  const rs::types::TableFileCreationReason reason_;
 };
 
 TEST_F(DBTestCompactionFilter, IgnoreSnapshotsFalseDuringFlush) {
   Options options = CurrentOptions();
   options.compaction_filter_factory =
       std::make_shared<TestNotSupportedFilterFactory>(
-          TableFileCreationReason::kFlush);
+          rs::types::TableFileCreationReason::Flush);
   Reopen(options);
 
   ASSERT_OK(Put("a", "v10"));
@@ -949,7 +949,7 @@ TEST_F(DBTestCompactionFilter, IgnoreSnapshotsFalseRecovery) {
   Options options = CurrentOptions();
   options.compaction_filter_factory =
       std::make_shared<TestNotSupportedFilterFactory>(
-          TableFileCreationReason::kRecovery);
+          rs::types::TableFileCreationReason::Recovery);
   Reopen(options);
 
   ASSERT_OK(Put("a", "v10"));

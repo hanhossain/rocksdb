@@ -692,7 +692,7 @@ std::unique_ptr<CompactionFilter> Compaction::CreateCompactionFilter() const {
 
   if (!cfd_->ioptions()
            ->compaction_filter_factory->ShouldFilterTableFileCreation(
-               TableFileCreationReason::kCompaction)) {
+               rs::types::TableFileCreationReason::Compaction)) {
     return nullptr;
   }
 
@@ -700,7 +700,7 @@ std::unique_ptr<CompactionFilter> Compaction::CreateCompactionFilter() const {
   context.is_full_compaction = is_full_compaction_;
   context.is_manual_compaction = is_manual_compaction_;
   context.column_family_id = cfd_->GetID();
-  context.reason = TableFileCreationReason::kCompaction;
+  context.reason = rs::types::TableFileCreationReason::Compaction;
   return cfd_->ioptions()->compaction_filter_factory->CreateCompactionFilter(
       context);
 }

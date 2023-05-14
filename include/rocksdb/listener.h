@@ -54,7 +54,7 @@ struct FileCreationBriefInfo {
 
 struct TableFileCreationBriefInfo : public FileCreationBriefInfo {
   // reason of creating the table.
-  TableFileCreationReason reason;
+  rs::types::TableFileCreationReason reason;
 };
 
 struct TableFileCreationInfo : public TableFileCreationBriefInfo {

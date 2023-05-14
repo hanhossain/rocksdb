@@ -1,5 +1,12 @@
 #[cxx::bridge(namespace = "rs::types")]
 mod ffi {
+    enum TableFileCreationReason {
+        Flush,
+        Compaction,
+        Recovery,
+        Misc,
+    }
+
     enum BlobFileCreationReason {
         Flush,
         Compaction,

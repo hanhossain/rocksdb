@@ -329,7 +329,7 @@ Status SstFileWriter::Open(const std::string& file_path) {
       r->ioptions, r->mutable_cf_options, r->internal_comparator,
       &int_tbl_prop_collector_factories, compression_type, compression_opts,
       cf_id, r->column_family_name, unknown_level, false /* is_bottommost */,
-      TableFileCreationReason::kMisc, 0 /* oldest_key_time */,
+      rs::types::TableFileCreationReason::Misc, 0 /* oldest_key_time */,
       0 /* file_creation_time */, "SST Writer" /* db_id */, r->db_session_id,
       0 /* target_file_size */, r->next_file_number);
   // External SST files used to each get a unique session id. Now for
