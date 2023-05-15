@@ -392,7 +392,7 @@ Status CompositeEnv::NewDirectory(const std::string& name,
 namespace {
 static std::unordered_map<std::string, OptionTypeInfo> env_wrapper_type_info = {
     {"target",
-     OptionTypeInfo(0, rs::options_type::OptionType::Unknown, OptionVerificationType::kByName,
+     OptionTypeInfo(0, rs::options_type::OptionType::Unknown, rs::options_type::OptionVerificationType::ByName,
                     OptionTypeFlags::kDontSerialize)
          .SetParseFunc([](const ConfigOptions& opts,
                           const std::string& /*name*/, const std::string& value,
@@ -437,14 +437,14 @@ static std::unordered_map<std::string, OptionTypeInfo>
     composite_fs_wrapper_type_info = {
         {"file_system",
          OptionTypeInfo::AsCustomSharedPtr<FileSystem>(
-             0, OptionVerificationType::kByName, OptionTypeFlags::kNone)},
+             0, rs::options_type::OptionVerificationType::ByName, OptionTypeFlags::kNone)},
 };
 
 static std::unordered_map<std::string, OptionTypeInfo>
     composite_clock_wrapper_type_info = {
         {"clock",
          OptionTypeInfo::AsCustomSharedPtr<SystemClock>(
-             0, OptionVerificationType::kByName, OptionTypeFlags::kNone)},
+             0, rs::options_type::OptionVerificationType::ByName, OptionTypeFlags::kNone)},
 };
 
 }  // namespace

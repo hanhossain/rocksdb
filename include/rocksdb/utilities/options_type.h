@@ -28,24 +28,6 @@ class OptionTypeInfo;
 struct ColumnFamilyOptions;
 struct DBOptions;
 
-enum class OptionVerificationType {
-  kNormal,
-  kByName,               // The option is pointer typed so we can only verify
-                         // based on it's name.
-  kByNameAllowNull,      // Same as kByName, but it also allows the case
-                         // where one of them is a nullptr.
-  kByNameAllowFromNull,  // Same as kByName, but it also allows the case
-                         // where the old option is nullptr.
-  kDeprecated,           // The option is no longer used in rocksdb. The RocksDB
-                         // OptionsParser will still accept this option if it
-                         // happen to exists in some Options file.  However,
-                         // the parser will not include it in serialization
-                         // and verification processes.
-  kAlias,                // This option represents is a name/shortcut for
-                         // another option and should not be written or verified
-                         // independently
-};
-
 // A set of modifier flags used to alter how an option is evaluated or
 // processed. These flags can be combined together (e.g. kMutable | kShared).
 // The kCompare flags can be used to control if/when options are compared.
@@ -215,11 +197,11 @@ class OptionTypeInfo {
         serialize_func_(nullptr),
         equals_func_(nullptr),
         type_(type),
-        verification_(OptionVerificationType::kNormal),
+        verification_(rs::options_type::OptionVerificationType::Normal),
         flags_(OptionTypeFlags::kNone) {}
 
   OptionTypeInfo(int offset, rs::options_type::OptionType type,
-                 OptionVerificationType verification, OptionTypeFlags flags)
+                 rs::options_type::OptionVerificationType verification, OptionTypeFlags flags)
       : offset_(offset),
         parse_func_(nullptr),
         serialize_func_(nullptr),
@@ -229,7 +211,7 @@ class OptionTypeInfo {
         flags_(flags) {}
 
   OptionTypeInfo(int offset, rs::options_type::OptionType type,
-                 OptionVerificationType verification, OptionTypeFlags flags,
+                 rs::options_type::OptionVerificationType verification, OptionTypeFlags flags,
                  const ParseFunc& parse_func)
       : offset_(offset),
         parse_func_(parse_func),
@@ -240,7 +222,7 @@ class OptionTypeInfo {
         flags_(flags) {}
 
   OptionTypeInfo(int offset, rs::options_type::OptionType type,
-                 OptionVerificationType verification, OptionTypeFlags flags,
+                 rs::options_type::OptionVerificationType verification, OptionTypeFlags flags,
                  const ParseFunc& parse_func,
                  const SerializeFunc& serialize_func,
                  const EqualsFunc& equals_func)
@@ -268,7 +250,7 @@ class OptionTypeInfo {
       int offset, const std::unordered_map<std::string, T>* const map,
       OptionTypeFlags flags = OptionTypeFlags::kNone) {
     OptionTypeInfo info(offset, rs::options_type::OptionType::Enum,
-                        OptionVerificationType::kNormal, flags);
+                        rs::options_type::OptionVerificationType::Normal, flags);
     info.SetParseFunc(
         // Uses the map argument to convert the input string into
         // its corresponding enum value.  If value is found in the map,
@@ -338,7 +320,7 @@ class OptionTypeInfo {
   static OptionTypeInfo Struct(
       const std::string& struct_name,
       const std::unordered_map<std::string, OptionTypeInfo>* struct_map,
-      int offset, OptionVerificationType verification, OptionTypeFlags flags) {
+      int offset, rs::options_type::OptionVerificationType verification, OptionTypeFlags flags) {
     OptionTypeInfo info(offset, rs::options_type::OptionType::Struct, verification, flags);
     info.SetParseFunc(
         // Parses the struct and updates the fields at addr
@@ -368,7 +350,7 @@ class OptionTypeInfo {
   static OptionTypeInfo Struct(
       const std::string& struct_name,
       const std::unordered_map<std::string, OptionTypeInfo>* struct_map,
-      int offset, OptionVerificationType verification, OptionTypeFlags flags,
+      int offset, rs::options_type::OptionVerificationType verification, OptionTypeFlags flags,
       const ParseFunc& parse_func) {
     OptionTypeInfo info(
         Struct(struct_name, struct_map, offset, verification, flags));
@@ -376,7 +358,7 @@ class OptionTypeInfo {
   }
 
   template <typename T, size_t kSize>
-  static OptionTypeInfo Array(int _offset, OptionVerificationType _verification,
+  static OptionTypeInfo Array(int _offset, rs::options_type::OptionVerificationType _verification,
                               OptionTypeFlags _flags,
                               const OptionTypeInfo& elem_info,
                               char separator = ':') {
@@ -409,7 +391,7 @@ class OptionTypeInfo {
 
   template <typename T>
   static OptionTypeInfo Vector(int _offset,
-                               OptionVerificationType _verification,
+                               rs::options_type::OptionVerificationType _verification,
                                OptionTypeFlags _flags,
                                const OptionTypeInfo& elem_info,
                                char separator = ':') {
@@ -448,7 +430,7 @@ class OptionTypeInfo {
   // @param _efunc Optional function for comparing this option
   template <typename T>
   static OptionTypeInfo AsCustomSharedPtr(int offset,
-                                          OptionVerificationType ovt,
+                                          rs::options_type::OptionVerificationType ovt,
                                           OptionTypeFlags flags) {
     OptionTypeInfo info(offset, rs::options_type::OptionType::Customizable, ovt,
                         flags | OptionTypeFlags::kShared);
@@ -467,7 +449,7 @@ class OptionTypeInfo {
 
   template <typename T>
   static OptionTypeInfo AsCustomSharedPtr(int offset,
-                                          OptionVerificationType ovt,
+                                          rs::options_type::OptionVerificationType ovt,
                                           OptionTypeFlags flags,
                                           const SerializeFunc& serialize_func,
                                           const EqualsFunc& equals_func) {
@@ -488,7 +470,7 @@ class OptionTypeInfo {
   // @param _efunc Optional function for comparing this option
   template <typename T>
   static OptionTypeInfo AsCustomUniquePtr(int offset,
-                                          OptionVerificationType ovt,
+                                          rs::options_type::OptionVerificationType ovt,
                                           OptionTypeFlags flags) {
     OptionTypeInfo info(offset, rs::options_type::OptionType::Customizable, ovt,
                         flags | OptionTypeFlags::kUnique);
@@ -507,7 +489,7 @@ class OptionTypeInfo {
 
   template <typename T>
   static OptionTypeInfo AsCustomUniquePtr(int offset,
-                                          OptionVerificationType ovt,
+                                          rs::options_type::OptionVerificationType ovt,
                                           OptionTypeFlags flags,
                                           const SerializeFunc& serialize_func,
                                           const EqualsFunc& equals_func) {
@@ -527,7 +509,7 @@ class OptionTypeInfo {
   // @param _sfunc Optional function for serializing this option
   // @param _efunc Optional function for comparing this option
   template <typename T>
-  static OptionTypeInfo AsCustomRawPtr(int offset, OptionVerificationType ovt,
+  static OptionTypeInfo AsCustomRawPtr(int offset, rs::options_type::OptionVerificationType ovt,
                                        OptionTypeFlags flags) {
     OptionTypeInfo info(offset, rs::options_type::OptionType::Customizable, ovt,
                         flags | OptionTypeFlags::kRawPointer);
@@ -545,7 +527,7 @@ class OptionTypeInfo {
   }
 
   template <typename T>
-  static OptionTypeInfo AsCustomRawPtr(int offset, OptionVerificationType ovt,
+  static OptionTypeInfo AsCustomRawPtr(int offset, rs::options_type::OptionVerificationType ovt,
                                        OptionTypeFlags flags,
                                        const SerializeFunc& serialize_func,
                                        const EqualsFunc& equals_func) {
@@ -591,15 +573,15 @@ class OptionTypeInfo {
   bool IsMutable() const { return IsEnabled(OptionTypeFlags::kMutable); }
 
   bool IsDeprecated() const {
-    return IsEnabled(OptionVerificationType::kDeprecated);
+    return IsEnabled(rs::options_type::OptionVerificationType::Deprecated);
   }
 
   // Returns true if the option is marked as an Alias.
   // Aliases are valid options that are parsed but are not converted to strings
   // or compared.
-  bool IsAlias() const { return IsEnabled(OptionVerificationType::kAlias); }
+  bool IsAlias() const { return IsEnabled(rs::options_type::OptionVerificationType::Alias); }
 
-  bool IsEnabled(OptionVerificationType ovf) const {
+  bool IsEnabled(rs::options_type::OptionVerificationType ovf) const {
     return verification_ == ovf;
   }
 
@@ -656,8 +638,8 @@ class OptionTypeInfo {
   // or if the flags specify allow null.
   bool CanBeNull() const {
     return (IsEnabled(OptionTypeFlags::kAllowNull) ||
-            IsEnabled(OptionVerificationType::kByNameAllowNull) ||
-            IsEnabled(OptionVerificationType::kByNameAllowFromNull));
+            IsEnabled(rs::options_type::OptionVerificationType::ByNameAllowNull) ||
+            IsEnabled(rs::options_type::OptionVerificationType::ByNameAllowFromNull));
   }
 
   bool IsSharedPtr() const { return IsEnabled(OptionTypeFlags::kShared); }
@@ -667,9 +649,9 @@ class OptionTypeInfo {
   bool IsRawPtr() const { return IsEnabled(OptionTypeFlags::kRawPointer); }
 
   bool IsByName() const {
-    return (verification_ == OptionVerificationType::kByName ||
-            verification_ == OptionVerificationType::kByNameAllowNull ||
-            verification_ == OptionVerificationType::kByNameAllowFromNull);
+    return (verification_ == rs::options_type::OptionVerificationType::ByName ||
+            verification_ == rs::options_type::OptionVerificationType::ByNameAllowNull ||
+            verification_ == rs::options_type::OptionVerificationType::ByNameAllowFromNull);
   }
 
   bool IsStruct() const { return (type_ == rs::options_type::OptionType::Struct); }
@@ -908,7 +890,7 @@ class OptionTypeInfo {
   PrepareFunc prepare_func_;
   ValidateFunc validate_func_;
   rs::options_type::OptionType type_;
-  OptionVerificationType verification_;
+  rs::options_type::OptionVerificationType verification_;
   OptionTypeFlags flags_;
 };
 

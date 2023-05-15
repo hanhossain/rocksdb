@@ -1346,11 +1346,11 @@ bool OptionTypeInfo::AreEqualByName(const ConfigOptions& config_options,
     return false;
   } else if (!Serialize(config_options, opt_name, opt_ptr, &this_value).ok()) {
     return false;
-  } else if (IsEnabled(OptionVerificationType::kByNameAllowFromNull)) {
+  } else if (IsEnabled(rs::options_type::OptionVerificationType::ByNameAllowFromNull)) {
     if (that_value == kNullptrString) {
       return true;
     }
-  } else if (IsEnabled(OptionVerificationType::kByNameAllowNull)) {
+  } else if (IsEnabled(rs::options_type::OptionVerificationType::ByNameAllowNull)) {
     if (that_value == kNullptrString) {
       return true;
     }

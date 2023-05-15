@@ -1166,7 +1166,7 @@ namespace {
 static std::unordered_map<std::string, OptionTypeInfo> sc_wrapper_type_info = {
     {"target",
      OptionTypeInfo::AsCustomSharedPtr<SystemClock>(
-         0, OptionVerificationType::kByName, OptionTypeFlags::kDontSerialize)},
+         0, rs::options_type::OptionVerificationType::ByName, OptionTypeFlags::kDontSerialize)},
 };
 
 }  // namespace

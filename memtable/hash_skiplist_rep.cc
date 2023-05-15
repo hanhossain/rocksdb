@@ -335,14 +335,14 @@ struct HashSkipListRepOptions {
 static std::unordered_map<std::string, OptionTypeInfo> hash_skiplist_info = {
     {"bucket_count",
      {offsetof(struct HashSkipListRepOptions, bucket_count), rs::options_type::OptionType::SizeT,
-      OptionVerificationType::kNormal, OptionTypeFlags::kNone}},
+      rs::options_type::OptionVerificationType::Normal, OptionTypeFlags::kNone}},
     {"skiplist_height",
      {offsetof(struct HashSkipListRepOptions, skiplist_height),
-      rs::options_type::OptionType::Int32T, OptionVerificationType::kNormal,
+      rs::options_type::OptionType::Int32T, rs::options_type::OptionVerificationType::Normal,
       OptionTypeFlags::kNone}},
     {"branching_factor",
      {offsetof(struct HashSkipListRepOptions, skiplist_branching_factor),
-      rs::options_type::OptionType::Int32T, OptionVerificationType::kNormal,
+      rs::options_type::OptionType::Int32T, rs::options_type::OptionVerificationType::Normal,
       OptionTypeFlags::kNone}},
 };
 

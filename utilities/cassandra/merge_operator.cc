@@ -21,11 +21,11 @@ static std::unordered_map<std::string, OptionTypeInfo>
     merge_operator_options_info = {
         {"gc_grace_period_in_seconds",
          {offsetof(struct CassandraOptions, gc_grace_period_in_seconds),
-          rs::options_type::OptionType::UInt32T, OptionVerificationType::kNormal,
+          rs::options_type::OptionType::UInt32T, rs::options_type::OptionVerificationType::Normal,
           OptionTypeFlags::kNone}},
         {"operands_limit",
          {offsetof(struct CassandraOptions, operands_limit), rs::options_type::OptionType::SizeT,
-          OptionVerificationType::kNormal, OptionTypeFlags::kNone}},
+          rs::options_type::OptionVerificationType::Normal, OptionTypeFlags::kNone}},
 };
 
 CassandraValueMergeOperator::CassandraValueMergeOperator(

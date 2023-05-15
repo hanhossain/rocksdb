@@ -19,11 +19,11 @@ static std::unordered_map<std::string, OptionTypeInfo>
     cassandra_filter_type_info = {
         {"purge_ttl_on_expiration",
          {offsetof(struct CassandraOptions, purge_ttl_on_expiration),
-          rs::options_type::OptionType::Boolean, OptionVerificationType::kNormal,
+          rs::options_type::OptionType::Boolean, rs::options_type::OptionVerificationType::Normal,
           OptionTypeFlags::kNone}},
         {"gc_grace_period_in_seconds",
          {offsetof(struct CassandraOptions, gc_grace_period_in_seconds),
-          rs::options_type::OptionType::UInt32T, OptionVerificationType::kNormal,
+          rs::options_type::OptionType::UInt32T, rs::options_type::OptionVerificationType::Normal,
           OptionTypeFlags::kNone}},
 };
 

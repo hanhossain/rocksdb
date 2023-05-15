@@ -47,14 +47,14 @@ class StringLogger : public Logger {
 };
 static std::unordered_map<std::string, OptionTypeInfo> struct_option_info = {
     {"struct", OptionTypeInfo::Struct("struct", &simple_option_info, 0,
-                                      OptionVerificationType::kNormal,
+                                      rs::options_type::OptionVerificationType::Normal,
                                       OptionTypeFlags::kMutable)},
 };
 
 static std::unordered_map<std::string, OptionTypeInfo> imm_struct_option_info =
     {
         {"struct", OptionTypeInfo::Struct("struct", &simple_option_info, 0,
-                                          OptionVerificationType::kNormal,
+                                          rs::options_type::OptionVerificationType::Normal,
                                           OptionTypeFlags::kNone)},
 };
 
@@ -209,18 +209,18 @@ TEST_F(ConfigurableTest, InvalidOptionTest) {
 
 static std::unordered_map<std::string, OptionTypeInfo> validated_option_info = {
     {"validated",
-     {0, rs::options_type::OptionType::Boolean, OptionVerificationType::kNormal,
+     {0, rs::options_type::OptionType::Boolean, rs::options_type::OptionVerificationType::Normal,
       OptionTypeFlags::kNone}},
 };
 static std::unordered_map<std::string, OptionTypeInfo> prepared_option_info = {
     {"prepared",
-     {0, rs::options_type::OptionType::Int, OptionVerificationType::kNormal,
+     {0, rs::options_type::OptionType::Int, rs::options_type::OptionVerificationType::Normal,
       OptionTypeFlags::kMutable}},
 };
 static std::unordered_map<std::string, OptionTypeInfo>
     dont_prepare_option_info = {
         {"unique",
-         {0, rs::options_type::OptionType::Configurable, OptionVerificationType::kNormal,
+         {0, rs::options_type::OptionType::Configurable, rs::options_type::OptionVerificationType::Normal,
           (OptionTypeFlags::kUnique | OptionTypeFlags::kDontPrepare)}},
 
 };
@@ -353,7 +353,7 @@ TEST_F(ConfigurableTest, CopyObjectTest) {
 TEST_F(ConfigurableTest, MutableOptionsTest) {
   static std::unordered_map<std::string, OptionTypeInfo> imm_option_info = {
       {"imm", OptionTypeInfo::Struct("imm", &simple_option_info, 0,
-                                     OptionVerificationType::kNormal,
+                                     rs::options_type::OptionVerificationType::Normal,
                                      OptionTypeFlags::kNone)},
   };
 
@@ -416,7 +416,7 @@ TEST_F(ConfigurableTest, DeprecatedOptionsTest) {
       deprecated_option_info = {
           {"deprecated",
            {offsetof(struct TestOptions, b), rs::options_type::OptionType::Boolean,
-            OptionVerificationType::kDeprecated, OptionTypeFlags::kNone}}};
+            rs::options_type::OptionVerificationType::Deprecated, OptionTypeFlags::kNone}}};
   std::unique_ptr<Configurable> orig;
   orig.reset(SimpleConfigurable::Create("simple", TestConfigMode::kDefaultMode,
                                         &deprecated_option_info));
@@ -433,10 +433,10 @@ TEST_F(ConfigurableTest, AliasOptionsTest) {
   static std::unordered_map<std::string, OptionTypeInfo> alias_option_info = {
       {"bool",
        {offsetof(struct TestOptions, b), rs::options_type::OptionType::Boolean,
-        OptionVerificationType::kNormal, OptionTypeFlags::kNone}},
+        rs::options_type::OptionVerificationType::Normal, OptionTypeFlags::kNone}},
       {"alias",
        {offsetof(struct TestOptions, b), rs::options_type::OptionType::Boolean,
-        OptionVerificationType::kAlias, OptionTypeFlags::kNone, 0}}};
+        rs::options_type::OptionVerificationType::Alias, OptionTypeFlags::kNone, 0}}};
   std::unique_ptr<Configurable> orig;
   orig.reset(SimpleConfigurable::Create("simple", TestConfigMode::kDefaultMode,
                                         &alias_option_info));
@@ -597,7 +597,7 @@ static std::unordered_map<std::string, OptionTypeInfo> noserialize_option_info =
     {
         {"int",
          {offsetof(struct TestOptions, i), rs::options_type::OptionType::Int,
-          OptionVerificationType::kNormal, OptionTypeFlags::kDontSerialize}},
+          rs::options_type::OptionVerificationType::Normal, OptionTypeFlags::kDontSerialize}},
 };
 
 TEST_F(ConfigurableTest, TestNoSerialize) {
@@ -615,12 +615,12 @@ TEST_F(ConfigurableTest, TestNoCompare) {
   std::unordered_map<std::string, OptionTypeInfo> nocomp_option_info = {
       {"int",
        {offsetof(struct TestOptions, i), rs::options_type::OptionType::Int,
-        OptionVerificationType::kNormal, OptionTypeFlags::kCompareNever}},
+        rs::options_type::OptionVerificationType::Normal, OptionTypeFlags::kCompareNever}},
   };
   std::unordered_map<std::string, OptionTypeInfo> normal_option_info = {
       {"int",
        {offsetof(struct TestOptions, i), rs::options_type::OptionType::Int,
-        OptionVerificationType::kNormal, OptionTypeFlags::kNone}},
+        rs::options_type::OptionVerificationType::Normal, OptionTypeFlags::kNone}},
   };
 
   std::unique_ptr<Configurable> base, copy;
