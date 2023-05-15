@@ -850,23 +850,23 @@ struct HashLinkListRepOptions {
 
 static std::unordered_map<std::string, OptionTypeInfo> hash_linklist_info = {
     {"bucket_count",
-     {offsetof(struct HashLinkListRepOptions, bucket_count), OptionType::kSizeT,
+     {offsetof(struct HashLinkListRepOptions, bucket_count), rs::options_type::OptionType::SizeT,
       OptionVerificationType::kNormal, OptionTypeFlags::kNone}},
     {"threshold",
      {offsetof(struct HashLinkListRepOptions, threshold_use_skiplist),
-      OptionType::kUInt32T, OptionVerificationType::kNormal,
+      rs::options_type::OptionType::UInt32T, OptionVerificationType::kNormal,
       OptionTypeFlags::kNone}},
     {"huge_page_size",
      {offsetof(struct HashLinkListRepOptions, huge_page_tlb_size),
-      OptionType::kSizeT, OptionVerificationType::kNormal,
+      rs::options_type::OptionType::SizeT, OptionVerificationType::kNormal,
       OptionTypeFlags::kNone}},
     {"logging_threshold",
      {offsetof(struct HashLinkListRepOptions, bucket_entries_logging_threshold),
-      OptionType::kInt, OptionVerificationType::kNormal,
+      rs::options_type::OptionType::Int, OptionVerificationType::kNormal,
       OptionTypeFlags::kNone}},
     {"log_when_flash",
      {offsetof(struct HashLinkListRepOptions, if_log_bucket_dist_when_flash),
-      OptionType::kBoolean, OptionVerificationType::kNormal,
+      rs::options_type::OptionType::Boolean, OptionVerificationType::kNormal,
       OptionTypeFlags::kNone}},
 };
 

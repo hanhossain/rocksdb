@@ -164,7 +164,7 @@ class ConfigurableHelper {
   // This method traverses the types in the input options vector.  If an entry
   // matching name is found, that entry, opt_name, and pointer are returned.
   // @param options  The vector of options to search through
-  // @param name     The name of the option to search for in the OptionType map
+  // @param name     The name of the option to search for in the rs::options_type::OptionType map
   // @param opt_name If the name was found, this value is set to the option name
   //                 associated with the input name/type.
   // @param opt_ptr  If the name was found, this value is set to the option

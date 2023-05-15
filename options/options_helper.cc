@@ -396,69 +396,69 @@ std::vector<ChecksumType> GetSupportedChecksums() {
                                    checksum_types.end());
 }
 
-static bool ParseOptionHelper(void* opt_address, const OptionType& opt_type,
+static bool ParseOptionHelper(void* opt_address, const rs::options_type::OptionType& opt_type,
                               const std::string& value) {
   switch (opt_type) {
-    case OptionType::kBoolean:
+    case rs::options_type::OptionType::Boolean:
       *static_cast<bool*>(opt_address) = ParseBoolean("", value);
       break;
-    case OptionType::kInt:
+    case rs::options_type::OptionType::Int:
       *static_cast<int*>(opt_address) = ParseInt(value);
       break;
-    case OptionType::kInt32T:
+    case rs::options_type::OptionType::Int32T:
       *static_cast<int32_t*>(opt_address) = ParseInt32(value);
       break;
-    case OptionType::kInt64T:
+    case rs::options_type::OptionType::Int64T:
       PutUnaligned(static_cast<int64_t*>(opt_address), ParseInt64(value));
       break;
-    case OptionType::kUInt:
+    case rs::options_type::OptionType::UInt:
       *static_cast<unsigned int*>(opt_address) = ParseUint32(value);
       break;
-    case OptionType::kUInt8T:
+    case rs::options_type::OptionType::UInt8T:
       *static_cast<uint8_t*>(opt_address) = ParseUint8(value);
       break;
-    case OptionType::kUInt32T:
+    case rs::options_type::OptionType::UInt32T:
       *static_cast<uint32_t*>(opt_address) = ParseUint32(value);
       break;
-    case OptionType::kUInt64T:
+    case rs::options_type::OptionType::UInt64T:
       PutUnaligned(static_cast<uint64_t*>(opt_address), ParseUint64(value));
       break;
-    case OptionType::kSizeT:
+    case rs::options_type::OptionType::SizeT:
       PutUnaligned(static_cast<size_t*>(opt_address), ParseSizeT(value));
       break;
-    case OptionType::kString:
+    case rs::options_type::OptionType::String:
       *static_cast<std::string*>(opt_address) = value;
       break;
-    case OptionType::kDouble:
+    case rs::options_type::OptionType::Double:
       *static_cast<double*>(opt_address) = ParseDouble(value);
       break;
-    case OptionType::kCompactionStyle:
+    case rs::options_type::OptionType::CompactionStyle:
       return ParseEnum<rs::advanced_options::CompactionStyle>(
           compaction_style_string_map, value,
           static_cast<rs::advanced_options::CompactionStyle*>(opt_address));
-    case OptionType::kCompactionPri:
+    case rs::options_type::OptionType::CompactionPri:
       return ParseEnum<rs::advanced_options::CompactionPri>(compaction_pri_string_map, value,
                                       static_cast<rs::advanced_options::CompactionPri*>(opt_address));
-    case OptionType::kCompressionType:
+    case rs::options_type::OptionType::CompressionType:
       return ParseEnum<CompressionType>(
           compression_type_string_map, value,
           static_cast<CompressionType*>(opt_address));
-    case OptionType::kChecksumType:
+    case rs::options_type::OptionType::ChecksumType:
       return ParseEnum<ChecksumType>(checksum_type_string_map, value,
                                      static_cast<ChecksumType*>(opt_address));
-    case OptionType::kEncodingType:
+    case rs::options_type::OptionType::EncodingType:
       return ParseEnum<EncodingType>(encoding_type_string_map, value,
                                      static_cast<EncodingType*>(opt_address));
-    case OptionType::kCompactionStopStyle:
+    case rs::options_type::OptionType::CompactionStopStyle:
       return ParseEnum<CompactionStopStyle>(
           compaction_stop_style_string_map, value,
           static_cast<CompactionStopStyle*>(opt_address));
-    case OptionType::kEncodedString: {
+    case rs::options_type::OptionType::EncodedString: {
       std::string* output_addr = static_cast<std::string*>(opt_address);
       (Slice(value)).DecodeHex(output_addr);
       break;
     }
-    case OptionType::kTemperature: {
+    case rs::options_type::OptionType::Temperature: {
       return ParseEnum<rs::advanced_options::Temperature>(temperature_string_map, value,
                                     static_cast<rs::advanced_options::Temperature*>(opt_address));
     }
@@ -469,87 +469,87 @@ static bool ParseOptionHelper(void* opt_address, const OptionType& opt_type,
 }
 
 bool SerializeSingleOptionHelper(const void* opt_address,
-                                 const OptionType opt_type,
+                                 const rs::options_type::OptionType opt_type,
                                  std::string* value) {
   assert(value);
   switch (opt_type) {
-    case OptionType::kBoolean:
+    case rs::options_type::OptionType::Boolean:
       *value = *(static_cast<const bool*>(opt_address)) ? "true" : "false";
       break;
-    case OptionType::kInt:
+    case rs::options_type::OptionType::Int:
       *value = std::to_string(*(static_cast<const int*>(opt_address)));
       break;
-    case OptionType::kInt32T:
+    case rs::options_type::OptionType::Int32T:
       *value = std::to_string(*(static_cast<const int32_t*>(opt_address)));
       break;
-    case OptionType::kInt64T:
+    case rs::options_type::OptionType::Int64T:
       {
         int64_t v;
         GetUnaligned(static_cast<const int64_t*>(opt_address), &v);
         *value = std::to_string(v);
       }
       break;
-    case OptionType::kUInt:
+    case rs::options_type::OptionType::UInt:
       *value = std::to_string(*(static_cast<const unsigned int*>(opt_address)));
       break;
-    case OptionType::kUInt8T:
+    case rs::options_type::OptionType::UInt8T:
       *value = std::to_string(*(static_cast<const uint8_t*>(opt_address)));
       break;
-    case OptionType::kUInt32T:
+    case rs::options_type::OptionType::UInt32T:
       *value = std::to_string(*(static_cast<const uint32_t*>(opt_address)));
       break;
-    case OptionType::kUInt64T:
+    case rs::options_type::OptionType::UInt64T:
       {
         uint64_t v;
         GetUnaligned(static_cast<const uint64_t*>(opt_address), &v);
         *value = std::to_string(v);
       }
       break;
-    case OptionType::kSizeT:
+    case rs::options_type::OptionType::SizeT:
       {
         size_t v;
         GetUnaligned(static_cast<const size_t*>(opt_address), &v);
         *value = std::to_string(v);
       }
       break;
-    case OptionType::kDouble:
+    case rs::options_type::OptionType::Double:
       *value = std::to_string(*(static_cast<const double*>(opt_address)));
       break;
-    case OptionType::kString:
+    case rs::options_type::OptionType::String:
       *value =
           EscapeOptionString(*(static_cast<const std::string*>(opt_address)));
       break;
-    case OptionType::kCompactionStyle:
+    case rs::options_type::OptionType::CompactionStyle:
       return SerializeEnum<rs::advanced_options::CompactionStyle>(
           compaction_style_string_map,
           *(static_cast<const rs::advanced_options::CompactionStyle*>(opt_address)), value);
-    case OptionType::kCompactionPri:
+    case rs::options_type::OptionType::CompactionPri:
       return SerializeEnum<rs::advanced_options::CompactionPri>(
           compaction_pri_string_map,
           *(static_cast<const rs::advanced_options::CompactionPri*>(opt_address)), value);
-    case OptionType::kCompressionType:
+    case rs::options_type::OptionType::CompressionType:
       return SerializeEnum<CompressionType>(
           compression_type_string_map,
           *(static_cast<const CompressionType*>(opt_address)), value);
       break;
-    case OptionType::kChecksumType:
+    case rs::options_type::OptionType::ChecksumType:
       return SerializeEnum<ChecksumType>(
           checksum_type_string_map,
           *static_cast<const ChecksumType*>(opt_address), value);
-    case OptionType::kEncodingType:
+    case rs::options_type::OptionType::EncodingType:
       return SerializeEnum<EncodingType>(
           encoding_type_string_map,
           *static_cast<const EncodingType*>(opt_address), value);
-    case OptionType::kCompactionStopStyle:
+    case rs::options_type::OptionType::CompactionStopStyle:
       return SerializeEnum<CompactionStopStyle>(
           compaction_stop_style_string_map,
           *static_cast<const CompactionStopStyle*>(opt_address), value);
-    case OptionType::kEncodedString: {
+    case rs::options_type::OptionType::EncodedString: {
       const auto* ptr = static_cast<const std::string*>(opt_address);
       *value = (Slice(*ptr)).ToString(true);
       break;
     }
-    case OptionType::kTemperature: {
+    case rs::options_type::OptionType::Temperature: {
       return SerializeEnum<rs::advanced_options::Temperature>(
           temperature_string_map, *static_cast<const rs::advanced_options::Temperature*>(opt_address),
           value);
@@ -1130,59 +1130,59 @@ static bool AreEqualDoubles(const double a, const double b) {
   return (fabs(a - b) < 0.00001);
 }
 
-static bool AreOptionsEqual(OptionType type, const void* this_offset,
+static bool AreOptionsEqual(rs::options_type::OptionType type, const void* this_offset,
                             const void* that_offset) {
   switch (type) {
-    case OptionType::kBoolean:
+    case rs::options_type::OptionType::Boolean:
       return IsOptionEqual<bool>(this_offset, that_offset);
-    case OptionType::kInt:
+    case rs::options_type::OptionType::Int:
       return IsOptionEqual<int>(this_offset, that_offset);
-    case OptionType::kUInt:
+    case rs::options_type::OptionType::UInt:
       return IsOptionEqual<unsigned int>(this_offset, that_offset);
-    case OptionType::kInt32T:
+    case rs::options_type::OptionType::Int32T:
       return IsOptionEqual<int32_t>(this_offset, that_offset);
-    case OptionType::kInt64T: {
+    case rs::options_type::OptionType::Int64T: {
       int64_t v1, v2;
       GetUnaligned(static_cast<const int64_t*>(this_offset), &v1);
       GetUnaligned(static_cast<const int64_t*>(that_offset), &v2);
       return (v1 == v2);
     }
-    case OptionType::kUInt8T:
+    case rs::options_type::OptionType::UInt8T:
       return IsOptionEqual<uint8_t>(this_offset, that_offset);
-    case OptionType::kUInt32T:
+    case rs::options_type::OptionType::UInt32T:
       return IsOptionEqual<uint32_t>(this_offset, that_offset);
-    case OptionType::kUInt64T: {
+    case rs::options_type::OptionType::UInt64T: {
       uint64_t v1, v2;
       GetUnaligned(static_cast<const uint64_t*>(this_offset), &v1);
       GetUnaligned(static_cast<const uint64_t*>(that_offset), &v2);
       return (v1 == v2);
     }
-    case OptionType::kSizeT: {
+    case rs::options_type::OptionType::SizeT: {
       size_t v1, v2;
       GetUnaligned(static_cast<const size_t*>(this_offset), &v1);
       GetUnaligned(static_cast<const size_t*>(that_offset), &v2);
       return (v1 == v2);
     }
-    case OptionType::kString:
+    case rs::options_type::OptionType::String:
       return IsOptionEqual<std::string>(this_offset, that_offset);
-    case OptionType::kDouble:
+    case rs::options_type::OptionType::Double:
       return AreEqualDoubles(*static_cast<const double*>(this_offset),
                              *static_cast<const double*>(that_offset));
-    case OptionType::kCompactionStyle:
+    case rs::options_type::OptionType::CompactionStyle:
       return IsOptionEqual<rs::advanced_options::CompactionStyle>(this_offset, that_offset);
-    case OptionType::kCompactionStopStyle:
+    case rs::options_type::OptionType::CompactionStopStyle:
       return IsOptionEqual<CompactionStopStyle>(this_offset, that_offset);
-    case OptionType::kCompactionPri:
+    case rs::options_type::OptionType::CompactionPri:
       return IsOptionEqual<rs::advanced_options::CompactionPri>(this_offset, that_offset);
-    case OptionType::kCompressionType:
+    case rs::options_type::OptionType::CompressionType:
       return IsOptionEqual<CompressionType>(this_offset, that_offset);
-    case OptionType::kChecksumType:
+    case rs::options_type::OptionType::ChecksumType:
       return IsOptionEqual<ChecksumType>(this_offset, that_offset);
-    case OptionType::kEncodingType:
+    case rs::options_type::OptionType::EncodingType:
       return IsOptionEqual<EncodingType>(this_offset, that_offset);
-    case OptionType::kEncodedString:
+    case rs::options_type::OptionType::EncodedString:
       return IsOptionEqual<std::string>(this_offset, that_offset);
-    case OptionType::kTemperature:
+    case rs::options_type::OptionType::Temperature:
       return IsOptionEqual<rs::advanced_options::Temperature>(this_offset, that_offset);
     default:
       return false;

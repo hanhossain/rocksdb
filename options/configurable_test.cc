@@ -209,18 +209,18 @@ TEST_F(ConfigurableTest, InvalidOptionTest) {
 
 static std::unordered_map<std::string, OptionTypeInfo> validated_option_info = {
     {"validated",
-     {0, OptionType::kBoolean, OptionVerificationType::kNormal,
+     {0, rs::options_type::OptionType::Boolean, OptionVerificationType::kNormal,
       OptionTypeFlags::kNone}},
 };
 static std::unordered_map<std::string, OptionTypeInfo> prepared_option_info = {
     {"prepared",
-     {0, OptionType::kInt, OptionVerificationType::kNormal,
+     {0, rs::options_type::OptionType::Int, OptionVerificationType::kNormal,
       OptionTypeFlags::kMutable}},
 };
 static std::unordered_map<std::string, OptionTypeInfo>
     dont_prepare_option_info = {
         {"unique",
-         {0, OptionType::kConfigurable, OptionVerificationType::kNormal,
+         {0, rs::options_type::OptionType::Configurable, OptionVerificationType::kNormal,
           (OptionTypeFlags::kUnique | OptionTypeFlags::kDontPrepare)}},
 
 };
@@ -415,7 +415,7 @@ TEST_F(ConfigurableTest, DeprecatedOptionsTest) {
   static std::unordered_map<std::string, OptionTypeInfo>
       deprecated_option_info = {
           {"deprecated",
-           {offsetof(struct TestOptions, b), OptionType::kBoolean,
+           {offsetof(struct TestOptions, b), rs::options_type::OptionType::Boolean,
             OptionVerificationType::kDeprecated, OptionTypeFlags::kNone}}};
   std::unique_ptr<Configurable> orig;
   orig.reset(SimpleConfigurable::Create("simple", TestConfigMode::kDefaultMode,
@@ -432,10 +432,10 @@ TEST_F(ConfigurableTest, DeprecatedOptionsTest) {
 TEST_F(ConfigurableTest, AliasOptionsTest) {
   static std::unordered_map<std::string, OptionTypeInfo> alias_option_info = {
       {"bool",
-       {offsetof(struct TestOptions, b), OptionType::kBoolean,
+       {offsetof(struct TestOptions, b), rs::options_type::OptionType::Boolean,
         OptionVerificationType::kNormal, OptionTypeFlags::kNone}},
       {"alias",
-       {offsetof(struct TestOptions, b), OptionType::kBoolean,
+       {offsetof(struct TestOptions, b), rs::options_type::OptionType::Boolean,
         OptionVerificationType::kAlias, OptionTypeFlags::kNone, 0}}};
   std::unique_ptr<Configurable> orig;
   orig.reset(SimpleConfigurable::Create("simple", TestConfigMode::kDefaultMode,
@@ -596,7 +596,7 @@ TEST_F(ConfigurableTest, ConfigurableEnumTest) {
 static std::unordered_map<std::string, OptionTypeInfo> noserialize_option_info =
     {
         {"int",
-         {offsetof(struct TestOptions, i), OptionType::kInt,
+         {offsetof(struct TestOptions, i), rs::options_type::OptionType::Int,
           OptionVerificationType::kNormal, OptionTypeFlags::kDontSerialize}},
 };
 
@@ -614,12 +614,12 @@ TEST_F(ConfigurableTest, TestNoSerialize) {
 TEST_F(ConfigurableTest, TestNoCompare) {
   std::unordered_map<std::string, OptionTypeInfo> nocomp_option_info = {
       {"int",
-       {offsetof(struct TestOptions, i), OptionType::kInt,
+       {offsetof(struct TestOptions, i), rs::options_type::OptionType::Int,
         OptionVerificationType::kNormal, OptionTypeFlags::kCompareNever}},
   };
   std::unordered_map<std::string, OptionTypeInfo> normal_option_info = {
       {"int",
-       {offsetof(struct TestOptions, i), OptionType::kInt,
+       {offsetof(struct TestOptions, i), rs::options_type::OptionType::Int,
         OptionVerificationType::kNormal, OptionTypeFlags::kNone}},
   };
 

@@ -27,18 +27,18 @@ std::atomic<extent_alloc_t*> JemallocNodumpAllocator::original_alloc_{nullptr};
 static std::unordered_map<std::string, OptionTypeInfo> jemalloc_type_info = {
     {"limit_tcache_size",
      {offsetof(struct JemallocAllocatorOptions, limit_tcache_size),
-      OptionType::kBoolean, OptionVerificationType::kNormal,
+      rs::options_type::OptionType::Boolean, OptionVerificationType::kNormal,
       OptionTypeFlags::kNone}},
     {"tcache_size_lower_bound",
      {offsetof(struct JemallocAllocatorOptions, tcache_size_lower_bound),
-      OptionType::kSizeT, OptionVerificationType::kNormal,
+      rs::options_type::OptionType::SizeT, OptionVerificationType::kNormal,
       OptionTypeFlags::kNone}},
     {"tcache_size_upper_bound",
      {offsetof(struct JemallocAllocatorOptions, tcache_size_upper_bound),
-      OptionType::kSizeT, OptionVerificationType::kNormal,
+      rs::options_type::OptionType::SizeT, OptionVerificationType::kNormal,
       OptionTypeFlags::kNone}},
     {"num_arenas",
-     {offsetof(struct JemallocAllocatorOptions, num_arenas), OptionType::kSizeT,
+     {offsetof(struct JemallocAllocatorOptions, num_arenas), rs::options_type::OptionType::SizeT,
       OptionVerificationType::kNormal, OptionTypeFlags::kNone}},
 };
 bool JemallocNodumpAllocator::IsSupported(std::string* why) {

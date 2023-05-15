@@ -20,7 +20,7 @@ namespace {
 static std::unordered_map<std::string, OptionTypeInfo>
     stringappend2_merge_type_info = {
         {"delimiter",
-         {0, OptionType::kString, OptionVerificationType::kNormal,
+         {0, rs::options_type::OptionType::String, OptionVerificationType::kNormal,
           OptionTypeFlags::kNone}},
 };
 }  // namespace

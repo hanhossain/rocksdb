@@ -16,6 +16,7 @@
 
 #include <functional>
 #include <memory>
+#include <rocksdb-rs-cxx/options_type.h>
 #include <unordered_map>
 
 #include "rocksdb/convenience.h"
@@ -26,39 +27,6 @@ namespace ROCKSDB_NAMESPACE {
 class OptionTypeInfo;
 struct ColumnFamilyOptions;
 struct DBOptions;
-
-// The underlying "class/type" of the option.
-// This enum is used to determine how the option should
-// be converted to/from strings and compared.
-enum class OptionType {
-  kBoolean,
-  kInt,
-  kInt32T,
-  kInt64T,
-  kUInt,
-  kUInt8T,
-  kUInt32T,
-  kUInt64T,
-  kSizeT,
-  kString,
-  kDouble,
-  kCompactionStyle,
-  kCompactionPri,
-  kCompressionType,
-  kCompactionStopStyle,
-  kChecksumType,
-  kEncodingType,
-  kEnv,
-  kEnum,
-  kStruct,
-  kVector,
-  kConfigurable,
-  kCustomizable,
-  kEncodedString,
-  kTemperature,
-  kArray,
-  kUnknown,
-};
 
 enum class OptionVerificationType {
   kNormal,
@@ -241,7 +209,7 @@ using ValidateFunc = std::function<Status(
 class OptionTypeInfo {
  public:
   // A simple "normal", non-mutable Type "type" at offset
-  OptionTypeInfo(int offset, OptionType type)
+  OptionTypeInfo(int offset, rs::options_type::OptionType type)
       : offset_(offset),
         parse_func_(nullptr),
         serialize_func_(nullptr),
@@ -250,7 +218,7 @@ class OptionTypeInfo {
         verification_(OptionVerificationType::kNormal),
         flags_(OptionTypeFlags::kNone) {}
 
-  OptionTypeInfo(int offset, OptionType type,
+  OptionTypeInfo(int offset, rs::options_type::OptionType type,
                  OptionVerificationType verification, OptionTypeFlags flags)
       : offset_(offset),
         parse_func_(nullptr),
@@ -260,7 +228,7 @@ class OptionTypeInfo {
         verification_(verification),
         flags_(flags) {}
 
-  OptionTypeInfo(int offset, OptionType type,
+  OptionTypeInfo(int offset, rs::options_type::OptionType type,
                  OptionVerificationType verification, OptionTypeFlags flags,
                  const ParseFunc& parse_func)
       : offset_(offset),
@@ -271,7 +239,7 @@ class OptionTypeInfo {
         verification_(verification),
         flags_(flags) {}
 
-  OptionTypeInfo(int offset, OptionType type,
+  OptionTypeInfo(int offset, rs::options_type::OptionType type,
                  OptionVerificationType verification, OptionTypeFlags flags,
                  const ParseFunc& parse_func,
                  const SerializeFunc& serialize_func,
@@ -289,7 +257,7 @@ class OptionTypeInfo {
   // To create an OptionTypeInfo that is an Enum, one should:
   // - Create a static map of string values to the corresponding enum value
   // - Call this method passing the static map in as a parameter.
-  // Note that it is not necessary to add a new OptionType or make any
+  // Note that it is not necessary to add a new rs::options_type::OptionType or make any
   // other changes -- the returned object handles parsing, serialization, and
   // comparisons.
   //
@@ -299,7 +267,7 @@ class OptionTypeInfo {
   static OptionTypeInfo Enum(
       int offset, const std::unordered_map<std::string, T>* const map,
       OptionTypeFlags flags = OptionTypeFlags::kNone) {
-    OptionTypeInfo info(offset, OptionType::kEnum,
+    OptionTypeInfo info(offset, rs::options_type::OptionType::Enum,
                         OptionVerificationType::kNormal, flags);
     info.SetParseFunc(
         // Uses the map argument to convert the input string into
@@ -361,7 +329,7 @@ class OptionTypeInfo {
   // - Create a static map of string-OptionTypeInfo corresponding to the
   //   properties of the object that can be set via the options.
   // - Call this method passing the name and map in as parameters.
-  // Note that it is not necessary to add a new OptionType or make any
+  // Note that it is not necessary to add a new rs::options_type::OptionType or make any
   // other changes -- the returned object handles parsing, serialization, and
   // comparisons.
   //
@@ -371,7 +339,7 @@ class OptionTypeInfo {
       const std::string& struct_name,
       const std::unordered_map<std::string, OptionTypeInfo>* struct_map,
       int offset, OptionVerificationType verification, OptionTypeFlags flags) {
-    OptionTypeInfo info(offset, OptionType::kStruct, verification, flags);
+    OptionTypeInfo info(offset, rs::options_type::OptionType::Struct, verification, flags);
     info.SetParseFunc(
         // Parses the struct and updates the fields at addr
         [struct_name, struct_map](const ConfigOptions& opts,
@@ -412,7 +380,7 @@ class OptionTypeInfo {
                               OptionTypeFlags _flags,
                               const OptionTypeInfo& elem_info,
                               char separator = ':') {
-    OptionTypeInfo info(_offset, OptionType::kArray, _verification, _flags);
+    OptionTypeInfo info(_offset, rs::options_type::OptionType::Array, _verification, _flags);
     info.SetParseFunc([elem_info, separator](
                           const ConfigOptions& opts, const std::string& name,
                           const std::string& value, void* addr) {
@@ -445,7 +413,7 @@ class OptionTypeInfo {
                                OptionTypeFlags _flags,
                                const OptionTypeInfo& elem_info,
                                char separator = ':') {
-    OptionTypeInfo info(_offset, OptionType::kVector, _verification, _flags);
+    OptionTypeInfo info(_offset, rs::options_type::OptionType::Vector, _verification, _flags);
     info.SetParseFunc([elem_info, separator](
                           const ConfigOptions& opts, const std::string& name,
                           const std::string& value, void* addr) {
@@ -482,7 +450,7 @@ class OptionTypeInfo {
   static OptionTypeInfo AsCustomSharedPtr(int offset,
                                           OptionVerificationType ovt,
                                           OptionTypeFlags flags) {
-    OptionTypeInfo info(offset, OptionType::kCustomizable, ovt,
+    OptionTypeInfo info(offset, rs::options_type::OptionType::Customizable, ovt,
                         flags | OptionTypeFlags::kShared);
     return info.SetParseFunc([](const ConfigOptions& opts,
                                 const std::string& name,
@@ -522,7 +490,7 @@ class OptionTypeInfo {
   static OptionTypeInfo AsCustomUniquePtr(int offset,
                                           OptionVerificationType ovt,
                                           OptionTypeFlags flags) {
-    OptionTypeInfo info(offset, OptionType::kCustomizable, ovt,
+    OptionTypeInfo info(offset, rs::options_type::OptionType::Customizable, ovt,
                         flags | OptionTypeFlags::kUnique);
     return info.SetParseFunc([](const ConfigOptions& opts,
                                 const std::string& name,
@@ -561,7 +529,7 @@ class OptionTypeInfo {
   template <typename T>
   static OptionTypeInfo AsCustomRawPtr(int offset, OptionVerificationType ovt,
                                        OptionTypeFlags flags) {
-    OptionTypeInfo info(offset, OptionType::kCustomizable, ovt,
+    OptionTypeInfo info(offset, rs::options_type::OptionType::Customizable, ovt,
                         flags | OptionTypeFlags::kRawPointer);
     return info.SetParseFunc([](const ConfigOptions& opts,
                                 const std::string& name,
@@ -704,14 +672,14 @@ class OptionTypeInfo {
             verification_ == OptionVerificationType::kByNameAllowFromNull);
   }
 
-  bool IsStruct() const { return (type_ == OptionType::kStruct); }
+  bool IsStruct() const { return (type_ == rs::options_type::OptionType::Struct); }
 
   bool IsConfigurable() const {
-    return (type_ == OptionType::kConfigurable ||
-            type_ == OptionType::kCustomizable);
+    return (type_ == rs::options_type::OptionType::Configurable ||
+            type_ == rs::options_type::OptionType::Customizable);
   }
 
-  bool IsCustomizable() const { return (type_ == OptionType::kCustomizable); }
+  bool IsCustomizable() const { return (type_ == rs::options_type::OptionType::Customizable); }
 
   inline const void* GetOffset(const void* base) const {
     return static_cast<const char*>(base) + offset_;
@@ -939,7 +907,7 @@ class OptionTypeInfo {
 
   PrepareFunc prepare_func_;
   ValidateFunc validate_func_;
-  OptionType type_;
+  rs::options_type::OptionType type_;
   OptionVerificationType verification_;
   OptionTypeFlags flags_;
 };

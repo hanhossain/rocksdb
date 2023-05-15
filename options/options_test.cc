@@ -2181,7 +2181,7 @@ class TestEventListener : public EventListener {
 static std::unordered_map<std::string, OptionTypeInfo>
     test_listener_option_info = {
         {"s",
-         {0, OptionType::kString, OptionVerificationType::kNormal,
+         {0, rs::options_type::OptionType::String, OptionVerificationType::kNormal,
           OptionTypeFlags::kNone}},
 
 };
@@ -4286,7 +4286,7 @@ static void TestParseAndCompareOption(const ConfigOptions& config_options,
 }
 
 template <typename T>
-void TestOptInfo(const ConfigOptions& config_options, OptionType opt_type,
+void TestOptInfo(const ConfigOptions& config_options, rs::options_type::OptionType opt_type,
                  T* base, T* comp) {
   std::string result;
   OptionTypeInfo opt_info(0, opt_type);
@@ -4303,43 +4303,43 @@ TEST_F(OptionTypeInfoTest, BasicTypes) {
   ConfigOptions config_options;
   {
     bool a = true, b = false;
-    TestOptInfo(config_options, OptionType::kBoolean, &a, &b);
+    TestOptInfo(config_options, rs::options_type::OptionType::Boolean, &a, &b);
   }
   {
     int a = 100, b = 200;
-    TestOptInfo(config_options, OptionType::kInt, &a, &b);
+    TestOptInfo(config_options, rs::options_type::OptionType::Int, &a, &b);
   }
   {
     int32_t a = 100, b = 200;
-    TestOptInfo(config_options, OptionType::kInt32T, &a, &b);
+    TestOptInfo(config_options, rs::options_type::OptionType::Int32T, &a, &b);
   }
   {
     int64_t a = 100, b = 200;
-    TestOptInfo(config_options, OptionType::kInt64T, &a, &b);
+    TestOptInfo(config_options, rs::options_type::OptionType::Int64T, &a, &b);
   }
   {
     unsigned int a = 100, b = 200;
-    TestOptInfo(config_options, OptionType::kUInt, &a, &b);
+    TestOptInfo(config_options, rs::options_type::OptionType::UInt, &a, &b);
   }
   {
     uint32_t a = 100, b = 200;
-    TestOptInfo(config_options, OptionType::kUInt32T, &a, &b);
+    TestOptInfo(config_options, rs::options_type::OptionType::UInt32T, &a, &b);
   }
   {
     uint64_t a = 100, b = 200;
-    TestOptInfo(config_options, OptionType::kUInt64T, &a, &b);
+    TestOptInfo(config_options, rs::options_type::OptionType::UInt64T, &a, &b);
   }
   {
     size_t a = 100, b = 200;
-    TestOptInfo(config_options, OptionType::kSizeT, &a, &b);
+    TestOptInfo(config_options, rs::options_type::OptionType::SizeT, &a, &b);
   }
   {
     std::string a = "100", b = "200";
-    TestOptInfo(config_options, OptionType::kString, &a, &b);
+    TestOptInfo(config_options, rs::options_type::OptionType::String, &a, &b);
   }
   {
     double a = 1.0, b = 2.0;
-    TestOptInfo(config_options, OptionType::kDouble, &a, &b);
+    TestOptInfo(config_options, rs::options_type::OptionType::Double, &a, &b);
   }
 }
 
@@ -4355,31 +4355,31 @@ TEST_F(OptionTypeInfoTest, TestInvalidArgs) {
   size_t sz;
   double d;
 
-  ASSERT_NOK(OptionTypeInfo(0, OptionType::kBoolean)
+  ASSERT_NOK(OptionTypeInfo(0, rs::options_type::OptionType::Boolean)
                  .Parse(config_options, "b", "x", &b));
   ASSERT_NOK(
-      OptionTypeInfo(0, OptionType::kInt).Parse(config_options, "b", "x", &i));
-  ASSERT_NOK(OptionTypeInfo(0, OptionType::kInt32T)
+      OptionTypeInfo(0, rs::options_type::OptionType::Int).Parse(config_options, "b", "x", &i));
+  ASSERT_NOK(OptionTypeInfo(0, rs::options_type::OptionType::Int32T)
                  .Parse(config_options, "b", "x", &i32));
-  ASSERT_NOK(OptionTypeInfo(0, OptionType::kInt64T)
+  ASSERT_NOK(OptionTypeInfo(0, rs::options_type::OptionType::Int64T)
                  .Parse(config_options, "b", "x", &i64));
   ASSERT_NOK(
-      OptionTypeInfo(0, OptionType::kUInt).Parse(config_options, "b", "x", &u));
-  ASSERT_NOK(OptionTypeInfo(0, OptionType::kUInt32T)
+      OptionTypeInfo(0, rs::options_type::OptionType::UInt).Parse(config_options, "b", "x", &u));
+  ASSERT_NOK(OptionTypeInfo(0, rs::options_type::OptionType::UInt32T)
                  .Parse(config_options, "b", "x", &u32));
-  ASSERT_NOK(OptionTypeInfo(0, OptionType::kUInt64T)
+  ASSERT_NOK(OptionTypeInfo(0, rs::options_type::OptionType::UInt64T)
                  .Parse(config_options, "b", "x", &u64));
-  ASSERT_NOK(OptionTypeInfo(0, OptionType::kSizeT)
+  ASSERT_NOK(OptionTypeInfo(0, rs::options_type::OptionType::SizeT)
                  .Parse(config_options, "b", "x", &sz));
-  ASSERT_NOK(OptionTypeInfo(0, OptionType::kDouble)
+  ASSERT_NOK(OptionTypeInfo(0, rs::options_type::OptionType::Double)
                  .Parse(config_options, "b", "x", &d));
 
   // Don't know how to convert Unknowns to anything else
-  ASSERT_NOK(OptionTypeInfo(0, OptionType::kUnknown)
+  ASSERT_NOK(OptionTypeInfo(0, rs::options_type::OptionType::Unknown)
                  .Parse(config_options, "b", "x", &d));
 
   // Verify that if the parse function throws an exception, it is also trapped
-  OptionTypeInfo func_info(0, OptionType::kUnknown,
+  OptionTypeInfo func_info(0, rs::options_type::OptionType::Unknown,
                            OptionVerificationType::kNormal,
                            OptionTypeFlags::kNone,
                            [](const ConfigOptions&, const std::string&,
@@ -4393,7 +4393,7 @@ TEST_F(OptionTypeInfoTest, TestInvalidArgs) {
 }
 
 TEST_F(OptionTypeInfoTest, TestParseFunc) {
-  OptionTypeInfo opt_info(0, OptionType::kUnknown,
+  OptionTypeInfo opt_info(0, rs::options_type::OptionType::Unknown,
                           OptionVerificationType::kNormal,
                           OptionTypeFlags::kNone);
   opt_info.SetParseFunc([](const ConfigOptions& /*opts*/,
@@ -4415,7 +4415,7 @@ TEST_F(OptionTypeInfoTest, TestParseFunc) {
 }
 
 TEST_F(OptionTypeInfoTest, TestSerializeFunc) {
-  OptionTypeInfo opt_info(0, OptionType::kString,
+  OptionTypeInfo opt_info(0, rs::options_type::OptionType::String,
                           OptionVerificationType::kNormal,
                           OptionTypeFlags::kNone);
   opt_info.SetSerializeFunc([](const ConfigOptions& /*opts*/,
@@ -4437,7 +4437,7 @@ TEST_F(OptionTypeInfoTest, TestSerializeFunc) {
 }
 
 TEST_F(OptionTypeInfoTest, TestEqualsFunc) {
-  OptionTypeInfo opt_info(0, OptionType::kInt, OptionVerificationType::kNormal,
+  OptionTypeInfo opt_info(0, rs::options_type::OptionType::Int, OptionVerificationType::kNormal,
                           OptionTypeFlags::kNone);
   opt_info.SetEqualsFunc([](const ConfigOptions& /*opts*/,
                             const std::string& name, const void* addr1,
@@ -4471,7 +4471,7 @@ TEST_F(OptionTypeInfoTest, TestEqualsFunc) {
 }
 
 TEST_F(OptionTypeInfoTest, TestPrepareFunc) {
-  OptionTypeInfo opt_info(0, OptionType::kInt, OptionVerificationType::kNormal,
+  OptionTypeInfo opt_info(0, rs::options_type::OptionType::Int, OptionVerificationType::kNormal,
                           OptionTypeFlags::kNone);
   opt_info.SetPrepareFunc(
       [](const ConfigOptions& /*opts*/, const std::string& name, void* addr) {
@@ -4495,7 +4495,7 @@ TEST_F(OptionTypeInfoTest, TestPrepareFunc) {
   ASSERT_EQ(int1, 100);
 }
 TEST_F(OptionTypeInfoTest, TestValidateFunc) {
-  OptionTypeInfo opt_info(0, OptionType::kSizeT,
+  OptionTypeInfo opt_info(0, rs::options_type::OptionType::SizeT,
                           OptionVerificationType::kNormal,
                           OptionTypeFlags::kNone);
   opt_info.SetValidateFunc([](const DBOptions& db_opts,
@@ -4529,16 +4529,16 @@ TEST_F(OptionTypeInfoTest, TestValidateFunc) {
 }
 
 TEST_F(OptionTypeInfoTest, TestOptionFlags) {
-  OptionTypeInfo opt_none(0, OptionType::kString,
+  OptionTypeInfo opt_none(0, rs::options_type::OptionType::String,
                           OptionVerificationType::kNormal,
                           OptionTypeFlags::kDontSerialize);
-  OptionTypeInfo opt_never(0, OptionType::kString,
+  OptionTypeInfo opt_never(0, rs::options_type::OptionType::String,
                            OptionVerificationType::kNormal,
                            OptionTypeFlags::kCompareNever);
-  OptionTypeInfo opt_alias(0, OptionType::kString,
+  OptionTypeInfo opt_alias(0, rs::options_type::OptionType::String,
                            OptionVerificationType::kAlias,
                            OptionTypeFlags::kNone);
-  OptionTypeInfo opt_deprecated(0, OptionType::kString,
+  OptionTypeInfo opt_deprecated(0, rs::options_type::OptionType::String,
                                 OptionVerificationType::kDeprecated,
                                 OptionTypeFlags::kNone);
   ConfigOptions config_options;
@@ -4605,42 +4605,42 @@ TEST_F(OptionTypeInfoTest, TestBuiltinEnum) {
   for (auto iter : OptionsHelper::compaction_style_string_map) {
     rs::advanced_options::CompactionStyle e1, e2;
     TestParseAndCompareOption(config_options,
-                              OptionTypeInfo(0, OptionType::kCompactionStyle),
+                              OptionTypeInfo(0, rs::options_type::OptionType::CompactionStyle),
                               "rs::advanced_options::CompactionStyle", iter.first, &e1, &e2);
     ASSERT_EQ(e1, iter.second);
   }
   for (auto iter : OptionsHelper::compaction_pri_string_map) {
     rs::advanced_options::CompactionPri e1, e2;
     TestParseAndCompareOption(config_options,
-                              OptionTypeInfo(0, OptionType::kCompactionPri),
+                              OptionTypeInfo(0, rs::options_type::OptionType::CompactionPri),
                               "rs::advanced_options::CompactionPri", iter.first, &e1, &e2);
     ASSERT_EQ(e1, iter.second);
   }
   for (auto iter : OptionsHelper::compression_type_string_map) {
     CompressionType e1, e2;
     TestParseAndCompareOption(config_options,
-                              OptionTypeInfo(0, OptionType::kCompressionType),
+                              OptionTypeInfo(0, rs::options_type::OptionType::CompressionType),
                               "CompressionType", iter.first, &e1, &e2);
     ASSERT_EQ(e1, iter.second);
   }
   for (auto iter : OptionsHelper::compaction_stop_style_string_map) {
     CompactionStopStyle e1, e2;
     TestParseAndCompareOption(
-        config_options, OptionTypeInfo(0, OptionType::kCompactionStopStyle),
+        config_options, OptionTypeInfo(0, rs::options_type::OptionType::CompactionStopStyle),
         "CompactionStopStyle", iter.first, &e1, &e2);
     ASSERT_EQ(e1, iter.second);
   }
   for (auto iter : OptionsHelper::checksum_type_string_map) {
     ChecksumType e1, e2;
     TestParseAndCompareOption(config_options,
-                              OptionTypeInfo(0, OptionType::kChecksumType),
+                              OptionTypeInfo(0, rs::options_type::OptionType::ChecksumType),
                               "CheckSumType", iter.first, &e1, &e2);
     ASSERT_EQ(e1, iter.second);
   }
   for (auto iter : OptionsHelper::encoding_type_string_map) {
     EncodingType e1, e2;
     TestParseAndCompareOption(config_options,
-                              OptionTypeInfo(0, OptionType::kEncodingType),
+                              OptionTypeInfo(0, rs::options_type::OptionType::EncodingType),
                               "EncodingType", iter.first, &e1, &e2);
     ASSERT_EQ(e1, iter.second);
   }
@@ -4658,15 +4658,15 @@ TEST_F(OptionTypeInfoTest, TestStruct) {
   };
 
   std::unordered_map<std::string, OptionTypeInfo> basic_type_map = {
-      {"i", {offsetof(struct Basic, i), OptionType::kInt}},
-      {"s", {offsetof(struct Basic, s), OptionType::kString}},
+      {"i", {offsetof(struct Basic, i), rs::options_type::OptionType::Int}},
+      {"s", {offsetof(struct Basic, s), rs::options_type::OptionType::String}},
   };
   OptionTypeInfo basic_info = OptionTypeInfo::Struct(
       "b", &basic_type_map, 0, OptionVerificationType::kNormal,
       OptionTypeFlags::kMutable);
 
   std::unordered_map<std::string, OptionTypeInfo> extended_type_map = {
-      {"j", {offsetof(struct Extended, j), OptionType::kInt}},
+      {"j", {offsetof(struct Extended, j), rs::options_type::OptionType::Int}},
       {"b", OptionTypeInfo::Struct(
                 "b", &basic_type_map, offsetof(struct Extended, b),
                 OptionVerificationType::kNormal, OptionTypeFlags::kNone)},
@@ -4733,7 +4733,7 @@ TEST_F(OptionTypeInfoTest, TestStruct) {
 TEST_F(OptionTypeInfoTest, TestArrayType) {
   OptionTypeInfo array_info = OptionTypeInfo::Array<std::string, 4>(
       0, OptionVerificationType::kNormal, OptionTypeFlags::kNone,
-      {0, OptionType::kString});
+      {0, rs::options_type::OptionType::String});
   std::array<std::string, 4> array1, array2;
   std::string mismatch;
 
@@ -4763,7 +4763,7 @@ TEST_F(OptionTypeInfoTest, TestArrayType) {
   std::array<std::string, 3> array3, array4;
   OptionTypeInfo bar_info = OptionTypeInfo::Array<std::string, 3>(
       0, OptionVerificationType::kNormal, OptionTypeFlags::kNone,
-      {0, OptionType::kString}, '|');
+      {0, rs::options_type::OptionType::String}, '|');
   TestParseAndCompareOption(config_options, bar_info, "v", "x|y|z", &array3,
                             &array4);
 
@@ -4795,7 +4795,7 @@ TEST_F(OptionTypeInfoTest, TestArrayType) {
 TEST_F(OptionTypeInfoTest, TestVectorType) {
   OptionTypeInfo vec_info = OptionTypeInfo::Vector<std::string>(
       0, OptionVerificationType::kNormal, OptionTypeFlags::kNone,
-      {0, OptionType::kString});
+      {0, rs::options_type::OptionType::String});
   std::vector<std::string> vec1, vec2;
   std::string mismatch;
 
@@ -4822,7 +4822,7 @@ TEST_F(OptionTypeInfoTest, TestVectorType) {
 
   OptionTypeInfo bar_info = OptionTypeInfo::Vector<std::string>(
       0, OptionVerificationType::kNormal, OptionTypeFlags::kNone,
-      {0, OptionType::kString}, '|');
+      {0, rs::options_type::OptionType::String}, '|');
   TestParseAndCompareOption(config_options, vec_info, "v", "x|y|z", &vec1,
                             &vec2);
   // Test vectors with inner vector
@@ -4859,9 +4859,9 @@ TEST_F(OptionTypeInfoTest, TestStaticType) {
   };
 
   static std::unordered_map<std::string, OptionTypeInfo> type_map = {
-      {"size", {offsetof(struct SimpleOptions, size), OptionType::kSizeT}},
+      {"size", {offsetof(struct SimpleOptions, size), rs::options_type::OptionType::SizeT}},
       {"verify",
-       {offsetof(struct SimpleOptions, verify), OptionType::kBoolean}},
+       {offsetof(struct SimpleOptions, verify), rs::options_type::OptionType::Boolean}},
   };
 
   ConfigOptions config_options;

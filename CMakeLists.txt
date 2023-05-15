@@ -987,7 +987,7 @@ corrosion_import_crate(MANIFEST_PATH rocksdb-rs/Cargo.toml)
 corrosion_add_cxxbridge(
     rocksdb-rs-cxx
     CRATE rocksdb-rs
-    FILES lib.rs advanced_options.rs convenience.rs options.rs types.rs)
+    FILES lib.rs advanced_options.rs convenience.rs options.rs options_type.rs types.rs)
 
 add_library(${ROCKSDB_STATIC_LIB} STATIC ${SOURCES} ${BUILD_VERSION_CC})
 target_link_libraries(

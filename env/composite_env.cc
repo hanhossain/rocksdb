@@ -392,7 +392,7 @@ Status CompositeEnv::NewDirectory(const std::string& name,
 namespace {
 static std::unordered_map<std::string, OptionTypeInfo> env_wrapper_type_info = {
     {"target",
-     OptionTypeInfo(0, OptionType::kUnknown, OptionVerificationType::kByName,
+     OptionTypeInfo(0, rs::options_type::OptionType::Unknown, OptionVerificationType::kByName,
                     OptionTypeFlags::kDontSerialize)
          .SetParseFunc([](const ConfigOptions& opts,
                           const std::string& /*name*/, const std::string& value,

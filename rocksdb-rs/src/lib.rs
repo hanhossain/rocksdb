@@ -1,6 +1,7 @@
 pub mod advanced_options;
 pub mod convenience;
 pub mod options;
+pub mod options_type;
 pub mod types;
 
 #[cxx::bridge(namespace = "rs")]

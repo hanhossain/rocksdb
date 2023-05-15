@@ -19,7 +19,7 @@
 namespace ROCKSDB_NAMESPACE {
 namespace {
 static std::unordered_map<std::string, OptionTypeInfo> chroot_fs_type_info = {
-    {"chroot_dir", {0, OptionType::kString}}};
+    {"chroot_dir", {0, rs::options_type::OptionType::String}}};
 }  // namespace
 ChrootFileSystem::ChrootFileSystem(const std::shared_ptr<FileSystem>& base,
                                    const std::string& chroot_dir)

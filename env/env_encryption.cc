@@ -1052,7 +1052,7 @@ namespace {
 static std::unordered_map<std::string, OptionTypeInfo>
     rot13_block_cipher_type_info = {
         {"block_size",
-         {0 /* No offset, whole struct*/, OptionType::kInt,
+         {0 /* No offset, whole struct*/, rs::options_type::OptionType::Int,
           OptionVerificationType::kNormal, OptionTypeFlags::kNone}},
 };
 // Implements a BlockCipher using ROT13.
