@@ -97,9 +97,9 @@ enum class OptionVerificationType {
 enum class OptionTypeFlags : uint32_t {
   kNone = 0x00,  // No flags
   kCompareDefault = 0x0,
-  kCompareNever = ConfigOptions::kSanityLevelNone,
-  kCompareLoose = ConfigOptions::kSanityLevelLooselyCompatible,
-  kCompareExact = ConfigOptions::kSanityLevelExactMatch,
+  kCompareNever = (uint32_t)rs::convenience::SanityLevel::None,
+  kCompareLoose = (uint32_t)rs::convenience::SanityLevel::LooselyCompatible,
+  kCompareExact = (uint32_t)rs::convenience::SanityLevel::ExactMatch,
 
   kMutable = 0x0100,         // Option is mutable
   kRawPointer = 0x0200,      // The option is stored as a raw pointer
@@ -639,15 +639,15 @@ class OptionTypeInfo {
   // If the options should not be compared, returns None
   // If the option has a compare flag, returns it.
   // Otherwise, returns "exact"
-  ConfigOptions::SanityLevel GetSanityLevel() const {
+  rs::convenience::SanityLevel GetSanityLevel() const {
     if (IsDeprecated() || IsAlias()) {
-      return ConfigOptions::SanityLevel::kSanityLevelNone;
+      return rs::convenience::SanityLevel::None;
     } else {
       auto match = (flags_ & OptionTypeFlags::kCompareExact);
       if (match == OptionTypeFlags::kCompareDefault) {
-        return ConfigOptions::SanityLevel::kSanityLevelExactMatch;
+        return rs::convenience::SanityLevel::ExactMatch;
       } else {
-        return (ConfigOptions::SanityLevel)match;
+        return (rs::convenience::SanityLevel)match;
       }
     }
   }

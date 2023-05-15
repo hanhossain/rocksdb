@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <rocksdb-rs-cxx/convenience.h>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -38,16 +39,6 @@ struct ConfigOptions {
   // Constructs a new ConfigOptions using the settings from
   // the input DBOptions.  Currently constructs a new object registry.
   explicit ConfigOptions(const DBOptions&);
-
-  // This enum defines the RocksDB options sanity level.
-  enum SanityLevel : unsigned char {
-    kSanityLevelNone = 0x01,  // Performs no sanity check at all.
-    // Performs minimum check to ensure the RocksDB instance can be
-    // opened without corrupting / mis-interpreting the data.
-    kSanityLevelLooselyCompatible = 0x02,
-    // Perform exact match sanity check.
-    kSanityLevelExactMatch = 0xFF,
-  };
 
   enum Depth {
     kDepthDefault,  // Traverse nested options that are not flagged as "shallow"
@@ -83,7 +74,7 @@ struct ConfigOptions {
 
   // Controls how options are serialized
   // Controls how pedantic the comparison must be for equivalency
-  SanityLevel sanity_level = SanityLevel::kSanityLevelExactMatch;
+  rs::convenience::SanityLevel sanity_level = rs::convenience::SanityLevel::ExactMatch;
   // `file_readahead_size` is used for readahead for the option file.
   size_t file_readahead_size = 512 * 1024;
 
@@ -97,11 +88,11 @@ struct ConfigOptions {
   bool IsDetailed() const { return depth == Depth::kDepthDetailed; }
 
   bool IsCheckDisabled() const {
-    return sanity_level == SanityLevel::kSanityLevelNone;
+    return sanity_level == rs::convenience::SanityLevel::None;
   }
 
-  bool IsCheckEnabled(SanityLevel level) const {
-    return (level > SanityLevel::kSanityLevelNone && level <= sanity_level);
+  bool IsCheckEnabled(rs::convenience::SanityLevel level) const {
+    return (level > rs::convenience::SanityLevel::None && level <= sanity_level);
   }
 };
 

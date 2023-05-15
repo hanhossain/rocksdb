@@ -1,4 +1,5 @@
 pub mod advanced_options;
+pub mod convenience;
 pub mod options;
 pub mod types;
 

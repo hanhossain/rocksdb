@@ -381,7 +381,7 @@ TEST_F(CustomizableTest, AreEquivalentOptionsTest) {
       simple->cu->AreEquivalent(config_options, simple->cs.get(), &mismatch));
   ASSERT_FALSE(c1->AreEquivalent(config_options, c2.get(), &mismatch));
   ConfigOptions loosely = config_options;
-  loosely.sanity_level = ConfigOptions::kSanityLevelLooselyCompatible;
+  loosely.sanity_level = rs::convenience::SanityLevel::LooselyCompatible;
   ASSERT_TRUE(c1->AreEquivalent(loosely, c2.get(), &mismatch));
   ASSERT_TRUE(simple->cu->AreEquivalent(loosely, simple->cs.get(), &mismatch));
 

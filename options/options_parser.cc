@@ -553,7 +553,7 @@ Status RocksDBOptionsParser::VerifyRocksDBOptionsFromFile(
   ConfigOptions config_options = config_options_in;
   config_options.invoke_prepare_options =
       false;  // No need to do a prepare for verify
-  if (config_options.sanity_level < ConfigOptions::kSanityLevelExactMatch) {
+  if (config_options.sanity_level < rs::convenience::SanityLevel::ExactMatch) {
     // If we are not doing an exact comparison, we should ignore
     // unsupported options, as they may cause the Parse to fail
     // (if the ObjectRegistry is not initialized)
@@ -574,7 +574,7 @@ Status RocksDBOptionsParser::VerifyRocksDBOptionsFromFile(
   // Verify ColumnFamily Name
   if (cf_names.size() != parser.cf_names()->size()) {
     if (config_options.sanity_level >=
-        ConfigOptions::kSanityLevelLooselyCompatible) {
+        rs::convenience::SanityLevel::LooselyCompatible) {
       return Status::InvalidArgument(
           "[RocksDBOptionParser Error] The persisted options does not have "
           "the same number of column family names as the db instance.");
@@ -597,7 +597,7 @@ Status RocksDBOptionsParser::VerifyRocksDBOptionsFromFile(
   // Verify Column Family Options
   if (cf_opts.size() != parser.cf_opts()->size()) {
     if (config_options.sanity_level >=
-        ConfigOptions::kSanityLevelLooselyCompatible) {
+        rs::convenience::SanityLevel::LooselyCompatible) {
       return Status::InvalidArgument(
           "[RocksDBOptionsParser Error]",
           "The persisted options does not have the same number of "
@@ -714,7 +714,7 @@ Status RocksDBOptionsParser::VerifyTableFactory(
     const TableFactory* file_tf) {
   std::string mismatch;
   if (base_tf && file_tf) {
-    if (config_options.sanity_level > ConfigOptions::kSanityLevelNone &&
+    if (config_options.sanity_level > rs::convenience::SanityLevel::None &&
         std::string(base_tf->Name()) != std::string(file_tf->Name())) {
       return Status::Corruption(
           "[RocksDBOptionsParser]: "
