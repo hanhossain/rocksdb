@@ -101,7 +101,7 @@ static std::unordered_map<std::string, OptionTypeInfo>
     on_deletion_collector_type_info = {
         {"window_size",
          {0, rs::options_type::OptionType::Unknown, rs::options_type::OptionVerificationType::Normal,
-          OptionTypeFlags::kCompareNever | OptionTypeFlags::kMutable,
+          rs::options_type::OptionTypeFlags::CompareNever | rs::options_type::OptionTypeFlags::Mutable,
           [](const ConfigOptions&, const std::string&, const std::string& value,
              void* addr) {
             auto* factory =
@@ -119,7 +119,7 @@ static std::unordered_map<std::string, OptionTypeInfo>
           nullptr}},
         {"deletion_trigger",
          {0, rs::options_type::OptionType::Unknown, rs::options_type::OptionVerificationType::Normal,
-          OptionTypeFlags::kCompareNever | OptionTypeFlags::kMutable,
+          rs::options_type::OptionTypeFlags::CompareNever | rs::options_type::OptionTypeFlags::Mutable,
           [](const ConfigOptions&, const std::string&, const std::string& value,
              void* addr) {
             auto* factory =
@@ -137,7 +137,7 @@ static std::unordered_map<std::string, OptionTypeInfo>
           nullptr}},
         {"deletion_ratio",
          {0, rs::options_type::OptionType::Unknown, rs::options_type::OptionVerificationType::Normal,
-          OptionTypeFlags::kCompareNever | OptionTypeFlags::kMutable,
+          rs::options_type::OptionTypeFlags::CompareNever | rs::options_type::OptionTypeFlags::Mutable,
           [](const ConfigOptions&, const std::string&, const std::string& value,
              void* addr) {
             auto* factory =

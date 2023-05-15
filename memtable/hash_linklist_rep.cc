@@ -851,23 +851,23 @@ struct HashLinkListRepOptions {
 static std::unordered_map<std::string, OptionTypeInfo> hash_linklist_info = {
     {"bucket_count",
      {offsetof(struct HashLinkListRepOptions, bucket_count), rs::options_type::OptionType::SizeT,
-      rs::options_type::OptionVerificationType::Normal, OptionTypeFlags::kNone}},
+      rs::options_type::OptionVerificationType::Normal, rs::options_type::OptionTypeFlags::None}},
     {"threshold",
      {offsetof(struct HashLinkListRepOptions, threshold_use_skiplist),
       rs::options_type::OptionType::UInt32T, rs::options_type::OptionVerificationType::Normal,
-      OptionTypeFlags::kNone}},
+      rs::options_type::OptionTypeFlags::None}},
     {"huge_page_size",
      {offsetof(struct HashLinkListRepOptions, huge_page_tlb_size),
       rs::options_type::OptionType::SizeT, rs::options_type::OptionVerificationType::Normal,
-      OptionTypeFlags::kNone}},
+      rs::options_type::OptionTypeFlags::None}},
     {"logging_threshold",
      {offsetof(struct HashLinkListRepOptions, bucket_entries_logging_threshold),
       rs::options_type::OptionType::Int, rs::options_type::OptionVerificationType::Normal,
-      OptionTypeFlags::kNone}},
+      rs::options_type::OptionTypeFlags::None}},
     {"log_when_flash",
      {offsetof(struct HashLinkListRepOptions, if_log_bucket_dist_when_flash),
       rs::options_type::OptionType::Boolean, rs::options_type::OptionVerificationType::Normal,
-      OptionTypeFlags::kNone}},
+      rs::options_type::OptionTypeFlags::None}},
 };
 
 class HashLinkListRepFactory : public MemTableRepFactory {

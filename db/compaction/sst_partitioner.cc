@@ -17,7 +17,7 @@ static std::unordered_map<std::string, OptionTypeInfo>
     sst_fixed_prefix_type_info = {
         {"length",
          {0, rs::options_type::OptionType::SizeT, rs::options_type::OptionVerificationType::Normal,
-          OptionTypeFlags::kNone}},
+          rs::options_type::OptionTypeFlags::None}},
 };
 
 SstPartitionerFixedPrefixFactory::SstPartitionerFixedPrefixFactory(size_t len)

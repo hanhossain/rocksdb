@@ -331,7 +331,7 @@ Status Statistics::CreateFromString(const ConfigOptions& config_options,
 static std::unordered_map<std::string, OptionTypeInfo> stats_type_info = {
     {"inner", OptionTypeInfo::AsCustomSharedPtr<Statistics>(
                   0, rs::options_type::OptionVerificationType::ByNameAllowFromNull,
-                  OptionTypeFlags::kCompareNever)},
+                  rs::options_type::OptionTypeFlags::CompareNever)},
 };
 
 StatisticsImpl::StatisticsImpl(std::shared_ptr<Statistics> stats)

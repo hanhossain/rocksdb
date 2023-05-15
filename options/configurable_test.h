@@ -40,13 +40,13 @@ struct TestOptions {
 static std::unordered_map<std::string, OptionTypeInfo> simple_option_info = {
     {"int",
      {offsetof(struct TestOptions, i), rs::options_type::OptionType::Int,
-      rs::options_type::OptionVerificationType::Normal, OptionTypeFlags::kMutable}},
+      rs::options_type::OptionVerificationType::Normal, rs::options_type::OptionTypeFlags::Mutable}},
     {"bool",
      {offsetof(struct TestOptions, b), rs::options_type::OptionType::Boolean,
-      rs::options_type::OptionVerificationType::Normal, OptionTypeFlags::kNone}},
+      rs::options_type::OptionVerificationType::Normal, rs::options_type::OptionTypeFlags::None}},
     {"string",
      {offsetof(struct TestOptions, s), rs::options_type::OptionType::String,
-      rs::options_type::OptionVerificationType::Normal, OptionTypeFlags::kNone}},
+      rs::options_type::OptionVerificationType::Normal, rs::options_type::OptionTypeFlags::None}},
 };
 
 static std::unordered_map<std::string, OptionTypeInfo> enum_option_info = {
@@ -57,18 +57,18 @@ static std::unordered_map<std::string, OptionTypeInfo> enum_option_info = {
 static std::unordered_map<std::string, OptionTypeInfo> unique_option_info = {
     {"unique",
      {0, rs::options_type::OptionType::Configurable, rs::options_type::OptionVerificationType::Normal,
-      (OptionTypeFlags::kUnique | OptionTypeFlags::kMutable)}},
+      (rs::options_type::OptionTypeFlags::Unique | rs::options_type::OptionTypeFlags::Mutable)}},
 };
 
 static std::unordered_map<std::string, OptionTypeInfo> shared_option_info = {
     {"shared",
      {0, rs::options_type::OptionType::Configurable, rs::options_type::OptionVerificationType::Normal,
-      (OptionTypeFlags::kShared)}},
+      (rs::options_type::OptionTypeFlags::Shared)}},
 };
 static std::unordered_map<std::string, OptionTypeInfo> pointer_option_info = {
     {"pointer",
      {0, rs::options_type::OptionType::Configurable, rs::options_type::OptionVerificationType::Normal,
-      OptionTypeFlags::kRawPointer}},
+      rs::options_type::OptionTypeFlags::RawPointer}},
 };
 
 enum TestConfigMode {

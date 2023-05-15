@@ -393,7 +393,7 @@ namespace {
 static std::unordered_map<std::string, OptionTypeInfo> env_wrapper_type_info = {
     {"target",
      OptionTypeInfo(0, rs::options_type::OptionType::Unknown, rs::options_type::OptionVerificationType::ByName,
-                    OptionTypeFlags::kDontSerialize)
+                    rs::options_type::OptionTypeFlags::DontSerialize)
          .SetParseFunc([](const ConfigOptions& opts,
                           const std::string& /*name*/, const std::string& value,
                           void* addr) {
@@ -437,14 +437,14 @@ static std::unordered_map<std::string, OptionTypeInfo>
     composite_fs_wrapper_type_info = {
         {"file_system",
          OptionTypeInfo::AsCustomSharedPtr<FileSystem>(
-             0, rs::options_type::OptionVerificationType::ByName, OptionTypeFlags::kNone)},
+             0, rs::options_type::OptionVerificationType::ByName, rs::options_type::OptionTypeFlags::None)},
 };
 
 static std::unordered_map<std::string, OptionTypeInfo>
     composite_clock_wrapper_type_info = {
         {"clock",
          OptionTypeInfo::AsCustomSharedPtr<SystemClock>(
-             0, rs::options_type::OptionVerificationType::ByName, OptionTypeFlags::kNone)},
+             0, rs::options_type::OptionVerificationType::ByName, rs::options_type::OptionTypeFlags::None)},
 };
 
 }  // namespace

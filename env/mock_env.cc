@@ -35,7 +35,7 @@ int64_t MaybeCurrentTime(const std::shared_ptr<SystemClock>& clock) {
 static std::unordered_map<std::string, OptionTypeInfo> time_elapse_type_info = {
     {"time_elapse_only_sleep",
      {0, rs::options_type::OptionType::Boolean, rs::options_type::OptionVerificationType::Normal,
-      OptionTypeFlags::kCompareNever,
+      rs::options_type::OptionTypeFlags::CompareNever,
       [](const ConfigOptions& /*opts*/, const std::string& /*name*/,
          const std::string& value, void* addr) {
         auto clock = static_cast<EmulatedSystemClock*>(addr);
@@ -53,7 +53,7 @@ static std::unordered_map<std::string, OptionTypeInfo> time_elapse_type_info = {
 static std::unordered_map<std::string, OptionTypeInfo> mock_sleep_type_info = {
     {"mock_sleep",
      {0, rs::options_type::OptionType::Boolean, rs::options_type::OptionVerificationType::Normal,
-      OptionTypeFlags::kCompareNever,
+      rs::options_type::OptionTypeFlags::CompareNever,
       [](const ConfigOptions& /*opts*/, const std::string& /*name*/,
          const std::string& value, void* addr) {
         auto clock = static_cast<EmulatedSystemClock*>(addr);
@@ -570,7 +570,7 @@ class TestMemLogger : public Logger {
 static std::unordered_map<std::string, OptionTypeInfo> mock_fs_type_info = {
     {"supports_direct_io",
      {0, rs::options_type::OptionType::Boolean, rs::options_type::OptionVerificationType::Normal,
-      OptionTypeFlags::kNone}},
+      rs::options_type::OptionTypeFlags::None}},
 };
 }  // namespace
 

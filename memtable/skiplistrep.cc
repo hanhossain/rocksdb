@@ -343,7 +343,7 @@ class SkipListRep : public MemTableRep {
 static std::unordered_map<std::string, OptionTypeInfo> skiplist_factory_info = {
     {"lookahead",
      {0, rs::options_type::OptionType::SizeT, rs::options_type::OptionVerificationType::Normal,
-      OptionTypeFlags::kDontSerialize /*Since it is part of the ID*/}},
+      rs::options_type::OptionTypeFlags::DontSerialize /*Since it is part of the ID*/}},
 };
 
 SkipListFactory::SkipListFactory(size_t lookahead) : lookahead_(lookahead) {

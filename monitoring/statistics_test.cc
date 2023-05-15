@@ -45,7 +45,7 @@ TEST_F(StatisticsTest, NoNameStats) {
       {"inner",
        OptionTypeInfo::AsCustomSharedPtr<Statistics>(
            0, rs::options_type::OptionVerificationType::ByName,
-           OptionTypeFlags::kAllowNull | OptionTypeFlags::kCompareNever)},
+           rs::options_type::OptionTypeFlags::AllowNull | rs::options_type::OptionTypeFlags::CompareNever)},
   };
 
   class DefaultNameStatistics : public Statistics {

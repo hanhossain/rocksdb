@@ -114,10 +114,10 @@ struct AOptions {
 static std::unordered_map<std::string, OptionTypeInfo> a_option_info = {
     {"int",
      {offsetof(struct AOptions, i), rs::options_type::OptionType::Int,
-      rs::options_type::OptionVerificationType::Normal, OptionTypeFlags::kMutable}},
+      rs::options_type::OptionVerificationType::Normal, rs::options_type::OptionTypeFlags::Mutable}},
     {"bool",
      {offsetof(struct AOptions, b), rs::options_type::OptionType::Boolean,
-      rs::options_type::OptionVerificationType::Normal, OptionTypeFlags::kNone}},
+      rs::options_type::OptionVerificationType::Normal, rs::options_type::OptionTypeFlags::None}},
 };
 
 class ACustomizable : public TestCustomizable {
@@ -142,10 +142,10 @@ struct BOptions {
 static std::unordered_map<std::string, OptionTypeInfo> b_option_info = {
     {"string",
      {offsetof(struct BOptions, s), rs::options_type::OptionType::String,
-      rs::options_type::OptionVerificationType::Normal, OptionTypeFlags::kNone}},
+      rs::options_type::OptionVerificationType::Normal, rs::options_type::OptionTypeFlags::None}},
     {"bool",
      {offsetof(struct BOptions, b), rs::options_type::OptionType::Boolean,
-      rs::options_type::OptionVerificationType::Normal, OptionTypeFlags::kNone}},
+      rs::options_type::OptionVerificationType::Normal, rs::options_type::OptionTypeFlags::None}},
 };
 
 class BCustomizable : public TestCustomizable {
@@ -197,19 +197,19 @@ struct SimpleOptions {
 static std::unordered_map<std::string, OptionTypeInfo> simple_option_info = {
     {"bool",
      {offsetof(struct SimpleOptions, b), rs::options_type::OptionType::Boolean,
-      rs::options_type::OptionVerificationType::Normal, OptionTypeFlags::kNone}},
+      rs::options_type::OptionVerificationType::Normal, rs::options_type::OptionTypeFlags::None}},
     {"unique",
      OptionTypeInfo::AsCustomUniquePtr<TestCustomizable>(
          offsetof(struct SimpleOptions, cu), rs::options_type::OptionVerificationType::Normal,
-         OptionTypeFlags::kAllowNull)},
+         rs::options_type::OptionTypeFlags::AllowNull)},
     {"shared",
      OptionTypeInfo::AsCustomSharedPtr<TestCustomizable>(
          offsetof(struct SimpleOptions, cs), rs::options_type::OptionVerificationType::Normal,
-         OptionTypeFlags::kAllowNull)},
+         rs::options_type::OptionTypeFlags::AllowNull)},
     {"pointer",
      OptionTypeInfo::AsCustomRawPtr<TestCustomizable>(
          offsetof(struct SimpleOptions, cp), rs::options_type::OptionVerificationType::Normal,
-         OptionTypeFlags::kAllowNull)},
+         rs::options_type::OptionTypeFlags::AllowNull)},
 };
 
 class SimpleConfigurable : public Configurable {
@@ -534,7 +534,7 @@ TEST_F(CustomizableTest, PrepareOptionsTest) {
   static std::unordered_map<std::string, OptionTypeInfo> p_option_info = {
       {"can_prepare",
        {0, rs::options_type::OptionType::Boolean, rs::options_type::OptionVerificationType::Normal,
-        OptionTypeFlags::kNone}},
+        rs::options_type::OptionTypeFlags::None}},
   };
 
   class PrepareCustomizable : public TestCustomizable {
@@ -613,7 +613,7 @@ namespace {
 static std::unordered_map<std::string, OptionTypeInfo> inner_option_info = {
     {"inner",
      OptionTypeInfo::AsCustomSharedPtr<TestCustomizable>(
-         0, rs::options_type::OptionVerificationType::Normal, OptionTypeFlags::kStringNameOnly)}
+         0, rs::options_type::OptionVerificationType::Normal, rs::options_type::OptionTypeFlags::StringNameOnly)}
 };
 
 struct InnerOptions {
@@ -896,10 +896,10 @@ static std::unordered_map<std::string, OptionTypeInfo> vector_option_info = {
      OptionTypeInfo::Vector<std::shared_ptr<TestCustomizable>>(
          0, rs::options_type::OptionVerificationType::Normal,
 
-         OptionTypeFlags::kNone,
+         rs::options_type::OptionTypeFlags::None,
 
          OptionTypeInfo::AsCustomSharedPtr<TestCustomizable>(
-             0, rs::options_type::OptionVerificationType::Normal, OptionTypeFlags::kNone))},
+             0, rs::options_type::OptionVerificationType::Normal, rs::options_type::OptionTypeFlags::None))},
 };
 class VectorConfigurable : public SimpleConfigurable {
  public:
@@ -1005,11 +1005,11 @@ TEST_F(CustomizableTest, MutableOptionsTest) {
   static std::unordered_map<std::string, OptionTypeInfo> mutable_option_info = {
       {"mutable",
        OptionTypeInfo::AsCustomSharedPtr<TestCustomizable>(
-           0, rs::options_type::OptionVerificationType::Normal, OptionTypeFlags::kMutable)}};
+           0, rs::options_type::OptionVerificationType::Normal, rs::options_type::OptionTypeFlags::Mutable)}};
   static std::unordered_map<std::string, OptionTypeInfo> immutable_option_info =
       {{"immutable",
         OptionTypeInfo::AsCustomSharedPtr<TestCustomizable>(
-            0, rs::options_type::OptionVerificationType::Normal, OptionTypeFlags::kAllowNull)}};
+            0, rs::options_type::OptionVerificationType::Normal, rs::options_type::OptionTypeFlags::AllowNull)}};
 
   class MutableCustomizable : public Customizable {
    private:

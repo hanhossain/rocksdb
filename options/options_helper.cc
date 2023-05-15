@@ -997,7 +997,7 @@ Status OptionTypeInfo::Serialize(const ConfigOptions& config_options,
   // we skip it in the serialization.
   if (opt_ptr == nullptr || IsDeprecated()) {
     return Status::OK();
-  } else if (IsEnabled(OptionTypeFlags::kDontSerialize)) {
+  } else if (IsEnabled(rs::options_type::OptionTypeFlags::DontSerialize)) {
     return Status::NotSupported("Cannot serialize option: ", opt_name);
   } else if (serialize_func_ != nullptr) {
     const void* opt_addr = GetOffset(opt_ptr);
@@ -1016,7 +1016,7 @@ Status OptionTypeInfo::Serialize(const ConfigOptions& config_options,
       } else {
         *opt_value = "";
       }
-    } else if (IsEnabled(OptionTypeFlags::kStringNameOnly) &&
+    } else if (IsEnabled(rs::options_type::OptionTypeFlags::StringNameOnly) &&
                !config_options.IsDetailed()) {
       if (!config_options.mutable_options_only || IsMutable()) {
         *opt_value = custom->GetId();

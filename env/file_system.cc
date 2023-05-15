@@ -228,7 +228,7 @@ namespace {
 static std::unordered_map<std::string, OptionTypeInfo> fs_wrapper_type_info = {
     {"target",
      OptionTypeInfo::AsCustomSharedPtr<FileSystem>(
-         0, rs::options_type::OptionVerificationType::ByName, OptionTypeFlags::kDontSerialize)},
+         0, rs::options_type::OptionVerificationType::ByName, rs::options_type::OptionTypeFlags::DontSerialize)},
 };
 }  // namespace
 FileSystemWrapper::FileSystemWrapper(const std::shared_ptr<FileSystem>& t)

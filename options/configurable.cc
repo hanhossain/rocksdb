@@ -543,7 +543,7 @@ Status ConfigurableHelper::SerializeOptions(const ConfigOptions& config_options,
             // details or not printing only the name, this option should be
             // included in the list
             if (config_options.IsDetailed() ||
-                !opt_info.IsEnabled(OptionTypeFlags::kStringNameOnly)) {
+                !opt_info.IsEnabled(rs::options_type::OptionTypeFlags::StringNameOnly)) {
               s = opt_info.Serialize(config_options, prefix + opt_name,
                                      opt_iter.opt_ptr, &value);
             }

@@ -2182,7 +2182,7 @@ static std::unordered_map<std::string, OptionTypeInfo>
     test_listener_option_info = {
         {"s",
          {0, rs::options_type::OptionType::String, rs::options_type::OptionVerificationType::Normal,
-          OptionTypeFlags::kNone}},
+          rs::options_type::OptionTypeFlags::None}},
 
 };
 
@@ -4381,7 +4381,7 @@ TEST_F(OptionTypeInfoTest, TestInvalidArgs) {
   // Verify that if the parse function throws an exception, it is also trapped
   OptionTypeInfo func_info(0, rs::options_type::OptionType::Unknown,
                            rs::options_type::OptionVerificationType::Normal,
-                           OptionTypeFlags::kNone,
+                           rs::options_type::OptionTypeFlags::None,
                            [](const ConfigOptions&, const std::string&,
                               const std::string& value, void* addr) {
                              auto ptr = static_cast<int*>(addr);
@@ -4395,7 +4395,7 @@ TEST_F(OptionTypeInfoTest, TestInvalidArgs) {
 TEST_F(OptionTypeInfoTest, TestParseFunc) {
   OptionTypeInfo opt_info(0, rs::options_type::OptionType::Unknown,
                           rs::options_type::OptionVerificationType::Normal,
-                          OptionTypeFlags::kNone);
+                          rs::options_type::OptionTypeFlags::None);
   opt_info.SetParseFunc([](const ConfigOptions& /*opts*/,
                            const std::string& name, const std::string& value,
                            void* addr) {
@@ -4417,7 +4417,7 @@ TEST_F(OptionTypeInfoTest, TestParseFunc) {
 TEST_F(OptionTypeInfoTest, TestSerializeFunc) {
   OptionTypeInfo opt_info(0, rs::options_type::OptionType::String,
                           rs::options_type::OptionVerificationType::Normal,
-                          OptionTypeFlags::kNone);
+                          rs::options_type::OptionTypeFlags::None);
   opt_info.SetSerializeFunc([](const ConfigOptions& /*opts*/,
                                const std::string& name, const void* /*addr*/,
                                std::string* value) {
@@ -4438,7 +4438,7 @@ TEST_F(OptionTypeInfoTest, TestSerializeFunc) {
 
 TEST_F(OptionTypeInfoTest, TestEqualsFunc) {
   OptionTypeInfo opt_info(0, rs::options_type::OptionType::Int, rs::options_type::OptionVerificationType::Normal,
-                          OptionTypeFlags::kNone);
+                          rs::options_type::OptionTypeFlags::None);
   opt_info.SetEqualsFunc([](const ConfigOptions& /*opts*/,
                             const std::string& name, const void* addr1,
                             const void* addr2, std::string* mismatch) {
@@ -4472,7 +4472,7 @@ TEST_F(OptionTypeInfoTest, TestEqualsFunc) {
 
 TEST_F(OptionTypeInfoTest, TestPrepareFunc) {
   OptionTypeInfo opt_info(0, rs::options_type::OptionType::Int, rs::options_type::OptionVerificationType::Normal,
-                          OptionTypeFlags::kNone);
+                          rs::options_type::OptionTypeFlags::None);
   opt_info.SetPrepareFunc(
       [](const ConfigOptions& /*opts*/, const std::string& name, void* addr) {
         auto i1 = static_cast<int*>(addr);
@@ -4497,7 +4497,7 @@ TEST_F(OptionTypeInfoTest, TestPrepareFunc) {
 TEST_F(OptionTypeInfoTest, TestValidateFunc) {
   OptionTypeInfo opt_info(0, rs::options_type::OptionType::SizeT,
                           rs::options_type::OptionVerificationType::Normal,
-                          OptionTypeFlags::kNone);
+                          rs::options_type::OptionTypeFlags::None);
   opt_info.SetValidateFunc([](const DBOptions& db_opts,
                               const ColumnFamilyOptions& cf_opts,
                               const std::string& name, const void* addr) {
@@ -4531,16 +4531,16 @@ TEST_F(OptionTypeInfoTest, TestValidateFunc) {
 TEST_F(OptionTypeInfoTest, TestOptionFlags) {
   OptionTypeInfo opt_none(0, rs::options_type::OptionType::String,
                           rs::options_type::OptionVerificationType::Normal,
-                          OptionTypeFlags::kDontSerialize);
+                          rs::options_type::OptionTypeFlags::DontSerialize);
   OptionTypeInfo opt_never(0, rs::options_type::OptionType::String,
                            rs::options_type::OptionVerificationType::Normal,
-                           OptionTypeFlags::kCompareNever);
+                           rs::options_type::OptionTypeFlags::CompareNever);
   OptionTypeInfo opt_alias(0, rs::options_type::OptionType::String,
                            rs::options_type::OptionVerificationType::Alias,
-                           OptionTypeFlags::kNone);
+                           rs::options_type::OptionTypeFlags::None);
   OptionTypeInfo opt_deprecated(0, rs::options_type::OptionType::String,
                                 rs::options_type::OptionVerificationType::Deprecated,
-                                OptionTypeFlags::kNone);
+                                rs::options_type::OptionTypeFlags::None);
   ConfigOptions config_options;
   std::string opts_str;
   std::string base = "base";
@@ -4663,20 +4663,20 @@ TEST_F(OptionTypeInfoTest, TestStruct) {
   };
   OptionTypeInfo basic_info = OptionTypeInfo::Struct(
       "b", &basic_type_map, 0, rs::options_type::OptionVerificationType::Normal,
-      OptionTypeFlags::kMutable);
+      rs::options_type::OptionTypeFlags::Mutable);
 
   std::unordered_map<std::string, OptionTypeInfo> extended_type_map = {
       {"j", {offsetof(struct Extended, j), rs::options_type::OptionType::Int}},
       {"b", OptionTypeInfo::Struct(
                 "b", &basic_type_map, offsetof(struct Extended, b),
-                rs::options_type::OptionVerificationType::Normal, OptionTypeFlags::kNone)},
+                rs::options_type::OptionVerificationType::Normal, rs::options_type::OptionTypeFlags::None)},
       {"m", OptionTypeInfo::Struct(
                 "m", &basic_type_map, offsetof(struct Extended, b),
-                rs::options_type::OptionVerificationType::Normal, OptionTypeFlags::kMutable)},
+                rs::options_type::OptionVerificationType::Normal, rs::options_type::OptionTypeFlags::Mutable)},
   };
   OptionTypeInfo extended_info = OptionTypeInfo::Struct(
       "e", &extended_type_map, 0, rs::options_type::OptionVerificationType::Normal,
-      OptionTypeFlags::kMutable);
+      rs::options_type::OptionTypeFlags::Mutable);
   Extended e1, e2;
   ConfigOptions config_options;
   std::string mismatch;
@@ -4732,7 +4732,7 @@ TEST_F(OptionTypeInfoTest, TestStruct) {
 
 TEST_F(OptionTypeInfoTest, TestArrayType) {
   OptionTypeInfo array_info = OptionTypeInfo::Array<std::string, 4>(
-      0, rs::options_type::OptionVerificationType::Normal, OptionTypeFlags::kNone,
+      0, rs::options_type::OptionVerificationType::Normal, rs::options_type::OptionTypeFlags::None,
       {0, rs::options_type::OptionType::String});
   std::array<std::string, 4> array1, array2;
   std::string mismatch;
@@ -4762,7 +4762,7 @@ TEST_F(OptionTypeInfoTest, TestArrayType) {
 
   std::array<std::string, 3> array3, array4;
   OptionTypeInfo bar_info = OptionTypeInfo::Array<std::string, 3>(
-      0, rs::options_type::OptionVerificationType::Normal, OptionTypeFlags::kNone,
+      0, rs::options_type::OptionVerificationType::Normal, rs::options_type::OptionTypeFlags::None,
       {0, rs::options_type::OptionType::String}, '|');
   TestParseAndCompareOption(config_options, bar_info, "v", "x|y|z", &array3,
                             &array4);
@@ -4794,7 +4794,7 @@ TEST_F(OptionTypeInfoTest, TestArrayType) {
 
 TEST_F(OptionTypeInfoTest, TestVectorType) {
   OptionTypeInfo vec_info = OptionTypeInfo::Vector<std::string>(
-      0, rs::options_type::OptionVerificationType::Normal, OptionTypeFlags::kNone,
+      0, rs::options_type::OptionVerificationType::Normal, rs::options_type::OptionTypeFlags::None,
       {0, rs::options_type::OptionType::String});
   std::vector<std::string> vec1, vec2;
   std::string mismatch;
@@ -4821,7 +4821,7 @@ TEST_F(OptionTypeInfoTest, TestVectorType) {
   ASSERT_EQ(vec1[3], "d");
 
   OptionTypeInfo bar_info = OptionTypeInfo::Vector<std::string>(
-      0, rs::options_type::OptionVerificationType::Normal, OptionTypeFlags::kNone,
+      0, rs::options_type::OptionVerificationType::Normal, rs::options_type::OptionTypeFlags::None,
       {0, rs::options_type::OptionType::String}, '|');
   TestParseAndCompareOption(config_options, vec_info, "v", "x|y|z", &vec1,
                             &vec2);
