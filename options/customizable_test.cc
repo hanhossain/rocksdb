@@ -779,10 +779,10 @@ TEST_F(CustomizableTest, TestStringDepth) {
   std::unique_ptr<Configurable> c(
       new InnerCustomizable(std::make_shared<ACustomizable>("a")));
   std::string opt_str;
-  shallow.depth = ConfigOptions::Depth::kDepthShallow;
+  shallow.depth = rs::convenience::Depth::Shallow;
   ASSERT_OK(c->GetOptionString(shallow, &opt_str));
   ASSERT_EQ(opt_str, "inner=a;");
-  shallow.depth = ConfigOptions::Depth::kDepthDetailed;
+  shallow.depth = rs::convenience::Depth::Detailed;
   ASSERT_OK(c->GetOptionString(shallow, &opt_str));
   ASSERT_NE(opt_str, "inner=a;");
 }

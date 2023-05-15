@@ -144,7 +144,7 @@ Status Configurable::ConfigureOptions(
     if (!config_options.ignore_unknown_options) {
       // If we are not ignoring unused, get the defaults in case we need to
       // reset
-      copy.depth = ConfigOptions::kDepthDetailed;
+      copy.depth = rs::convenience::Depth::Detailed;
       copy.delimiter = "; ";
       GetOptionString(copy, &curr_opts).PermitUncheckedError();
     }

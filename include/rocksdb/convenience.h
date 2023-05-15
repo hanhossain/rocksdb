@@ -40,13 +40,6 @@ struct ConfigOptions {
   // the input DBOptions.  Currently constructs a new object registry.
   explicit ConfigOptions(const DBOptions&);
 
-  enum Depth {
-    kDepthDefault,  // Traverse nested options that are not flagged as "shallow"
-    kDepthShallow,  // Do not traverse into any nested options
-    kDepthDetailed,  // Traverse nested options, overriding the options shallow
-                     // setting
-  };
-
   // When true, any unused options will be ignored and OK will be returned
   bool ignore_unknown_options = false;
 
@@ -70,7 +63,7 @@ struct ConfigOptions {
   std::string delimiter = ";";
 
   // Controls how to traverse options during print/match stages
-  Depth depth = Depth::kDepthDefault;
+  rs::convenience::Depth depth = rs::convenience::Depth::Default;
 
   // Controls how options are serialized
   // Controls how pedantic the comparison must be for equivalency
@@ -84,8 +77,8 @@ struct ConfigOptions {
   // The object registry to use for this options
   std::shared_ptr<ObjectRegistry> registry;
 
-  bool IsShallow() const { return depth == Depth::kDepthShallow; }
-  bool IsDetailed() const { return depth == Depth::kDepthDetailed; }
+  bool IsShallow() const { return depth == rs::convenience::Depth::Shallow; }
+  bool IsDetailed() const { return depth == rs::convenience::Depth::Detailed; }
 
   bool IsCheckDisabled() const {
     return sanity_level == rs::convenience::SanityLevel::None;

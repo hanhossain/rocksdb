@@ -10,4 +10,13 @@ mod ffi {
         /// Perform exact match sanity check.
         ExactMatch = 0xFF,
     }
+
+    enum Depth {
+        /// Traverse nested options that are not flagged as "shallow"
+        Default,
+        /// Do not traverse into any nested options
+        Shallow,
+        /// Traverse nested options, overriding the options shallow setting
+        Detailed,
+    }
 }
