@@ -550,7 +550,6 @@ set(SOURCES
         db/blob/blob_source.cc
         db/blob/prefetch_buffer_collection.cc
         db/builder.cc
-        db/c.cc
         db/column_family.cc
         db/compaction/compaction.cc
         db/compaction/compaction_iterator.cc
@@ -1261,16 +1260,6 @@ if(WITH_TESTS)
         add_dependencies(check ${exename}${ARTIFACT_SUFFIX})
       endif()
   endforeach(sourcefile ${TESTS})
-
-  set(ROCKSDB_LIB_FOR_C ${ROCKSDB_LIB})
-
-  if(ROCKSDB_LIB_FOR_C)
-    set(C_TESTS db/c_test.c)
-    add_executable(c_test db/c_test.c)
-    target_link_libraries(c_test ${ROCKSDB_LIB_FOR_C} testharness)
-    add_test(NAME c_test COMMAND c_test${ARTIFACT_SUFFIX})
-    add_dependencies(check c_test)
-  endif()
 endif()
 
 if(WITH_BENCHMARK_TOOLS)

@@ -13,11 +13,6 @@ add_executable(compact_files_example
 target_link_libraries(compact_files_example
   ${ROCKSDB_LIB})
 
-add_executable(c_simple_example
-  c_simple_example.c)
-target_link_libraries(c_simple_example
-  ${ROCKSDB_LIB})
-
 add_executable(optimistic_transaction_example
   optimistic_transaction_example.cc)
 target_link_libraries(optimistic_transaction_example
