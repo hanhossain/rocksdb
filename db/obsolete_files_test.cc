@@ -20,7 +20,6 @@
 #include "db/version_set.h"
 #include "db/write_batch_internal.h"
 #include "file/filename.h"
-#include "port/stack_trace.h"
 #include "rocksdb/db.h"
 #include "rocksdb/env.h"
 #include "rocksdb/transaction_log.h"
@@ -309,8 +308,7 @@ TEST_F(ObsoleteFilesTest, BlobFiles) {
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   RegisterCustomObjects(argc, argv);
   return RUN_ALL_TESTS();
 }

@@ -9,7 +9,6 @@
 
 #include "db/db_test_util.h"
 #include "file/sst_file_manager_impl.h"
-#include "port/stack_trace.h"
 #include "rocksdb/io_status.h"
 #include "rocksdb/sst_file_manager.h"
 #include "test_util/sync_point.h"
@@ -2856,7 +2855,6 @@ INSTANTIATE_TEST_CASE_P(DBErrorHandlingFSTest, DBErrorHandlingFencingTest,
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

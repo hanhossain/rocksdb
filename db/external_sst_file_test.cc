@@ -11,7 +11,6 @@
 #include "file/filename.h"
 #include "options/options_helper.h"
 #include "port/port.h"
-#include "port/stack_trace.h"
 #include "rocksdb/sst_file_reader.h"
 #include "rocksdb/sst_file_writer.h"
 #include "test_util/testutil.h"
@@ -2853,8 +2852,7 @@ INSTANTIATE_TEST_CASE_P(ExternSSTFileLinkFailFallbackTest,
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
 

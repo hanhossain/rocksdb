@@ -33,7 +33,6 @@
 #endif
 #include "monitoring/iostats_context_imp.h"
 #include "port/port.h"
-#include "port/stack_trace.h"
 #include "rocksdb/slice.h"
 #include "test_util/sync_point.h"
 #include "util/autovector.h"
@@ -735,7 +734,6 @@ IOStatus PosixRandomAccessFile::MultiRead(FSReadRequest* reqs, size_t num_reqs,
                 "PosixRandomAccessFile::MultiRead: "
                 "Bad cqe data from IO uring - %p\n",
                 req_wrap);
-        port::PrintStack();
         ios = IOStatus::IOError("io_uring_cqe_get_data() returned " +
                                 std::to_string((uint64_t)req_wrap));
         continue;

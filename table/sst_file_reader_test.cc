@@ -8,7 +8,6 @@
 
 #include <cinttypes>
 
-#include "port/stack_trace.h"
 #include "rocksdb/convenience.h"
 #include "rocksdb/db.h"
 #include "rocksdb/sst_file_writer.h"
@@ -415,8 +414,7 @@ TEST_F(SstFileReaderTimestampTest, TimestampSizeMismatch) {
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   RegisterCustomObjects(argc, argv);
   return RUN_ALL_TESTS();
 }

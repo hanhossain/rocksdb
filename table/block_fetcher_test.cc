@@ -9,7 +9,6 @@
 #include "file/file_util.h"
 #include "options/options_helper.h"
 #include "port/port.h"
-#include "port/stack_trace.h"
 #include "rocksdb/db.h"
 #include "rocksdb/file_system.h"
 #include "table/block_based/binary_search_index_reader.h"
@@ -513,7 +512,6 @@ TEST_F(BlockFetcherTest, FetchAndUncompressCompressedDataBlock) {
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

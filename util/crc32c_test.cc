@@ -189,8 +189,7 @@ inline uint64_t fnv64_buf(const void* buf, size_t n,
 }
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
 
   // Populate a buffer with a deterministic pattern
   // on which to compute checksums

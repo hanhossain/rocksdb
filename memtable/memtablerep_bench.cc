@@ -26,7 +26,6 @@ int main() {
 #include "db/memtable.h"
 #include "memory/arena.h"
 #include "port/port.h"
-#include "port/stack_trace.h"
 #include "rocksdb/comparator.h"
 #include "rocksdb/convenience.h"
 #include "rocksdb/memtablerep.h"
@@ -567,8 +566,7 @@ void PrintWarnings() {
 }
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  SetUsageMessage(std::string("\nUSAGE:\n") + std::string(argv[0]) +
+    SetUsageMessage(std::string("\nUSAGE:\n") + std::string(argv[0]) +
                   " [OPTIONS]...");
   ParseCommandLineFlags(&argc, &argv, true);
 

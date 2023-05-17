@@ -5,7 +5,6 @@
 
 #include "db/db_test_util.h"
 #include "db/version_set.h"
-#include "port/stack_trace.h"
 #include "rocksdb/utilities/write_batch_with_index.h"
 #include "test_util/testutil.h"
 #include "util/random.h"
@@ -3408,7 +3407,6 @@ TEST_F(DBRangeDelTest, AddRangeDelsSingleUserKeyTombstoneOnlyFile) {
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

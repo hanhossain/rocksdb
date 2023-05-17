@@ -17,7 +17,6 @@
 
 #include "cache/lru_cache.h"
 #include "cache/typed_cache.h"
-#include "port/stack_trace.h"
 #include "test_util/secondary_cache_test_util.h"
 #include "test_util/testharness.h"
 #include "util/coding.h"
@@ -963,7 +962,6 @@ INSTANTIATE_TEST_CASE_P(CacheTestInstance, LRUCacheTest,
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

@@ -20,7 +20,6 @@
 #include "db/db_impl/db_impl.h"
 #include "file/file_util.h"
 #include "port/port.h"
-#include "port/stack_trace.h"
 #include "rocksdb/db.h"
 #include "rocksdb/env.h"
 #include "rocksdb/utilities/transaction_db.h"
@@ -981,8 +980,7 @@ TEST_F(CheckpointTest, PutRaceWithCheckpointTrackedWalSync) {
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
 

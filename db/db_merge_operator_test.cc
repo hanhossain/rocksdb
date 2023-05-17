@@ -7,7 +7,6 @@
 
 #include "db/db_test_util.h"
 #include "db/forward_iterator.h"
-#include "port/stack_trace.h"
 #include "rocksdb/merge_operator.h"
 #include "util/random.h"
 #include "utilities/merge_operators.h"
@@ -860,7 +859,6 @@ TEST_P(PerConfigMergeOperatorPinningTest, Randomized) {
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

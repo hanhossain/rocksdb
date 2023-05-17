@@ -12,8 +12,6 @@
 #include <random>
 #include <utility>
 
-#include "port/stack_trace.h"
-
 #ifndef GFLAGS
 const int64_t FLAGS_iters = 100000;
 #else
@@ -122,8 +120,7 @@ INSTANTIATE_TEST_CASE_P(OneElementHeap, HeapTest,
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
 #ifdef GFLAGS
   GFLAGS_NAMESPACE::ParseCommandLineFlags(&argc, &argv, true);
 #endif  // GFLAGS

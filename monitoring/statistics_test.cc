@@ -6,7 +6,6 @@
 
 #include "rocksdb/statistics.h"
 
-#include "port/stack_trace.h"
 #include "rocksdb/convenience.h"
 #include "rocksdb/utilities/options_type.h"
 #include "test_util/testharness.h"
@@ -82,7 +81,6 @@ TEST_F(StatisticsTest, NoNameStats) {
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

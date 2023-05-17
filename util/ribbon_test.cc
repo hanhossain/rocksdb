@@ -1299,8 +1299,7 @@ TYPED_TEST(RibbonTypeParamTest, OptimizeHomogAtScale) {
 }
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
 #ifdef GFLAGS
   ParseCommandLineFlags(&argc, &argv, true);
 #endif  // GFLAGS

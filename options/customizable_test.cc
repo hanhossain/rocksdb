@@ -20,7 +20,6 @@
 #include "memory/memkind_kmem_allocator.h"
 #include "options/options_helper.h"
 #include "options/options_parser.h"
-#include "port/stack_trace.h"
 #include "rocksdb/convenience.h"
 #include "rocksdb/env_encryption.h"
 #include "rocksdb/file_checksum.h"
@@ -2108,8 +2107,7 @@ TEST_F(LoadCustomizableTest, LoadFlushBlockPolicyFactoryTest) {
 }  // namespace ROCKSDB_NAMESPACE
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-#ifdef GFLAGS
+  #ifdef GFLAGS
   ParseCommandLineFlags(&argc, &argv, true);
 #endif  // GFLAGS
   return RUN_ALL_TESTS();

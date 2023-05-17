@@ -340,8 +340,7 @@ TEST_F(CuckooTableDBTest, AdaptiveTable) {
 
 int main(int argc, char** argv) {
   if (ROCKSDB_NAMESPACE::port::kLittleEndian) {
-    ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-    ::testing::InitGoogleTest(&argc, argv);
+        ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
   } else {
     fprintf(stderr, "SKIPPED as Cuckoo table doesn't support Big Endian\n");

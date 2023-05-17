@@ -8,7 +8,6 @@
 #include "db/db_test_util.h"
 #include "db/version_edit.h"
 #include "port/port.h"
-#include "port/stack_trace.h"
 #include "rocksdb/sst_file_writer.h"
 #include "test_util/testharness.h"
 #include "test_util/testutil.h"
@@ -2077,8 +2076,7 @@ INSTANTIATE_TEST_CASE_P(ExternalSSTFileBasicTest, ExternalSSTFileBasicTest,
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   RegisterCustomObjects(argc, argv);
   return RUN_ALL_TESTS();
 }

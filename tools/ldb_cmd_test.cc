@@ -12,7 +12,6 @@
 #include "db/version_set.h"
 #include "env/composite_env_wrapper.h"
 #include "file/filename.h"
-#include "port/stack_trace.h"
 #include "rocksdb/advanced_options.h"
 #include "rocksdb/convenience.h"
 #include "rocksdb/db.h"
@@ -1209,8 +1208,7 @@ TEST_F(LdbCmdTest, RenameDbAndLoadOptions) {
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   RegisterCustomObjects(argc, argv);
   return RUN_ALL_TESTS();
 }

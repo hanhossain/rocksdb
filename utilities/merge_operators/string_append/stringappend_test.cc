@@ -18,7 +18,6 @@
 #include <map>
 #include <tuple>
 
-#include "port/stack_trace.h"
 #include "rocksdb/db.h"
 #include "rocksdb/merge_operator.h"
 #include "rocksdb/utilities/db_ttl.h"
@@ -630,7 +629,6 @@ INSTANTIATE_TEST_CASE_P(StringAppendOperatorTest, StringAppendOperatorTest,
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

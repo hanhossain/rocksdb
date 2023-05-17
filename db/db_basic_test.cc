@@ -11,7 +11,6 @@
 
 #include "db/db_test_util.h"
 #include "options/options_helper.h"
-#include "port/stack_trace.h"
 #include "rocksdb/filter_policy.h"
 #include "rocksdb/flush_block_policy.h"
 #include "rocksdb/merge_operator.h"
@@ -4770,8 +4769,7 @@ INSTANTIATE_TEST_CASE_P(DBBasicTestDeadline, DBBasicTestDeadline,
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   RegisterCustomObjects(argc, argv);
   return RUN_ALL_TESTS();
 }

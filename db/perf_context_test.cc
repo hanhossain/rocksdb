@@ -1119,8 +1119,7 @@ TEST_F(PerfContextTest, MergeOperandCount) {
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
 
   for (int i = 1; i < argc; i++) {
     int n;

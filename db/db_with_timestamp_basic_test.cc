@@ -8,7 +8,6 @@
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 
 #include "db/db_with_timestamp_test_util.h"
-#include "port/stack_trace.h"
 #include "rocksdb/perf_context.h"
 #include "rocksdb/utilities/debug.h"
 #include "table/block_based/block_based_table_reader.h"
@@ -4009,8 +4008,7 @@ TEST_F(DBBasicTestWithTimestamp, TimestampFilterTableReadOnGet) {
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   RegisterCustomObjects(argc, argv);
   return RUN_ALL_TESTS();
 }

@@ -26,7 +26,6 @@
 #include "file/filename.h"
 #include "monitoring/statistics.h"
 #include "monitoring/thread_status_util.h"
-#include "port/stack_trace.h"
 #include "rocksdb/cache.h"
 #include "rocksdb/compaction_filter.h"
 #include "rocksdb/convenience.h"
@@ -953,8 +952,7 @@ INSTANTIATE_TEST_CASE_P(CompactionJobStatsTest, CompactionJobStatsTest,
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
 

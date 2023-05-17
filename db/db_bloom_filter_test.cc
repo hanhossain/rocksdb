@@ -16,7 +16,6 @@
 #include "cache/cache_reservation_manager.h"
 #include "db/db_test_util.h"
 #include "options/options_helper.h"
-#include "port/stack_trace.h"
 #include "rocksdb/advanced_options.h"
 #include "rocksdb/convenience.h"
 #include "rocksdb/filter_policy.h"
@@ -3474,7 +3473,6 @@ TEST_F(DBBloomFilterTest, WeirdPrefixExtractorWithFilter3) {
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

@@ -30,7 +30,6 @@
 #include "env/env_chroot.h"
 #include "file/filename.h"
 #include "port/port.h"
-#include "port/stack_trace.h"
 #include "rocksdb/advanced_options.h"
 #include "rocksdb/env.h"
 #include "rocksdb/file_checksum.h"
@@ -4398,8 +4397,7 @@ TEST_F(BackupEngineTest, ExcludeFiles) {
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
 

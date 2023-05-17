@@ -11,7 +11,6 @@
 #include "db/db_impl/db_impl.h"
 #include "db/dbformat.h"
 #include "db/write_batch_internal.h"
-#include "port/stack_trace.h"
 #include "rocksdb/cache.h"
 #include "rocksdb/comparator.h"
 #include "rocksdb/db.h"
@@ -615,7 +614,6 @@ int main(int argc, char** argv) {
     ROCKSDB_NAMESPACE::use_compression = true;
   }
 
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

@@ -30,7 +30,6 @@
 #include "monitoring/statistics.h"
 #include "options/options_helper.h"
 #include "port/port.h"
-#include "port/stack_trace.h"
 #include "rocksdb/cache.h"
 #include "rocksdb/compression_type.h"
 #include "rocksdb/convenience.h"
@@ -5876,7 +5875,6 @@ TEST_F(CacheUsageOptionsOverridesTest, SanitizeAndValidateOptions) {
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

@@ -24,10 +24,6 @@
 #include <memory>
 #include <string>
 
-#ifdef ROCKSDB_ASSERT_STATUS_CHECKED
-#include "port/stack_trace.h"
-#endif
-
 #include "rocksdb/slice.h"
 
 namespace ROCKSDB_NAMESPACE {
@@ -47,7 +43,6 @@ class Status {
 #ifdef ROCKSDB_ASSERT_STATUS_CHECKED
     if (!checked_) {
       fprintf(stderr, "Failed to check Status %p\n", this);
-      port::PrintStack();
       std::abort();
     }
 #endif  // ROCKSDB_ASSERT_STATUS_CHECKED

@@ -10,7 +10,6 @@
 #include "db/db_impl/db_impl_secondary.h"
 #include "db/db_test_util.h"
 #include "db/db_with_timestamp_test_util.h"
-#include "port/stack_trace.h"
 #include "rocksdb/utilities/transaction_db.h"
 #include "test_util/sync_point.h"
 #include "test_util/testutil.h"
@@ -1685,7 +1684,6 @@ TEST_F(DBSecondaryTestWithTimestamp, Iterators) {
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

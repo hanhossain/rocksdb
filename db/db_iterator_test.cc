@@ -13,7 +13,6 @@
 #include "db/db_iter.h"
 #include "db/db_test_util.h"
 #include "port/port.h"
-#include "port/stack_trace.h"
 #include "rocksdb/iostats_context.h"
 #include "rocksdb/perf_context.h"
 #include "table/block_based/flush_block_policy.h"
@@ -3298,7 +3297,6 @@ TEST_F(DBIteratorTest, IteratorRefreshReturnSV) {
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

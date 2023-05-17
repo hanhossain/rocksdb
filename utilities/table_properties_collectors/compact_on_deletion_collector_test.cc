@@ -13,7 +13,6 @@
 #include <cmath>
 #include <vector>
 
-#include "port/stack_trace.h"
 #include "rocksdb/table.h"
 #include "rocksdb/table_properties.h"
 #include "rocksdb/utilities/table_properties_collectors.h"
@@ -232,7 +231,6 @@ TEST(CompactOnDeletionCollector, SlidingWindow) {
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

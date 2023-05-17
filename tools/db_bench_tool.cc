@@ -44,7 +44,6 @@
 #include "monitoring/statistics.h"
 #include "options/cf_options.h"
 #include "port/port.h"
-#include "port/stack_trace.h"
 #include "rocksdb/cache.h"
 #include "rocksdb/convenience.h"
 #include "rocksdb/db.h"
@@ -8417,8 +8416,7 @@ class Benchmark {
 };
 
 int db_bench_tool(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ConfigOptions config_options;
+    ConfigOptions config_options;
   static bool initialized = false;
   if (!initialized) {
     SetUsageMessage(std::string("\nUSAGE:\n") + std::string(argv[0]) +

@@ -4,7 +4,6 @@
 //  (found in the LICENSE.Apache file in the root directory).
 
 #include "db/db_test_util.h"
-#include "port/stack_trace.h"
 #include "rocksdb/perf_context.h"
 #include "rocksdb/utilities/debug.h"
 #include "table/block_based/block_builder.h"
@@ -482,7 +481,6 @@ TEST_F(DBMergeOperandTest, GetMergeOperandsBaseDeletionInImmMem) {
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

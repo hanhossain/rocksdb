@@ -6,7 +6,6 @@
 #include "db/blob/blob_index.h"
 #include "db/blob/blob_log_format.h"
 #include "db/db_test_util.h"
-#include "port/stack_trace.h"
 #include "test_util/sync_point.h"
 
 namespace ROCKSDB_NAMESPACE {
@@ -892,8 +891,7 @@ TEST_F(DBBlobCompactionTest, CompactionDoNotFillCache) {
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   RegisterCustomObjects(argc, argv);
   return RUN_ALL_TESTS();
 }

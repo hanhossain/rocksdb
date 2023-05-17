@@ -10,7 +10,6 @@
 #pragma once
 
 #include "db/db_test_util.h"
-#include "port/stack_trace.h"
 #include "test_util/testutil.h"
 
 namespace ROCKSDB_NAMESPACE {

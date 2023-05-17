@@ -19,7 +19,6 @@
 #include "db/db_impl/db_impl.h"
 #include "db/db_test_util.h"
 #include "env/unique_id_gen.h"
-#include "port/stack_trace.h"
 #include "rocksdb/persistent_cache.h"
 #include "rocksdb/statistics.h"
 #include "rocksdb/table.h"
@@ -1963,7 +1962,6 @@ INSTANTIATE_TEST_CASE_P(
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

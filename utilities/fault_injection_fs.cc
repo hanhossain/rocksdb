@@ -22,7 +22,6 @@
 
 #include "env/composite_env_wrapper.h"
 #include "port/lang.h"
-#include "port/stack_trace.h"
 #include "test_util/sync_point.h"
 #include "util/coding.h"
 #include "util/crc32c.h"
@@ -966,7 +965,6 @@ IOStatus FaultInjectionTestFS::InjectThreadSpecificReadError(
     if (ctx->callstack) {
       free(ctx->callstack);
     }
-    ctx->callstack = port::SaveStack(&ctx->frames);
 
     if (op != ErrorOperation::kMultiReadSingleReq) {
       // Likely non-per read status code for MultiRead
@@ -1063,7 +1061,6 @@ void FaultInjectionTestFS::PrintFaultBacktrace() {
   }
   fprintf(stderr, "Injected error type = %d\n", ctx->type);
   fprintf(stderr, "Message: %s\n", ctx->message.c_str());
-  port::PrintAndFreeStack(ctx->callstack, ctx->frames);
   ctx->callstack = nullptr;
 #endif
 }

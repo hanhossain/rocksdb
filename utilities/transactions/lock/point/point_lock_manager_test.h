@@ -6,7 +6,6 @@
 
 #include "file/file_util.h"
 #include "port/port.h"
-#include "port/stack_trace.h"
 #include "rocksdb/utilities/transaction_db.h"
 #include "test_util/testharness.h"
 #include "test_util/testutil.h"

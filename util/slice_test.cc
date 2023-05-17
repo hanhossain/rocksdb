@@ -8,7 +8,6 @@
 #include <gtest/gtest.h>
 
 #include "port/port.h"
-#include "port/stack_trace.h"
 #include "rocksdb/data_structure.h"
 #include "rocksdb/types.h"
 #include "test_util/testharness.h"
@@ -246,7 +245,6 @@ TEST_F(SmallEnumSetTest, SmallEnumSetTest2) {
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

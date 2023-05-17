@@ -18,7 +18,6 @@ int main() {
 
 #include "memory/arena.h"
 #include "port/port.h"
-#include "port/stack_trace.h"
 #include "rocksdb/cache.h"
 #include "rocksdb/env.h"
 #include "rocksdb/system_clock.h"
@@ -791,8 +790,7 @@ double FilterBench::RandomQueryTest(uint32_t inside_threshold, bool dry_run,
 }
 
 int main(int argc, char **argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  SetUsageMessage(std::string("\nUSAGE:\n") + std::string(argv[0]) +
+    SetUsageMessage(std::string("\nUSAGE:\n") + std::string(argv[0]) +
                   " [-quick] [OTHER OPTIONS]...");
   ParseCommandLineFlags(&argc, &argv, true);
 

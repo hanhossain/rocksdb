@@ -17,7 +17,6 @@
 #include "db/version_edit.h"
 #include "options/options_helper.h"
 #include "port/port.h"
-#include "port/stack_trace.h"
 #include "rocksdb/experimental.h"
 #include "rocksdb/iostats_context.h"
 #include "rocksdb/persistent_cache.h"
@@ -7732,8 +7731,7 @@ TEST_F(DBTest2, GetLatestSeqAndTsForKey) {
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   RegisterCustomObjects(argc, argv);
   return RUN_ALL_TESTS();
 }

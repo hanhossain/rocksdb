@@ -14,7 +14,6 @@
 #include "db/write_batch_internal.h"
 #include "db/write_thread.h"
 #include "port/port.h"
-#include "port/stack_trace.h"
 #include "test_util/sync_point.h"
 #include "util/random.h"
 #include "util/string_util.h"
@@ -788,8 +787,7 @@ INSTANTIATE_TEST_CASE_P(DBWriteTestInstance, DBWriteTest,
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   RegisterCustomObjects(argc, argv);
   return RUN_ALL_TESTS();
 }

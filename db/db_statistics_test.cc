@@ -7,7 +7,6 @@
 
 #include "db/db_test_util.h"
 #include "monitoring/thread_status_util.h"
-#include "port/stack_trace.h"
 #include "rocksdb/statistics.h"
 #include "util/random.h"
 
@@ -246,7 +245,6 @@ TEST_F(DBStatisticsTest, VerifyChecksumReadStat) {
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

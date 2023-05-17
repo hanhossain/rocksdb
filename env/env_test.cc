@@ -47,7 +47,6 @@
 #include "options/options_helper.h"
 #include "port/malloc.h"
 #include "port/port.h"
-#include "port/stack_trace.h"
 #include "rocksdb/convenience.h"
 #include "rocksdb/env.h"
 #include "rocksdb/env_encryption.h"
@@ -3540,7 +3539,6 @@ TEST_F(TestAsyncRead, ReadAsync) {
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

@@ -9,7 +9,6 @@
 #include "db/db_test_util.h"
 #include "db/memtable.h"
 #include "db/range_del_aggregator.h"
-#include "port/stack_trace.h"
 #include "rocksdb/memtablerep.h"
 #include "rocksdb/slice_transform.h"
 
@@ -338,7 +337,6 @@ TEST_F(DBMemTableTest, ColumnFamilyId) {
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

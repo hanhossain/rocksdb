@@ -18,7 +18,6 @@
 #include "db/periodic_task_scheduler.h"
 #include "monitoring/persistent_stats_history.h"
 #include "options/options_helper.h"
-#include "port/stack_trace.h"
 #include "rocksdb/cache.h"
 #include "rocksdb/convenience.h"
 #include "rocksdb/rate_limiter.h"
@@ -656,7 +655,6 @@ TEST_F(StatsHistoryTest, ForceManualFlushStatsCF) {
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

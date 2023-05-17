@@ -15,7 +15,6 @@
 #include "db/db_test_util.h"
 #include "db/write_stall_stats.h"
 #include "options/cf_options.h"
-#include "port/stack_trace.h"
 #include "rocksdb/listener.h"
 #include "rocksdb/options.h"
 #include "rocksdb/perf_context.h"
@@ -2371,7 +2370,6 @@ TEST_F(DBPropertiesTest, TableMetaIndexKeys) {
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

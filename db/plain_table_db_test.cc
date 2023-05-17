@@ -1342,7 +1342,6 @@ INSTANTIATE_TEST_CASE_P(PlainTableDBTest, PlainTableDBTest, ::testing::Bool());
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

@@ -7,7 +7,6 @@
 #include "db/db_test_util.h"
 #include "db/periodic_task_scheduler.h"
 #include "db/seqno_to_time_mapping.h"
-#include "port/stack_trace.h"
 #include "rocksdb/iostats_context.h"
 #include "rocksdb/utilities/debug.h"
 #include "test_util/mock_time_env.h"
@@ -988,7 +987,6 @@ TEST_F(SeqnoTimeTest, EncodeDecodePerferNewTime) {
 
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

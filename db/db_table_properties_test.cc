@@ -13,7 +13,6 @@
 
 #include "db/db_test_util.h"
 #include "port/port.h"
-#include "port/stack_trace.h"
 #include "rocksdb/db.h"
 #include "rocksdb/types.h"
 #include "rocksdb/utilities/table_properties_collectors.h"
@@ -617,7 +616,6 @@ INSTANTIATE_TEST_CASE_P(DBTablePropertiesTest, DBTablePropertiesTest,
 
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

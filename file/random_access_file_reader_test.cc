@@ -9,7 +9,6 @@
 
 #include "file/file_util.h"
 #include "port/port.h"
-#include "port/stack_trace.h"
 #include "rocksdb/file_system.h"
 #include "test_util/sync_point.h"
 #include "test_util/testharness.h"
@@ -473,7 +472,6 @@ TEST(FSReadRequest, TryMerge) {
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

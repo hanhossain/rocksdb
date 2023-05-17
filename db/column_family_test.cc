@@ -16,7 +16,6 @@
 #include "db/db_test_util.h"
 #include "options/options_parser.h"
 #include "port/port.h"
-#include "port/stack_trace.h"
 #include "rocksdb/convenience.h"
 #include "rocksdb/db.h"
 #include "rocksdb/env.h"
@@ -3375,8 +3374,7 @@ TEST(ColumnFamilyTest, ValidateMemtableKVChecksumOption) {
 }  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::port::InstallStackTraceHandler();
-  ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleTest(&argc, argv);
   RegisterCustomObjects(argc, argv);
   return RUN_ALL_TESTS();
 }
