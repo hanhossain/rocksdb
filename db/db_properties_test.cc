@@ -1825,9 +1825,9 @@ TEST_F(DBPropertiesTest, BlobCacheProperties) {
   // Test with empty blob cache.
   constexpr size_t kCapacity = 100;
   LRUCacheOptions co;
-  co.capacity = kCapacity;
-  co.num_shard_bits = 0;
-  co.metadata_charge_policy = kDontChargeCacheMetadata;
+  co.sharded_cache_options.capacity = kCapacity;
+  co.sharded_cache_options.num_shard_bits = 0;
+  co.sharded_cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
   auto blob_cache = NewLRUCache(co);
   options.blob_cache = blob_cache;
 
@@ -1933,9 +1933,9 @@ TEST_F(DBPropertiesTest, BlockCacheProperties) {
   // Test with empty block cache.
   constexpr size_t kCapacity = 100;
   LRUCacheOptions co;
-  co.capacity = kCapacity;
-  co.num_shard_bits = 0;
-  co.metadata_charge_policy = kDontChargeCacheMetadata;
+  co.sharded_cache_options.capacity = kCapacity;
+  co.sharded_cache_options.num_shard_bits = 0;
+  co.sharded_cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
   auto block_cache = NewLRUCache(co);
   table_options.block_cache = block_cache;
   table_options.no_block_cache = false;

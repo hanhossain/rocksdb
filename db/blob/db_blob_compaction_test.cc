@@ -863,8 +863,8 @@ TEST_F(DBBlobCompactionTest, CompactionDoNotFillCache) {
   options.statistics = CreateDBStatistics();
 
   LRUCacheOptions cache_options;
-  cache_options.capacity = 1 << 20;
-  cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
+  cache_options.sharded_cache_options.capacity = 1 << 20;
+  cache_options.sharded_cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
 
   options.blob_cache = NewLRUCache(cache_options);
 

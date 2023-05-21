@@ -354,9 +354,9 @@ class SimCacheImpl : public SimCache {
 std::shared_ptr<SimCache> NewSimCache(std::shared_ptr<Cache> cache,
                                       size_t sim_capacity, int num_shard_bits) {
   LRUCacheOptions co;
-  co.capacity = sim_capacity;
-  co.num_shard_bits = num_shard_bits;
-  co.metadata_charge_policy = kDontChargeCacheMetadata;
+  co.sharded_cache_options.capacity = sim_capacity;
+  co.sharded_cache_options.num_shard_bits = num_shard_bits;
+  co.sharded_cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
   return NewSimCache(NewLRUCache(co), cache, num_shard_bits);
 }
 

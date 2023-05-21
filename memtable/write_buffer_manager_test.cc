@@ -85,9 +85,9 @@ TEST_F(ChargeWriteBufferTest, Basic) {
 
   LRUCacheOptions co;
   // 1GB cache
-  co.capacity = 1024 * 1024 * 1024;
-  co.num_shard_bits = 4;
-  co.metadata_charge_policy = kDontChargeCacheMetadata;
+  co.sharded_cache_options.capacity = 1024 * 1024 * 1024;
+  co.sharded_cache_options.num_shard_bits = 4;
+  co.sharded_cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
   std::shared_ptr<Cache> cache = NewLRUCache(co);
   // A write buffer manager of size 50MB
   std::unique_ptr<WriteBufferManager> wbf(
@@ -239,9 +239,9 @@ TEST_F(ChargeWriteBufferTest, BasicWithCacheFull) {
 
   // 12MB cache size with strict capacity
   LRUCacheOptions lo;
-  lo.capacity = 12 * 1024 * 1024;
-  lo.num_shard_bits = 0;
-  lo.strict_capacity_limit = true;
+  lo.sharded_cache_options.capacity = 12 * 1024 * 1024;
+  lo.sharded_cache_options.num_shard_bits = 0;
+  lo.sharded_cache_options.strict_capacity_limit = true;
   std::shared_ptr<Cache> cache = NewLRUCache(lo);
   std::unique_ptr<WriteBufferManager> wbf(new WriteBufferManager(0, cache));
 

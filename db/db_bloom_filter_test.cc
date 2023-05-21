@@ -952,9 +952,9 @@ class ChargeFilterConstructionTestWithParam
         detect_filter_construct_corruption_;
 
     LRUCacheOptions lo;
-    lo.capacity = kCacheCapacity;
-    lo.num_shard_bits = 0;  // 2^0 shard
-    lo.strict_capacity_limit = true;
+    lo.sharded_cache_options.capacity = kCacheCapacity;
+    lo.sharded_cache_options.num_shard_bits = 0;  // 2^0 shard
+    lo.sharded_cache_options.strict_capacity_limit = true;
     cache_ = std::make_shared<
         TargetCacheChargeTrackingCache<CacheEntryRole::kFilterConstruction>>(
         (NewLRUCache(lo)));

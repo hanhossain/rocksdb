@@ -316,11 +316,11 @@ TEST_F(CacheSimulatorTest, HybridRowBlockCacheSimulatorGetTest) {
   get.get_from_user_specified_snapshot = false;
 
   LRUCacheOptions co;
-  co.capacity = 16;
-  co.num_shard_bits = 1;
-  co.strict_capacity_limit = false;
+  co.sharded_cache_options.capacity = 16;
+  co.sharded_cache_options.num_shard_bits = 1;
+  co.sharded_cache_options.strict_capacity_limit = false;
   co.high_pri_pool_ratio = 0;
-  co.metadata_charge_policy = kDontChargeCacheMetadata;
+  co.sharded_cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
   std::shared_ptr<Cache> sim_cache = NewLRUCache(co);
   std::unique_ptr<HybridRowBlockCacheSimulator> cache_simulator(
       new HybridRowBlockCacheSimulator(

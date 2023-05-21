@@ -137,9 +137,9 @@ TEST(CacheReservationManagerIncreaseReservcationOnFullCacheTest,
   constexpr std::size_t kMetaDataChargeOverhead = 10000;
 
   LRUCacheOptions lo;
-  lo.capacity = kSmallCacheCapacity;
-  lo.num_shard_bits = 0;  // 2^0 shard
-  lo.strict_capacity_limit = true;
+  lo.sharded_cache_options.capacity = kSmallCacheCapacity;
+  lo.sharded_cache_options.num_shard_bits = 0;  // 2^0 shard
+  lo.sharded_cache_options.strict_capacity_limit = true;
   std::shared_ptr<Cache> cache = NewLRUCache(lo);
   std::shared_ptr<CacheReservationManager> test_cache_rev_mng =
       std::make_shared<CacheReservationManagerImpl<CacheEntryRole::kMisc>>(
@@ -300,8 +300,8 @@ TEST(CacheReservationManagerWithDelayedDecreaseTest,
   constexpr std::size_t kMetaDataChargeOverhead = 10000;
 
   LRUCacheOptions lo;
-  lo.capacity = kCacheCapacity;
-  lo.num_shard_bits = 0;
+  lo.sharded_cache_options.capacity = kCacheCapacity;
+  lo.sharded_cache_options.num_shard_bits = 0;
   std::shared_ptr<Cache> cache = NewLRUCache(lo);
   std::shared_ptr<CacheReservationManager> test_cache_rev_mng =
       std::make_shared<CacheReservationManagerImpl<CacheEntryRole::kMisc>>(
@@ -372,8 +372,8 @@ TEST(CacheReservationManagerDestructorTest,
   constexpr std::size_t kMetaDataChargeOverhead = 10000;
 
   LRUCacheOptions lo;
-  lo.capacity = kCacheCapacity;
-  lo.num_shard_bits = 0;
+  lo.sharded_cache_options.capacity = kCacheCapacity;
+  lo.sharded_cache_options.num_shard_bits = 0;
   std::shared_ptr<Cache> cache = NewLRUCache(lo);
   {
     std::shared_ptr<CacheReservationManager> test_cache_rev_mng =
@@ -397,8 +397,8 @@ TEST(CacheReservationHandleTest, HandleTest) {
   constexpr std::size_t kMetaDataChargeOverhead = 10000;
 
   LRUCacheOptions lo;
-  lo.capacity = kOneGigabyte;
-  lo.num_shard_bits = 0;
+  lo.sharded_cache_options.capacity = kOneGigabyte;
+  lo.sharded_cache_options.num_shard_bits = 0;
   std::shared_ptr<Cache> cache = NewLRUCache(lo);
 
   std::shared_ptr<CacheReservationManager> test_cache_rev_mng(

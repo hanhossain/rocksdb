@@ -646,14 +646,14 @@ void LRUCacheShard::AppendPrintableOptions(std::string& str) const {
   str.append(buffer);
 }
 
-LRUCache::LRUCache(const LRUCacheOptions& opts) : ShardedCache(opts) {
+LRUCache::LRUCache(const LRUCacheOptions& opts) : ShardedCache(opts.sharded_cache_options) {
   size_t per_shard = GetPerShardCapacity();
   MemoryAllocator* alloc = memory_allocator();
   InitShards([&](LRUCacheShard* cs) {
-    new (cs) LRUCacheShard(per_shard, opts.strict_capacity_limit,
+    new (cs) LRUCacheShard(per_shard, opts.sharded_cache_options.strict_capacity_limit,
                            opts.high_pri_pool_ratio, opts.low_pri_pool_ratio,
-                           opts.use_adaptive_mutex, opts.metadata_charge_policy,
-                           /* max_upper_hash_bits */ 32 - opts.num_shard_bits,
+                           opts.use_adaptive_mutex, opts.sharded_cache_options.metadata_charge_policy,
+                           /* max_upper_hash_bits */ 32 - opts.sharded_cache_options.num_shard_bits,
                            alloc, &eviction_callback_);
   });
 }
@@ -685,7 +685,7 @@ double LRUCache::GetHighPriPoolRatio() {
 }  // namespace lru_cache
 
 std::shared_ptr<Cache> LRUCacheOptions::MakeSharedCache() const {
-  if (num_shard_bits >= 20) {
+  if (sharded_cache_options.num_shard_bits >= 20) {
     return nullptr;  // The cache cannot be sharded into too many fine pieces.
   }
   if (high_pri_pool_ratio < 0.0 || high_pri_pool_ratio > 1.0) {
@@ -702,12 +702,12 @@ std::shared_ptr<Cache> LRUCacheOptions::MakeSharedCache() const {
   }
   // For sanitized options
   LRUCacheOptions opts = *this;
-  if (opts.num_shard_bits < 0) {
-    opts.num_shard_bits = GetDefaultCacheShardBits(capacity);
+  if (opts.sharded_cache_options.num_shard_bits < 0) {
+    opts.sharded_cache_options.num_shard_bits = GetDefaultCacheShardBits(sharded_cache_options.capacity);
   }
   std::shared_ptr<Cache> cache = std::make_shared<LRUCache>(opts);
-  if (secondary_cache) {
-    cache = std::make_shared<CacheWithSecondaryAdapter>(cache, secondary_cache);
+  if (sharded_cache_options.secondary_cache) {
+    cache = std::make_shared<CacheWithSecondaryAdapter>(cache, sharded_cache_options.secondary_cache);
   }
   return cache;
 }

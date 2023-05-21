@@ -128,8 +128,8 @@ class CompressedSecondaryCacheTestBase : public testing::Test,
 
   void BasicTest(bool sec_cache_is_compressed, bool use_jemalloc) {
     CompressedSecondaryCacheOptions opts;
-    opts.capacity = 2048;
-    opts.num_shard_bits = 0;
+    opts.sharded_cache_options.capacity = 2048;
+    opts.sharded_cache_options.num_shard_bits = 0;
 
     if (sec_cache_is_compressed) {
       if (!LZ4_Supported()) {
@@ -148,7 +148,7 @@ class CompressedSecondaryCacheTestBase : public testing::Test,
       if (JemallocNodumpAllocator::IsSupported(&msg)) {
         Status s = NewJemallocNodumpAllocator(jopts, &allocator);
         if (s.ok()) {
-          opts.memory_allocator = allocator;
+          opts.sharded_cache_options.memory_allocator = allocator;
         }
       } else {
         ROCKSDB_GTEST_BYPASS("JEMALLOC not supported");
@@ -171,8 +171,8 @@ class CompressedSecondaryCacheTestBase : public testing::Test,
       secondary_cache_opts.compression_type = CompressionType::kNoCompression;
     }
 
-    secondary_cache_opts.capacity = 1100;
-    secondary_cache_opts.num_shard_bits = 0;
+    secondary_cache_opts.sharded_cache_options.capacity = 1100;
+    secondary_cache_opts.sharded_cache_options.num_shard_bits = 0;
     std::shared_ptr<SecondaryCache> sec_cache =
         NewCompressedSecondaryCache(secondary_cache_opts);
 
@@ -246,8 +246,8 @@ class CompressedSecondaryCacheTestBase : public testing::Test,
       secondary_cache_opts.compression_type = CompressionType::kNoCompression;
     }
 
-    secondary_cache_opts.capacity = 6000;
-    secondary_cache_opts.num_shard_bits = 0;
+    secondary_cache_opts.sharded_cache_options.capacity = 6000;
+    secondary_cache_opts.sharded_cache_options.num_shard_bits = 0;
     secondary_cache_opts.enable_custom_split_merge = enable_custom_split_merge;
     std::shared_ptr<SecondaryCache> secondary_cache =
         NewCompressedSecondaryCache(secondary_cache_opts);
@@ -414,8 +414,8 @@ class CompressedSecondaryCacheTestBase : public testing::Test,
       secondary_cache_opts.compression_type = CompressionType::kNoCompression;
     }
 
-    secondary_cache_opts.capacity = 6000;
-    secondary_cache_opts.num_shard_bits = 0;
+    secondary_cache_opts.sharded_cache_options.capacity = 6000;
+    secondary_cache_opts.sharded_cache_options.num_shard_bits = 0;
     std::shared_ptr<SecondaryCache> secondary_cache =
         NewCompressedSecondaryCache(secondary_cache_opts);
 
@@ -460,8 +460,8 @@ class CompressedSecondaryCacheTestBase : public testing::Test,
       secondary_cache_opts.compression_type = CompressionType::kNoCompression;
     }
 
-    secondary_cache_opts.capacity = 6000;
-    secondary_cache_opts.num_shard_bits = 0;
+    secondary_cache_opts.sharded_cache_options.capacity = 6000;
+    secondary_cache_opts.sharded_cache_options.num_shard_bits = 0;
 
     std::shared_ptr<SecondaryCache> secondary_cache =
         NewCompressedSecondaryCache(secondary_cache_opts);
@@ -508,8 +508,8 @@ class CompressedSecondaryCacheTestBase : public testing::Test,
       secondary_cache_opts.compression_type = CompressionType::kNoCompression;
     }
 
-    secondary_cache_opts.capacity = 6000;
-    secondary_cache_opts.num_shard_bits = 0;
+    secondary_cache_opts.sharded_cache_options.capacity = 6000;
+    secondary_cache_opts.sharded_cache_options.num_shard_bits = 0;
 
     std::shared_ptr<SecondaryCache> secondary_cache =
         NewCompressedSecondaryCache(secondary_cache_opts);
@@ -557,8 +557,8 @@ class CompressedSecondaryCacheTestBase : public testing::Test,
       secondary_cache_opts.compression_type = CompressionType::kNoCompression;
     }
 
-    secondary_cache_opts.capacity = 6000;
-    secondary_cache_opts.num_shard_bits = 0;
+    secondary_cache_opts.sharded_cache_options.capacity = 6000;
+    secondary_cache_opts.sharded_cache_options.num_shard_bits = 0;
 
     std::shared_ptr<SecondaryCache> secondary_cache =
         NewCompressedSecondaryCache(secondary_cache_opts);
@@ -865,8 +865,8 @@ TEST_P(CompressedSecondaryCacheTestWithCompressionParam,
 
 TEST_P(CompressedSecondaryCacheTestWithCompressionParam, EntryRoles) {
   CompressedSecondaryCacheOptions opts;
-  opts.capacity = 2048;
-  opts.num_shard_bits = 0;
+  opts.sharded_cache_options.capacity = 2048;
+  opts.sharded_cache_options.num_shard_bits = 0;
 
   if (sec_cache_is_compressed_) {
     if (!LZ4_Supported()) {

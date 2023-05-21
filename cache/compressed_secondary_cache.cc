@@ -52,7 +52,7 @@ std::unique_ptr<SecondaryCacheResultHandle> CompressedSecondaryCache::Lookup(
     ptr = reinterpret_cast<CacheAllocationPtr*>(handle_value);
     handle_value_charge = cache_->GetCharge(lru_handle);
   }
-  MemoryAllocator* allocator = cache_options_.memory_allocator.get();
+  MemoryAllocator* allocator = cache_options_.sharded_cache_options.memory_allocator.get();
 
   Status s;
   Cache::ObjectPtr value{nullptr};
@@ -121,7 +121,7 @@ Status CompressedSecondaryCache::Insert(const Slice& key,
 
   size_t size = (*helper->size_cb)(value);
   CacheAllocationPtr ptr =
-      AllocateBlock(size, cache_options_.memory_allocator.get());
+      AllocateBlock(size, cache_options_.sharded_cache_options.memory_allocator.get());
 
   Status s = (*helper->saveto_cb)(value, 0, size, ptr.get());
   if (!s.ok()) {
@@ -153,7 +153,7 @@ Status CompressedSecondaryCache::Insert(const Slice& key,
     PERF_COUNTER_ADD(compressed_sec_cache_compressed_bytes, size);
 
     if (!cache_options_.enable_custom_split_merge) {
-      ptr = AllocateBlock(size, cache_options_.memory_allocator.get());
+      ptr = AllocateBlock(size, cache_options_.sharded_cache_options.memory_allocator.get());
       memcpy(ptr.get(), compressed_val.data(), size);
     }
   }
@@ -174,14 +174,14 @@ void CompressedSecondaryCache::Erase(const Slice& key) { cache_->Erase(key); }
 
 Status CompressedSecondaryCache::SetCapacity(size_t capacity) {
   MutexLock l(&capacity_mutex_);
-  cache_options_.capacity = capacity;
+  cache_options_.sharded_cache_options.capacity = capacity;
   cache_->SetCapacity(capacity);
   return Status::OK();
 }
 
 Status CompressedSecondaryCache::GetCapacity(size_t& capacity) {
   MutexLock l(&capacity_mutex_);
-  capacity = cache_options_.capacity;
+  capacity = cache_options_.sharded_cache_options.capacity;
   return Status::OK();
 }
 
@@ -258,7 +258,7 @@ CacheAllocationPtr CompressedSecondaryCache::MergeChunksIntoValue(
   }
 
   CacheAllocationPtr ptr =
-      AllocateBlock(charge, cache_options_.memory_allocator.get());
+      AllocateBlock(charge, cache_options_.sharded_cache_options.memory_allocator.get());
   current_chunk = head;
   size_t pos{0};
   while (current_chunk != nullptr) {

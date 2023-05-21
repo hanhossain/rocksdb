@@ -21,13 +21,13 @@ const Cache::CacheItemHelper kNoopCacheItemHelper{};
 static std::unordered_map<std::string, OptionTypeInfo>
     lru_cache_options_type_info = {
         {"capacity",
-         {offsetof(struct LRUCacheOptions, capacity), rs::options_type::OptionType::SizeT,
-          rs::options_type::OptionVerificationType::Normal, rs::options_type::OptionTypeFlags::Mutable}},
+         {offsetof(struct LRUCacheOptions, sharded_cache_options) + offsetof(struct ShardedCacheOptions, capacity),
+          rs::options_type::OptionType::SizeT, rs::options_type::OptionVerificationType::Normal, rs::options_type::OptionTypeFlags::Mutable}},
         {"num_shard_bits",
-         {offsetof(struct LRUCacheOptions, num_shard_bits), rs::options_type::OptionType::Int,
+         {offsetof(struct LRUCacheOptions, sharded_cache_options) + offsetof(struct ShardedCacheOptions, num_shard_bits), rs::options_type::OptionType::Int,
           rs::options_type::OptionVerificationType::Normal, rs::options_type::OptionTypeFlags::Mutable}},
         {"strict_capacity_limit",
-         {offsetof(struct LRUCacheOptions, strict_capacity_limit),
+         {offsetof(struct LRUCacheOptions, sharded_cache_options) + offsetof(struct ShardedCacheOptions, strict_capacity_limit),
           rs::options_type::OptionType::Boolean, rs::options_type::OptionVerificationType::Normal,
           rs::options_type::OptionTypeFlags::Mutable}},
         {"high_pri_pool_ratio",
@@ -43,11 +43,11 @@ static std::unordered_map<std::string, OptionTypeInfo>
 static std::unordered_map<std::string, OptionTypeInfo>
     comp_sec_cache_options_type_info = {
         {"capacity",
-         {offsetof(struct CompressedSecondaryCacheOptions, capacity),
+         {offsetof(struct CompressedSecondaryCacheOptions, sharded_cache_options) + offsetof(struct ShardedCacheOptions, capacity),
           rs::options_type::OptionType::SizeT, rs::options_type::OptionVerificationType::Normal,
           rs::options_type::OptionTypeFlags::Mutable}},
         {"num_shard_bits",
-         {offsetof(struct CompressedSecondaryCacheOptions, num_shard_bits),
+         {offsetof(struct CompressedSecondaryCacheOptions, sharded_cache_options) + offsetof(struct ShardedCacheOptions, num_shard_bits),
           rs::options_type::OptionType::Int, rs::options_type::OptionVerificationType::Normal,
           rs::options_type::OptionTypeFlags::Mutable}},
         {"compression_type",

@@ -431,9 +431,9 @@ TEST_F(ChargeFilterConstructionTest, RibbonFilterFallBackOnLargeBanding) {
         {CacheEntryRole::kFilterConstruction,
          {/*.charged = */ charge_filter_construction_mem}});
     LRUCacheOptions lo;
-    lo.capacity = kCacheCapacity;
-    lo.num_shard_bits = 0;  // 2^0 shard
-    lo.strict_capacity_limit = true;
+    lo.sharded_cache_options.capacity = kCacheCapacity;
+    lo.sharded_cache_options.num_shard_bits = 0;  // 2^0 shard
+    lo.sharded_cache_options.strict_capacity_limit = true;
     std::shared_ptr<Cache> cache(NewLRUCache(lo));
     table_options.block_cache = cache;
     table_options.filter_policy =

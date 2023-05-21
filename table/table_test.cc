@@ -3550,9 +3550,9 @@ TEST_P(BlockBasedTableTest, FilterBlockInBlockCache) {
   // Enable the cache for index/filter blocks
   BlockBasedTableOptions table_options = GetBlockBasedTableOptions();
   LRUCacheOptions co;
-  co.capacity = 2048;
-  co.num_shard_bits = 2;
-  co.metadata_charge_policy = kDontChargeCacheMetadata;
+  co.sharded_cache_options.capacity = 2048;
+  co.sharded_cache_options.num_shard_bits = 2;
+  co.sharded_cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
   table_options.block_cache = NewLRUCache(co);
   table_options.cache_index_and_filter_blocks = true;
   options.table_factory.reset(new BlockBasedTableFactory(table_options));
@@ -3923,9 +3923,9 @@ TEST_P(BlockBasedTableTest, MemoryAllocator) {
     BlockBasedTableOptions table_options;
     table_options.block_size = 1024;
     LRUCacheOptions lruOptions;
-    lruOptions.memory_allocator = custom_memory_allocator;
-    lruOptions.capacity = 16 * 1024 * 1024;
-    lruOptions.num_shard_bits = 4;
+    lruOptions.sharded_cache_options.memory_allocator = custom_memory_allocator;
+    lruOptions.sharded_cache_options.capacity = 16 * 1024 * 1024;
+    lruOptions.sharded_cache_options.num_shard_bits = 4;
     table_options.block_cache = NewLRUCache(std::move(lruOptions));
     opt.table_factory.reset(NewBlockBasedTableFactory(table_options));
 
@@ -5571,9 +5571,9 @@ TEST_F(ChargeCompressionDictionaryBuildingBufferTest, Basic) {
         CacheEntryRoleOptions::Decision::kDisabled}) {
     BlockBasedTableOptions table_options;
     LRUCacheOptions lo;
-    lo.capacity = kCacheCapacity;
-    lo.num_shard_bits = 0;  // 2^0 shard
-    lo.strict_capacity_limit = true;
+    lo.sharded_cache_options.capacity = kCacheCapacity;
+    lo.sharded_cache_options.num_shard_bits = 0;  // 2^0 shard
+    lo.sharded_cache_options.strict_capacity_limit = true;
     std::shared_ptr<Cache> cache(NewLRUCache(lo));
     table_options.block_cache = cache;
     table_options.flush_block_policy_factory =
@@ -5649,9 +5649,9 @@ TEST_F(ChargeCompressionDictionaryBuildingBufferTest,
   // CacheEntryRole::kCompressionDictionaryBuildingBuffer
   BlockBasedTableOptions table_options;
   LRUCacheOptions lo;
-  lo.capacity = kCacheCapacity;
-  lo.num_shard_bits = 0;  // 2^0 shard
-  lo.strict_capacity_limit = true;
+  lo.sharded_cache_options.capacity = kCacheCapacity;
+  lo.sharded_cache_options.num_shard_bits = 0;  // 2^0 shard
+  lo.sharded_cache_options.strict_capacity_limit = true;
   std::shared_ptr<Cache> cache(NewLRUCache(lo));
   table_options.block_cache = cache;
   table_options.flush_block_policy_factory =
@@ -5734,9 +5734,9 @@ TEST_F(ChargeCompressionDictionaryBuildingBufferTest, BasicWithCacheFull) {
   // CacheEntryRole::kCompressionDictionaryBuildingBuffer
   BlockBasedTableOptions table_options;
   LRUCacheOptions lo;
-  lo.capacity = kCacheCapacity;
-  lo.num_shard_bits = 0;  // 2^0 shard
-  lo.strict_capacity_limit = true;
+  lo.sharded_cache_options.capacity = kCacheCapacity;
+  lo.sharded_cache_options.num_shard_bits = 0;  // 2^0 shard
+  lo.sharded_cache_options.strict_capacity_limit = true;
   std::shared_ptr<Cache> cache(NewLRUCache(lo));
   table_options.block_cache = cache;
   table_options.flush_block_policy_factory =

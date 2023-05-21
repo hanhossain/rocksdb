@@ -444,7 +444,7 @@ void BlockBasedTableFactory::InitializeOptions() {
   } else if (table_options_.block_cache == nullptr) {
     LRUCacheOptions co;
     // 32MB, the recommended minimum size for 64 shards, to reduce contention
-    co.capacity = 32 << 20;
+    co.sharded_cache_options.capacity = 32 << 20;
     table_options_.block_cache = NewLRUCache(co);
   }
   if (table_options_.block_size_deviation < 0 ||

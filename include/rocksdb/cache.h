@@ -104,7 +104,7 @@ const CacheMetadataChargePolicy kDefaultCacheMetadataChargePolicy =
 
 // Options shared betweeen various cache implementations that
 // divide the key space into shards using hashing.
-struct ShardedCacheOptions {
+struct ShardedCacheOptions final {
   // Capacity of the cache, in the same units as the `charge` of each entry.
   // This is typically measured in bytes, but can be a different unit if using
   // kDontChargeCacheMetadata.
@@ -158,7 +158,9 @@ struct ShardedCacheOptions {
 // exclusive access during operations; even read operations need exclusive
 // access in order to update the LRU list. Mutex contention is usually low
 // with enough shards.
-struct LRUCacheOptions : public ShardedCacheOptions {
+struct LRUCacheOptions {
+  ShardedCacheOptions sharded_cache_options;
+
   // Ratio of cache reserved for high-priority and low-priority entries,
   // respectively. (See Cache::Priority below more information on the levels.)
   // Valid values are between 0 and 1 (inclusive), and the sum of the two
@@ -198,12 +200,13 @@ struct LRUCacheOptions : public ShardedCacheOptions {
                   CacheMetadataChargePolicy _metadata_charge_policy =
                       kDefaultCacheMetadataChargePolicy,
                   double _low_pri_pool_ratio = 0.0)
-      : ShardedCacheOptions(_capacity, _num_shard_bits, _strict_capacity_limit,
+        : sharded_cache_options(ShardedCacheOptions(_capacity, _num_shard_bits, _strict_capacity_limit,
                             std::move(_memory_allocator),
-                            _metadata_charge_policy),
+                            _metadata_charge_policy)),
         high_pri_pool_ratio(_high_pri_pool_ratio),
         low_pri_pool_ratio(_low_pri_pool_ratio),
-        use_adaptive_mutex(_use_adaptive_mutex) {}
+        use_adaptive_mutex(_use_adaptive_mutex) {
+  }
 
   // Construct an instance of LRUCache using these options
   std::shared_ptr<Cache> MakeSharedCache() const;
@@ -328,7 +331,9 @@ inline std::shared_ptr<SecondaryCache> NewCompressedSecondaryCache(
 // becomes very CPU intensive.
 //
 // See internal cache/clock_cache.h for full description.
-struct HyperClockCacheOptions : public ShardedCacheOptions {
+struct HyperClockCacheOptions {
+  ShardedCacheOptions sharded_cache_options;
+
   // The estimated average `charge` associated with cache entries. This is a
   // critical configuration parameter for good performance from the hyper
   // cache, because having a table size that is fixed at creation time greatly
@@ -367,9 +372,9 @@ struct HyperClockCacheOptions : public ShardedCacheOptions {
       std::shared_ptr<MemoryAllocator> _memory_allocator = nullptr,
       CacheMetadataChargePolicy _metadata_charge_policy =
           kDefaultCacheMetadataChargePolicy)
-      : ShardedCacheOptions(_capacity, _num_shard_bits, _strict_capacity_limit,
+      : sharded_cache_options(ShardedCacheOptions(_capacity, _num_shard_bits, _strict_capacity_limit,
                             std::move(_memory_allocator),
-                            _metadata_charge_policy),
+                            _metadata_charge_policy)),
         estimated_entry_charge(_estimated_entry_charge) {}
 
   // Construct an instance of HyperClockCache using these options

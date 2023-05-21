@@ -255,9 +255,9 @@ DBImpl::DBImpl(const DBOptions& options, const std::string& dbname,
                                    ? TableCache::kInfiniteCapacity
                                    : mutable_db_options_.max_open_files - 10;
   LRUCacheOptions co;
-  co.capacity = table_cache_size;
-  co.num_shard_bits = immutable_db_options_.table_cache_numshardbits;
-  co.metadata_charge_policy = kDontChargeCacheMetadata;
+  co.sharded_cache_options.capacity = table_cache_size;
+  co.sharded_cache_options.num_shard_bits = immutable_db_options_.table_cache_numshardbits;
+  co.sharded_cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
   table_cache_ = NewLRUCache(co);
   SetDbSessionId();
   assert(!db_session_id_.empty());

@@ -54,9 +54,9 @@ TEST_F(DBBlobBasicTest, GetBlobFromCache) {
   Options options = GetDefaultOptions();
 
   LRUCacheOptions co;
-  co.capacity = 2 << 20;  // 2MB
-  co.num_shard_bits = 2;
-  co.metadata_charge_policy = kDontChargeCacheMetadata;
+  co.sharded_cache_options.capacity = 2 << 20;  // 2MB
+  co.sharded_cache_options.num_shard_bits = 2;
+  co.sharded_cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
   auto backing_cache = NewLRUCache(co);
 
   options.enable_blob_files = true;
@@ -122,9 +122,9 @@ TEST_F(DBBlobBasicTest, IterateBlobsFromCache) {
   Options options = GetDefaultOptions();
 
   LRUCacheOptions co;
-  co.capacity = 2 << 20;  // 2MB
-  co.num_shard_bits = 2;
-  co.metadata_charge_policy = kDontChargeCacheMetadata;
+  co.sharded_cache_options.capacity = 2 << 20;  // 2MB
+  co.sharded_cache_options.num_shard_bits = 2;
+  co.sharded_cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
   auto backing_cache = NewLRUCache(co);
 
   options.enable_blob_files = true;
@@ -234,9 +234,9 @@ TEST_F(DBBlobBasicTest, IterateBlobsFromCachePinning) {
   Options options = GetDefaultOptions();
 
   LRUCacheOptions cache_options;
-  cache_options.capacity = 2048;
-  cache_options.num_shard_bits = 0;
-  cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
+  cache_options.sharded_cache_options.capacity = 2048;
+  cache_options.sharded_cache_options.num_shard_bits = 0;
+  cache_options.sharded_cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
 
   options.blob_cache = NewLRUCache(cache_options);
   options.enable_blob_files = true;
@@ -453,9 +453,9 @@ TEST_F(DBBlobBasicTest, MultiGetBlobsFromCache) {
   Options options = GetDefaultOptions();
 
   LRUCacheOptions co;
-  co.capacity = 2 << 20;  // 2MB
-  co.num_shard_bits = 2;
-  co.metadata_charge_policy = kDontChargeCacheMetadata;
+  co.sharded_cache_options.capacity = 2 << 20;  // 2MB
+  co.sharded_cache_options.num_shard_bits = 2;
+  co.sharded_cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
   auto backing_cache = NewLRUCache(co);
 
   constexpr size_t min_blob_size = 6;
@@ -777,9 +777,9 @@ TEST_F(DBBlobBasicTest, MultiGetBlobsFromMultipleFiles) {
   Options options = GetDefaultOptions();
 
   LRUCacheOptions co;
-  co.capacity = 2 << 20;  // 2MB
-  co.num_shard_bits = 2;
-  co.metadata_charge_policy = kDontChargeCacheMetadata;
+  co.sharded_cache_options.capacity = 2 << 20;  // 2MB
+  co.sharded_cache_options.num_shard_bits = 2;
+  co.sharded_cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
   auto backing_cache = NewLRUCache(co);
 
   options.min_blob_size = 0;
@@ -1580,9 +1580,9 @@ TEST_F(DBBlobBasicTest, WarmCacheWithBlobsDuringFlush) {
   Options options = GetDefaultOptions();
 
   LRUCacheOptions co;
-  co.capacity = 1 << 25;
-  co.num_shard_bits = 2;
-  co.metadata_charge_policy = kDontChargeCacheMetadata;
+  co.sharded_cache_options.capacity = 1 << 25;
+  co.sharded_cache_options.num_shard_bits = 2;
+  co.sharded_cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
   auto backing_cache = NewLRUCache(co);
 
   options.blob_cache = backing_cache;
@@ -1630,9 +1630,9 @@ TEST_F(DBBlobBasicTest, DynamicallyWarmCacheDuringFlush) {
   Options options = GetDefaultOptions();
 
   LRUCacheOptions co;
-  co.capacity = 1 << 25;
-  co.num_shard_bits = 2;
-  co.metadata_charge_policy = kDontChargeCacheMetadata;
+  co.sharded_cache_options.capacity = 1 << 25;
+  co.sharded_cache_options.num_shard_bits = 2;
+  co.sharded_cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
   auto backing_cache = NewLRUCache(co);
 
   options.blob_cache = backing_cache;
@@ -1696,16 +1696,16 @@ TEST_F(DBBlobBasicTest, DynamicallyWarmCacheDuringFlush) {
 
 TEST_F(DBBlobBasicTest, WarmCacheWithBlobsSecondary) {
   CompressedSecondaryCacheOptions secondary_cache_opts;
-  secondary_cache_opts.capacity = 1 << 20;
-  secondary_cache_opts.num_shard_bits = 0;
-  secondary_cache_opts.metadata_charge_policy = kDontChargeCacheMetadata;
+  secondary_cache_opts.sharded_cache_options.capacity = 1 << 20;
+  secondary_cache_opts.sharded_cache_options.num_shard_bits = 0;
+  secondary_cache_opts.sharded_cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
   secondary_cache_opts.compression_type = kNoCompression;
 
   LRUCacheOptions primary_cache_opts;
-  primary_cache_opts.capacity = 1024;
-  primary_cache_opts.num_shard_bits = 0;
-  primary_cache_opts.metadata_charge_policy = kDontChargeCacheMetadata;
-  primary_cache_opts.secondary_cache =
+  primary_cache_opts.sharded_cache_options.capacity = 1024;
+  primary_cache_opts.sharded_cache_options.num_shard_bits = 0;
+  primary_cache_opts.sharded_cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
+  primary_cache_opts.sharded_cache_options.secondary_cache =
       NewCompressedSecondaryCache(secondary_cache_opts);
 
   Options options = GetDefaultOptions();

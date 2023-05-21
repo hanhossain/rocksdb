@@ -55,16 +55,16 @@ class WithCacheType : public TestCreateContext {
     const auto& type = Type();
     if (type == kLRU) {
       LRUCacheOptions lru_opts;
-      lru_opts.capacity = capacity;
+      lru_opts.sharded_cache_options.capacity = capacity;
       if (modify_opts_fn) {
-        modify_opts_fn(lru_opts);
+        modify_opts_fn(lru_opts.sharded_cache_options);
       }
       return NewLRUCache(lru_opts);
     }
     if (type == kHyperClock) {
       HyperClockCacheOptions hc_opts{capacity, estimated_value_size_};
       if (modify_opts_fn) {
-        modify_opts_fn(hc_opts);
+        modify_opts_fn(hc_opts.sharded_cache_options);
       }
       return hc_opts.MakeSharedCache();
     }

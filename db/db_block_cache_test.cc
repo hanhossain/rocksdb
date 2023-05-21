@@ -154,11 +154,11 @@ TEST_F(DBBlockCacheTest, IteratorBlockCacheUsage) {
   InitTable(options);
 
   LRUCacheOptions co;
-  co.capacity = 0;
-  co.num_shard_bits = 0;
-  co.strict_capacity_limit = false;
+  co.sharded_cache_options.capacity = 0;
+  co.sharded_cache_options.num_shard_bits = 0;
+  co.sharded_cache_options.strict_capacity_limit = false;
   // Needed not to count entry stats collector
-  co.metadata_charge_policy = kDontChargeCacheMetadata;
+  co.sharded_cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
   std::shared_ptr<Cache> cache = NewLRUCache(co);
   table_options.block_cache = cache;
   options.table_factory.reset(NewBlockBasedTableFactory(table_options));
@@ -184,11 +184,11 @@ TEST_F(DBBlockCacheTest, TestWithoutCompressedBlockCache) {
   InitTable(options);
 
   LRUCacheOptions co;
-  co.capacity = 0;
-  co.num_shard_bits = 0;
-  co.strict_capacity_limit = false;
+  co.sharded_cache_options.capacity = 0;
+  co.sharded_cache_options.num_shard_bits = 0;
+  co.sharded_cache_options.strict_capacity_limit = false;
   // Needed not to count entry stats collector
-  co.metadata_charge_policy = kDontChargeCacheMetadata;
+  co.sharded_cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
   std::shared_ptr<Cache> cache = NewLRUCache(co);
   table_options.block_cache = cache;
   options.table_factory.reset(NewBlockBasedTableFactory(table_options));
@@ -398,10 +398,10 @@ TEST_F(DBBlockCacheTest, IndexAndFilterBlocksStats) {
   table_options.cache_index_and_filter_blocks = true;
   LRUCacheOptions co;
   // 500 bytes are enough to hold the first two blocks
-  co.capacity = 500;
-  co.num_shard_bits = 0;
-  co.strict_capacity_limit = false;
-  co.metadata_charge_policy = kDontChargeCacheMetadata;
+  co.sharded_cache_options.capacity = 500;
+  co.sharded_cache_options.num_shard_bits = 0;
+  co.sharded_cache_options.strict_capacity_limit = false;
+  co.sharded_cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
   std::shared_ptr<Cache> cache = NewLRUCache(co);
   table_options.block_cache = cache;
   table_options.filter_policy.reset(NewBloomFilterPolicy(20, true));
@@ -1275,8 +1275,8 @@ TEST_F(DBBlockCacheTest, HyperClockCacheReportProblems) {
   size_t capacity = 1024 * 1024;
   size_t value_size_est = 8 * 1024;
   HyperClockCacheOptions hcc_opts{capacity, value_size_est};
-  hcc_opts.num_shard_bits = 2;  // 4 shards
-  hcc_opts.metadata_charge_policy = kDontChargeCacheMetadata;
+  hcc_opts.sharded_cache_options.num_shard_bits = 2;  // 4 shards
+  hcc_opts.sharded_cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
   std::shared_ptr<Cache> cache = hcc_opts.MakeSharedCache();
   std::shared_ptr<CountingLogger> logger = std::make_shared<CountingLogger>();
 

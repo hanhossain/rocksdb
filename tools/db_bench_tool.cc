@@ -3030,13 +3030,13 @@ class Benchmark {
               FLAGS_secondary_cache_uri.c_str(), s.ToString().c_str());
           exit(1);
         }
-        opts.secondary_cache = secondary_cache;
+        opts.sharded_cache_options.secondary_cache = secondary_cache;
       }
 
       if (FLAGS_use_compressed_secondary_cache) {
         CompressedSecondaryCacheOptions secondary_cache_opts;
-        secondary_cache_opts.capacity = FLAGS_compressed_secondary_cache_size;
-        secondary_cache_opts.num_shard_bits =
+        secondary_cache_opts.sharded_cache_options.capacity = FLAGS_compressed_secondary_cache_size;
+        secondary_cache_opts.sharded_cache_options.num_shard_bits =
             FLAGS_compressed_secondary_cache_numshardbits;
         secondary_cache_opts.high_pri_pool_ratio =
             FLAGS_compressed_secondary_cache_high_pri_pool_ratio;
@@ -3046,7 +3046,7 @@ class Benchmark {
             FLAGS_compressed_secondary_cache_compression_type_e;
         secondary_cache_opts.compress_format_version =
             FLAGS_compressed_secondary_cache_compress_format_version;
-        opts.secondary_cache =
+        opts.sharded_cache_options.secondary_cache =
             NewCompressedSecondaryCache(secondary_cache_opts);
       }
 
@@ -4370,9 +4370,9 @@ class Benchmark {
         } else {
           if (FLAGS_blob_cache_size > 0) {
             LRUCacheOptions co;
-            co.capacity = FLAGS_blob_cache_size;
-            co.num_shard_bits = FLAGS_blob_cache_numshardbits;
-            co.memory_allocator = GetCacheAllocator();
+            co.sharded_cache_options.capacity = FLAGS_blob_cache_size;
+            co.sharded_cache_options.num_shard_bits = FLAGS_blob_cache_numshardbits;
+            co.sharded_cache_options.memory_allocator = GetCacheAllocator();
 
             options.blob_cache = NewLRUCache(co);
           } else {

@@ -119,9 +119,9 @@ class BlobSourceTest : public DBTestBase {
     options_.create_if_missing = true;
 
     LRUCacheOptions co;
-    co.capacity = 8 << 20;
-    co.num_shard_bits = 2;
-    co.metadata_charge_policy = kDontChargeCacheMetadata;
+    co.sharded_cache_options.capacity = 8 << 20;
+    co.sharded_cache_options.num_shard_bits = 2;
+    co.sharded_cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
     co.high_pri_pool_ratio = 0.2;
     co.low_pri_pool_ratio = 0.2;
     options_.blob_cache = NewLRUCache(co);
@@ -1054,16 +1054,16 @@ class BlobSecondaryCacheTest : public DBTestBase {
 
     // Set a small cache capacity to evict entries from the cache, and to test
     // that secondary cache is used properly.
-    lru_cache_opts_.capacity = 1024;
-    lru_cache_opts_.num_shard_bits = 0;
-    lru_cache_opts_.strict_capacity_limit = true;
-    lru_cache_opts_.metadata_charge_policy = kDontChargeCacheMetadata;
+    lru_cache_opts_.sharded_cache_options.capacity = 1024;
+    lru_cache_opts_.sharded_cache_options.num_shard_bits = 0;
+    lru_cache_opts_.sharded_cache_options.strict_capacity_limit = true;
+    lru_cache_opts_.sharded_cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
     lru_cache_opts_.high_pri_pool_ratio = 0.2;
     lru_cache_opts_.low_pri_pool_ratio = 0.2;
 
-    secondary_cache_opts_.capacity = 8 << 20;  // 8 MB
-    secondary_cache_opts_.num_shard_bits = 0;
-    secondary_cache_opts_.metadata_charge_policy =
+    secondary_cache_opts_.sharded_cache_options.capacity = 8 << 20;  // 8 MB
+    secondary_cache_opts_.sharded_cache_options.num_shard_bits = 0;
+    secondary_cache_opts_.sharded_cache_options.metadata_charge_policy =
         kDefaultCacheMetadataChargePolicy;
 
     // Read blobs from the secondary cache if they are not in the primary cache
@@ -1088,7 +1088,7 @@ TEST_F(BlobSecondaryCacheTest, GetBlobsFromSecondaryCache) {
   }
 
   secondary_cache_opts_.compression_type = kSnappyCompression;
-  lru_cache_opts_.secondary_cache =
+  lru_cache_opts_.sharded_cache_options.secondary_cache =
       NewCompressedSecondaryCache(secondary_cache_opts_);
   options_.blob_cache = NewLRUCache(lru_cache_opts_);
 
@@ -1150,7 +1150,7 @@ TEST_F(BlobSecondaryCacheTest, GetBlobsFromSecondaryCache) {
   read_options.verify_checksums = true;
 
   auto blob_cache = options_.blob_cache;
-  auto secondary_cache = lru_cache_opts_.secondary_cache;
+  auto secondary_cache = lru_cache_opts_.sharded_cache_options.secondary_cache;
 
   {
     // GetBlob
@@ -1328,9 +1328,9 @@ class BlobSourceCacheReservationTest : public DBTestBase {
     options_.create_if_missing = true;
 
     LRUCacheOptions co;
-    co.capacity = kCacheCapacity;
-    co.num_shard_bits = kNumShardBits;
-    co.metadata_charge_policy = kDontChargeCacheMetadata;
+    co.sharded_cache_options.capacity = kCacheCapacity;
+    co.sharded_cache_options.num_shard_bits = kNumShardBits;
+    co.sharded_cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
 
     co.high_pri_pool_ratio = 0.0;
     co.low_pri_pool_ratio = 0.0;

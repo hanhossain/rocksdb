@@ -316,7 +316,7 @@ class CacheBench {
               FLAGS_secondary_cache_uri.c_str(), s.ToString().c_str());
           exit(1);
         }
-        opts.secondary_cache = secondary_cache;
+        opts.sharded_cache_options.secondary_cache = secondary_cache;
       }
 
       cache_ = NewLRUCache(opts);

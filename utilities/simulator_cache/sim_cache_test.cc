@@ -79,10 +79,10 @@ TEST_F(SimCacheTest, SimCache) {
   auto options = GetOptions(table_options);
   InitTable(options);
   LRUCacheOptions co;
-  co.capacity = 0;
-  co.num_shard_bits = 0;
-  co.strict_capacity_limit = false;
-  co.metadata_charge_policy = kDontChargeCacheMetadata;
+  co.sharded_cache_options.capacity = 0;
+  co.sharded_cache_options.num_shard_bits = 0;
+  co.sharded_cache_options.strict_capacity_limit = false;
+  co.sharded_cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
   std::shared_ptr<SimCache> simCache = NewSimCache(NewLRUCache(co), 20000, 0);
   table_options.block_cache = simCache;
   options.table_factory.reset(NewBlockBasedTableFactory(table_options));
@@ -150,8 +150,8 @@ TEST_F(SimCacheTest, SimCacheLogging) {
   auto options = GetOptions(table_options);
   options.disable_auto_compactions = true;
   LRUCacheOptions co;
-  co.capacity = 1024 * 1024;
-  co.metadata_charge_policy = kDontChargeCacheMetadata;
+  co.sharded_cache_options.capacity = 1024 * 1024;
+  co.sharded_cache_options.metadata_charge_policy = kDontChargeCacheMetadata;
   std::shared_ptr<SimCache> sim_cache = NewSimCache(NewLRUCache(co), 20000, 0);
   table_options.block_cache = sim_cache;
   options.table_factory.reset(NewBlockBasedTableFactory(table_options));

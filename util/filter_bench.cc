@@ -334,9 +334,9 @@ struct FilterBench : public MockBlockBasedTableTester {
     if (FLAGS_charge_filter_construction) {
       table_options_.no_block_cache = false;
       LRUCacheOptions lo;
-      lo.capacity = FLAGS_block_cache_capacity_MB * 1024 * 1024;
-      lo.num_shard_bits = 0;  // 2^0 shard
-      lo.strict_capacity_limit = FLAGS_strict_capacity_limit;
+      lo.sharded_cache_options.capacity = FLAGS_block_cache_capacity_MB * 1024 * 1024;
+      lo.sharded_cache_options.num_shard_bits = 0;  // 2^0 shard
+      lo.sharded_cache_options.strict_capacity_limit = FLAGS_strict_capacity_limit;
       std::shared_ptr<Cache> cache(NewLRUCache(lo));
       table_options_.block_cache = cache;
     }

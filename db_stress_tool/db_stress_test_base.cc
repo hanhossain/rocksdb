@@ -133,13 +133,13 @@ std::shared_ptr<Cache> StressTest::NewCache(size_t capacity,
     HyperClockCacheOptions opts(static_cast<size_t>(capacity),
                                 FLAGS_block_size /*estimated_entry_charge*/,
                                 num_shard_bits);
-    opts.secondary_cache = std::move(secondary_cache);
+    opts.sharded_cache_options.secondary_cache = std::move(secondary_cache);
     return opts.MakeSharedCache();
   } else if (FLAGS_cache_type == "lru_cache") {
     LRUCacheOptions opts;
-    opts.capacity = capacity;
-    opts.num_shard_bits = num_shard_bits;
-    opts.secondary_cache = std::move(secondary_cache);
+    opts.sharded_cache_options.capacity = capacity;
+    opts.sharded_cache_options.num_shard_bits = num_shard_bits;
+    opts.sharded_cache_options.secondary_cache = std::move(secondary_cache);
     return NewLRUCache(opts);
   } else {
     fprintf(stderr, "Cache type not supported.");
@@ -3144,8 +3144,8 @@ void InitializeOptionsFromFlags(
     } else {
       if (FLAGS_blob_cache_size > 0) {
         LRUCacheOptions co;
-        co.capacity = FLAGS_blob_cache_size;
-        co.num_shard_bits = FLAGS_blob_cache_numshardbits;
+        co.sharded_cache_options.capacity = FLAGS_blob_cache_size;
+        co.sharded_cache_options.num_shard_bits = FLAGS_blob_cache_numshardbits;
         options.blob_cache = NewLRUCache(co);
       } else {
         fprintf(stderr,
