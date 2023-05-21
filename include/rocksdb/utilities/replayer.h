@@ -16,7 +16,7 @@ namespace ROCKSDB_NAMESPACE {
 class TraceRecord;
 class TraceRecordResult;
 
-struct ReplayOptions {
+struct ReplayOptions final {
   // Number of threads used for replaying. If 0 or 1, replay using
   // single thread.
   uint32_t num_threads;
