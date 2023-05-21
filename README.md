@@ -1,7 +1,5 @@
 ## RocksDB: A Persistent Key-Value Store for Flash and RAM Storage
 
-[![CircleCI Status](https://circleci.com/gh/facebook/rocksdb.svg?style=svg)](https://circleci.com/gh/facebook/rocksdb)
-
 RocksDB is developed and maintained by Facebook Database Engineering Team.
 It is built on earlier work on [LevelDB](https://github.com/google/leveldb) by Sanjay Ghemawat (sanjay@google.com)
 and Jeff Dean (jeff@google.com)
@@ -27,3 +25,6 @@ Questions and discussions are welcome on the [RocksDB Developers Public](https:/
 ## License
 
 RocksDB is dual-licensed under both the GPLv2 (found in the COPYING file in the root directory) and Apache 2.0 License (found in the LICENSE.Apache file in the root directory).  You may select, at your option, one of the above-listed licenses.
+
+## Rust migration TODO:
+- Convert all c++ structs into final structs. Find them with regex `(?:struct \w+(?!final))\s*\{`
