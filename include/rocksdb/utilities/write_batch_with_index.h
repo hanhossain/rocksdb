@@ -44,7 +44,7 @@ enum WriteType {
 
 // an entry for Put, Merge, Delete, or SingleDelete entry for write batches.
 // Used in WBWIIterator.
-struct WriteEntry {
+struct WriteEntry final {
   WriteType type = kUnknownRecord;
   Slice key;
   Slice value;
