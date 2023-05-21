@@ -65,7 +65,7 @@ class CacheDumpReader {
 
 // CacheDumpOptions is the option for CacheDumper and CacheDumpedLoader. Any
 // dump or load process related control variables can be added here.
-struct CacheDumpOptions {
+struct CacheDumpOptions final {
   SystemClock* clock;
 };
 
