@@ -14,7 +14,7 @@ namespace ROCKSDB_NAMESPACE {
 // Data associated with a particular version of a key. A database may internally
 // store multiple versions of a same user key due to snapshots, compaction not
 // happening yet, etc.
-struct KeyVersion {
+struct KeyVersion final {
   KeyVersion() : user_key(""), value(""), sequence(0), type(0) {}
 
   KeyVersion(const std::string& _user_key, const std::string& _value,
