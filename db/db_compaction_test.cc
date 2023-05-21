@@ -4846,21 +4846,21 @@ TEST_F(DBCompactionTest, LevelPeriodicCompactionWithCompactionFilters) {
 
   // NOTE: Presumed unnecessary and removed: resetting mock time in env
 
-  enum CompactionFilterType {
+  enum class CompactionFilterType {
     kUseCompactionFilter,
     kUseCompactionFilterFactory
   };
 
   for (CompactionFilterType comp_filter_type :
-       {kUseCompactionFilter, kUseCompactionFilterFactory}) {
+       {CompactionFilterType::kUseCompactionFilter, CompactionFilterType::kUseCompactionFilterFactory}) {
     // Assert that periodic compactions are not enabled.
     ASSERT_EQ(std::numeric_limits<uint64_t>::max() - 1,
               options.periodic_compaction_seconds);
 
-    if (comp_filter_type == kUseCompactionFilter) {
+    if (comp_filter_type == CompactionFilterType::kUseCompactionFilter) {
       options.compaction_filter = &test_compaction_filter;
       options.compaction_filter_factory.reset();
-    } else if (comp_filter_type == kUseCompactionFilterFactory) {
+    } else if (comp_filter_type == CompactionFilterType::kUseCompactionFilterFactory) {
       options.compaction_filter = nullptr;
       options.compaction_filter_factory.reset(
           new TestCompactionFilterFactory());
