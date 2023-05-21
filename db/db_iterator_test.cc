@@ -1422,7 +1422,7 @@ TEST_P(DBIteratorTest, PrevAfterAndNextAfterMerge) {
 
 class DBIteratorTestForPinnedData : public DBIteratorTest {
  public:
-  enum TestConfig {
+  enum class TestConfig {
     NORMAL,
     CLOSE_AND_OPEN,
     COMPACT_BEFORE_READ,
