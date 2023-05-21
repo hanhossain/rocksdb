@@ -274,7 +274,7 @@ inline BackupEngineOptions::ShareFilesNaming operator|(
 
 // Identifying information about a backup shared file that is (or might be)
 // excluded from a backup using exclude_files_callback.
-struct BackupExcludedFileInfo {
+struct BackupExcludedFileInfo final {
   explicit BackupExcludedFileInfo(const std::string& _relative_file)
       : relative_file(_relative_file) {}
 
@@ -283,7 +283,7 @@ struct BackupExcludedFileInfo {
 };
 
 // An auxiliary structure for exclude_files_callback
-struct MaybeExcludeBackupFile {
+struct MaybeExcludeBackupFile final {
   explicit MaybeExcludeBackupFile(BackupExcludedFileInfo&& _info)
       : info(std::move(_info)) {}
 
@@ -294,7 +294,7 @@ struct MaybeExcludeBackupFile {
   bool exclude_decision = false;
 };
 
-struct CreateBackupOptions {
+struct CreateBackupOptions final {
   // Flush will always trigger if 2PC is enabled.
   // If write-ahead logs are disabled, set flush_before_backup=true to
   // avoid losing unflushed key/value pairs from the memtable.
@@ -337,7 +337,7 @@ struct CreateBackupOptions {
   CpuPriority background_thread_cpu_priority = CpuPriority::kNormal;
 };
 
-struct RestoreOptions {
+struct RestoreOptions final {
   // If true, restore won't overwrite the existing log files in wal_dir. It will
   // also move all log files from archive directory to wal_dir. Use this option
   // in combination with BackupEngineOptions::backup_log_files = false for
@@ -358,7 +358,7 @@ using BackupID = uint32_t;
 
 using BackupFileInfo = FileStorageInfo;
 
-struct BackupInfo {
+struct BackupInfo final {
   BackupID backup_id = 0U;
   // Creation time, according to GetCurrentTime
   int64_t timestamp = 0;
