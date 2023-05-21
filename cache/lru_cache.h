@@ -78,7 +78,7 @@ struct LRUHandle {
   // "Immutable" flags - only set in single-threaded context and then
   // can be accessed without mutex
   uint8_t im_flags;
-  enum ImFlags : uint8_t {
+  enum class ImFlags : uint8_t {
     // Whether this entry is high priority entry.
     IM_IS_HIGH_PRI = (1 << 0),
     // Whether this entry is low priority entry.
@@ -109,12 +109,12 @@ struct LRUHandle {
   bool HasRefs() const { return refs > 0; }
 
   bool InCache() const { return m_flags & (uint8_t)MFlags::M_IN_CACHE; }
-  bool IsHighPri() const { return im_flags & IM_IS_HIGH_PRI; }
+  bool IsHighPri() const { return im_flags & (uint8_t)ImFlags::IM_IS_HIGH_PRI; }
   bool InHighPriPool() const { return m_flags & (uint8_t)MFlags::M_IN_HIGH_PRI_POOL; }
-  bool IsLowPri() const { return im_flags & IM_IS_LOW_PRI; }
+  bool IsLowPri() const { return im_flags & (uint8_t)ImFlags::IM_IS_LOW_PRI; }
   bool InLowPriPool() const { return m_flags & (uint8_t)MFlags::M_IN_LOW_PRI_POOL; }
   bool HasHit() const { return m_flags & (uint8_t)MFlags::M_HAS_HIT; }
-  bool IsStandalone() const { return im_flags & IM_IS_STANDALONE; }
+  bool IsStandalone() const { return im_flags & (uint8_t)ImFlags::IM_IS_STANDALONE; }
 
   void SetInCache(bool in_cache) {
     if (in_cache) {
@@ -126,14 +126,14 @@ struct LRUHandle {
 
   void SetPriority(Cache::Priority priority) {
     if (priority == Cache::Priority::HIGH) {
-      im_flags |= IM_IS_HIGH_PRI;
-      im_flags &= ~IM_IS_LOW_PRI;
+      im_flags |= (uint8_t)ImFlags::IM_IS_HIGH_PRI;
+      im_flags &= ~(uint8_t)ImFlags::IM_IS_LOW_PRI;
     } else if (priority == Cache::Priority::LOW) {
-      im_flags &= ~IM_IS_HIGH_PRI;
-      im_flags |= IM_IS_LOW_PRI;
+      im_flags &= ~(uint8_t)ImFlags::IM_IS_HIGH_PRI;
+      im_flags |= (uint8_t)ImFlags::IM_IS_LOW_PRI;
     } else {
-      im_flags &= ~IM_IS_HIGH_PRI;
-      im_flags &= ~IM_IS_LOW_PRI;
+      im_flags &= ~(uint8_t)ImFlags::IM_IS_HIGH_PRI;
+      im_flags &= ~(uint8_t)ImFlags::IM_IS_LOW_PRI;
     }
   }
 
@@ -157,9 +157,9 @@ struct LRUHandle {
 
   void SetIsStandalone(bool is_standalone) {
     if (is_standalone) {
-      im_flags |= IM_IS_STANDALONE;
+      im_flags |= (uint8_t)ImFlags::IM_IS_STANDALONE;
     } else {
-      im_flags &= ~IM_IS_STANDALONE;
+      im_flags &= ~(uint8_t)ImFlags::IM_IS_STANDALONE;
     }
   }
 
