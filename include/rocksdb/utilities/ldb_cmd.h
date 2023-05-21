@@ -73,7 +73,7 @@ class LDBCommand {
   static const std::string ARG_DECODE_BLOB_INDEX;
   static const std::string ARG_DUMP_UNCOMPRESSED_BLOBS;
 
-  struct ParsedParams {
+  struct ParsedParams final {
     std::string cmd;
     std::vector<std::string> cmd_params;
     std::map<std::string, std::string> option_map;
