@@ -60,7 +60,7 @@ DBIter::DBIter(Env* _env, const ReadOptions& read_options,
       num_internal_keys_skipped_(0),
       iterate_lower_bound_(read_options.iterate_lower_bound),
       iterate_upper_bound_(read_options.iterate_upper_bound),
-      direction_(kForward),
+      direction_(Direction::kForward),
       valid_(false),
       current_entry_is_merged_(false),
       is_key_seqnum_zero_(false),
@@ -141,7 +141,7 @@ void DBIter::Next() {
   local_stats_.skip_count_--;
   num_internal_keys_skipped_ = 0;
   bool ok = true;
-  if (direction_ == kReverse) {
+  if (direction_ == Direction::kReverse) {
     is_key_seqnum_zero_ = false;
     if (!ReverseToForward()) {
       ok = false;
@@ -262,7 +262,7 @@ bool DBIter::FindNextUserEntryInternal(bool skipping_saved_key,
   // Loop until we hit an acceptable entry to yield
   assert(iter_.Valid());
   assert(status_.ok());
-  assert(direction_ == kForward);
+  assert(direction_ == Direction::kForward);
   current_entry_is_merged_ = false;
 
   // How many times in a row we have skipped an entry with user key less than
@@ -646,7 +646,7 @@ void DBIter::Prev() {
   ResetValueAndColumns();
   ResetInternalKeysSkippedCounter();
   bool ok = true;
-  if (direction_ == kForward) {
+  if (direction_ == Direction::kForward) {
     if (!ReverseToBackward()) {
       ok = false;
     }
@@ -691,7 +691,7 @@ bool DBIter::ReverseToForward() {
     RecordTick(statistics_, NUMBER_OF_RESEEKS_IN_ITERATION);
   }
 
-  direction_ = kForward;
+  direction_ = Direction::kForward;
   // Skip keys less than the current key() (a.k.a. saved_key_).
   while (iter_.Valid()) {
     ParsedInternalKey ikey;
@@ -742,7 +742,7 @@ bool DBIter::ReverseToBackward() {
     RecordTick(statistics_, NUMBER_OF_RESEEKS_IN_ITERATION);
   }
 
-  direction_ = kReverse;
+  direction_ = Direction::kReverse;
   return FindUserKeyBeforeSavedKey();
 }
 
@@ -1479,7 +1479,7 @@ void DBIter::Seek(const Slice& target) {
     valid_ = false;
     return;
   }
-  direction_ = kForward;
+  direction_ = Direction::kForward;
 
   // Now the inner iterator is placed to the target position. From there,
   // we need to find out the next key that is visible to the user.
@@ -1553,7 +1553,7 @@ void DBIter::SeekForPrev(const Slice& target) {
     valid_ = false;
     return;
   }
-  direction_ = kReverse;
+  direction_ = Direction::kReverse;
 
   // Now the inner iterator is placed to the target position. From there,
   // we need to find out the first key that is visible to the user in the
@@ -1597,7 +1597,7 @@ void DBIter::SeekToFirst() {
   status_ = Status::OK();
   // if iterator is empty, this status_ could be unchecked.
   status_.PermitUncheckedError();
-  direction_ = kForward;
+  direction_ = Direction::kForward;
   ReleaseTempPinnedData();
   ResetBlobValue();
   ResetValueAndColumns();
@@ -1660,7 +1660,7 @@ void DBIter::SeekToLast() {
   status_ = Status::OK();
   // if iterator is empty, this status_ could be unchecked.
   status_.PermitUncheckedError();
-  direction_ = kReverse;
+  direction_ = Direction::kReverse;
   ReleaseTempPinnedData();
   ResetBlobValue();
   ResetValueAndColumns();

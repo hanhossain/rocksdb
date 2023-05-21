@@ -68,7 +68,7 @@ class DBIter final : public Iterator {
   //        this->key().
   // (2) When moving backwards, the internal iterator is positioned
   //     just before all entries whose user key == this->key().
-  enum Direction : uint8_t { kForward, kReverse };
+  enum class Direction : uint8_t { kForward, kReverse };
 
   // LocalStatistics contain Statistics counters that will be aggregated per
   // each iterator instance and then will be sent to the global statistics when
@@ -181,7 +181,7 @@ class DBIter final : public Iterator {
   Slice timestamp() const override {
     assert(valid_);
     assert(timestamp_size_ > 0);
-    if (direction_ == kReverse) {
+    if (direction_ == Direction::kReverse) {
       return saved_timestamp_;
     }
     const Slice ukey_and_ts = saved_key_.GetUserKey();
