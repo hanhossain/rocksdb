@@ -64,7 +64,7 @@ struct LRUHandle {
   // The m_ and M_ prefixes (and im_ and IM_ later) are to hopefully avoid
   // checking an M_ flag on im_flags or an IM_ flag on m_flags.
   uint8_t m_flags;
-  enum MFlags : uint8_t {
+  enum class MFlags : uint8_t {
     // Whether this entry is referenced by the hash table.
     M_IN_CACHE = (1 << 0),
     // Whether this entry has had any lookups (hits).
@@ -108,19 +108,19 @@ struct LRUHandle {
   // Return true if there are external refs, false otherwise.
   bool HasRefs() const { return refs > 0; }
 
-  bool InCache() const { return m_flags & M_IN_CACHE; }
+  bool InCache() const { return m_flags & (uint8_t)MFlags::M_IN_CACHE; }
   bool IsHighPri() const { return im_flags & IM_IS_HIGH_PRI; }
-  bool InHighPriPool() const { return m_flags & M_IN_HIGH_PRI_POOL; }
+  bool InHighPriPool() const { return m_flags & (uint8_t)MFlags::M_IN_HIGH_PRI_POOL; }
   bool IsLowPri() const { return im_flags & IM_IS_LOW_PRI; }
-  bool InLowPriPool() const { return m_flags & M_IN_LOW_PRI_POOL; }
-  bool HasHit() const { return m_flags & M_HAS_HIT; }
+  bool InLowPriPool() const { return m_flags & (uint8_t)MFlags::M_IN_LOW_PRI_POOL; }
+  bool HasHit() const { return m_flags & (uint8_t)MFlags::M_HAS_HIT; }
   bool IsStandalone() const { return im_flags & IM_IS_STANDALONE; }
 
   void SetInCache(bool in_cache) {
     if (in_cache) {
-      m_flags |= M_IN_CACHE;
+      m_flags |= (uint8_t)MFlags::M_IN_CACHE;
     } else {
-      m_flags &= ~M_IN_CACHE;
+      m_flags &= ~(uint8_t)MFlags::M_IN_CACHE;
     }
   }
 
@@ -139,21 +139,21 @@ struct LRUHandle {
 
   void SetInHighPriPool(bool in_high_pri_pool) {
     if (in_high_pri_pool) {
-      m_flags |= M_IN_HIGH_PRI_POOL;
+      m_flags |= (uint8_t)MFlags::M_IN_HIGH_PRI_POOL;
     } else {
-      m_flags &= ~M_IN_HIGH_PRI_POOL;
+      m_flags &= ~(uint8_t)MFlags::M_IN_HIGH_PRI_POOL;
     }
   }
 
   void SetInLowPriPool(bool in_low_pri_pool) {
     if (in_low_pri_pool) {
-      m_flags |= M_IN_LOW_PRI_POOL;
+      m_flags |= (uint8_t)MFlags::M_IN_LOW_PRI_POOL;
     } else {
-      m_flags &= ~M_IN_LOW_PRI_POOL;
+      m_flags &= ~(uint8_t)MFlags::M_IN_LOW_PRI_POOL;
     }
   }
 
-  void SetHit() { m_flags |= M_HAS_HIT; }
+  void SetHit() { m_flags |= (uint8_t)MFlags::M_HAS_HIT; }
 
   void SetIsStandalone(bool is_standalone) {
     if (is_standalone) {
