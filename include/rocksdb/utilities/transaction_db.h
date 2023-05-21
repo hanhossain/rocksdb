@@ -51,12 +51,12 @@ class LockManagerHandle {
 };
 
 // Same as class Endpoint, but use std::string to manage the buffer allocation
-struct EndpointWithString {
+struct EndpointWithString final {
   std::string slice;
   bool inf_suffix;
 };
 
-struct RangeDeadlockInfo {
+struct RangeDeadlockInfo final {
   TransactionID m_txn_id;
   uint32_t m_cf_id;
   bool m_exclusive;
@@ -65,7 +65,7 @@ struct RangeDeadlockInfo {
   EndpointWithString m_end;
 };
 
-struct RangeDeadlockPath {
+struct RangeDeadlockPath final {
   std::vector<RangeDeadlockInfo> path;
   bool limit_exceeded;
   int64_t deadlock_time;
@@ -146,7 +146,7 @@ class RangeLockManagerHandle : public LockManagerHandle {
 RangeLockManagerHandle* NewRangeLockManager(
     std::shared_ptr<TransactionDBMutexFactory> mutex_factory);
 
-struct TransactionDBOptions {
+struct TransactionDBOptions final {
   // Specifies the maximum number of keys that can be locked at the same time
   // per column family.
   // If the number of locked keys is greater than max_num_locks, transaction
@@ -257,7 +257,7 @@ struct TransactionDBOptions {
   friend class StressTest;
 };
 
-struct TransactionOptions {
+struct TransactionOptions final {
   // Setting set_snapshot=true is the same as calling
   // Transaction::SetSnapshot().
   bool set_snapshot = false;
@@ -322,7 +322,7 @@ struct TransactionOptions {
 
 // The per-write optimizations that do not involve transactions. TransactionDB
 // implementation might or might not make use of the specified optimizations.
-struct TransactionDBWriteOptimizations {
+struct TransactionDBWriteOptimizations final {
   // If it is true it means that the application guarantees that the
   // key-set in the write batch do not conflict with any concurrent transaction
   // and hence the concurrency control mechanism could be skipped for this
@@ -334,27 +334,27 @@ struct TransactionDBWriteOptimizations {
   bool skip_duplicate_key_check = false;
 };
 
-struct KeyLockInfo {
+struct KeyLockInfo final {
   std::string key;
   std::vector<TransactionID> ids;
   bool exclusive;
 };
 
-struct RangeLockInfo {
+struct RangeLockInfo final {
   EndpointWithString start;
   EndpointWithString end;
   std::vector<TransactionID> ids;
   bool exclusive;
 };
 
-struct DeadlockInfo {
+struct DeadlockInfo final {
   TransactionID m_txn_id;
   uint32_t m_cf_id;
   bool m_exclusive;
   std::string m_waiting_key;
 };
 
-struct DeadlockPath {
+struct DeadlockPath final {
   std::vector<DeadlockInfo> path;
   bool limit_exceeded;
   int64_t deadlock_time;
