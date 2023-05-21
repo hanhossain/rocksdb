@@ -43,7 +43,7 @@ enum class OccValidationPolicy {
   kValidateParallel = 1
 };
 
-struct OptimisticTransactionDBOptions {
+struct OptimisticTransactionDBOptions final {
   OccValidationPolicy validate_policy = OccValidationPolicy::kValidateParallel;
 
   // works only if validate_policy == OccValidationPolicy::kValidateParallel
