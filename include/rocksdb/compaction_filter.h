@@ -10,11 +10,11 @@
 
 #include <cassert>
 #include <memory>
-#include <rocksdb-rs-cxx/types.h>
 #include <string>
 #include <utility>
 #include <vector>
 
+#include "rocksdb-rs-cxx/types.h"
 #include "rocksdb/customizable.h"
 #include "rocksdb/rocksdb_namespace.h"
 #include "rocksdb/types.h"

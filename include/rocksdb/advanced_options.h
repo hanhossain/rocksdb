@@ -9,8 +9,8 @@
 #pragma once
 
 #include <memory>
-#include <rocksdb-rs-cxx/advanced_options.h>
 
+#include "rocksdb-rs-cxx/advanced_options.h"
 #include "rocksdb/cache.h"
 #include "rocksdb/compression_type.h"
 #include "rocksdb/memtablerep.h"
@@ -290,16 +290,17 @@ struct AdvancedColumnFamilyOptions {
   // If the merged value is smaller in size that the 'existing_value',
   // then this function can update the 'existing_value' buffer inplace and
   // the corresponding 'existing_value'_size pointer, if it wishes to.
-  // The callback should return rs::advanced_options::UpdateStatus::UpdatedInplace.
-  // In this case. (In this case, the snapshot-semantics of the rocksdb
-  // Iterator is not atomic anymore).
+  // The callback should return
+  // rs::advanced_options::UpdateStatus::UpdatedInplace. In this case. (In this
+  // case, the snapshot-semantics of the rocksdb Iterator is not atomic
+  // anymore).
   //
   // If the merged value is larger in size than the 'existing_value' or the
   // application does not wish to modify the 'existing_value' buffer inplace,
   // then the merged value should be returned via *merge_value. It is set by
   // merging the 'existing_value' and the Put 'delta_value'. The callback should
-  // return rs::advanced_options::UpdateStatus::Updated in this case. This merged value will be added
-  // to the memtable.
+  // return rs::advanced_options::UpdateStatus::Updated in this case. This
+  // merged value will be added to the memtable.
   //
   // If merging fails or the application does not wish to take any action,
   // then the callback should return rs::advanced_options::UpdateStatus::Failed.
@@ -314,10 +315,9 @@ struct AdvancedColumnFamilyOptions {
   // unreported corruption, deadlocks, and more.
   //
   // Default: nullptr
-  rs::advanced_options::UpdateStatus (*inplace_callback)(char* existing_value,
-                                   uint32_t* existing_value_size,
-                                   Slice delta_value,
-                                   std::string* merged_value) = nullptr;
+  rs::advanced_options::UpdateStatus (*inplace_callback)(
+      char* existing_value, uint32_t* existing_value_size, Slice delta_value,
+      std::string* merged_value) = nullptr;
 
   // Should really be called `memtable_bloom_size_ratio`. Enables a dynamic
   // Bloom filter in memtable to optimize many queries that must go beyond
@@ -638,12 +638,14 @@ struct AdvancedColumnFamilyOptions {
   uint64_t hard_pending_compaction_bytes_limit = 256 * 1073741824ull;
 
   // The compaction style. Default: rs::advanced_options::CompactionStyle::Level
-  rs::advanced_options::CompactionStyle compaction_style = rs::advanced_options::CompactionStyle::Level;
+  rs::advanced_options::CompactionStyle compaction_style =
+      rs::advanced_options::CompactionStyle::Level;
 
-  // If level compaction_style = rs::advanced_options::CompactionStyle::Level, for each level,
-  // which files are prioritized to be picked to compact.
+  // If level compaction_style = rs::advanced_options::CompactionStyle::Level,
+  // for each level, which files are prioritized to be picked to compact.
   // Default: rs::advanced_options::CompactionPri::MinOverlappingRatio
-  rs::advanced_options::CompactionPri compaction_pri = rs::advanced_options::CompactionPri::MinOverlappingRatio;
+  rs::advanced_options::CompactionPri compaction_pri =
+      rs::advanced_options::CompactionPri::MinOverlappingRatio;
 
   // The options needed to support Universal Style compactions
   //
@@ -834,8 +836,10 @@ struct AdvancedColumnFamilyOptions {
   //  `bottommost_temperature` and will be removed in next release.
   //
   // Dynamically changeable through the SetOptions() API
-  rs::advanced_options::Temperature bottommost_temperature = rs::advanced_options::Temperature::Unknown;
-  rs::advanced_options::Temperature last_level_temperature = rs::advanced_options::Temperature::Unknown;
+  rs::advanced_options::Temperature bottommost_temperature =
+      rs::advanced_options::Temperature::Unknown;
+  rs::advanced_options::Temperature last_level_temperature =
+      rs::advanced_options::Temperature::Unknown;
 
   // EXPERIMENTAL
   // The feature is still in development and is incomplete.
@@ -998,7 +1002,8 @@ struct AdvancedColumnFamilyOptions {
   // Default: disabled
   //
   // Dynamically changeable through the SetOptions() API
-  rs::advanced_options::PrepopulateBlobCache prepopulate_blob_cache = rs::advanced_options::PrepopulateBlobCache::Disable;
+  rs::advanced_options::PrepopulateBlobCache prepopulate_blob_cache =
+      rs::advanced_options::PrepopulateBlobCache::Disable;
 
   // Enable memtable per key-value checksum protection.
   //

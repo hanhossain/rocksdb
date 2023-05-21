@@ -23,11 +23,11 @@
 
 #include <algorithm>
 #include <memory>
-#include <rocksdb-rs-cxx/types.h>
 #include <stdexcept>
 #include <string>
 #include <vector>
 
+#include "rocksdb-rs-cxx/types.h"
 #include "rocksdb/advanced_options.h"
 #include "rocksdb/customizable.h"
 #include "rocksdb/status.h"
@@ -54,7 +54,8 @@ struct FilterBuildingContext {
   const BlockBasedTableOptions& table_options;
 
   // BEGIN from (DB|ColumnFamily)Options in effect at table creation time
-  rs::advanced_options::CompactionStyle compaction_style = rs::advanced_options::CompactionStyle::Level;
+  rs::advanced_options::CompactionStyle compaction_style =
+      rs::advanced_options::CompactionStyle::Level;
 
   // Number of LSM levels, or -1 if unknown
   int num_levels = -1;
@@ -78,7 +79,8 @@ struct FilterBuildingContext {
   bool is_bottommost = false;
 
   // Reason for creating the file with the filter
-  rs::types::TableFileCreationReason reason = rs::types::TableFileCreationReason::Misc;
+  rs::types::TableFileCreationReason reason =
+      rs::types::TableFileCreationReason::Misc;
 };
 
 // Determines what kind of filter (if any) to generate in SST files, and under

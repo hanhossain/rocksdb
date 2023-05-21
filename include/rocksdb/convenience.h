@@ -5,11 +5,11 @@
 
 #pragma once
 
-#include <rocksdb-rs-cxx/convenience.h>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
+#include "rocksdb-rs-cxx/convenience.h"
 #include "rocksdb/compression_type.h"
 #include "rocksdb/db.h"
 #include "rocksdb/status.h"
@@ -67,7 +67,8 @@ struct ConfigOptions {
 
   // Controls how options are serialized
   // Controls how pedantic the comparison must be for equivalency
-  rs::convenience::SanityLevel sanity_level = rs::convenience::SanityLevel::ExactMatch;
+  rs::convenience::SanityLevel sanity_level =
+      rs::convenience::SanityLevel::ExactMatch;
   // `file_readahead_size` is used for readahead for the option file.
   size_t file_readahead_size = 512 * 1024;
 
@@ -85,10 +86,10 @@ struct ConfigOptions {
   }
 
   bool IsCheckEnabled(rs::convenience::SanityLevel level) const {
-    return (level > rs::convenience::SanityLevel::None && level <= sanity_level);
+    return (level > rs::convenience::SanityLevel::None &&
+            level <= sanity_level);
   }
 };
-
 
 // The following set of functions provide a way to construct RocksDB Options
 // from a string or a string-to-string map.  Here is the general rule of
@@ -139,7 +140,8 @@ struct ConfigOptions {
 //   [Example]:
 //   - CompressionType: valid values are "kNoCompression",
 //     "kSnappyCompression", "kZlibCompression", "kBZip2Compression", ...
-//   - rs::advanced_options::CompactionStyle: valid values are "kCompactionStyleLevel",
+//   - rs::advanced_options::CompactionStyle: valid values are
+//   "kCompactionStyleLevel",
 //     "kCompactionStyleUniversal", "kCompactionStyleFIFO", and
 //     "kCompactionStyleNone".
 //

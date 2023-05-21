@@ -7,7 +7,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 #include <limits>
-#include <rocksdb-rs-cxx/advanced_options.h>
 #include <string>
 #include <unordered_map>
 
@@ -19,6 +18,7 @@
 #include "rocksdb/convenience.h"
 #include "rocksdb/rate_limiter.h"
 #include "rocksdb/stats_history.h"
+#include "rocksdb-rs-cxx/advanced_options.h"
 #include "test_util/sync_point.h"
 #include "test_util/testutil.h"
 #include "util/random.h"

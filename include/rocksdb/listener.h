@@ -8,11 +8,11 @@
 
 #include <chrono>
 #include <memory>
-#include <rocksdb-rs-cxx/types.h>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
+#include "rocksdb-rs-cxx/types.h"
 #include "rocksdb/advanced_options.h"
 #include "rocksdb/compaction_job_stats.h"
 #include "rocksdb/compression_type.h"
@@ -205,7 +205,6 @@ struct WriteStallInfo {
   } condition;
 };
 
-
 struct FileDeletionInfo {
   FileDeletionInfo() = default;
 
@@ -271,7 +270,8 @@ struct FileOperationInfo {
   FileOperationInfo(const FileOperationType _type, const std::string& _path,
                     const StartTimePoint& _start_ts,
                     const FinishTimePoint& _finish_ts, const Status& _status,
-                    const rs::advanced_options::Temperature _temperature = rs::advanced_options::Temperature::Unknown)
+                    const rs::advanced_options::Temperature _temperature =
+                        rs::advanced_options::Temperature::Unknown)
       : type(_type),
         path(_path),
         temperature(_temperature),
@@ -836,6 +836,5 @@ class EventListener : public Customizable {
 
   ~EventListener() override {}
 };
-
 
 }  // namespace ROCKSDB_NAMESPACE

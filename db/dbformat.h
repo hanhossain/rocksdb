@@ -11,7 +11,6 @@
 #include <stdio.h>
 
 #include <memory>
-#include <rocksdb-rs-cxx/types.h>
 #include <string>
 #include <utility>
 
@@ -19,6 +18,7 @@
 #include "rocksdb/slice.h"
 #include "rocksdb/slice_transform.h"
 #include "rocksdb/types.h"
+#include "rocksdb-rs-cxx/types.h"
 #include "util/coding.h"
 #include "util/user_comparator_wrapper.h"
 

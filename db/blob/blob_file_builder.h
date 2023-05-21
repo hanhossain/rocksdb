@@ -7,10 +7,10 @@
 #include <cinttypes>
 #include <functional>
 #include <memory>
-#include <rocksdb-rs-cxx/types.h>
 #include <string>
 #include <vector>
 
+#include "rocksdb-rs-cxx/types.h"
 #include "rocksdb/advanced_options.h"
 #include "rocksdb/compression_type.h"
 #include "rocksdb/env.h"

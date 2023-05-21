@@ -13,11 +13,11 @@
 
 #include <limits>
 #include <memory>
-#include <rocksdb-rs-cxx/options.h>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
+#include "rocksdb-rs-cxx/options.h"
 #include "rocksdb/advanced_options.h"
 #include "rocksdb/comparator.h"
 #include "rocksdb/compression_type.h"
@@ -61,7 +61,8 @@ class FileSystem;
 struct Options;
 struct DbPath;
 
-using FileTypeSet = SmallEnumSet<rs::types::FileType, rs::types::FileType::BlobFile>;
+using FileTypeSet =
+    SmallEnumSet<rs::types::FileType, rs::types::FileType::BlobFile>;
 
 struct ColumnFamilyOptions : public AdvancedColumnFamilyOptions {
   // The function recovers options to a previous version. Only 4.6 or later
@@ -151,15 +152,15 @@ struct ColumnFamilyOptions : public AdvancedColumnFamilyOptions {
   // Unlike the `compaction_filter` option, which is used when compaction
   // creates a table file, this factory allows using a `CompactionFilter` when a
   // table file is created for various reasons. The factory can decide what
-  // `rs::types::TableFileCreationReason`s use a `CompactionFilter`. For compatibility, by
-  // default the decision is to use a `CompactionFilter` for
+  // `rs::types::TableFileCreationReason`s use a `CompactionFilter`. For
+  // compatibility, by default the decision is to use a `CompactionFilter` for
   // `rs::types::TableFileCreationReason::Compaction` only.
   //
   // Each thread of work involving creating table files will create a new
   // `CompactionFilter` when it will be used according to the above
-  // `rs::types::TableFileCreationReason`-based decision. This allows the application to
-  // know about the different ongoing threads of work and makes it unnecessary
-  // for `CompactionFilter` to provide thread-safety.
+  // `rs::types::TableFileCreationReason`-based decision. This allows the
+  // application to know about the different ongoing threads of work and makes
+  // it unnecessary for `CompactionFilter` to provide thread-safety.
   //
   // Default: nullptr
   std::shared_ptr<CompactionFilterFactory> compaction_filter_factory = nullptr;
@@ -1105,7 +1106,8 @@ struct DBOptions {
 
   // Recovery mode to control the consistency while replaying WAL
   // Default: kPointInTimeRecovery
-  rs::options::WALRecoveryMode wal_recovery_mode = rs::options::WALRecoveryMode::PointInTimeRecovery;
+  rs::options::WALRecoveryMode wal_recovery_mode =
+      rs::options::WALRecoveryMode::PointInTimeRecovery;
 
   // if set to false then recovery will fail when a prepared
   // transaction is encountered in the WAL
@@ -1242,8 +1244,8 @@ struct DBOptions {
   // opening the DB to any point-in-time valid state for each column family,
   // including the empty/new state, versus the default of returning non-WAL
   // data losses to the user as errors. In terms of RocksDB user data, this
-  // is like applying rs::options::WALRecoveryMode::PointInTimeRecovery to each column
-  // family rather than just the WAL.
+  // is like applying rs::options::WALRecoveryMode::PointInTimeRecovery to each
+  // column family rather than just the WAL.
   //
   // Best-efforts recovery (BER) is specifically designed to recover a DB with
   // files that are missing or truncated to some smaller size, such as the
@@ -1309,11 +1311,11 @@ struct DBOptions {
   // Use this if your DB want to enable checksum handoff for specific file
   // types writes. Make sure that the File_system you use support the
   // crc32c checksum verification
-  // Currently supported file tyes: kWALFile, rs::types::FileType::TableFile, rs::types::FileType::DescriptorFile.
-  // NOTE: currently RocksDB only generates crc32c based checksum for the
-  // handoff. If the storage layer has different checksum support, user
-  // should enble this set as empty. Otherwise,it may cause unexpected
-  // write failures.
+  // Currently supported file tyes: kWALFile, rs::types::FileType::TableFile,
+  // rs::types::FileType::DescriptorFile. NOTE: currently RocksDB only generates
+  // crc32c based checksum for the handoff. If the storage layer has different
+  // checksum support, user should enble this set as empty. Otherwise,it may
+  // cause unexpected write failures.
   FileTypeSet checksum_handoff_file_types;
 
   // EXPERIMENTAL
@@ -1335,7 +1337,8 @@ struct DBOptions {
   // both block cache and secondary cache.
   //
   // Default: kNonVolatileBlockTier
-  rs::advanced_options::CacheTier lowest_used_cache_tier = rs::advanced_options::CacheTier::NonVolatileBlockTier;
+  rs::advanced_options::CacheTier lowest_used_cache_tier =
+      rs::advanced_options::CacheTier::NonVolatileBlockTier;
 
   // If set to false, when compaction or flush sees a SingleDelete followed by
   // a Delete for the same user key, compaction job will not fail.
