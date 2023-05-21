@@ -21,7 +21,7 @@ class Transaction;
 // See optimistic_transaction.h and examples/transaction_example.cc
 
 // Options to use when starting an Optimistic Transaction
-struct OptimisticTransactionOptions {
+struct OptimisticTransactionOptions final {
   // Setting set_snapshot=true is the same as calling SetSnapshot().
   bool set_snapshot = false;
 
