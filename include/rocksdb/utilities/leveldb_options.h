@@ -28,7 +28,7 @@ class Snapshot;
 // DB::Open). A LevelDBOptions object can be initialized as though
 // it were a LevelDB Options object, and then it can be converted into
 // a RocksDB Options object.
-struct LevelDBOptions {
+struct LevelDBOptions final {
   // -------------------
   // Parameters that affect behavior
 
