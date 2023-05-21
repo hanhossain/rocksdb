@@ -640,7 +640,7 @@ struct StatusSerializationAdapter {
   StatusSerializationAdapter() = default;
   explicit StatusSerializationAdapter(const Status& s) {
     code = static_cast<uint8_t>(s.code());
-    subcode = s.subcode();
+    subcode = static_cast<uint8_t>(s.subcode());
     severity = s.severity();
     auto msg = s.getState();
     message = msg ? msg : "";

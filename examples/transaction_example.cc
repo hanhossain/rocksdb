@@ -71,7 +71,7 @@ int main() {
   // Write a key OUTSIDE of this transaction.
   // Fail because the key conflicts with the key written in txn.
   s = txn_db->Put(write_options, "abc", "def");
-  assert(s.subcode() == Status::kLockTimeout);
+  assert(s.subcode() == Status::SubCode::kLockTimeout);
 
   // Value for key "xyz" has been committed, can be read in txn.
   s = txn->Get(read_options, "xyz", &value);
