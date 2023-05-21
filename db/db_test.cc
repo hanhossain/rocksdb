@@ -7319,7 +7319,7 @@ TEST_F(DBTest, ShuttingDownNotBlockStalledWrites) {
 
   std::thread thd([&]() {
     Status s = Put("key_" + std::to_string(101), "101");
-    ASSERT_EQ(s.code(), Status::kShutdownInProgress);
+    ASSERT_EQ(s.code(), Status::Code::kShutdownInProgress);
   });
 
   TEST_SYNC_POINT("DBTest::ShuttingDownNotBlockStalledWrites");

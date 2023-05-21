@@ -304,7 +304,7 @@ TEST_F(DBBlobIndexTest, Iterate) {
   auto check_iterator = [&](Iterator* iterator, Status::Code expected_status,
                             const Slice& expected_value) {
     ASSERT_EQ(expected_status, iterator->status().code());
-    if (expected_status == Status::kOk) {
+    if (expected_status == Status::Code::kOk) {
       ASSERT_TRUE(iterator->Valid());
       ASSERT_EQ(expected_value, iterator->value());
     } else {
@@ -417,68 +417,68 @@ TEST_F(DBBlobIndexTest, Iterate) {
     MoveDataTo(tier);
 
     // Normal iterator
-    verify(1, Status::kCorruption, "", "", create_normal_iterator);
-    verify(3, Status::kCorruption, "", "", create_normal_iterator);
-    verify(5, Status::kOk, get_value(5, 0), get_value(5, 0),
+    verify(1, Status::Code::kCorruption, "", "", create_normal_iterator);
+    verify(3, Status::Code::kCorruption, "", "", create_normal_iterator);
+    verify(5, Status::Code::kOk, get_value(5, 0), get_value(5, 0),
            create_normal_iterator);
-    verify(7, Status::kOk, get_value(8, 0), get_value(6, 0),
+    verify(7, Status::Code::kOk, get_value(8, 0), get_value(6, 0),
            create_normal_iterator);
-    verify(9, Status::kOk, get_value(10, 0), get_value(8, 0),
+    verify(9, Status::Code::kOk, get_value(10, 0), get_value(8, 0),
            create_normal_iterator);
-    verify(11, Status::kCorruption, "", "", create_normal_iterator);
-    verify(13, Status::kOk,
+    verify(11, Status::Code::kCorruption, "", "", create_normal_iterator);
+    verify(13, Status::Code::kOk,
            get_value(13, 2) + "," + get_value(13, 1) + "," + get_value(13, 0),
            get_value(13, 2) + "," + get_value(13, 1) + "," + get_value(13, 0),
            create_normal_iterator);
-    verify(15, Status::kOk, get_value(16, 0), get_value(14, 0),
+    verify(15, Status::Code::kOk, get_value(16, 0), get_value(14, 0),
            create_normal_iterator);
 
     // Iterator with blob support
-    verify(1, Status::kOk, get_value(1, 0), get_value(1, 0),
+    verify(1, Status::Code::kOk, get_value(1, 0), get_value(1, 0),
            create_blob_iterator, check_is_blob(true));
-    verify(3, Status::kOk, get_value(3, 0), get_value(3, 0),
+    verify(3, Status::Code::kOk, get_value(3, 0), get_value(3, 0),
            create_blob_iterator, check_is_blob(true));
-    verify(5, Status::kOk, get_value(5, 0), get_value(5, 0),
+    verify(5, Status::Code::kOk, get_value(5, 0), get_value(5, 0),
            create_blob_iterator, check_is_blob(false));
-    verify(7, Status::kOk, get_value(8, 0), get_value(6, 0),
+    verify(7, Status::Code::kOk, get_value(8, 0), get_value(6, 0),
            create_blob_iterator, check_is_blob(false));
-    verify(9, Status::kOk, get_value(10, 0), get_value(8, 0),
+    verify(9, Status::Code::kOk, get_value(10, 0), get_value(8, 0),
            create_blob_iterator, check_is_blob(false));
     if (tier <= kImmutableMemtables) {
-      verify(11, Status::kNotSupported, "", "", create_blob_iterator);
+      verify(11, Status::Code::kNotSupported, "", "", create_blob_iterator);
     } else {
-      verify(11, Status::kCorruption, "", "", create_blob_iterator);
+      verify(11, Status::Code::kCorruption, "", "", create_blob_iterator);
     }
-    verify(13, Status::kOk,
+    verify(13, Status::Code::kOk,
            get_value(13, 2) + "," + get_value(13, 1) + "," + get_value(13, 0),
            get_value(13, 2) + "," + get_value(13, 1) + "," + get_value(13, 0),
            create_blob_iterator, check_is_blob(false));
-    verify(15, Status::kOk, get_value(16, 0), get_value(14, 0),
+    verify(15, Status::Code::kOk, get_value(16, 0), get_value(14, 0),
            create_blob_iterator, check_is_blob(false));
 
     // Iterator with blob support and using seek.
     ASSERT_OK(dbfull()->SetOptions(
         cfh(), {{"max_sequential_skip_in_iterations", "0"}}));
-    verify(1, Status::kOk, get_value(1, 0), get_value(1, 0),
+    verify(1, Status::Code::kOk, get_value(1, 0), get_value(1, 0),
            create_blob_iterator, check_is_blob(true));
-    verify(3, Status::kOk, get_value(3, 0), get_value(3, 0),
+    verify(3, Status::Code::kOk, get_value(3, 0), get_value(3, 0),
            create_blob_iterator, check_is_blob(true));
-    verify(5, Status::kOk, get_value(5, 0), get_value(5, 0),
+    verify(5, Status::Code::kOk, get_value(5, 0), get_value(5, 0),
            create_blob_iterator, check_is_blob(false));
-    verify(7, Status::kOk, get_value(8, 0), get_value(6, 0),
+    verify(7, Status::Code::kOk, get_value(8, 0), get_value(6, 0),
            create_blob_iterator, check_is_blob(false));
-    verify(9, Status::kOk, get_value(10, 0), get_value(8, 0),
+    verify(9, Status::Code::kOk, get_value(10, 0), get_value(8, 0),
            create_blob_iterator, check_is_blob(false));
     if (tier <= kImmutableMemtables) {
-      verify(11, Status::kNotSupported, "", "", create_blob_iterator);
+      verify(11, Status::Code::kNotSupported, "", "", create_blob_iterator);
     } else {
-      verify(11, Status::kCorruption, "", "", create_blob_iterator);
+      verify(11, Status::Code::kCorruption, "", "", create_blob_iterator);
     }
-    verify(13, Status::kOk,
+    verify(13, Status::Code::kOk,
            get_value(13, 2) + "," + get_value(13, 1) + "," + get_value(13, 0),
            get_value(13, 2) + "," + get_value(13, 1) + "," + get_value(13, 0),
            create_blob_iterator, check_is_blob(false));
-    verify(15, Status::kOk, get_value(16, 0), get_value(14, 0),
+    verify(15, Status::Code::kOk, get_value(16, 0), get_value(14, 0),
            create_blob_iterator, check_is_blob(false));
 
     for (auto* snapshot : snapshots) {

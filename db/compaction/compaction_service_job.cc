@@ -639,7 +639,7 @@ struct StatusSerializationAdapter {
 
   StatusSerializationAdapter() = default;
   explicit StatusSerializationAdapter(const Status& s) {
-    code = s.code();
+    code = static_cast<uint8_t>(s.code());
     subcode = s.subcode();
     severity = s.severity();
     auto msg = s.getState();

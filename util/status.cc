@@ -83,54 +83,54 @@ std::string Status::ToString() const {
 #endif  // ROCKSDB_ASSERT_STATUS_CHECKED
   const char* type = nullptr;
   switch (code_) {
-    case kOk:
+    case Status::Code::kOk:
       return "OK";
-    case kNotFound:
+    case Status::Code::kNotFound:
       type = "NotFound: ";
       break;
-    case kCorruption:
+    case Status::Code::kCorruption:
       type = "Corruption: ";
       break;
-    case kNotSupported:
+    case Status::Code::kNotSupported:
       type = "Not implemented: ";
       break;
-    case kInvalidArgument:
+    case Status::Code::kInvalidArgument:
       type = "Invalid argument: ";
       break;
-    case kIOError:
+    case Status::Code::kIOError:
       type = "IO error: ";
       break;
-    case kMergeInProgress:
+    case Status::Code::kMergeInProgress:
       type = "Merge in progress: ";
       break;
-    case kIncomplete:
+    case Status::Code::kIncomplete:
       type = "Result incomplete: ";
       break;
-    case kShutdownInProgress:
+    case Status::Code::kShutdownInProgress:
       type = "Shutdown in progress: ";
       break;
-    case kTimedOut:
+    case Status::Code::kTimedOut:
       type = "Operation timed out: ";
       break;
-    case kAborted:
+    case Status::Code::kAborted:
       type = "Operation aborted: ";
       break;
-    case kBusy:
+    case Status::Code::kBusy:
       type = "Resource busy: ";
       break;
-    case kExpired:
+    case Status::Code::kExpired:
       type = "Operation expired: ";
       break;
-    case kTryAgain:
+    case Status::Code::kTryAgain:
       type = "Operation failed. Try again.: ";
       break;
-    case kCompactionTooLarge:
+    case Status::Code::kCompactionTooLarge:
       type = "Compaction too large: ";
       break;
-    case kColumnFamilyDropped:
+    case Status::Code::kColumnFamilyDropped:
       type = "Column family dropped: ";
       break;
-    case kMaxCode:
+    case Status::Code::kMaxCode:
       assert(false);
       break;
   }

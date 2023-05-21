@@ -3447,7 +3447,7 @@ TEST_F(DBTest2, CancelManualCompactionWithListener) {
   // Case I: 1 Notify begin compaction, 2 Set *canceled as true to disable
   // manual compaction in the callback function, 3 Compaction not run,
   // 4 Notify compaction end.
-  listener->code_ = Status::kIncomplete;
+  listener->code_ = Status::Code::kIncomplete;
   listener->subcode_ = Status::SubCode::kManualCompactionPaused;
 
   compact_options.canceled->store(false, std::memory_order_release);
@@ -3486,7 +3486,7 @@ TEST_F(DBTest2, CancelManualCompactionWithListener) {
         compact_options.canceled->store(true, std::memory_order_release);
       });
 
-  listener->code_ = Status::kOk;
+  listener->code_ = Status::Code::kOk;
   listener->subcode_ = Status::SubCode::kNone;
 
   compact_options.canceled->store(false, std::memory_order_release);
@@ -3537,7 +3537,7 @@ TEST_F(DBTest2, CompactionOnBottomPriorityWithListener) {
       "CompactionJob::Run():End",
       [&](void* /*arg*/) { num_compaction_jobs++; });
 
-  listener->code_ = Status::kOk;
+  listener->code_ = Status::Code::kOk;
   listener->subcode_ = Status::SubCode::kNone;
 
   Random rnd(301);
