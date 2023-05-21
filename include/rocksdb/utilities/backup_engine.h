@@ -31,7 +31,7 @@ constexpr char kDbFileChecksumFuncName[] = "FileChecksumCrc32c";
 // The default BackupEngine file checksum function name.
 constexpr char kBackupFileChecksumFuncName[] = "crc32c";
 
-struct BackupEngineOptions {
+struct BackupEngineOptions final {
   // Where to keep the backup files. Has to be different than dbname_
   // Best to set this to dbname_ + "/backups"
   // Required
