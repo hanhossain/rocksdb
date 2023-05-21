@@ -888,7 +888,7 @@ TEST_F(ClockCacheTest, TableSizesTest) {
 class TestSecondaryCache : public SecondaryCache {
  public:
   // Specifies what action to take on a lookup for a particular key
-  enum ResultType {
+  enum class ResultType {
     SUCCESS,
     // Fail lookup immediately
     FAIL,
