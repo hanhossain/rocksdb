@@ -1753,8 +1753,8 @@ void InternalStats::DumpCFMapStats(
   int total_files = 0;
   int total_files_being_compacted = 0;
   double total_file_size = 0;
-  uint64_t flush_ingest = cf_stats_value_[BYTES_FLUSHED];
-  uint64_t add_file_ingest = cf_stats_value_[BYTES_INGESTED_ADD_FILE];
+  uint64_t flush_ingest = cf_stats_value_[(int)InternalCFStatsType::BYTES_FLUSHED];
+  uint64_t add_file_ingest = cf_stats_value_[(int)InternalCFStatsType::BYTES_INGESTED_ADD_FILE];
   uint64_t curr_ingest = flush_ingest + add_file_ingest;
   for (int level = 0; level < number_levels_; level++) {
     int files = vstorage->NumLevelFiles(level);
@@ -1828,7 +1828,7 @@ void InternalStats::DumpCFMapStatsWriteStall(
       InternalStats::InternalCFStatsType internal_cf_stat =
           InternalCFStat(cause, condition);
 
-      if (internal_cf_stat == InternalStats::INTERNAL_CF_STATS_ENUM_MAX) {
+      if (internal_cf_stat == InternalStats::InternalCFStatsType::INTERNAL_CF_STATS_ENUM_MAX) {
         continue;
       }
 
@@ -1849,11 +1849,11 @@ void InternalStats::DumpCFMapStatsWriteStall(
   (*value)[WriteStallStatsMapKeys::
                CFL0FileCountLimitDelaysWithOngoingCompaction()] =
       std::to_string(
-          cf_stats_count_[L0_FILE_COUNT_LIMIT_DELAYS_WITH_ONGOING_COMPACTION]);
+          cf_stats_count_[(int)InternalCFStatsType::L0_FILE_COUNT_LIMIT_DELAYS_WITH_ONGOING_COMPACTION]);
   (*value)[WriteStallStatsMapKeys::
                CFL0FileCountLimitStopsWithOngoingCompaction()] =
       std::to_string(
-          cf_stats_count_[L0_FILE_COUNT_LIMIT_STOPS_WITH_ONGOING_COMPACTION]);
+          cf_stats_count_[(int)InternalCFStatsType::L0_FILE_COUNT_LIMIT_STOPS_WITH_ONGOING_COMPACTION]);
 
   (*value)[WriteStallStatsMapKeys::TotalStops()] = std::to_string(total_stops);
   (*value)[WriteStallStatsMapKeys::TotalDelays()] =
@@ -1917,12 +1917,12 @@ void InternalStats::DumpCFStatsNoFileHistogram(bool is_periodic,
   PrintLevelStats(buf, sizeof(buf), "Sum", levels_stats[-1]);
   value->append(buf);
 
-  uint64_t flush_ingest = cf_stats_value_[BYTES_FLUSHED];
-  uint64_t add_file_ingest = cf_stats_value_[BYTES_INGESTED_ADD_FILE];
-  uint64_t ingest_files_addfile = cf_stats_value_[INGESTED_NUM_FILES_TOTAL];
+  uint64_t flush_ingest = cf_stats_value_[(int)InternalCFStatsType::BYTES_FLUSHED];
+  uint64_t add_file_ingest = cf_stats_value_[(int)InternalCFStatsType::BYTES_INGESTED_ADD_FILE];
+  uint64_t ingest_files_addfile = cf_stats_value_[(int)InternalCFStatsType::INGESTED_NUM_FILES_TOTAL];
   uint64_t ingest_l0_files_addfile =
-      cf_stats_value_[INGESTED_LEVEL0_NUM_FILES_TOTAL];
-  uint64_t ingest_keys_addfile = cf_stats_value_[INGESTED_NUM_KEYS_TOTAL];
+      cf_stats_value_[(int)InternalCFStatsType::INGESTED_LEVEL0_NUM_FILES_TOTAL];
+  uint64_t ingest_keys_addfile = cf_stats_value_[(int)InternalCFStatsType::INGESTED_NUM_KEYS_TOTAL];
   // Interval summary
   uint64_t interval_flush_ingest =
       flush_ingest - cf_stats_snapshot_.ingest_bytes_flush;

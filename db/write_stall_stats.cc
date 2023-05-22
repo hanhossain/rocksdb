@@ -53,9 +53,9 @@ InternalStats::InternalCFStatsType InternalCFStat(
     case rs::types::WriteStallCause::MemtableLimit: {
       switch (condition) {
         case rs::types::WriteStallCondition::Delayed:
-          return InternalStats::MEMTABLE_LIMIT_DELAYS;
+          return InternalStats::InternalCFStatsType::MEMTABLE_LIMIT_DELAYS;
         case rs::types::WriteStallCondition::Stopped:
-          return InternalStats::MEMTABLE_LIMIT_STOPS;
+          return InternalStats::InternalCFStatsType::MEMTABLE_LIMIT_STOPS;
         case rs::types::WriteStallCondition::Normal:
           break;
       }
@@ -64,9 +64,9 @@ InternalStats::InternalCFStatsType InternalCFStat(
     case rs::types::WriteStallCause::L0FileCountLimit: {
       switch (condition) {
         case rs::types::WriteStallCondition::Delayed:
-          return InternalStats::L0_FILE_COUNT_LIMIT_DELAYS;
+          return InternalStats::InternalCFStatsType::L0_FILE_COUNT_LIMIT_DELAYS;
         case rs::types::WriteStallCondition::Stopped:
-          return InternalStats::L0_FILE_COUNT_LIMIT_STOPS;
+          return InternalStats::InternalCFStatsType::L0_FILE_COUNT_LIMIT_STOPS;
         case rs::types::WriteStallCondition::Normal:
           break;
       }
@@ -75,9 +75,9 @@ InternalStats::InternalCFStatsType InternalCFStat(
     case rs::types::WriteStallCause::PendingCompactionBytes: {
       switch (condition) {
         case rs::types::WriteStallCondition::Delayed:
-          return InternalStats::PENDING_COMPACTION_BYTES_LIMIT_DELAYS;
+          return InternalStats::InternalCFStatsType::PENDING_COMPACTION_BYTES_LIMIT_DELAYS;
         case rs::types::WriteStallCondition::Stopped:
-          return InternalStats::PENDING_COMPACTION_BYTES_LIMIT_STOPS;
+          return InternalStats::InternalCFStatsType::PENDING_COMPACTION_BYTES_LIMIT_STOPS;
         case rs::types::WriteStallCondition::Normal:
           break;
       }
@@ -86,7 +86,7 @@ InternalStats::InternalCFStatsType InternalCFStat(
     default:
       break;
   }
-  return InternalStats::INTERNAL_CF_STATS_ENUM_MAX;
+  return InternalStats::InternalCFStatsType::INTERNAL_CF_STATS_ENUM_MAX;
 }
 
 InternalStats::InternalDBStatsType InternalDBStat(

@@ -1041,7 +1041,7 @@ Status FlushJob::WriteLevel0Table() {
   RecordTimeToHistogram(stats_, FLUSH_TIME, stats.micros);
   cfd_->internal_stats()->AddCompactionStats(0 /* level */, thread_pri_, stats);
   cfd_->internal_stats()->AddCFStats(
-      InternalStats::BYTES_FLUSHED,
+      InternalStats::InternalCFStatsType::BYTES_FLUSHED,
       stats.bytes_written + stats.bytes_written_blob);
   RecordFlushIOStats();
 

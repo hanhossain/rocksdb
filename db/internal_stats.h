@@ -103,7 +103,7 @@ class InternalStats {
  public:
   static const std::map<LevelStatType, LevelStat> compaction_level_stats;
 
-  enum InternalCFStatsType {
+  enum class InternalCFStatsType {
     MEMTABLE_LIMIT_DELAYS,
     MEMTABLE_LIMIT_STOPS,
     L0_FILE_COUNT_LIMIT_DELAYS,
@@ -505,7 +505,7 @@ class InternalStats {
     for (int i = 0; i < kIntStatsNumMax; i++) {
       db_stats_[i].store(0);
     }
-    for (int i = 0; i < INTERNAL_CF_STATS_ENUM_MAX; i++) {
+    for (int i = 0; i < (int)InternalCFStatsType::INTERNAL_CF_STATS_ENUM_MAX; i++) {
       cf_stats_count_[i] = 0;
       cf_stats_value_[i] = 0;
     }
@@ -545,8 +545,8 @@ class InternalStats {
 
   void AddCFStats(InternalCFStatsType type, uint64_t value) {
     has_cf_change_since_dump_ = true;
-    cf_stats_value_[type] += value;
-    ++cf_stats_count_[type];
+    cf_stats_value_[(int)type] += value;
+    ++cf_stats_count_[(int)type];
   }
 
   void AddDBStats(InternalDBStatsType type, uint64_t value,
@@ -644,8 +644,8 @@ class InternalStats {
   // Per-DB stats
   std::atomic<uint64_t> db_stats_[kIntStatsNumMax];
   // Per-ColumnFamily stats
-  uint64_t cf_stats_value_[INTERNAL_CF_STATS_ENUM_MAX];
-  uint64_t cf_stats_count_[INTERNAL_CF_STATS_ENUM_MAX];
+  uint64_t cf_stats_value_[(int)InternalCFStatsType::INTERNAL_CF_STATS_ENUM_MAX];
+  uint64_t cf_stats_count_[(int)InternalCFStatsType::INTERNAL_CF_STATS_ENUM_MAX];
   // Initialize/reference the collector in constructor so that we don't need
   // additional synchronization in InternalStats, relying on synchronization
   // in CacheEntryStatsCollector::GetStats. This collector is pinned in cache

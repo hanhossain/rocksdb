@@ -2138,7 +2138,7 @@ TEST_F(DBPropertiesTest, WriteStallStatsSanityCheck) {
 
       if (isCFScopeWriteStallCause(cause)) {
         ASSERT_TRUE(InternalCFStat(cause, condition) !=
-                    InternalStats::INTERNAL_CF_STATS_ENUM_MAX)
+                    InternalStats::InternalCFStatsType::INTERNAL_CF_STATS_ENUM_MAX)
             << "Please ensure the combination of rs::types::WriteStallCause(" +
                    std::to_string(static_cast<uint32_t>(cause)) +
                    ") + rs::types::WriteStallCondition(" +

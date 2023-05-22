@@ -929,7 +929,7 @@ rs::types::WriteStallCondition ColumnFamilyData::RecalculateWriteStallConditions
     if (write_stall_condition == rs::types::WriteStallCondition::Stopped &&
         write_stall_cause == rs::types::WriteStallCause::MemtableLimit) {
       write_controller_token_ = write_controller->GetStopToken();
-      internal_stats_->AddCFStats(InternalStats::MEMTABLE_LIMIT_STOPS, 1);
+      internal_stats_->AddCFStats(InternalStats::InternalCFStatsType::MEMTABLE_LIMIT_STOPS, 1);
       ROCKS_LOG_WARN(
           ioptions_.logger,
           "[%s] Stopping writes because we have %d immutable memtables "
@@ -939,10 +939,10 @@ rs::types::WriteStallCondition ColumnFamilyData::RecalculateWriteStallConditions
     } else if (write_stall_condition == rs::types::WriteStallCondition::Stopped &&
                write_stall_cause == rs::types::WriteStallCause::L0FileCountLimit) {
       write_controller_token_ = write_controller->GetStopToken();
-      internal_stats_->AddCFStats(InternalStats::L0_FILE_COUNT_LIMIT_STOPS, 1);
+      internal_stats_->AddCFStats(InternalStats::InternalCFStatsType::L0_FILE_COUNT_LIMIT_STOPS, 1);
       if (compaction_picker_->IsLevel0CompactionInProgress()) {
         internal_stats_->AddCFStats(
-            InternalStats::L0_FILE_COUNT_LIMIT_STOPS_WITH_ONGOING_COMPACTION,
+            InternalStats::InternalCFStatsType::L0_FILE_COUNT_LIMIT_STOPS_WITH_ONGOING_COMPACTION,
             1);
       }
       ROCKS_LOG_WARN(ioptions_.logger,
@@ -952,7 +952,7 @@ rs::types::WriteStallCondition ColumnFamilyData::RecalculateWriteStallConditions
                write_stall_cause == rs::types::WriteStallCause::PendingCompactionBytes) {
       write_controller_token_ = write_controller->GetStopToken();
       internal_stats_->AddCFStats(
-          InternalStats::PENDING_COMPACTION_BYTES_LIMIT_STOPS, 1);
+          InternalStats::InternalCFStatsType::PENDING_COMPACTION_BYTES_LIMIT_STOPS, 1);
       ROCKS_LOG_WARN(
           ioptions_.logger,
           "[%s] Stopping writes because of estimated pending compaction "
@@ -964,7 +964,7 @@ rs::types::WriteStallCondition ColumnFamilyData::RecalculateWriteStallConditions
           SetupDelay(write_controller, compaction_needed_bytes,
                      prev_compaction_needed_bytes_, was_stopped,
                      mutable_cf_options.disable_auto_compactions);
-      internal_stats_->AddCFStats(InternalStats::MEMTABLE_LIMIT_DELAYS, 1);
+      internal_stats_->AddCFStats(InternalStats::InternalCFStatsType::MEMTABLE_LIMIT_DELAYS, 1);
       ROCKS_LOG_WARN(
           ioptions_.logger,
           "[%s] Stalling writes because we have %d immutable memtables "
@@ -982,10 +982,10 @@ rs::types::WriteStallCondition ColumnFamilyData::RecalculateWriteStallConditions
           SetupDelay(write_controller, compaction_needed_bytes,
                      prev_compaction_needed_bytes_, was_stopped || near_stop,
                      mutable_cf_options.disable_auto_compactions);
-      internal_stats_->AddCFStats(InternalStats::L0_FILE_COUNT_LIMIT_DELAYS, 1);
+      internal_stats_->AddCFStats(InternalStats::InternalCFStatsType::L0_FILE_COUNT_LIMIT_DELAYS, 1);
       if (compaction_picker_->IsLevel0CompactionInProgress()) {
         internal_stats_->AddCFStats(
-            InternalStats::L0_FILE_COUNT_LIMIT_DELAYS_WITH_ONGOING_COMPACTION,
+            InternalStats::InternalCFStatsType::L0_FILE_COUNT_LIMIT_DELAYS_WITH_ONGOING_COMPACTION,
             1);
       }
       ROCKS_LOG_WARN(ioptions_.logger,
@@ -1012,7 +1012,7 @@ rs::types::WriteStallCondition ColumnFamilyData::RecalculateWriteStallConditions
                      prev_compaction_needed_bytes_, was_stopped || near_stop,
                      mutable_cf_options.disable_auto_compactions);
       internal_stats_->AddCFStats(
-          InternalStats::PENDING_COMPACTION_BYTES_LIMIT_DELAYS, 1);
+          InternalStats::InternalCFStatsType::PENDING_COMPACTION_BYTES_LIMIT_DELAYS, 1);
       ROCKS_LOG_WARN(
           ioptions_.logger,
           "[%s] Stalling writes because of estimated pending compaction "
