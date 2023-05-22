@@ -1232,7 +1232,7 @@ TEST_F(DBTest2, PresetCompressionDict) {
     compression_types.push_back(kZSTD);
   }
 
-  enum DictionaryTypes : int {
+  enum class DictionaryTypes : int {
     kWithoutDict,
     kWithDict,
     kWithZSTDfinalizeDict,
@@ -1246,7 +1246,7 @@ TEST_F(DBTest2, PresetCompressionDict) {
     size_t bytes_with_dict = 0;
     size_t bytes_with_zstd_finalize_dict = 0;
     size_t bytes_with_zstd_trained_dict = 0;
-    for (int i = kWithoutDict; i < kDictEnd; i++) {
+    for (int i = (int)DictionaryTypes::kWithoutDict; i < (int)DictionaryTypes::kDictEnd; i++) {
       // First iteration: compress without preset dictionary
       // Second iteration: compress with preset dictionary
       // Third iteration (zstd only): compress with zstd-trained dictionary
@@ -1255,16 +1255,16 @@ TEST_F(DBTest2, PresetCompressionDict) {
       // verify the compressed size is smaller in successive iterations. Also in
       // the non-first iterations, verify the data we get out is the same data
       // we put in.
-      switch (i) {
-        case kWithoutDict:
+      switch ((DictionaryTypes)i) {
+        case DictionaryTypes::kWithoutDict:
           options.compression_opts.max_dict_bytes = 0;
           options.compression_opts.zstd_max_train_bytes = 0;
           break;
-        case kWithDict:
+        case DictionaryTypes::kWithDict:
           options.compression_opts.max_dict_bytes = kBlockSizeBytes;
           options.compression_opts.zstd_max_train_bytes = 0;
           break;
-        case kWithZSTDfinalizeDict:
+        case DictionaryTypes::kWithZSTDfinalizeDict:
           if (compression_type != kZSTD ||
               !ZSTD_FinalizeDictionarySupported()) {
             continue;
@@ -1273,7 +1273,7 @@ TEST_F(DBTest2, PresetCompressionDict) {
           options.compression_opts.zstd_max_train_bytes = kL0FileBytes;
           options.compression_opts.use_zstd_dict_trainer = false;
           break;
-        case kWithZSTDTrainedDict:
+        case DictionaryTypes::kWithZSTDTrainedDict:
           if (compression_type != kZSTD || !ZSTD_TrainDictionarySupported()) {
             continue;
           }
@@ -1312,13 +1312,13 @@ TEST_F(DBTest2, PresetCompressionDict) {
 
       // Get the live sst files size
       size_t total_sst_bytes = TotalSize(1);
-      if (i == kWithoutDict) {
+      if (i == (int)DictionaryTypes::kWithoutDict) {
         bytes_without_dict = total_sst_bytes;
-      } else if (i == kWithDict) {
+      } else if (i == (int)DictionaryTypes::kWithDict) {
         bytes_with_dict = total_sst_bytes;
-      } else if (i == kWithZSTDfinalizeDict) {
+      } else if (i == (int)DictionaryTypes::kWithZSTDfinalizeDict) {
         bytes_with_zstd_finalize_dict = total_sst_bytes;
-      } else if (i == kWithZSTDTrainedDict) {
+      } else if (i == (int)DictionaryTypes::kWithZSTDTrainedDict) {
         bytes_with_zstd_trained_dict = total_sst_bytes;
       }
 
@@ -1326,16 +1326,16 @@ TEST_F(DBTest2, PresetCompressionDict) {
            j++) {
         ASSERT_EQ(seq_datas[(j / 10) % 10], Get(1, Key(static_cast<int>(j))));
       }
-      if (i == kWithDict) {
+      if (i == (int)DictionaryTypes::kWithDict) {
         ASSERT_GT(bytes_without_dict, bytes_with_dict);
-      } else if (i == kWithZSTDTrainedDict) {
+      } else if (i == (int)DictionaryTypes::kWithZSTDTrainedDict) {
         // In zstd compression, it is sometimes possible that using a finalized
         // dictionary does not get as good a compression ratio as raw content
         // dictionary. But using a dictionary should always get better
         // compression ratio than not using one.
         ASSERT_TRUE(bytes_with_dict > bytes_with_zstd_finalize_dict ||
                     bytes_without_dict > bytes_with_zstd_finalize_dict);
-      } else if (i == kWithZSTDTrainedDict) {
+      } else if (i == (int)DictionaryTypes::kWithZSTDTrainedDict) {
         // In zstd compression, it is sometimes possible that using a trained
         // dictionary does not get as good a compression ratio as without
         // training.
