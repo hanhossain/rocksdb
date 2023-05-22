@@ -1938,7 +1938,7 @@ TEST_F(DBTest, ApproximateSizes_MixOfSmallAndLarge) {
 TEST_F(DBTest, Snapshot) {
   env_->SetMockSleep();
   anon::OptionsOverride options_override;
-  options_override.skip_policy = kSkipNoSnapshot;
+  options_override.skip_policy = (int)SkipPolicy::kSkipNoSnapshot;
   do {
     CreateAndReopenWithCF({"pikachu"}, CurrentOptions(options_override));
     ASSERT_OK(Put(0, "foo", "0v1"));
@@ -2018,7 +2018,7 @@ TEST_F(DBTest, Snapshot) {
 
 TEST_F(DBTest, HiddenValuesAreRemoved) {
   anon::OptionsOverride options_override;
-  options_override.skip_policy = kSkipNoSnapshot;
+  options_override.skip_policy = (int)SkipPolicy::kSkipNoSnapshot;
   uint64_t size;
   do {
     Options options = CurrentOptions(options_override);
@@ -2069,7 +2069,7 @@ TEST_F(DBTest, UnremovableSingleDelete) {
   // Because a subsequent SingleDelete(A) would delete the Put(A, v2)
   // but not Put(A, v1), so Get(A) would return v1.
   anon::OptionsOverride options_override;
-  options_override.skip_policy = kSkipNoSnapshot;
+  options_override.skip_policy = (int)SkipPolicy::kSkipNoSnapshot;
   do {
     Options options = CurrentOptions(options_override);
     options.disable_auto_compactions = true;
@@ -2839,7 +2839,7 @@ class MultiThreadedDBTest
 TEST_P(MultiThreadedDBTest, MultiThreaded) {
   if (option_config_ == kPipelinedWrite) return;
   anon::OptionsOverride options_override;
-  options_override.skip_policy = kSkipNoSnapshot;
+  options_override.skip_policy = (int)SkipPolicy::kSkipNoSnapshot;
   Options options = CurrentOptions(options_override);
   std::vector<std::string> cfs;
   for (int i = 1; i < kColumnFamilies; ++i) {
@@ -3490,7 +3490,7 @@ INSTANTIATE_TEST_CASE_P(
 
 TEST_P(DBTestRandomized, Randomized) {
   anon::OptionsOverride options_override;
-  options_override.skip_policy = kSkipNoSnapshot;
+  options_override.skip_policy = (int)SkipPolicy::kSkipNoSnapshot;
   Options options = CurrentOptions(options_override);
   DestroyAndReopen(options);
 

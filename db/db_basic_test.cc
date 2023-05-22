@@ -424,7 +424,7 @@ TEST_F(DBBasicTest, GetFromVersions) {
 
 TEST_F(DBBasicTest, GetSnapshot) {
   anon::OptionsOverride options_override;
-  options_override.skip_policy = kSkipNoSnapshot;
+  options_override.skip_policy = (int)SkipPolicy::kSkipNoSnapshot;
   do {
     CreateAndReopenWithCF({"pikachu"}, CurrentOptions(options_override));
     // Try with both a short key and a long key
@@ -697,7 +697,7 @@ TEST_F(DBBasicTest, LockFileRecovery) {
 TEST_F(DBBasicTest, Snapshot) {
   env_->SetMockSleep();
   anon::OptionsOverride options_override;
-  options_override.skip_policy = kSkipNoSnapshot;
+  options_override.skip_policy = (int)SkipPolicy::kSkipNoSnapshot;
   do {
     CreateAndReopenWithCF({"pikachu"}, CurrentOptions(options_override));
     ASSERT_OK(Put(0, "foo", "0v1"));
@@ -784,7 +784,7 @@ class DBBasicMultiConfigs : public DBBasicTest,
 
 TEST_P(DBBasicMultiConfigs, CompactBetweenSnapshots) {
   anon::OptionsOverride options_override;
-  options_override.skip_policy = kSkipNoSnapshot;
+  options_override.skip_policy = (int)SkipPolicy::kSkipNoSnapshot;
   Options options = CurrentOptions(options_override);
   options.disable_auto_compactions = true;
   DestroyAndReopen(options);
@@ -880,7 +880,7 @@ TEST_F(DBBasicTest, DBOpen_Options) {
 
 TEST_F(DBBasicTest, CompactOnFlush) {
   anon::OptionsOverride options_override;
-  options_override.skip_policy = kSkipNoSnapshot;
+  options_override.skip_policy = (int)SkipPolicy::kSkipNoSnapshot;
   do {
     Options options = CurrentOptions(options_override);
     options.disable_auto_compactions = true;

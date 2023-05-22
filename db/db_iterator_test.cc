@@ -589,7 +589,7 @@ TEST_P(DBIteratorTest, IterMulti) {
 // by using reseek rather than sequential scan
 TEST_P(DBIteratorTest, IterReseek) {
   anon::OptionsOverride options_override;
-  options_override.skip_policy = kSkipNoSnapshot;
+  options_override.skip_policy = (int)SkipPolicy::kSkipNoSnapshot;
   Options options = CurrentOptions(options_override);
   options.max_sequential_skip_in_iterations = 3;
   options.create_if_missing = true;
@@ -806,7 +806,7 @@ TEST_P(DBIteratorTest, IterPrevMaxSkip) {
 
 TEST_P(DBIteratorTest, IterWithSnapshot) {
   anon::OptionsOverride options_override;
-  options_override.skip_policy = kSkipNoSnapshot;
+  options_override.skip_policy = (int)SkipPolicy::kSkipNoSnapshot;
   do {
     CreateAndReopenWithCF({"pikachu"}, CurrentOptions(options_override));
     ASSERT_OK(Put(1, "key1", "val1"));

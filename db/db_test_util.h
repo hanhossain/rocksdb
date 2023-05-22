@@ -118,7 +118,7 @@ struct OptionsOverride {
 
 }  // namespace anon
 
-enum SkipPolicy { kSkipNone = 0, kSkipNoSnapshot = 1, kSkipNoPrefix = 2 };
+enum class SkipPolicy { kSkipNone = 0, kSkipNoSnapshot = 1, kSkipNoPrefix = 2 };
 
 // Special Env used to delay background operations
 class SpecialEnv : public EnvWrapper {
