@@ -124,35 +124,35 @@ DBTestBase::~DBTestBase() {
 bool DBTestBase::ShouldSkipOptions(int option_config_int, int skip_mask) {
   OptionConfig option_config = (OptionConfig)option_config_int;
 
-  if ((skip_mask & kSkipUniversalCompaction) &&
+  if ((skip_mask & (int)OptionSkip::kSkipUniversalCompaction) &&
       (option_config == OptionConfig::kUniversalCompaction ||
        option_config == OptionConfig::kUniversalCompactionMultiLevel ||
        option_config == OptionConfig::kUniversalSubcompactions)) {
     return true;
   }
-  if ((skip_mask & kSkipMergePut) && option_config == OptionConfig::kMergePut) {
+  if ((skip_mask & (int)OptionSkip::kSkipMergePut) && option_config == OptionConfig::kMergePut) {
     return true;
   }
-  if ((skip_mask & kSkipNoSeekToLast) &&
+  if ((skip_mask & (int)OptionSkip::kSkipNoSeekToLast) &&
       (option_config == OptionConfig::kHashLinkList || option_config == OptionConfig::kHashSkipList)) {
     return true;
   }
-  if ((skip_mask & kSkipPlainTable) &&
+  if ((skip_mask & (int)OptionSkip::kSkipPlainTable) &&
       (option_config == OptionConfig::kPlainTableAllBytesPrefix ||
        option_config == OptionConfig::kPlainTableFirstBytePrefix ||
        option_config == OptionConfig::kPlainTableCappedPrefix ||
        option_config == OptionConfig::kPlainTableCappedPrefixNonMmap)) {
     return true;
   }
-  if ((skip_mask & kSkipHashIndex) &&
+  if ((skip_mask & (int)OptionSkip::kSkipHashIndex) &&
       (option_config == OptionConfig::kBlockBasedTableWithPrefixHashIndex ||
        option_config == OptionConfig::kBlockBasedTableWithWholeKeyHashIndex)) {
     return true;
   }
-  if ((skip_mask & kSkipFIFOCompaction) && option_config == OptionConfig::kFIFOCompaction) {
+  if ((skip_mask & (int)OptionSkip::kSkipFIFOCompaction) && option_config == OptionConfig::kFIFOCompaction) {
     return true;
   }
-  if ((skip_mask & kSkipMmapReads) && option_config == OptionConfig::kWalDirAndMmapReads) {
+  if ((skip_mask & (int)OptionSkip::kSkipMmapReads) && option_config == OptionConfig::kWalDirAndMmapReads) {
     return true;
   }
   return false;

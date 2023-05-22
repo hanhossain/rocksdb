@@ -386,8 +386,8 @@ TEST_F(DBBasicTest, PutSingleDeleteGet) {
     // Ski FIFO and universal compaction because they do not apply to the test
     // case. Skip MergePut because single delete does not get removed when it
     // encounters a merge.
-  } while (ChangeOptions(kSkipFIFOCompaction | kSkipUniversalCompaction |
-                         kSkipMergePut));
+  } while (ChangeOptions((int)OptionSkip::kSkipFIFOCompaction | (int)OptionSkip::kSkipUniversalCompaction |
+                         (int)OptionSkip::kSkipMergePut));
 }
 
 TEST_F(DBBasicTest, EmptyFlush) {
@@ -408,8 +408,8 @@ TEST_F(DBBasicTest, EmptyFlush) {
     // Skip FIFO and  universal compaction as they do not apply to the test
     // case. Skip MergePut because merges cannot be combined with single
     // deletions.
-  } while (ChangeOptions(kSkipFIFOCompaction | kSkipUniversalCompaction |
-                         kSkipMergePut));
+  } while (ChangeOptions((int)OptionSkip::kSkipFIFOCompaction | (int)OptionSkip::kSkipUniversalCompaction |
+                         (int)OptionSkip::kSkipMergePut));
 }
 
 TEST_F(DBBasicTest, GetFromVersions) {
@@ -774,7 +774,7 @@ class DBBasicMultiConfigs : public DBBasicTest,
   static std::vector<int> GenerateOptionConfigs() {
     std::vector<int> option_configs;
     for (int option_config = (int)OptionConfig::kDefault; option_config < (int)OptionConfig::kEnd; ++option_config) {
-      if (!ShouldSkipOptions(option_config, kSkipFIFOCompaction)) {
+      if (!ShouldSkipOptions(option_config, (int)OptionSkip::kSkipFIFOCompaction)) {
         option_configs.push_back(option_config);
       }
     }
@@ -4586,7 +4586,7 @@ TEST_P(DBBasicTestDeadline, PointLookupDeadline) {
   bool set_timeout = std::get<1>(GetParam());
 
   for (int option_config = (int)OptionConfig::kDefault; option_config < (int)OptionConfig::kEnd; ++option_config) {
-    if (ShouldSkipOptions(option_config, kSkipPlainTable | kSkipMmapReads)) {
+    if (ShouldSkipOptions(option_config, (int)OptionSkip::kSkipPlainTable | (int)OptionSkip::kSkipMmapReads)) {
       continue;
     }
     option_config_ = option_config;
@@ -4679,7 +4679,7 @@ TEST_P(DBBasicTestDeadline, IteratorDeadline) {
   bool set_timeout = std::get<1>(GetParam());
 
   for (int option_config = (int)OptionConfig::kDefault; option_config < (int)OptionConfig::kEnd; ++option_config) {
-    if (ShouldSkipOptions(option_config, kSkipPlainTable | kSkipMmapReads)) {
+    if (ShouldSkipOptions(option_config, (int)OptionSkip::kSkipPlainTable | (int)OptionSkip::kSkipMmapReads)) {
       continue;
     }
     Options options = CurrentOptions();

@@ -1018,7 +1018,7 @@ class DBTestBase : public testing::Test {
 
   // Skip some options, as they may not be applicable to a specific test.
   // To add more skip constants, use values 4, 8, 16, etc.
-  enum OptionSkip {
+  enum class OptionSkip {
     kNoSkip = 0,
     kSkipDeletesFilterFirst = 1,
     kSkipUniversalCompaction = 2,
@@ -1032,10 +1032,10 @@ class DBTestBase : public testing::Test {
 
   const int kRangeDelSkipConfigs =
       // Plain tables do not support range deletions.
-      kSkipPlainTable |
+      (int)OptionSkip::kSkipPlainTable |
       // MmapReads disables the iterator pinning that RangeDelAggregator
       // requires.
-      kSkipMmapReads;
+      (int)OptionSkip::kSkipMmapReads;
 
   // `env_do_fsync` decides whether the special Env would do real
   // fsync for files and directories. Skipping fsync can speed up
@@ -1050,11 +1050,11 @@ class DBTestBase : public testing::Test {
     return std::string(buf);
   }
 
-  static bool ShouldSkipOptions(int option_config, int skip_mask = kNoSkip);
+  static bool ShouldSkipOptions(int option_config, int skip_mask = (int)OptionSkip::kNoSkip);
 
   // Switch to a fresh database with the next option configuration to
   // test.  Return false if there are no more configurations to test.
-  bool ChangeOptions(int skip_mask = kNoSkip);
+  bool ChangeOptions(int skip_mask = (int)OptionSkip::kNoSkip);
 
   // Switch between different compaction styles.
   bool ChangeCompactOptions();
