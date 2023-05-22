@@ -2148,7 +2148,7 @@ TEST_F(DBPropertiesTest, WriteStallStatsSanityCheck) {
       } else if (isDBScopeWriteStallCause(cause)) {
         InternalStats::InternalDBStatsType internal_db_stat =
             InternalDBStat(cause, condition);
-        if (internal_db_stat == InternalStats::kIntStatsNumMax) {
+        if (internal_db_stat == InternalStats::InternalDBStatsType::kIntStatsNumMax) {
           ASSERT_TRUE(cause == rs::types::WriteStallCause::WriteBufferManagerLimit &&
                       condition == rs::types::WriteStallCondition::Delayed)
               << "Please ensure the combination of rs::types::WriteStallCause(" +

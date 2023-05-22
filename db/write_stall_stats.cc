@@ -95,7 +95,7 @@ InternalStats::InternalDBStatsType InternalDBStat(
     case rs::types::WriteStallCause::WriteBufferManagerLimit: {
       switch (condition) {
         case rs::types::WriteStallCondition::Stopped:
-          return InternalStats::kIntStatsWriteBufferManagerLimitStopsCounts;
+          return InternalStats::InternalDBStatsType::kIntStatsWriteBufferManagerLimitStopsCounts;
         default:
           break;
       }
@@ -104,7 +104,7 @@ InternalStats::InternalDBStatsType InternalDBStat(
     default:
       break;
   }
-  return InternalStats::kIntStatsNumMax;
+  return InternalStats::InternalDBStatsType::kIntStatsNumMax;
 }
 
 bool isCFScopeWriteStallCause(rs::types::WriteStallCause cause) {

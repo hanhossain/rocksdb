@@ -63,22 +63,22 @@ const std::map<LevelStatType, LevelStat> InternalStats::compaction_level_stats =
 
 const std::map<InternalStats::InternalDBStatsType, DBStatInfo>
     InternalStats::db_stats_type_to_info = {
-        {InternalStats::kIntStatsWalFileBytes,
+        {InternalStats::InternalDBStatsType::kIntStatsWalFileBytes,
          DBStatInfo{"db.wal_bytes_written"}},
-        {InternalStats::kIntStatsWalFileSynced, DBStatInfo{"db.wal_syncs"}},
-        {InternalStats::kIntStatsBytesWritten,
+        {InternalStats::InternalDBStatsType::kIntStatsWalFileSynced, DBStatInfo{"db.wal_syncs"}},
+        {InternalStats::InternalDBStatsType::kIntStatsBytesWritten,
          DBStatInfo{"db.user_bytes_written"}},
-        {InternalStats::kIntStatsNumKeysWritten,
+        {InternalStats::InternalDBStatsType::kIntStatsNumKeysWritten,
          DBStatInfo{"db.user_keys_written"}},
-        {InternalStats::kIntStatsWriteDoneByOther,
+        {InternalStats::InternalDBStatsType::kIntStatsWriteDoneByOther,
          DBStatInfo{"db.user_writes_by_other"}},
-        {InternalStats::kIntStatsWriteDoneBySelf,
+        {InternalStats::InternalDBStatsType::kIntStatsWriteDoneBySelf,
          DBStatInfo{"db.user_writes_by_self"}},
-        {InternalStats::kIntStatsWriteWithWal,
+        {InternalStats::InternalDBStatsType::kIntStatsWriteWithWal,
          DBStatInfo{"db.user_writes_with_wal"}},
-        {InternalStats::kIntStatsWriteStallMicros,
+        {InternalStats::InternalDBStatsType::kIntStatsWriteStallMicros,
          DBStatInfo{"db.user_write_stall_micros"}},
-        {InternalStats::kIntStatsWriteBufferManagerLimitStopsCounts,
+        {InternalStats::InternalDBStatsType::kIntStatsWriteBufferManagerLimitStopsCounts,
          DBStatInfo{WriteStallStatsMapKeys::CauseConditionCount(
              rs::types::WriteStallCause::WriteBufferManagerLimit,
              rs::types::WriteStallCondition::Stopped)}},
@@ -1519,7 +1519,7 @@ bool InternalStats::HandleBlockCachePinnedUsage(uint64_t* value, DBImpl* /*db*/,
 
 void InternalStats::DumpDBMapStats(
     std::map<std::string, std::string>* db_stats) {
-  for (int i = 0; i < static_cast<int>(kIntStatsNumMax); ++i) {
+  for (int i = 0; i < static_cast<int>(InternalDBStatsType::kIntStatsNumMax); ++i) {
     InternalDBStatsType type = static_cast<InternalDBStatsType>(i);
     (*db_stats)[db_stats_type_to_info.at(type).property_name] =
         std::to_string(GetDBStats(type));
@@ -1539,16 +1539,16 @@ void InternalStats::DumpDBStats(std::string* value) {
   value->append(buf);
   // Cumulative
   uint64_t user_bytes_written =
-      GetDBStats(InternalStats::kIntStatsBytesWritten);
+      GetDBStats(InternalStats::InternalDBStatsType::kIntStatsBytesWritten);
   uint64_t num_keys_written =
-      GetDBStats(InternalStats::kIntStatsNumKeysWritten);
-  uint64_t write_other = GetDBStats(InternalStats::kIntStatsWriteDoneByOther);
-  uint64_t write_self = GetDBStats(InternalStats::kIntStatsWriteDoneBySelf);
-  uint64_t wal_bytes = GetDBStats(InternalStats::kIntStatsWalFileBytes);
-  uint64_t wal_synced = GetDBStats(InternalStats::kIntStatsWalFileSynced);
-  uint64_t write_with_wal = GetDBStats(InternalStats::kIntStatsWriteWithWal);
+      GetDBStats(InternalStats::InternalDBStatsType::kIntStatsNumKeysWritten);
+  uint64_t write_other = GetDBStats(InternalStats::InternalDBStatsType::kIntStatsWriteDoneByOther);
+  uint64_t write_self = GetDBStats(InternalStats::InternalDBStatsType::kIntStatsWriteDoneBySelf);
+  uint64_t wal_bytes = GetDBStats(InternalStats::InternalDBStatsType::kIntStatsWalFileBytes);
+  uint64_t wal_synced = GetDBStats(InternalStats::InternalDBStatsType::kIntStatsWalFileSynced);
+  uint64_t write_with_wal = GetDBStats(InternalStats::InternalDBStatsType::kIntStatsWriteWithWal);
   uint64_t write_stall_micros =
-      GetDBStats(InternalStats::kIntStatsWriteStallMicros);
+      GetDBStats(InternalStats::InternalDBStatsType::kIntStatsWriteStallMicros);
 
   const int kHumanMicrosLen = 32;
   char human_micros[kHumanMicrosLen];
@@ -1664,7 +1664,7 @@ void InternalStats::DumpDBMapStatsWriteStall(
       InternalStats::InternalDBStatsType internal_db_stat =
           InternalDBStat(cause, condition);
 
-      if (internal_db_stat == InternalStats::kIntStatsNumMax) {
+      if (internal_db_stat == InternalStats::InternalDBStatsType::kIntStatsNumMax) {
         continue;
       }
 

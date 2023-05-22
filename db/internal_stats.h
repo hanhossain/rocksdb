@@ -126,7 +126,7 @@ class InternalStats {
     INTERNAL_CF_STATS_ENUM_MAX,
   };
 
-  enum InternalDBStatsType {
+  enum class InternalDBStatsType {
     kIntStatsWalFileBytes,
     kIntStatsWalFileSynced,
     kIntStatsBytesWritten,
@@ -502,7 +502,7 @@ class InternalStats {
   };
 
   void Clear() {
-    for (int i = 0; i < kIntStatsNumMax; i++) {
+    for (int i = 0; i < (int)InternalDBStatsType::kIntStatsNumMax; i++) {
       db_stats_[i].store(0);
     }
     for (int i = 0; i < (int)InternalCFStatsType::INTERNAL_CF_STATS_ENUM_MAX; i++) {
@@ -551,7 +551,7 @@ class InternalStats {
 
   void AddDBStats(InternalDBStatsType type, uint64_t value,
                   bool concurrent = false) {
-    auto& v = db_stats_[type];
+    auto& v = db_stats_[(int)type];
     if (concurrent) {
       v.fetch_add(value, std::memory_order_relaxed);
     } else {
@@ -561,7 +561,7 @@ class InternalStats {
   }
 
   uint64_t GetDBStats(InternalDBStatsType type) {
-    return db_stats_[type].load(std::memory_order_relaxed);
+    return db_stats_[(int)type].load(std::memory_order_relaxed);
   }
 
   HistogramImpl* GetFileReadHist(int level) {
@@ -642,7 +642,7 @@ class InternalStats {
   Cache* GetBlobCacheForStats();
 
   // Per-DB stats
-  std::atomic<uint64_t> db_stats_[kIntStatsNumMax];
+  std::atomic<uint64_t> db_stats_[(int)InternalDBStatsType::kIntStatsNumMax];
   // Per-ColumnFamily stats
   uint64_t cf_stats_value_[(int)InternalCFStatsType::INTERNAL_CF_STATS_ENUM_MAX];
   uint64_t cf_stats_count_[(int)InternalCFStatsType::INTERNAL_CF_STATS_ENUM_MAX];
