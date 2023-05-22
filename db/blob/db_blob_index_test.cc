@@ -25,7 +25,7 @@
 
 namespace ROCKSDB_NAMESPACE {
 
-// kTypeBlobIndex is a value type used by BlobDB only. The base rocksdb
+// ValueType::kTypeBlobIndex is a value type used by BlobDB only. The base rocksdb
 // should accept the value type on write, and report not supported value
 // for reads, unless caller request for it explicitly. The base rocksdb
 // doesn't understand format of actual blob index (the value).
@@ -137,7 +137,7 @@ class DBBlobIndexTest : public DBTestBase {
 };
 
 // Note: the following test case pertains to the StackableDB-based BlobDB
-// implementation. We should be able to write kTypeBlobIndex to memtables and
+// implementation. We should be able to write ValueType::kTypeBlobIndex to memtables and
 // SST files.
 TEST_F(DBBlobIndexTest, Write) {
   for (auto tier : kAllTiers) {
@@ -271,24 +271,24 @@ TEST_F(DBBlobIndexTest, Updated) {
 // expose_blob_index is not set), it should return Status::Corruption.
 TEST_F(DBBlobIndexTest, Iterate) {
   const std::vector<std::vector<ValueType>> data = {
-      /*00*/ {kTypeValue},
-      /*01*/ {kTypeBlobIndex},
-      /*02*/ {kTypeValue},
-      /*03*/ {kTypeBlobIndex, kTypeValue},
-      /*04*/ {kTypeValue},
-      /*05*/ {kTypeValue, kTypeBlobIndex},
-      /*06*/ {kTypeValue},
-      /*07*/ {kTypeDeletion, kTypeBlobIndex},
-      /*08*/ {kTypeValue},
-      /*09*/ {kTypeSingleDeletion, kTypeBlobIndex},
-      /*10*/ {kTypeValue},
-      /*11*/ {kTypeMerge, kTypeMerge, kTypeMerge, kTypeBlobIndex},
-      /*12*/ {kTypeValue},
+      /*00*/ {ValueType::kTypeValue},
+      /*01*/ {ValueType::kTypeBlobIndex},
+      /*02*/ {ValueType::kTypeValue},
+      /*03*/ {ValueType::kTypeBlobIndex, ValueType::kTypeValue},
+      /*04*/ {ValueType::kTypeValue},
+      /*05*/ {ValueType::kTypeValue, ValueType::kTypeBlobIndex},
+      /*06*/ {ValueType::kTypeValue},
+      /*07*/ {ValueType::kTypeDeletion, ValueType::kTypeBlobIndex},
+      /*08*/ {ValueType::kTypeValue},
+      /*09*/ {ValueType::kTypeSingleDeletion, ValueType::kTypeBlobIndex},
+      /*10*/ {ValueType::kTypeValue},
+      /*11*/ {ValueType::kTypeMerge, ValueType::kTypeMerge, ValueType::kTypeMerge, ValueType::kTypeBlobIndex},
+      /*12*/ {ValueType::kTypeValue},
       /*13*/
-      {kTypeMerge, kTypeMerge, kTypeMerge, kTypeDeletion, kTypeBlobIndex},
-      /*14*/ {kTypeValue},
-      /*15*/ {kTypeBlobIndex},
-      /*16*/ {kTypeValue},
+      {ValueType::kTypeMerge, ValueType::kTypeMerge, ValueType::kTypeMerge, ValueType::kTypeDeletion, ValueType::kTypeBlobIndex},
+      /*14*/ {ValueType::kTypeValue},
+      /*15*/ {ValueType::kTypeBlobIndex},
+      /*16*/ {ValueType::kTypeValue},
   };
 
   auto get_key = [](int index) {
@@ -389,19 +389,19 @@ TEST_F(DBBlobIndexTest, Iterate) {
         std::string value = get_value(i, j);
         WriteBatch batch;
         switch (data[i][j]) {
-          case kTypeValue:
+          case ValueType::kTypeValue:
             ASSERT_OK(Put(key, value));
             break;
-          case kTypeDeletion:
+          case ValueType::kTypeDeletion:
             ASSERT_OK(Delete(key));
             break;
-          case kTypeSingleDeletion:
+          case ValueType::kTypeSingleDeletion:
             ASSERT_OK(SingleDelete(key));
             break;
-          case kTypeMerge:
+          case ValueType::kTypeMerge:
             ASSERT_OK(Merge(key, value));
             break;
-          case kTypeBlobIndex:
+          case ValueType::kTypeBlobIndex:
             ASSERT_OK(PutBlobIndex(&batch, key, value));
             ASSERT_OK(Write(&batch));
             break;

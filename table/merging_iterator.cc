@@ -117,9 +117,9 @@ class MergingIterator : public InternalIterator {
         // be distinct from point internal keys. Strictly speaking, this is only
         // needed for tombstone end points that are truncated in
         // TruncatedRangeDelIterator since untruncated tombstone end points
-        // always have kMaxSequenceNumber and kTypeRangeDeletion (see
+        // always have kMaxSequenceNumber and ValueType::kTypeRangeDeletion (see
         // TruncatedRangeDelIterator::start_key()/end_key()).
-        pinned_heap_item_[i].tombstone_pik.type = kTypeMaxValid;
+        pinned_heap_item_[i].tombstone_pik.type = ValueType::kTypeMaxValid;
       }
     }
   }
@@ -939,7 +939,7 @@ bool MergingIterator::SkipNextDeleted() {
     // If the file boundary is defined by a range deletion, the range
     // tombstone's end key must come before this sentinel key (see op_type in
     // SetTombstoneKey()).
-    assert(ExtractValueType(current->iter.key()) != kTypeRangeDeletion ||
+    assert(ExtractValueType(current->iter.key()) != ValueType::kTypeRangeDeletion ||
            active_.count(current->level) == 0);
     // When entering a new file, range tombstone iter from the old file is
     // freed, but the last key from that range tombstone iter may still be in

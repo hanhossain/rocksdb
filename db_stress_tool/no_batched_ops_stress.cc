@@ -1046,8 +1046,8 @@ class NonBatchedOpsStressTest : public StressTest {
       // value-like types.
       if (ro_copy.iter_start_ts) {
         const ValueType value_type = ExtractValueType(iter->key());
-        if (value_type != kTypeValue && value_type != kTypeBlobIndex &&
-            value_type != kTypeWideColumnEntity) {
+        if (value_type != ValueType::kTypeValue && value_type != ValueType::kTypeBlobIndex &&
+            value_type != ValueType::kTypeWideColumnEntity) {
           continue;
         }
       }

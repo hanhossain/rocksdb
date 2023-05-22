@@ -61,7 +61,7 @@ class FileIndexerTest : public testing::Test {
   }
 
   InternalKey IntKey(int64_t v) {
-    return InternalKey(Slice(reinterpret_cast<char*>(&v), 8), 0, kTypeValue);
+    return InternalKey(Slice(reinterpret_cast<char*>(&v), 8), 0, ValueType::kTypeValue);
   }
 
   void ClearFiles() {

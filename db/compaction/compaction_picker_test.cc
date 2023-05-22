@@ -136,12 +136,12 @@ class CompactionPickerTestBase : public testing::Test {
         smallest_key_buf ? Slice(smallest_key_buf,
                                  ucmp_->timestamp_size() + strlen(smallest))
                          : smallest,
-        smallest_seq, kTypeValue);
+        smallest_seq, ValueType::kTypeValue);
     InternalKey largest_ikey = InternalKey(
         largest_key_buf
             ? Slice(largest_key_buf, ucmp_->timestamp_size() + strlen(largest))
             : largest,
-        largest_seq, kTypeValue);
+        largest_seq, ValueType::kTypeValue);
 
     FileMetaData* f = new FileMetaData(
         file_number, path_id, file_size, smallest_ikey, largest_ikey,
@@ -1366,8 +1366,8 @@ TEST_F(CompactionPickerTest, CompactionPriMinOverlapping4) {
 }
 
 TEST_F(CompactionPickerTest, CompactionPriRoundRobin) {
-  std::vector<InternalKey> test_cursors = {InternalKey("249", 100, kTypeValue),
-                                           InternalKey("600", 100, kTypeValue),
+  std::vector<InternalKey> test_cursors = {InternalKey("249", 100, ValueType::kTypeValue),
+                                           InternalKey("600", 100, ValueType::kTypeValue),
                                            InternalKey()};
   std::vector<uint32_t> selected_files = {8U, 6U, 6U};
 
@@ -1415,7 +1415,7 @@ TEST_F(CompactionPickerTest, CompactionPriMultipleFilesRoundRobin1) {
   NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   vstorage_->ResizeCompactCursors(6);
   // Set the cursor (file picking should start with 7U)
-  vstorage_->AddCursorForOneLevel(2, InternalKey("199", 100, kTypeValue));
+  vstorage_->AddCursorForOneLevel(2, InternalKey("199", 100, ValueType::kTypeValue));
   Add(2, 6U, "150", "199", 500U);
   Add(2, 7U, "200", "249", 500U);
   Add(2, 8U, "300", "600", 500U);
@@ -1458,7 +1458,7 @@ TEST_F(CompactionPickerTest, CompactionPriMultipleFilesRoundRobin2) {
   NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   vstorage_->ResizeCompactCursors(6);
   // Set the cursor (file picking should start with 6U)
-  vstorage_->AddCursorForOneLevel(2, InternalKey("1000", 100, kTypeValue));
+  vstorage_->AddCursorForOneLevel(2, InternalKey("1000", 100, ValueType::kTypeValue));
   Add(2, 6U, "150", "199", 500U);  // Overlap with 26U, 27U
   Add(2, 7U, "200", "249", 500U);  // Overlap with 27U
   Add(2, 8U, "300", "600", 500U);  // Overlap with 28U, 29U
@@ -1502,7 +1502,7 @@ TEST_F(CompactionPickerTest, CompactionPriMultipleFilesRoundRobin3) {
   NewVersionStorage(6, rs::advanced_options::CompactionStyle::Level);
   vstorage_->ResizeCompactCursors(6);
   // Set the cursor (file picking should start with 9U)
-  vstorage_->AddCursorForOneLevel(2, InternalKey("700", 100, kTypeValue));
+  vstorage_->AddCursorForOneLevel(2, InternalKey("700", 100, ValueType::kTypeValue));
   Add(2, 6U, "150", "199", 500U);
   Add(2, 7U, "200", "249", 500U);
   Add(2, 8U, "300", "600", 500U);

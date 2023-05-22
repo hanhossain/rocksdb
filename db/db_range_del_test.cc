@@ -104,8 +104,8 @@ TEST_F(DBRangeDelTest, CompactionOutputHasOnlyRangeTombstone) {
     // Skip cuckoo memtables, which do not support snapshots. Skip non-leveled
     // compactions as the above assertions about the number of files in a level
     // do not hold true.
-  } while (ChangeOptions(kRangeDelSkipConfigs | kSkipUniversalCompaction |
-                         kSkipFIFOCompaction));
+  } while (ChangeOptions(kRangeDelSkipConfigs | (int)OptionSkip::kSkipUniversalCompaction |
+                         (int)OptionSkip::kSkipFIFOCompaction));
 }
 
 TEST_F(DBRangeDelTest, CompactionOutputFilesExactlyFilled) {
@@ -2811,7 +2811,7 @@ TEST_F(DBRangeDelTest, LeftSentinelKeyTestWithNewerKey) {
                         &type);
   ASSERT_EQ(seq, actual_seq);
   // might as well check type
-  ASSERT_EQ(type, kTypeValue);
+  ASSERT_EQ(type, ValueType::kTypeValue);
 
   iter->Prev();
   ASSERT_TRUE(iter->Valid());

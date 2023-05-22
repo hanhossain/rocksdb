@@ -6477,7 +6477,7 @@ TEST_F(DBTest2, AutoPrefixMode1) {
       EXPECT_EQ(0, TestGetAndResetTickerCount(options, stat));
       ASSERT_OK(iterator->status());
     }
-  } while (ChangeOptions(kSkipPlainTable));
+  } while (ChangeOptions((int)OptionSkip::kSkipPlainTable));
 }
 
 class RenameCurrentTest : public DBTestBase,

@@ -129,7 +129,7 @@ class CuckooReaderTest : public testing::Test {
   void UpdateKeys(bool with_zero_seqno) {
     for (uint32_t i = 0; i < num_items; i++) {
       ParsedInternalKey ikey(user_keys[i], with_zero_seqno ? 0 : i + 1000,
-                             kTypeValue);
+                             ValueType::kTypeValue);
       keys[i].clear();
       AppendInternalKey(&keys[i], ikey);
     }
@@ -222,7 +222,7 @@ TEST_F(CuckooReaderTest, WhenKeyExists) {
   fname = test::PerThreadDBPath("CuckooReader_WhenKeyExists");
   for (uint64_t i = 0; i < num_items; i++) {
     user_keys[i] = "key" + NumToStr(i);
-    ParsedInternalKey ikey(user_keys[i], i + 1000, kTypeValue);
+    ParsedInternalKey ikey(user_keys[i], i + 1000, ValueType::kTypeValue);
     AppendInternalKey(&keys[i], ikey);
     values[i] = "value" + NumToStr(i);
     // Give disjoint hash values.
@@ -250,7 +250,7 @@ TEST_F(CuckooReaderTest, WhenKeyExistsWithUint64Comparator) {
   for (uint64_t i = 0; i < num_items; i++) {
     user_keys[i].resize(8);
     memcpy(&user_keys[i][0], static_cast<void*>(&i), 8);
-    ParsedInternalKey ikey(user_keys[i], i + 1000, kTypeValue);
+    ParsedInternalKey ikey(user_keys[i], i + 1000, ValueType::kTypeValue);
     AppendInternalKey(&keys[i], ikey);
     values[i] = "value" + NumToStr(i);
     // Give disjoint hash values.
@@ -277,7 +277,7 @@ TEST_F(CuckooReaderTest, CheckIterator) {
   fname = test::PerThreadDBPath("CuckooReader_CheckIterator");
   for (uint64_t i = 0; i < num_items; i++) {
     user_keys[i] = "key" + NumToStr(i);
-    ParsedInternalKey ikey(user_keys[i], 1000, kTypeValue);
+    ParsedInternalKey ikey(user_keys[i], 1000, ValueType::kTypeValue);
     AppendInternalKey(&keys[i], ikey);
     values[i] = "value" + NumToStr(i);
     // Give disjoint hash values, in reverse order.
@@ -297,7 +297,7 @@ TEST_F(CuckooReaderTest, CheckIteratorUint64) {
   for (uint64_t i = 0; i < num_items; i++) {
     user_keys[i].resize(8);
     memcpy(&user_keys[i][0], static_cast<void*>(&i), 8);
-    ParsedInternalKey ikey(user_keys[i], 1000, kTypeValue);
+    ParsedInternalKey ikey(user_keys[i], 1000, ValueType::kTypeValue);
     AppendInternalKey(&keys[i], ikey);
     values[i] = "value" + NumToStr(i);
     // Give disjoint hash values, in reverse order.
@@ -317,7 +317,7 @@ TEST_F(CuckooReaderTest, WhenKeyNotFound) {
   fname = test::PerThreadDBPath("CuckooReader_WhenKeyNotFound");
   for (uint64_t i = 0; i < num_items; i++) {
     user_keys[i] = "key" + NumToStr(i);
-    ParsedInternalKey ikey(user_keys[i], i + 1000, kTypeValue);
+    ParsedInternalKey ikey(user_keys[i], i + 1000, ValueType::kTypeValue);
     AppendInternalKey(&keys[i], ikey);
     values[i] = "value" + NumToStr(i);
     // Make all hash values collide.
@@ -338,7 +338,7 @@ TEST_F(CuckooReaderTest, WhenKeyNotFound) {
   std::string not_found_user_key = "key" + NumToStr(num_items);
   std::string not_found_key;
   AddHashLookups(not_found_user_key, 0, kNumHashFunc);
-  ParsedInternalKey ikey(not_found_user_key, 1000, kTypeValue);
+  ParsedInternalKey ikey(not_found_user_key, 1000, ValueType::kTypeValue);
   AppendInternalKey(&not_found_key, ikey);
   PinnableSlice value;
   GetContext get_context(ucmp, nullptr, nullptr, nullptr, GetContext::kNotFound,
@@ -351,7 +351,7 @@ TEST_F(CuckooReaderTest, WhenKeyNotFound) {
   // Search for a key with an independent hash value.
   std::string not_found_user_key2 = "key" + NumToStr(num_items + 1);
   AddHashLookups(not_found_user_key2, kNumHashFunc, kNumHashFunc);
-  ParsedInternalKey ikey2(not_found_user_key2, 1000, kTypeValue);
+  ParsedInternalKey ikey2(not_found_user_key2, 1000, ValueType::kTypeValue);
   std::string not_found_key2;
   AppendInternalKey(&not_found_key2, ikey2);
   value.Reset();
@@ -386,7 +386,7 @@ namespace {
 void GetKeys(uint64_t num, std::vector<std::string>* keys) {
   keys->clear();
   IterKey k;
-  k.SetInternalKey("", 0, kTypeValue);
+  k.SetInternalKey("", 0, ValueType::kTypeValue);
   std::string internal_key_suffix = k.GetInternalKey().ToString();
   ASSERT_EQ(static_cast<size_t>(8), internal_key_suffix.size());
   for (uint64_t key_idx = 0; key_idx < num; ++key_idx) {

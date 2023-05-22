@@ -346,9 +346,9 @@ bool DBIter::FindNextUserEntryInternal(bool skipping_saved_key,
         num_skipped = 0;
         reseek_done = false;
         switch (ikey_.type) {
-          case kTypeDeletion:
-          case kTypeDeletionWithTimestamp:
-          case kTypeSingleDeletion:
+          case ValueType::kTypeDeletion:
+          case ValueType::kTypeDeletionWithTimestamp:
+          case ValueType::kTypeSingleDeletion:
             // Arrange to skip all upcoming entries for this key since
             // they are hidden by this deletion.
             if (timestamp_lb_) {
@@ -363,9 +363,9 @@ bool DBIter::FindNextUserEntryInternal(bool skipping_saved_key,
               PERF_COUNTER_ADD(internal_delete_skipped_count, 1);
             }
             break;
-          case kTypeValue:
-          case kTypeBlobIndex:
-          case kTypeWideColumnEntity:
+          case ValueType::kTypeValue:
+          case ValueType::kTypeBlobIndex:
+          case ValueType::kTypeWideColumnEntity:
             if (!iter_.PrepareValue()) {
               assert(!iter_.status().ok());
               valid_ = false;
@@ -379,26 +379,26 @@ bool DBIter::FindNextUserEntryInternal(bool skipping_saved_key,
                                       !iter_.iter()->IsKeyPinned() /* copy */);
             }
 
-            if (ikey_.type == kTypeBlobIndex) {
+            if (ikey_.type == ValueType::kTypeBlobIndex) {
               if (!SetBlobValueIfNeeded(ikey_.user_key, iter_.value())) {
                 return false;
               }
 
               SetValueAndColumnsFromPlain(expose_blob_index_ ? iter_.value()
                                                              : blob_value_);
-            } else if (ikey_.type == kTypeWideColumnEntity) {
+            } else if (ikey_.type == ValueType::kTypeWideColumnEntity) {
               if (!SetValueAndColumnsFromEntity(iter_.value())) {
                 return false;
               }
             } else {
-              assert(ikey_.type == kTypeValue);
+              assert(ikey_.type == ValueType::kTypeValue);
               SetValueAndColumnsFromPlain(iter_.value());
             }
 
             valid_ = true;
             return true;
             break;
-          case kTypeMerge:
+          case ValueType::kTypeMerge:
             if (!iter_.PrepareValue()) {
               assert(!iter_.status().ok());
               valid_ = false;
@@ -463,12 +463,12 @@ bool DBIter::FindNextUserEntryInternal(bool skipping_saved_key,
         if (timestamp_size_ == 0) {
           AppendInternalKey(
               &last_key,
-              ParsedInternalKey(saved_key_.GetUserKey(), 0, kTypeDeletion));
+              ParsedInternalKey(saved_key_.GetUserKey(), 0, ValueType::kTypeDeletion));
         } else {
           const std::string kTsMin(timestamp_size_, '\0');
           AppendInternalKeyWithDifferentTimestamp(
               &last_key,
-              ParsedInternalKey(saved_key_.GetUserKey(), 0, kTypeDeletion),
+              ParsedInternalKey(saved_key_.GetUserKey(), 0, ValueType::kTypeDeletion),
               kTsMin);
         }
         // Don't set skipping_saved_key = false because we may still see more
@@ -539,8 +539,8 @@ bool DBIter::MergeValuesNewToOld() {
       // hit the next user key, stop right here
       break;
     }
-    if (kTypeDeletion == ikey.type || kTypeSingleDeletion == ikey.type ||
-        kTypeDeletionWithTimestamp == ikey.type) {
+    if (ValueType::kTypeDeletion == ikey.type || ValueType::kTypeSingleDeletion == ikey.type ||
+        ValueType::kTypeDeletionWithTimestamp == ikey.type) {
       // hit a delete with the same user key, stop right here
       // iter_ is positioned after delete
       iter_.Next();
@@ -551,7 +551,7 @@ bool DBIter::MergeValuesNewToOld() {
       return false;
     }
 
-    if (kTypeValue == ikey.type) {
+    if (ValueType::kTypeValue == ikey.type) {
       // hit a put, merge the put value with operands and store the
       // final result in saved_value_. We are done!
       const Slice val = iter_.value();
@@ -565,13 +565,13 @@ bool DBIter::MergeValuesNewToOld() {
         return false;
       }
       return true;
-    } else if (kTypeMerge == ikey.type) {
+    } else if (ValueType::kTypeMerge == ikey.type) {
       // hit a merge, add the value as an operand and run associative merge.
       // when complete, add result to operands and continue.
       merge_context_.PushOperand(
           iter_.value(), iter_.iter()->IsValuePinned() /* operand_pinned */);
       PERF_COUNTER_ADD(internal_merge_count, 1);
-    } else if (kTypeBlobIndex == ikey.type) {
+    } else if (ValueType::kTypeBlobIndex == ikey.type) {
       if (expose_blob_index_) {
         status_ =
             Status::NotSupported("BlobDB does not support merge operator.");
@@ -597,7 +597,7 @@ bool DBIter::MergeValuesNewToOld() {
         return false;
       }
       return true;
-    } else if (kTypeWideColumnEntity == ikey.type) {
+    } else if (ValueType::kTypeWideColumnEntity == ikey.type) {
       if (!MergeEntity(iter_.value(), ikey.user_key)) {
         return false;
       }
@@ -816,14 +816,14 @@ bool DBIter::FindValueForCurrentKey() {
   assert(iter_.Valid());
   merge_context_.Clear();
   current_entry_is_merged_ = false;
-  // last entry before merge (could be kTypeDeletion,
-  // kTypeDeletionWithTimestamp, kTypeSingleDeletion, kTypeValue,
-  // kTypeBlobIndex, or kTypeWideColumnEntity)
-  ValueType last_not_merge_type = kTypeDeletion;
-  ValueType last_key_entry_type = kTypeDeletion;
+  // last entry before merge (could be ValueType::kTypeDeletion,
+  // ValueType::kTypeDeletionWithTimestamp, ValueType::kTypeSingleDeletion, ValueType::kTypeValue,
+  // ValueType::kTypeBlobIndex, or ValueType::kTypeWideColumnEntity)
+  ValueType last_not_merge_type = ValueType::kTypeDeletion;
+  ValueType last_key_entry_type = ValueType::kTypeDeletion;
 
   // If false, it indicates that we have not seen any valid entry, even though
-  // last_key_entry_type is initialized to kTypeDeletion.
+  // last_key_entry_type is initialized to ValueType::kTypeDeletion.
   bool valid_entry_seen = false;
 
   // Temporarily pin blocks that hold (merge operands / the value)
@@ -895,9 +895,9 @@ bool DBIter::FindValueForCurrentKey() {
     valid_entry_seen = true;
     last_key_entry_type = ikey.type;
     switch (last_key_entry_type) {
-      case kTypeValue:
-      case kTypeBlobIndex:
-      case kTypeWideColumnEntity:
+      case ValueType::kTypeValue:
+      case ValueType::kTypeBlobIndex:
+      case ValueType::kTypeWideColumnEntity:
         if (iter_.iter()->IsValuePinned()) {
           pinned_value_ = iter_.value();
         } else {
@@ -912,14 +912,14 @@ bool DBIter::FindValueForCurrentKey() {
           return false;
         }
         break;
-      case kTypeDeletion:
-      case kTypeDeletionWithTimestamp:
-      case kTypeSingleDeletion:
+      case ValueType::kTypeDeletion:
+      case ValueType::kTypeDeletionWithTimestamp:
+      case ValueType::kTypeSingleDeletion:
         merge_context_.Clear();
         last_not_merge_type = last_key_entry_type;
         PERF_COUNTER_ADD(internal_delete_skipped_count, 1);
         break;
-      case kTypeMerge: {
+      case ValueType::kTypeMerge: {
         assert(merge_operator_ != nullptr);
         merge_context_.PushOperandBack(
             iter_.value(), iter_.iter()->IsValuePinned() /* operand_pinned */);
@@ -954,8 +954,8 @@ bool DBIter::FindValueForCurrentKey() {
   if (!valid_entry_seen) {
     // Since we haven't seen any valid entry, last_key_entry_type remains
     // unchanged and the same as its initial value.
-    assert(last_key_entry_type == kTypeDeletion);
-    assert(last_not_merge_type == kTypeDeletion);
+    assert(last_key_entry_type == ValueType::kTypeDeletion);
+    assert(last_not_merge_type == ValueType::kTypeDeletion);
     valid_ = false;
     return true;
   }
@@ -965,25 +965,25 @@ bool DBIter::FindValueForCurrentKey() {
   }
 
   switch (last_key_entry_type) {
-    case kTypeDeletion:
-    case kTypeDeletionWithTimestamp:
-    case kTypeSingleDeletion:
+    case ValueType::kTypeDeletion:
+    case ValueType::kTypeDeletionWithTimestamp:
+    case ValueType::kTypeSingleDeletion:
       if (timestamp_lb_ == nullptr) {
         valid_ = false;
       } else {
         valid_ = true;
       }
       return true;
-    case kTypeMerge:
+    case ValueType::kTypeMerge:
       current_entry_is_merged_ = true;
-      if (last_not_merge_type == kTypeDeletion ||
-          last_not_merge_type == kTypeSingleDeletion ||
-          last_not_merge_type == kTypeDeletionWithTimestamp) {
+      if (last_not_merge_type == ValueType::kTypeDeletion ||
+          last_not_merge_type == ValueType::kTypeSingleDeletion ||
+          last_not_merge_type == ValueType::kTypeDeletionWithTimestamp) {
         if (!Merge(nullptr, saved_key_.GetUserKey())) {
           return false;
         }
         return true;
-      } else if (last_not_merge_type == kTypeBlobIndex) {
+      } else if (last_not_merge_type == ValueType::kTypeBlobIndex) {
         if (expose_blob_index_) {
           status_ =
               Status::NotSupported("BlobDB does not support merge operator.");
@@ -1001,25 +1001,25 @@ bool DBIter::FindValueForCurrentKey() {
         ResetBlobValue();
 
         return true;
-      } else if (last_not_merge_type == kTypeWideColumnEntity) {
+      } else if (last_not_merge_type == ValueType::kTypeWideColumnEntity) {
         if (!MergeEntity(pinned_value_, saved_key_.GetUserKey())) {
           return false;
         }
 
         return true;
       } else {
-        assert(last_not_merge_type == kTypeValue);
+        assert(last_not_merge_type == ValueType::kTypeValue);
         if (!Merge(&pinned_value_, saved_key_.GetUserKey())) {
           return false;
         }
         return true;
       }
       break;
-    case kTypeValue:
+    case ValueType::kTypeValue:
       SetValueAndColumnsFromPlain(pinned_value_);
 
       break;
-    case kTypeBlobIndex:
+    case ValueType::kTypeBlobIndex:
       if (!SetBlobValueIfNeeded(saved_key_.GetUserKey(), pinned_value_)) {
         return false;
       }
@@ -1028,7 +1028,7 @@ bool DBIter::FindValueForCurrentKey() {
                                                      : blob_value_);
 
       break;
-    case kTypeWideColumnEntity:
+    case ValueType::kTypeWideColumnEntity:
       if (!SetValueAndColumnsFromEntity(pinned_value_)) {
         return false;
       }
@@ -1103,8 +1103,8 @@ bool DBIter::FindValueForCurrentKeyUsingSeek() {
     iter_.Next();
   }
 
-  if (ikey.type == kTypeDeletion || ikey.type == kTypeSingleDeletion ||
-      kTypeDeletionWithTimestamp == ikey.type) {
+  if (ikey.type == ValueType::kTypeDeletion || ikey.type == ValueType::kTypeSingleDeletion ||
+      ValueType::kTypeDeletionWithTimestamp == ikey.type) {
     if (timestamp_lb_ == nullptr) {
       valid_ = false;
     } else {
@@ -1121,23 +1121,23 @@ bool DBIter::FindValueForCurrentKeyUsingSeek() {
     Slice ts = ExtractTimestampFromUserKey(ikey.user_key, timestamp_size_);
     saved_timestamp_.assign(ts.data(), ts.size());
   }
-  if (ikey.type == kTypeValue || ikey.type == kTypeBlobIndex ||
-      ikey.type == kTypeWideColumnEntity) {
+  if (ikey.type == ValueType::kTypeValue || ikey.type == ValueType::kTypeBlobIndex ||
+      ikey.type == ValueType::kTypeWideColumnEntity) {
     assert(iter_.iter()->IsValuePinned());
     pinned_value_ = iter_.value();
-    if (ikey.type == kTypeBlobIndex) {
+    if (ikey.type == ValueType::kTypeBlobIndex) {
       if (!SetBlobValueIfNeeded(ikey.user_key, pinned_value_)) {
         return false;
       }
 
       SetValueAndColumnsFromPlain(expose_blob_index_ ? pinned_value_
                                                      : blob_value_);
-    } else if (ikey.type == kTypeWideColumnEntity) {
+    } else if (ikey.type == ValueType::kTypeWideColumnEntity) {
       if (!SetValueAndColumnsFromEntity(pinned_value_)) {
         return false;
       }
     } else {
-      assert(ikey.type == kTypeValue);
+      assert(ikey.type == ValueType::kTypeValue);
       SetValueAndColumnsFromPlain(pinned_value_);
     }
 
@@ -1149,9 +1149,9 @@ bool DBIter::FindValueForCurrentKeyUsingSeek() {
     return true;
   }
 
-  // kTypeMerge. We need to collect all kTypeMerge values and save them
+  // ValueType::kTypeMerge. We need to collect all ValueType::kTypeMerge values and save them
   // in operands
-  assert(ikey.type == kTypeMerge);
+  assert(ikey.type == ValueType::kTypeMerge);
   current_entry_is_merged_ = true;
   merge_context_.Clear();
   merge_context_.PushOperand(
@@ -1175,8 +1175,8 @@ bool DBIter::FindValueForCurrentKeyUsingSeek() {
                                                 saved_key_.GetUserKey())) {
       break;
     }
-    if (ikey.type == kTypeDeletion || ikey.type == kTypeSingleDeletion ||
-        ikey.type == kTypeDeletionWithTimestamp) {
+    if (ikey.type == ValueType::kTypeDeletion || ikey.type == ValueType::kTypeSingleDeletion ||
+        ikey.type == ValueType::kTypeDeletionWithTimestamp) {
       break;
     }
     if (!iter_.PrepareValue()) {
@@ -1184,17 +1184,17 @@ bool DBIter::FindValueForCurrentKeyUsingSeek() {
       return false;
     }
 
-    if (ikey.type == kTypeValue) {
+    if (ikey.type == ValueType::kTypeValue) {
       const Slice val = iter_.value();
       if (!Merge(&val, saved_key_.GetUserKey())) {
         return false;
       }
       return true;
-    } else if (ikey.type == kTypeMerge) {
+    } else if (ikey.type == ValueType::kTypeMerge) {
       merge_context_.PushOperand(
           iter_.value(), iter_.iter()->IsValuePinned() /* operand_pinned */);
       PERF_COUNTER_ADD(internal_merge_count, 1);
-    } else if (ikey.type == kTypeBlobIndex) {
+    } else if (ikey.type == ValueType::kTypeBlobIndex) {
       if (expose_blob_index_) {
         status_ =
             Status::NotSupported("BlobDB does not support merge operator.");
@@ -1212,7 +1212,7 @@ bool DBIter::FindValueForCurrentKeyUsingSeek() {
       ResetBlobValue();
 
       return true;
-    } else if (ikey.type == kTypeWideColumnEntity) {
+    } else if (ikey.type == ValueType::kTypeWideColumnEntity) {
       if (!MergeEntity(iter_.value(), saved_key_.GetUserKey())) {
         return false;
       }

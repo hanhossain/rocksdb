@@ -136,7 +136,7 @@ const Comparator* BytewiseComparatorWithU64TsWrapper() {
 
 void CorruptKeyType(InternalKey* ikey) {
   std::string keystr = ikey->Encode().ToString();
-  keystr[keystr.size() - 8] = kTypeLogData;
+  keystr[keystr.size() - 8] = (char)ValueType::kTypeLogData;
   ikey->DecodeFrom(Slice(keystr.data(), keystr.size()));
 }
 

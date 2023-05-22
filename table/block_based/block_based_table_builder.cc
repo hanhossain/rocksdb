@@ -1011,7 +1011,7 @@ void BlockBasedTableBuilder::Add(const Slice& key, const Slice& value) {
                                       r->table_properties_collectors,
                                       r->ioptions.logger);
 
-  } else if (value_type == kTypeRangeDeletion) {
+  } else if (value_type == ValueType::kTypeRangeDeletion) {
     r->range_del_block.Add(key, value);
     // TODO offset passed in is not accurate for parallel compression case
     NotifyCollectTableCollectorsOnAdd(key, value, r->get_offset(),
@@ -1024,13 +1024,13 @@ void BlockBasedTableBuilder::Add(const Slice& key, const Slice& value) {
   r->props.num_entries++;
   r->props.raw_key_size += key.size();
   r->props.raw_value_size += value.size();
-  if (value_type == kTypeDeletion || value_type == kTypeSingleDeletion ||
-      value_type == kTypeDeletionWithTimestamp) {
+  if (value_type == ValueType::kTypeDeletion || value_type == ValueType::kTypeSingleDeletion ||
+      value_type == ValueType::kTypeDeletionWithTimestamp) {
     r->props.num_deletions++;
-  } else if (value_type == kTypeRangeDeletion) {
+  } else if (value_type == ValueType::kTypeRangeDeletion) {
     r->props.num_deletions++;
     r->props.num_range_deletions++;
-  } else if (value_type == kTypeMerge) {
+  } else if (value_type == ValueType::kTypeMerge) {
     r->props.num_merge_operands++;
   }
 }

@@ -2082,17 +2082,17 @@ TEST_F(PrecludeLastLevelTest, RangeDelsCauseFileEndpointsToOverlap) {
 
   // The `CompactRange()` writes the following files to L5.
   //
-  //   [key000000#16,kTypeValue,
-  //    key000005#kMaxSequenceNumber,kTypeRangeDeletion]
-  //   [key000005#21,kTypeValue,
-  //    key000010#kMaxSequenceNumber,kTypeRangeDeletion]
-  //   [key000010#26,kTypeValue, key000014#30,kTypeValue]
+  //   [key000000#16,ValueType::kTypeValue,
+  //    key000005#kMaxSequenceNumber,ValueType::kTypeRangeDeletion]
+  //   [key000005#21,ValueType::kTypeValue,
+  //    key000010#kMaxSequenceNumber,ValueType::kTypeRangeDeletion]
+  //   [key000010#26,ValueType::kTypeValue, key000014#30,ValueType::kTypeValue]
   //
   // And it writes the following files to L6.
   //
-  //   [key000003#1,kTypeValue, key000007#5,kTypeValue]
-  //   [key000008#6,kTypeValue, key000012#10,kTypeValue]
-  //   [key000013#11,kTypeValue, key000017#15,kTypeValue]
+  //   [key000003#1,ValueType::kTypeValue, key000007#5,ValueType::kTypeValue]
+  //   [key000008#6,ValueType::kTypeValue, key000012#10,ValueType::kTypeValue]
+  //   [key000013#11,ValueType::kTypeValue, key000017#15,ValueType::kTypeValue]
   CompactRangeOptions cro;
   cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::Force;
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));

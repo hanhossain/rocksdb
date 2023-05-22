@@ -757,7 +757,7 @@ class CfConsistencyStressTest : public StressTest {
             for (const KeyVersion& kv : versions) {
               fprintf(stderr, "  key %s seq %" PRIu64 " type %d\n",
                       Slice(kv.user_key).ToString(true).c_str(), kv.sequence,
-                      kv.type);
+                      (int)kv.type);
             }
           };
 

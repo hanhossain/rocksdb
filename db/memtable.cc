@@ -638,7 +638,7 @@ Status MemTable::VerifyEncodedEntry(Slice encoded,
   encoded.remove_prefix(user_key_len);
 
   uint64_t packed = DecodeFixed64(encoded.data());
-  ValueType value_type = kMaxValue;
+  ValueType value_type = ValueType::kMaxValue;
   SequenceNumber sequence_number = kMaxSequenceNumber;
   UnPackSequenceAndType(packed, &sequence_number, &value_type);
   encoded.remove_prefix(8);
@@ -699,7 +699,7 @@ Status MemTable::Add(SequenceNumber s, ValueType type,
                                val_size + moptions_.protection_bytes_per_key;
   char* buf = nullptr;
   std::unique_ptr<MemTableRep>& table =
-      type == kTypeRangeDeletion ? range_del_table_ : table_;
+      type == ValueType::kTypeRangeDeletion ? range_del_table_ : table_;
   KeyHandle handle = table->Allocate(encoded_len, &buf);
 
   char* p = EncodeVarint32(buf, internal_key_size);
@@ -750,8 +750,8 @@ Status MemTable::Add(SequenceNumber s, ValueType type,
                        std::memory_order_relaxed);
     data_size_.store(data_size_.load(std::memory_order_relaxed) + encoded_len,
                      std::memory_order_relaxed);
-    if (type == kTypeDeletion || type == kTypeSingleDeletion ||
-        type == kTypeDeletionWithTimestamp) {
+    if (type == ValueType::kTypeDeletion || type == ValueType::kTypeSingleDeletion ||
+        type == ValueType::kTypeDeletionWithTimestamp) {
       num_deletes_.store(num_deletes_.load(std::memory_order_relaxed) + 1,
                          std::memory_order_relaxed);
     }
@@ -788,7 +788,7 @@ Status MemTable::Add(SequenceNumber s, ValueType type,
     assert(post_process_info != nullptr);
     post_process_info->num_entries++;
     post_process_info->data_size += encoded_len;
-    if (type == kTypeDeletion) {
+    if (type == ValueType::kTypeDeletion) {
       post_process_info->num_deletes++;
     }
 
@@ -813,7 +813,7 @@ Status MemTable::Add(SequenceNumber s, ValueType type,
         !first_seqno_.compare_exchange_weak(cur_earliest_seqno, s)) {
     }
   }
-  if (type == kTypeRangeDeletion) {
+  if (type == ValueType::kTypeRangeDeletion) {
     auto new_cache = std::make_shared<FragmentedRangeTombstoneListCache>();
     size_t size = cached_range_tombstone_.Size();
     if (allow_concurrent) {
@@ -958,14 +958,14 @@ static bool SaveValue(void* arg, const char* entry) {
       }
     }
 
-    if ((type == kTypeValue || type == kTypeMerge || type == kTypeBlobIndex ||
-         type == kTypeWideColumnEntity || type == kTypeDeletion ||
-         type == kTypeSingleDeletion || type == kTypeDeletionWithTimestamp) &&
+    if ((type == ValueType::kTypeValue || type == ValueType::kTypeMerge || type == ValueType::kTypeBlobIndex ||
+         type == ValueType::kTypeWideColumnEntity || type == ValueType::kTypeDeletion ||
+         type == ValueType::kTypeSingleDeletion || type == ValueType::kTypeDeletionWithTimestamp) &&
         max_covering_tombstone_seq > seq) {
-      type = kTypeRangeDeletion;
+      type = ValueType::kTypeRangeDeletion;
     }
     switch (type) {
-      case kTypeBlobIndex: {
+      case ValueType::kTypeBlobIndex: {
         if (!s->do_merge) {
           *(s->status) = Status::NotSupported(
               "GetMergeOperands not supported by stacked BlobDB");
@@ -1012,7 +1012,7 @@ static bool SaveValue(void* arg, const char* entry) {
 
         return false;
       }
-      case kTypeValue: {
+      case ValueType::kTypeValue: {
         if (s->inplace_update_support) {
           s->mem->GetLock(s->key->user_key())->ReadLock();
         }
@@ -1071,7 +1071,7 @@ static bool SaveValue(void* arg, const char* entry) {
 
         return false;
       }
-      case kTypeWideColumnEntity: {
+      case ValueType::kTypeWideColumnEntity: {
         if (s->inplace_update_support) {
           s->mem->GetLock(s->key->user_key())->ReadLock();
         }
@@ -1149,10 +1149,10 @@ static bool SaveValue(void* arg, const char* entry) {
 
         return false;
       }
-      case kTypeDeletion:
-      case kTypeDeletionWithTimestamp:
-      case kTypeSingleDeletion:
-      case kTypeRangeDeletion: {
+      case ValueType::kTypeDeletion:
+      case ValueType::kTypeDeletionWithTimestamp:
+      case ValueType::kTypeSingleDeletion:
+      case ValueType::kTypeRangeDeletion: {
         if (*(s->merge_in_progress)) {
           if (s->value || s->columns) {
             std::string result;
@@ -1186,7 +1186,7 @@ static bool SaveValue(void* arg, const char* entry) {
         *(s->found_final_value) = true;
         return false;
       }
-      case kTypeMerge: {
+      case ValueType::kTypeMerge: {
         if (!merge_operator) {
           *(s->status) = Status::InvalidArgument(
               "merge_operator is not properly initialized.");
@@ -1547,7 +1547,7 @@ Status MemTable::UpdateCallback(SequenceNumber seq, const Slice& key,
       ValueType type;
       uint64_t existing_seq;
       UnPackSequenceAndType(tag, &existing_seq, &type);
-      if (type == kTypeValue) {
+      if (type == ValueType::kTypeValue) {
         Slice prev_value = GetLengthPrefixedSlice(key_ptr + key_length);
         uint32_t prev_size = static_cast<uint32_t>(prev_value.size());
 
@@ -1593,10 +1593,10 @@ Status MemTable::UpdateCallback(SequenceNumber seq, const Slice& key,
           if (kv_prot_info != nullptr) {
             ProtectionInfoKVOS64 updated_kv_prot_info(*kv_prot_info);
             updated_kv_prot_info.UpdateV(delta, str_value);
-            s = Add(seq, kTypeValue, key, Slice(str_value),
+            s = Add(seq, ValueType::kTypeValue, key, Slice(str_value),
                     &updated_kv_prot_info);
           } else {
-            s = Add(seq, kTypeValue, key, Slice(str_value),
+            s = Add(seq, ValueType::kTypeValue, key, Slice(str_value),
                     nullptr /* kv_prot_info */);
           }
           RecordTick(moptions_.statistics, NUMBER_KEYS_WRITTEN);
@@ -1611,7 +1611,7 @@ Status MemTable::UpdateCallback(SequenceNumber seq, const Slice& key,
       }
     }
   }
-  // The latest value is not `kTypeValue` or key doesn't exist
+  // The latest value is not `ValueType::kTypeValue` or key doesn't exist
   return Status::NotFound();
 }
 
@@ -1640,7 +1640,7 @@ size_t MemTable::CountSuccessiveMergeEntries(const LookupKey& key) {
     ValueType type;
     uint64_t unused;
     UnPackSequenceAndType(tag, &unused, &type);
-    if (type != kTypeMerge) {
+    if (type != ValueType::kTypeMerge) {
       break;
     }
 

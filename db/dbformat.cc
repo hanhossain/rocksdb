@@ -26,27 +26,27 @@ namespace ROCKSDB_NAMESPACE {
 // and the value type is embedded as the low 8 bits in the sequence
 // number in internal keys, we need to use the highest-numbered
 // ValueType, not the lowest).
-const ValueType kValueTypeForSeek = kTypeWideColumnEntity;
-const ValueType kValueTypeForSeekForPrev = kTypeDeletion;
+const ValueType kValueTypeForSeek = ValueType::kTypeWideColumnEntity;
+const ValueType kValueTypeForSeekForPrev = ValueType::kTypeDeletion;
 const std::string kDisableUserTimestamp("");
 
 rs::types::EntryType GetEntryType(ValueType value_type) {
   switch (value_type) {
-    case kTypeValue:
+    case ValueType::kTypeValue:
       return rs::types::EntryType::Put;
-    case kTypeDeletion:
+    case ValueType::kTypeDeletion:
       return rs::types::EntryType::Delete;
-    case kTypeDeletionWithTimestamp:
+    case ValueType::kTypeDeletionWithTimestamp:
       return rs::types::EntryType::DeleteWithTimestamp;
-    case kTypeSingleDeletion:
+    case ValueType::kTypeSingleDeletion:
       return rs::types::EntryType::SingleDelete;
-    case kTypeMerge:
+    case ValueType::kTypeMerge:
       return rs::types::EntryType::Merge;
-    case kTypeRangeDeletion:
+    case ValueType::kTypeRangeDeletion:
       return rs::types::EntryType::RangeDeletion;
-    case kTypeBlobIndex:
+    case ValueType::kTypeBlobIndex:
       return rs::types::EntryType::BlobIndex;
-    case kTypeWideColumnEntity:
+    case ValueType::kTypeWideColumnEntity:
       return rs::types::EntryType::WideColumnEntity;
     default:
       return rs::types::EntryType::Other;
@@ -160,7 +160,7 @@ int InternalKeyComparator::Compare(const Slice& a,
   if (r == 0) {
     const uint64_t anum =
         DecodeFixed64(a.data() + a.size() - kNumInternalBytes);
-    const uint64_t bnum = (b.sequence << 8) | b.type;
+    const uint64_t bnum = (b.sequence << 8) | (uint64_t)b.type;
     if (anum > bnum) {
       r = -1;
     } else if (anum < bnum) {

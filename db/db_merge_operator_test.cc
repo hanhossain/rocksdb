@@ -794,7 +794,7 @@ INSTANTIATE_TEST_CASE_P(
                                         static_cast<int>(DBTestBase::OptionConfig::kEnd))));
 
 TEST_P(PerConfigMergeOperatorPinningTest, Randomized) {
-  if (ShouldSkipOptions(option_config_, kSkipMergePut)) {
+  if (ShouldSkipOptions(option_config_, (int)OptionSkip::kSkipMergePut)) {
     return;
   }
 

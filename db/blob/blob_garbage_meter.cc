@@ -72,7 +72,7 @@ Status BlobGarbageMeter::Parse(const Slice& key, const Slice& value,
     }
   }
 
-  if (ikey.type != kTypeBlobIndex) {
+  if (ikey.type != ValueType::kTypeBlobIndex) {
     return Status::OK();
   }
 

@@ -48,7 +48,7 @@ TEST(BlobGarbageMeterTest, MeasureGarbage) {
 
   for (const auto& blob : blobs) {
     constexpr SequenceNumber seq = 123;
-    const InternalKey key(blob.user_key, seq, kTypeBlobIndex);
+    const InternalKey key(blob.user_key, seq, ValueType::kTypeBlobIndex);
     const Slice key_slice = key.Encode();
 
     std::string value;
@@ -125,7 +125,7 @@ TEST(BlobGarbageMeterTest, PlainValue) {
   constexpr char user_key[] = "user_key";
   constexpr SequenceNumber seq = 123;
 
-  const InternalKey key(user_key, seq, kTypeValue);
+  const InternalKey key(user_key, seq, ValueType::kTypeValue);
   const Slice key_slice = key.Encode();
 
   constexpr char value[] = "value";
@@ -155,7 +155,7 @@ TEST(BlobGarbageMeterTest, CorruptBlobIndex) {
   constexpr char user_key[] = "user_key";
   constexpr SequenceNumber seq = 123;
 
-  const InternalKey key(user_key, seq, kTypeBlobIndex);
+  const InternalKey key(user_key, seq, ValueType::kTypeBlobIndex);
   const Slice key_slice = key.Encode();
 
   constexpr char value[] = "i_am_not_a_blob_index";
@@ -171,7 +171,7 @@ TEST(BlobGarbageMeterTest, InlinedTTLBlobIndex) {
   constexpr char user_key[] = "user_key";
   constexpr SequenceNumber seq = 123;
 
-  const InternalKey key(user_key, seq, kTypeBlobIndex);
+  const InternalKey key(user_key, seq, ValueType::kTypeBlobIndex);
   const Slice key_slice = key.Encode();
 
   constexpr uint64_t expiration = 1234567890;

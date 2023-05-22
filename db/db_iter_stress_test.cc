@@ -42,7 +42,7 @@ namespace {
 
 struct Entry {
   std::string key;
-  ValueType type;  // kTypeValue, kTypeDeletion, kTypeMerge
+  ValueType type;  // ValueType::kTypeValue, ValueType::kTypeDeletion, ValueType::kTypeMerge
   uint64_t sequence;
   std::string ikey;  // internal key, made from `key`, `sequence` and `type`
   std::string value;
@@ -319,15 +319,15 @@ struct ReferenceIterator {
       }
       assert(e.sequence <= sequence);
       if (!e.visible) continue;
-      if (e.type == kTypeDeletion) {
+      if (e.type == ValueType::kTypeDeletion) {
         return false;
       }
-      if (e.type == kTypeValue) {
+      if (e.type == ValueType::kTypeValue) {
         value = e.value;
         valid = true;
         return true;
       }
-      assert(e.type == kTypeMerge);
+      assert(e.type == ValueType::kTypeMerge);
       break;
     }
 
@@ -340,11 +340,11 @@ struct ReferenceIterator {
       }
       assert(e.sequence <= sequence);
       if (!e.visible) continue;
-      if (e.type == kTypeDeletion) {
+      if (e.type == ValueType::kTypeDeletion) {
         break;
       }
       operands.push_back(e.value);
-      if (e.type == kTypeValue) {
+      if (e.type == ValueType::kTypeValue) {
         break;
       }
     }
@@ -439,7 +439,7 @@ TEST_F(DBIteratorStressTest, StressTest) {
   for (int num_entries : {5, 10, 100}) {
     for (double key_space : {0.1, 1.0, 3.0}) {
       for (ValueType prevalent_entry_type :
-           {kTypeValue, kTypeDeletion, kTypeMerge}) {
+           {ValueType::kTypeValue, ValueType::kTypeDeletion, ValueType::kTypeMerge}) {
         for (double error_probability : {0.01, 0.1}) {
           for (double mutation_probability : {0.01, 0.5}) {
             for (double target_hidden_fraction : {0.1, 0.5}) {
@@ -465,8 +465,8 @@ TEST_F(DBIteratorStressTest, StressTest) {
                 if (rnd.Next() % 10 != 0) {
                   e.type = prevalent_entry_type;
                 } else {
-                  const ValueType types[] = {kTypeValue, kTypeDeletion,
-                                             kTypeMerge};
+                  const ValueType types[] = {ValueType::kTypeValue, ValueType::kTypeDeletion,
+                                             ValueType::kTypeMerge};
                   e.type =
                       types[rnd.Next() % (sizeof(types) / sizeof(types[0]))];
                 }
@@ -484,8 +484,8 @@ TEST_F(DBIteratorStressTest, StressTest) {
                   Entry& e = data.entries[i];
                   std::cout << "\n  idx " << i << ": \"" << e.key << "\": \""
                             << e.value << "\" seq: " << e.sequence << " type: "
-                            << (e.type == kTypeValue      ? "val"
-                                : e.type == kTypeDeletion ? "del"
+                            << (e.type == ValueType::kTypeValue      ? "val"
+                                : e.type == ValueType::kTypeDeletion ? "del"
                                                           : "merge");
                 }
                 std::cout << std::endl;

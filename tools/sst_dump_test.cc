@@ -33,7 +33,7 @@ static std::string MakeKey(int i) {
 static std::string MakeKeyWithTimeStamp(int i, uint64_t ts) {
   char buf[100];
   snprintf(buf, sizeof(buf), "k_%04d", i);
-  return test::KeyStr(ts, std::string(buf), /*seq=*/0, kTypeValue);
+  return test::KeyStr(ts, std::string(buf), /*seq=*/0, ValueType::kTypeValue);
 }
 
 static std::string MakeValue(int i) {

@@ -281,15 +281,15 @@ class CompactionIterator {
   bool ExtractLargeValueIfNeededImpl();
 
   // Extracts large values as described above, and updates the internal key's
-  // type to kTypeBlobIndex if the value got extracted. Should only be called
-  // for regular values (kTypeValue).
+  // type to ValueType::kTypeBlobIndex if the value got extracted. Should only be called
+  // for regular values (ValueType::kTypeValue).
   void ExtractLargeValueIfNeeded();
 
   // Relocates valid blobs residing in the oldest blob files if garbage
   // collection is enabled. Relocated blobs are written to new blob files or
   // inlined in the LSM tree depending on the current settings (i.e.
   // enable_blob_files and min_blob_size). Should only be called for blob
-  // references (kTypeBlobIndex).
+  // references (ValueType::kTypeBlobIndex).
   //
   // Note: the stacked BlobDB implementation's compaction filter based GC
   // algorithm is also called from here.

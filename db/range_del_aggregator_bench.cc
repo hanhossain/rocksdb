@@ -247,7 +247,7 @@ int main(int argc, char** argv) {
 
     ROCKSDB_NAMESPACE::ParsedInternalKey parsed_key;
     parsed_key.sequence = FLAGS_num_range_tombstones / 2;
-    parsed_key.type = ROCKSDB_NAMESPACE::kTypeValue;
+    parsed_key.type = ROCKSDB_NAMESPACE::ValueType::kTypeValue;
 
     uint64_t first_key = rnd.Uniform(FLAGS_should_delete_upper_bound -
                                      FLAGS_should_deletes_per_run + 1);

@@ -175,7 +175,7 @@ TEST_P(DBBloomFilterTestDefFormatVersion, KeyMayExist) {
     // KeyMayExist function only checks data in block caches, which is not used
     // by plain table format.
   } while (
-      ChangeOptions(kSkipPlainTable | kSkipHashIndex | kSkipFIFOCompaction));
+      ChangeOptions((int)OptionSkip::kSkipPlainTable | (int)OptionSkip::kSkipHashIndex | (int)OptionSkip::kSkipFIFOCompaction));
 }
 
 TEST_F(DBBloomFilterTest, GetFilterByPrefixBloomCustomPrefixExtractor) {

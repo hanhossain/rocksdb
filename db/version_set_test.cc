@@ -46,8 +46,8 @@ class GenerateLevelFilesBriefTest : public testing::Test {
            SequenceNumber largest_seq = 100) {
     FileMetaData* f = new FileMetaData(
         files_.size() + 1, 0, 0,
-        InternalKey(smallest, smallest_seq, kTypeValue),
-        InternalKey(largest, largest_seq, kTypeValue), smallest_seq,
+        InternalKey(smallest, smallest_seq, ValueType::kTypeValue),
+        InternalKey(largest, largest_seq, ValueType::kTypeValue), smallest_seq,
         largest_seq, /* marked_for_compact */ false, rs::advanced_options::Temperature::Unknown,
         kInvalidBlobFileNumber, kUnknownOldestAncesterTime,
         kUnknownFileCreationTime, kUnknownEpochNumber, kUnknownFileChecksum,
@@ -117,7 +117,7 @@ class VersionStorageInfoTestBase : public testing::Test {
 
   InternalKey GetInternalKey(const char* ukey,
                              SequenceNumber smallest_seq = 100) {
-    return InternalKey(ukey, smallest_seq, kTypeValue);
+    return InternalKey(ukey, smallest_seq, ValueType::kTypeValue);
   }
 
   explicit VersionStorageInfoTestBase(const Comparator* ucmp)
@@ -516,38 +516,38 @@ TEST_F(VersionStorageInfoTest, EstimateLiveDataSize2) {
 
 TEST_F(VersionStorageInfoTest, GetOverlappingInputs) {
   // Two files that overlap at the range deletion tombstone sentinel.
-  Add(1, 1U, {"a", 0, kTypeValue},
-      {"b", kMaxSequenceNumber, kTypeRangeDeletion}, 1);
-  Add(1, 2U, {"b", 0, kTypeValue}, {"c", 0, kTypeValue}, 1);
+  Add(1, 1U, {"a", 0, ValueType::kTypeValue},
+      {"b", kMaxSequenceNumber, ValueType::kTypeRangeDeletion}, 1);
+  Add(1, 2U, {"b", 0, ValueType::kTypeValue}, {"c", 0, ValueType::kTypeValue}, 1);
   // Two files that overlap at the same user key.
-  Add(1, 3U, {"d", 0, kTypeValue}, {"e", kMaxSequenceNumber, kTypeValue}, 1);
-  Add(1, 4U, {"e", 0, kTypeValue}, {"f", 0, kTypeValue}, 1);
+  Add(1, 3U, {"d", 0, ValueType::kTypeValue}, {"e", kMaxSequenceNumber, ValueType::kTypeValue}, 1);
+  Add(1, 4U, {"e", 0, ValueType::kTypeValue}, {"f", 0, ValueType::kTypeValue}, 1);
   // Two files that do not overlap.
-  Add(1, 5U, {"g", 0, kTypeValue}, {"h", 0, kTypeValue}, 1);
-  Add(1, 6U, {"i", 0, kTypeValue}, {"j", 0, kTypeValue}, 1);
+  Add(1, 5U, {"g", 0, ValueType::kTypeValue}, {"h", 0, ValueType::kTypeValue}, 1);
+  Add(1, 6U, {"i", 0, ValueType::kTypeValue}, {"j", 0, ValueType::kTypeValue}, 1);
 
   UpdateVersionStorageInfo();
 
   ASSERT_EQ("1,2",
-            GetOverlappingFiles(1, {"a", 0, kTypeValue}, {"b", 0, kTypeValue}));
+            GetOverlappingFiles(1, {"a", 0, ValueType::kTypeValue}, {"b", 0, ValueType::kTypeValue}));
   ASSERT_EQ("1",
-            GetOverlappingFiles(1, {"a", 0, kTypeValue},
-                                {"b", kMaxSequenceNumber, kTypeRangeDeletion}));
-  ASSERT_EQ("2", GetOverlappingFiles(1, {"b", kMaxSequenceNumber, kTypeValue},
-                                     {"c", 0, kTypeValue}));
+            GetOverlappingFiles(1, {"a", 0, ValueType::kTypeValue},
+                                {"b", kMaxSequenceNumber, ValueType::kTypeRangeDeletion}));
+  ASSERT_EQ("2", GetOverlappingFiles(1, {"b", kMaxSequenceNumber, ValueType::kTypeValue},
+                                     {"c", 0, ValueType::kTypeValue}));
   ASSERT_EQ("3,4",
-            GetOverlappingFiles(1, {"d", 0, kTypeValue}, {"e", 0, kTypeValue}));
+            GetOverlappingFiles(1, {"d", 0, ValueType::kTypeValue}, {"e", 0, ValueType::kTypeValue}));
   ASSERT_EQ("3",
-            GetOverlappingFiles(1, {"d", 0, kTypeValue},
-                                {"e", kMaxSequenceNumber, kTypeRangeDeletion}));
-  ASSERT_EQ("3,4", GetOverlappingFiles(1, {"e", kMaxSequenceNumber, kTypeValue},
-                                       {"f", 0, kTypeValue}));
+            GetOverlappingFiles(1, {"d", 0, ValueType::kTypeValue},
+                                {"e", kMaxSequenceNumber, ValueType::kTypeRangeDeletion}));
+  ASSERT_EQ("3,4", GetOverlappingFiles(1, {"e", kMaxSequenceNumber, ValueType::kTypeValue},
+                                       {"f", 0, ValueType::kTypeValue}));
   ASSERT_EQ("3,4",
-            GetOverlappingFiles(1, {"e", 0, kTypeValue}, {"f", 0, kTypeValue}));
+            GetOverlappingFiles(1, {"e", 0, ValueType::kTypeValue}, {"f", 0, ValueType::kTypeValue}));
   ASSERT_EQ("5",
-            GetOverlappingFiles(1, {"g", 0, kTypeValue}, {"h", 0, kTypeValue}));
+            GetOverlappingFiles(1, {"g", 0, ValueType::kTypeValue}, {"h", 0, ValueType::kTypeValue}));
   ASSERT_EQ("6",
-            GetOverlappingFiles(1, {"i", 0, kTypeValue}, {"j", 0, kTypeValue}));
+            GetOverlappingFiles(1, {"i", 0, ValueType::kTypeValue}, {"j", 0, ValueType::kTypeValue}));
 }
 
 TEST_F(VersionStorageInfoTest, FileLocationAndMetaDataByNumber) {
@@ -927,19 +927,19 @@ class VersionStorageInfoTimestampTest : public VersionStorageInfoTestBase {
 
 TEST_F(VersionStorageInfoTimestampTest, GetOverlappingInputs) {
   Add(/*level=*/1, /*file_number=*/1, /*smallest=*/
-      {PackUserKeyAndTimestamp("a", /*ts=*/9), /*s=*/0, kTypeValue},
+      {PackUserKeyAndTimestamp("a", /*ts=*/9), /*s=*/0, ValueType::kTypeValue},
       /*largest=*/
-      {PackUserKeyAndTimestamp("a", /*ts=*/8), /*s=*/0, kTypeValue},
+      {PackUserKeyAndTimestamp("a", /*ts=*/8), /*s=*/0, ValueType::kTypeValue},
       /*file_size=*/100);
   Add(/*level=*/1, /*file_number=*/2, /*smallest=*/
-      {PackUserKeyAndTimestamp("a", /*ts=*/5), /*s=*/0, kTypeValue},
+      {PackUserKeyAndTimestamp("a", /*ts=*/5), /*s=*/0, ValueType::kTypeValue},
       /*largest=*/
-      {PackUserKeyAndTimestamp("b", /*ts=*/10), /*s=*/0, kTypeValue},
+      {PackUserKeyAndTimestamp("b", /*ts=*/10), /*s=*/0, ValueType::kTypeValue},
       /*file_size=*/100);
   Add(/*level=*/1, /*file_number=*/3, /*smallest=*/
-      {PackUserKeyAndTimestamp("c", /*ts=*/12), /*s=*/0, kTypeValue},
+      {PackUserKeyAndTimestamp("c", /*ts=*/12), /*s=*/0, ValueType::kTypeValue},
       /*largest=*/
-      {PackUserKeyAndTimestamp("d", /*ts=*/1), /*s=*/0, kTypeValue},
+      {PackUserKeyAndTimestamp("d", /*ts=*/1), /*s=*/0, ValueType::kTypeValue},
       /*file_size=*/100);
 
   UpdateVersionStorageInfo();
@@ -948,13 +948,13 @@ TEST_F(VersionStorageInfoTimestampTest, GetOverlappingInputs) {
       "1,2",
       GetOverlappingFiles(
           /*level=*/1,
-          {PackUserKeyAndTimestamp("a", /*ts=*/12), /*s=*/0, kTypeValue},
-          {PackUserKeyAndTimestamp("a", /*ts=*/11), /*s=*/0, kTypeValue}));
+          {PackUserKeyAndTimestamp("a", /*ts=*/12), /*s=*/0, ValueType::kTypeValue},
+          {PackUserKeyAndTimestamp("a", /*ts=*/11), /*s=*/0, ValueType::kTypeValue}));
   ASSERT_EQ("3",
             GetOverlappingFiles(
                 /*level=*/1,
-                {PackUserKeyAndTimestamp("c", /*ts=*/15), /*s=*/0, kTypeValue},
-                {PackUserKeyAndTimestamp("c", /*ts=*/2), /*s=*/0, kTypeValue}));
+                {PackUserKeyAndTimestamp("c", /*ts=*/15), /*s=*/0, ValueType::kTypeValue},
+                {PackUserKeyAndTimestamp("c", /*ts=*/2), /*s=*/0, ValueType::kTypeValue}));
 }
 
 class FindLevelFileTest : public testing::Test {
@@ -976,8 +976,8 @@ class FindLevelFileTest : public testing::Test {
   void Add(const char* smallest, const char* largest,
            SequenceNumber smallest_seq = 100,
            SequenceNumber largest_seq = 100) {
-    InternalKey smallest_key = InternalKey(smallest, smallest_seq, kTypeValue);
-    InternalKey largest_key = InternalKey(largest, largest_seq, kTypeValue);
+    InternalKey smallest_key = InternalKey(smallest, smallest_seq, ValueType::kTypeValue);
+    InternalKey largest_key = InternalKey(largest, largest_seq, ValueType::kTypeValue);
 
     Slice smallest_slice = smallest_key.Encode();
     Slice largest_slice = largest_key.Encode();
@@ -998,7 +998,7 @@ class FindLevelFileTest : public testing::Test {
   }
 
   int Find(const char* key) {
-    InternalKey target(key, 100, kTypeValue);
+    InternalKey target(key, 100, ValueType::kTypeValue);
     InternalKeyComparator cmp(BytewiseComparator());
     return FindFile(cmp, file_level_, target.Encode());
   }

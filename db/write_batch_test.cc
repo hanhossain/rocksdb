@@ -73,7 +73,7 @@ static std::string PrintContents(WriteBatch* b,
       ikey.clear();
       EXPECT_OK(ParseInternalKey(iter->key(), &ikey, true /* log_err_key */));
       switch (ikey.type) {
-        case kTypeValue:
+        case ValueType::kTypeValue:
           state.append("Put(");
           state.append(ikey.user_key.ToString());
           state.append(", ");
@@ -82,21 +82,21 @@ static std::string PrintContents(WriteBatch* b,
           count++;
           put_count++;
           break;
-        case kTypeDeletion:
+        case ValueType::kTypeDeletion:
           state.append("Delete(");
           state.append(ikey.user_key.ToString());
           state.append(")");
           count++;
           delete_count++;
           break;
-        case kTypeSingleDeletion:
+        case ValueType::kTypeSingleDeletion:
           state.append("SingleDelete(");
           state.append(ikey.user_key.ToString());
           state.append(")");
           count++;
           single_delete_count++;
           break;
-        case kTypeRangeDeletion:
+        case ValueType::kTypeRangeDeletion:
           state.append("DeleteRange(");
           state.append(ikey.user_key.ToString());
           state.append(", ");
@@ -105,7 +105,7 @@ static std::string PrintContents(WriteBatch* b,
           count++;
           delete_range_count++;
           break;
-        case kTypeMerge:
+        case ValueType::kTypeMerge:
           state.append("Merge(");
           state.append(ikey.user_key.ToString());
           state.append(", ");

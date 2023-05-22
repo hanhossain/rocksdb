@@ -79,9 +79,9 @@ struct SstFileWriter::Rep {
       }
     }
 
-    assert(value_type == kTypeValue || value_type == kTypeMerge ||
-           value_type == kTypeDeletion ||
-           value_type == kTypeDeletionWithTimestamp);
+    assert(value_type == ValueType::kTypeValue || value_type == ValueType::kTypeMerge ||
+           value_type == ValueType::kTypeDeletion ||
+           value_type == ValueType::kTypeDeletionWithTimestamp);
 
     constexpr SequenceNumber sequence_number = 0;
 

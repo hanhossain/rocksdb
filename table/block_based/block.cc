@@ -317,16 +317,16 @@ void MetaBlockIter::SeekImpl(const Slice& target) {
 // Optimized Seek for point lookup for an internal key `target`
 // target = "seek_user_key @ type | seqno".
 //
-// For any type other than kTypeValue, kTypeDeletion, kTypeSingleDeletion,
-// kTypeBlobIndex, kTypeWideColumnEntity or kTypeMerge, this function behaves
+// For any type other than ValueType::kTypeValue, ValueType::kTypeDeletion, ValueType::kTypeSingleDeletion,
+// ValueType::kTypeBlobIndex, ValueType::kTypeWideColumnEntity or ValueType::kTypeMerge, this function behaves
 // identically to Seek().
 //
-// For any type in kTypeValue, kTypeDeletion, kTypeSingleDeletion,
-// kTypeBlobIndex, kTypeWideColumnEntity, or kTypeMerge:
+// For any type in ValueType::kTypeValue, ValueType::kTypeDeletion, ValueType::kTypeSingleDeletion,
+// ValueType::kTypeBlobIndex, ValueType::kTypeWideColumnEntity, or ValueType::kTypeMerge:
 //
 // If the return value is FALSE, iter location is undefined, and it means:
 // 1) there is no key in this block falling into the range:
-//    ["seek_user_key @ type | seqno", "seek_user_key @ kTypeDeletion | 0"],
+//    ["seek_user_key @ type | seqno", "seek_user_key @ ValueType::kTypeDeletion | 0"],
 //    inclusive; AND
 // 2) the last key of this block has a greater user_key from seek_user_key
 //
@@ -660,8 +660,8 @@ bool DataBlockIter::ParseNextDataKey(bool* is_shared) {
     if (global_seqno_ != kDisableGlobalSequenceNumber) {
       // If we are reading a file with a global sequence number we should
       // expect that all encoded sequence numbers are zeros and any value
-      // type is kTypeValue, kTypeMerge, kTypeDeletion,
-      // kTypeDeletionWithTimestamp, or kTypeRangeDeletion.
+      // type is ValueType::kTypeValue, ValueType::kTypeMerge, ValueType::kTypeDeletion,
+      // ValueType::kTypeDeletionWithTimestamp, or ValueType::kTypeRangeDeletion.
       uint64_t packed = ExtractInternalKeyFooter(raw_key_.GetKey());
       SequenceNumber seqno;
       ValueType value_type;

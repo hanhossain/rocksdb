@@ -1036,7 +1036,7 @@ static void DataBlockSeek(benchmark::State& state) {
 
   for (int i = 0; i < num_records; i++) {
     std::string ukey(keys[i] + "1");
-    InternalKey ikey(ukey, 0, kTypeValue);
+    InternalKey ikey(ukey, 0, ValueType::kTypeValue);
     builder.Add(ikey.Encode().ToString(), values[i]);
   }
 
@@ -1053,7 +1053,7 @@ static void DataBlockSeek(benchmark::State& state) {
                                                  kDisableGlobalSequenceNumber);
     uint32_t index = rnd.Uniform(static_cast<int>(num_records));
     std::string ukey(keys[index] + "1");
-    InternalKey ikey(ukey, 0, kTypeValue);
+    InternalKey ikey(ukey, 0, ValueType::kTypeValue);
     get_perf_context()->Reset();
     bool may_exist = iter->SeekForGet(ikey.Encode().ToString());
     if (!may_exist) {

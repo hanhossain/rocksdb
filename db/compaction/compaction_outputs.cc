@@ -434,14 +434,14 @@ void SetMaxSeqAndTs(InternalKey& internal_key, const Slice& user_key,
     static constexpr char kTsMax[] = "\xff\xff\xff\xff\xff\xff\xff\xff\xff";
     if (ts_sz <= strlen(kTsMax)) {
       internal_key = InternalKey(user_key, kMaxSequenceNumber,
-                                 kTypeRangeDeletion, Slice(kTsMax, ts_sz));
+                                 ValueType::kTypeRangeDeletion, Slice(kTsMax, ts_sz));
     } else {
       internal_key =
-          InternalKey(user_key, kMaxSequenceNumber, kTypeRangeDeletion,
+          InternalKey(user_key, kMaxSequenceNumber, ValueType::kTypeRangeDeletion,
                       std::string(ts_sz, '\xff'));
     }
   } else {
-    internal_key.Set(user_key, kMaxSequenceNumber, kTypeRangeDeletion);
+    internal_key.Set(user_key, kMaxSequenceNumber, ValueType::kTypeRangeDeletion);
   }
 }
 }  // namespace
@@ -486,7 +486,7 @@ Status CompactionOutputs::AddRangeDels(
     //
     // To achieve this while preventing files from overlapping in internal key
     // (an LSM invariant violation), we allow the earlier file to include the
-    // boundary user key up to `kMaxSequenceNumber,kTypeRangeDeletion`. The
+    // boundary user key up to `kMaxSequenceNumber,ValueType::kTypeRangeDeletion`. The
     // later file can begin at the boundary user key at the newest key version
     // it contains. At this point that version number is unknown since we have
     // not processed the range tombstones yet, so permit any version. Same story
@@ -494,7 +494,7 @@ Status CompactionOutputs::AddRangeDels(
     // `kMaxTs` here, which similarly permits any timestamp.
     if (comp_start_user_key) {
       lower_bound_buf.Set(*comp_start_user_key, kMaxSequenceNumber,
-                          kTypeRangeDeletion);
+                          ValueType::kTypeRangeDeletion);
       lower_bound_guard = lower_bound_buf.Encode();
       lower_bound = &lower_bound_guard;
     } else {
@@ -520,7 +520,7 @@ Status CompactionOutputs::AddRangeDels(
     // Last file of the subcompaction.
     if (comp_end_user_key) {
       upper_bound_buf.Set(*comp_end_user_key, kMaxSequenceNumber,
-                          kTypeRangeDeletion);
+                          ValueType::kTypeRangeDeletion);
       upper_bound_guard = upper_bound_buf.Encode();
       upper_bound = &upper_bound_guard;
     } else {

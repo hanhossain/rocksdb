@@ -248,16 +248,16 @@ void TestCustomizedTablePropertiesCollector(
     const Options& options, const InternalKeyComparator& internal_comparator) {
   // make sure the entries will be inserted with order.
   std::map<std::pair<std::string, ValueType>, std::string> kvs = {
-      {{"About   ", kTypeValue}, "val5"},  // starts with 'A'
-      {{"Abstract", kTypeValue}, "val2"},  // starts with 'A'
-      {{"Around  ", kTypeValue}, "val7"},  // starts with 'A'
-      {{"Beyond  ", kTypeValue}, "val3"},
-      {{"Builder ", kTypeValue}, "val1"},
-      {{"Love    ", kTypeDeletion}, ""},
-      {{"Cancel  ", kTypeValue}, "val4"},
-      {{"Find    ", kTypeValue}, "val6"},
-      {{"Rocks   ", kTypeDeletion}, ""},
-      {{"Foo     ", kTypeSingleDeletion}, ""},
+      {{"About   ", ValueType::kTypeValue}, "val5"},  // starts with 'A'
+      {{"Abstract", ValueType::kTypeValue}, "val2"},  // starts with 'A'
+      {{"Around  ", ValueType::kTypeValue}, "val7"},  // starts with 'A'
+      {{"Beyond  ", ValueType::kTypeValue}, "val3"},
+      {{"Builder ", ValueType::kTypeValue}, "val1"},
+      {{"Love    ", ValueType::kTypeDeletion}, ""},
+      {{"Cancel  ", ValueType::kTypeValue}, "val4"},
+      {{"Find    ", ValueType::kTypeValue}, "val6"},
+      {{"Rocks   ", ValueType::kTypeDeletion}, ""},
+      {{"Foo     ", ValueType::kTypeSingleDeletion}, ""},
   };
 
   // -- Step 1: build table

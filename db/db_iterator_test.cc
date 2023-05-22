@@ -220,7 +220,7 @@ TEST_P(DBIteratorTest, NonBlockingIteration) {
 
     // This test verifies block cache behaviors, which is not used by plain
     // table format.
-  } while (ChangeOptions(kSkipPlainTable | kSkipNoSeekToLast | kSkipMmapReads));
+  } while (ChangeOptions((int)OptionSkip::kSkipPlainTable | (int)OptionSkip::kSkipNoSeekToLast | (int)OptionSkip::kSkipMmapReads));
 }
 
 TEST_P(DBIteratorTest, IterSeekBeforePrev) {
@@ -801,7 +801,7 @@ TEST_P(DBIteratorTest, IterPrevMaxSkip) {
 
     ASSERT_OK(Delete(1, "key1"));
     VerifyIterLast("(invalid)", 1);
-  } while (ChangeOptions(kSkipMergePut | kSkipNoSeekToLast));
+  } while (ChangeOptions((int)OptionSkip::kSkipMergePut | (int)OptionSkip::kSkipNoSeekToLast));
 }
 
 TEST_P(DBIteratorTest, IterWithSnapshot) {

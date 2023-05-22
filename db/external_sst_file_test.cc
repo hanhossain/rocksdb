@@ -533,7 +533,7 @@ TEST_F(ExternalSSTFileTest, Basic) {
       ASSERT_EQ(Get(Key(k)), value);
     }
     DestroyAndRecreateExternalSSTFilesDir();
-  } while (ChangeOptions(kSkipPlainTable | kSkipFIFOCompaction |
+  } while (ChangeOptions((int)OptionSkip::kSkipPlainTable | (int)OptionSkip::kSkipFIFOCompaction |
                          kRangeDelSkipConfigs));
 }
 
@@ -801,7 +801,7 @@ TEST_F(ExternalSSTFileTest, AddList) {
       ASSERT_EQ(Get(Key(k)), value);
     }
     DestroyAndRecreateExternalSSTFilesDir();
-  } while (ChangeOptions(kSkipPlainTable | kSkipFIFOCompaction |
+  } while (ChangeOptions((int)OptionSkip::kSkipPlainTable | (int)OptionSkip::kSkipFIFOCompaction |
                          kRangeDelSkipConfigs));
 }
 
@@ -842,7 +842,7 @@ TEST_F(ExternalSSTFileTest, AddListAtomicity) {
       ASSERT_EQ(Get(Key(k)), value);
     }
     DestroyAndRecreateExternalSSTFilesDir();
-  } while (ChangeOptions(kSkipPlainTable | kSkipFIFOCompaction));
+  } while (ChangeOptions((int)OptionSkip::kSkipPlainTable | (int)OptionSkip::kSkipFIFOCompaction));
 }
 // This test reporduce a bug that can happen in some cases if the DB started
 // purging obsolete files when we are adding an external sst file.
@@ -1065,7 +1065,7 @@ TEST_F(ExternalSSTFileTest, MultiThreaded) {
 
     fprintf(stderr, "Verified %d values\n", num_files * keys_per_file);
     DestroyAndRecreateExternalSSTFilesDir();
-  } while (ChangeOptions(kSkipPlainTable | kSkipFIFOCompaction));
+  } while (ChangeOptions((int)OptionSkip::kSkipPlainTable | (int)OptionSkip::kSkipFIFOCompaction));
 }
 
 TEST_F(ExternalSSTFileTest, OverlappingRanges) {
@@ -1199,7 +1199,7 @@ TEST_F(ExternalSSTFileTest, OverlappingRanges) {
     }
     printf("keys/values verified\n");
     DestroyAndRecreateExternalSSTFilesDir();
-  } while (ChangeOptions(kSkipPlainTable | kSkipFIFOCompaction));
+  } while (ChangeOptions((int)OptionSkip::kSkipPlainTable | (int)OptionSkip::kSkipFIFOCompaction));
 }
 
 TEST_P(ExternalSSTFileTest, PickedLevel) {
@@ -2765,7 +2765,7 @@ TEST_P(ExternalSSTFileTest, DeltaEncodingWhileGlobalSeqnoPresent) {
   // key is composed as (seqno << 8 | value_type), and here `1` represents
   // ValueType::kTypeValue
 
-  PutFixed64(&key2, PackSequenceAndType(0, kTypeValue));
+  PutFixed64(&key2, PackSequenceAndType(0, ValueType::kTypeValue));
   key2 += "cdefghijkl";
 
   ASSERT_OK(writer.Put(key1, value));
@@ -2798,7 +2798,7 @@ TEST_P(ExternalSSTFileTest,
   // key is composed as (seqno << 8 | value_type), and here `1` represents
   // ValueType::kTypeValue
   std::string key2 = "ab";
-  PutFixed64(&key2, PackSequenceAndType(0, kTypeValue));
+  PutFixed64(&key2, PackSequenceAndType(0, ValueType::kTypeValue));
   key2 += "cdefghijkl";
   std::string key3 = key2 + "_";
 

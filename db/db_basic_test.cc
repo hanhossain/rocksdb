@@ -2955,9 +2955,9 @@ TEST_F(DBBasicTest, GetAllKeyVersions) {
 TEST_F(DBBasicTest, ValueTypeString) {
   KeyVersion key_version;
   // when adding new type, please also update `value_type_string_map`
-  for (unsigned char i = ValueType::kTypeDeletion; i < ValueType::kTypeMaxValid;
+  for (unsigned char i = (unsigned char)ValueType::kTypeDeletion; i < (unsigned char)ValueType::kTypeMaxValid;
        i++) {
-    key_version.type = i;
+    key_version.type = (ValueType)i;
     ASSERT_TRUE(key_version.GetTypeName() != "Invalid");
   }
 }

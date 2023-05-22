@@ -196,18 +196,18 @@ TEST_F(FlushJobTest, NonEmpty) {
   for (int i = 1; i < 10000; ++i) {
     std::string key(std::to_string((i + 1000) % 10000));
     std::string value("value" + key);
-    ASSERT_OK(new_mem->Add(SequenceNumber(i), kTypeValue, key, value,
+    ASSERT_OK(new_mem->Add(SequenceNumber(i), ValueType::kTypeValue, key, value,
                            nullptr /* kv_prot_info */));
     if ((i + 1000) % 10000 < 9995) {
-      InternalKey internal_key(key, SequenceNumber(i), kTypeValue);
+      InternalKey internal_key(key, SequenceNumber(i), ValueType::kTypeValue);
       inserted_keys.push_back({internal_key.Encode().ToString(), value});
     }
   }
 
   {
-    ASSERT_OK(new_mem->Add(SequenceNumber(10000), kTypeRangeDeletion, "9995",
+    ASSERT_OK(new_mem->Add(SequenceNumber(10000), ValueType::kTypeRangeDeletion, "9995",
                            "9999a", nullptr /* kv_prot_info */));
-    InternalKey internal_key("9995", SequenceNumber(10000), kTypeRangeDeletion);
+    InternalKey internal_key("9995", SequenceNumber(10000), ValueType::kTypeRangeDeletion);
     inserted_keys.push_back({internal_key.Encode().ToString(), "9999a"});
   }
 
@@ -233,10 +233,10 @@ TEST_F(FlushJobTest, NonEmpty) {
     }
 
     const SequenceNumber seq(i + 10001);
-    ASSERT_OK(new_mem->Add(seq, kTypeBlobIndex, key, blob_index,
+    ASSERT_OK(new_mem->Add(seq, ValueType::kTypeBlobIndex, key, blob_index,
                            nullptr /* kv_prot_info */));
 
-    InternalKey internal_key(key, seq, kTypeBlobIndex);
+    InternalKey internal_key(key, seq, ValueType::kTypeBlobIndex);
     inserted_keys.push_back({internal_key.Encode().ToString(), blob_index});
   }
   mock::SortKVVector(&inserted_keys);
@@ -297,7 +297,7 @@ TEST_F(FlushJobTest, FlushMemTablesSingleColumnFamily) {
     for (size_t j = 0; j < num_keys_per_table; ++j) {
       std::string key(std::to_string(j + i * num_keys_per_table));
       std::string value("value" + key);
-      ASSERT_OK(mem->Add(SequenceNumber(j + i * num_keys_per_table), kTypeValue,
+      ASSERT_OK(mem->Add(SequenceNumber(j + i * num_keys_per_table), ValueType::kTypeValue,
                          key, value, nullptr /* kv_prot_info */));
     }
   }
@@ -371,7 +371,7 @@ TEST_F(FlushJobTest, FlushMemtablesMultipleColumnFamilies) {
       for (size_t j = 0; j != num_keys_per_memtable; ++j) {
         std::string key(std::to_string(j + i * num_keys_per_memtable));
         std::string value("value" + key);
-        ASSERT_OK(mem->Add(curr_seqno++, kTypeValue, key, value,
+        ASSERT_OK(mem->Add(curr_seqno++, ValueType::kTypeValue, key, value,
                            nullptr /* kv_prot_info */));
       }
       mem->ConstructFragmentedRangeTombstones();
@@ -489,7 +489,7 @@ TEST_F(FlushJobTest, Snapshots) {
     for (int j = 0; j < insertions; ++j) {
       std::string value(rnd.HumanReadableString(10));
       auto seqno = ++current_seqno;
-      ASSERT_OK(new_mem->Add(SequenceNumber(seqno), kTypeValue, key, value,
+      ASSERT_OK(new_mem->Add(SequenceNumber(seqno), ValueType::kTypeValue, key, value,
                              nullptr /* kv_prot_info */));
       // a key is visible only if:
       // 1. it's the last one written (j == insertions - 1)
@@ -497,7 +497,7 @@ TEST_F(FlushJobTest, Snapshots) {
       bool visible = (j == insertions - 1) ||
                      (snapshots_set.find(seqno) != snapshots_set.end());
       if (visible) {
-        InternalKey internal_key(key, seqno, kTypeValue);
+        InternalKey internal_key(key, seqno, ValueType::kTypeValue);
         inserted_keys.push_back({internal_key.Encode().ToString(), value});
       }
     }
@@ -553,7 +553,7 @@ TEST_F(FlushJobTest, GetRateLimiterPriorityForWrite) {
     for (size_t j = 0; j < num_keys_per_table; ++j) {
       std::string key(std::to_string(j + i * num_keys_per_table));
       std::string value("value" + key);
-      ASSERT_OK(mem->Add(SequenceNumber(j + i * num_keys_per_table), kTypeValue,
+      ASSERT_OK(mem->Add(SequenceNumber(j + i * num_keys_per_table), ValueType::kTypeValue,
                          key, value, nullptr /* kv_prot_info */));
     }
   }

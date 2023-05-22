@@ -361,8 +361,8 @@ class CompactionIteratorTest : public testing::TestWithParam<bool> {
 // It is possible that the output of the compaction iterator is empty even if
 // the input is not.
 TEST_P(CompactionIteratorTest, EmptyResult) {
-  InitIterators({test::KeyStr("a", 5, kTypeSingleDeletion),
-                 test::KeyStr("a", 3, kTypeValue)},
+  InitIterators({test::KeyStr("a", 5, ValueType::kTypeSingleDeletion),
+                 test::KeyStr("a", 3, ValueType::kTypeValue)},
                 {"", "val"}, {}, {}, 5);
   c_iter_->SeekToFirst();
   ASSERT_OK(c_iter_->status());
@@ -372,37 +372,37 @@ TEST_P(CompactionIteratorTest, EmptyResult) {
 // If there is a corruption after a single deletion, the corrupted key should
 // be preserved.
 TEST_P(CompactionIteratorTest, CorruptionAfterSingleDeletion) {
-  InitIterators({test::KeyStr("a", 5, kTypeSingleDeletion),
-                 test::KeyStr("a", 3, kTypeValue, true),
-                 test::KeyStr("b", 10, kTypeValue)},
+  InitIterators({test::KeyStr("a", 5, ValueType::kTypeSingleDeletion),
+                 test::KeyStr("a", 3, ValueType::kTypeValue, true),
+                 test::KeyStr("b", 10, ValueType::kTypeValue)},
                 {"", "val", "val2"}, {}, {}, 10);
   c_iter_->SeekToFirst();
   ASSERT_TRUE(c_iter_->Valid());
-  ASSERT_EQ(test::KeyStr("a", 5, kTypeSingleDeletion),
+  ASSERT_EQ(test::KeyStr("a", 5, ValueType::kTypeSingleDeletion),
             c_iter_->key().ToString());
   c_iter_->Next();
   ASSERT_TRUE(c_iter_->Valid());
-  ASSERT_EQ(test::KeyStr("a", 3, kTypeValue, true), c_iter_->key().ToString());
+  ASSERT_EQ(test::KeyStr("a", 3, ValueType::kTypeValue, true), c_iter_->key().ToString());
   c_iter_->Next();
   ASSERT_TRUE(c_iter_->Valid());
-  ASSERT_EQ(test::KeyStr("b", 10, kTypeValue), c_iter_->key().ToString());
+  ASSERT_EQ(test::KeyStr("b", 10, ValueType::kTypeValue), c_iter_->key().ToString());
   c_iter_->Next();
   ASSERT_OK(c_iter_->status());
   ASSERT_FALSE(c_iter_->Valid());
 }
 
 TEST_P(CompactionIteratorTest, SimpleRangeDeletion) {
-  InitIterators({test::KeyStr("morning", 5, kTypeValue),
-                 test::KeyStr("morning", 2, kTypeValue),
-                 test::KeyStr("night", 3, kTypeValue)},
+  InitIterators({test::KeyStr("morning", 5, ValueType::kTypeValue),
+                 test::KeyStr("morning", 2, ValueType::kTypeValue),
+                 test::KeyStr("night", 3, ValueType::kTypeValue)},
                 {"zao", "zao", "wan"},
-                {test::KeyStr("ma", 4, kTypeRangeDeletion)}, {"mz"}, 5);
+                {test::KeyStr("ma", 4, ValueType::kTypeRangeDeletion)}, {"mz"}, 5);
   c_iter_->SeekToFirst();
   ASSERT_TRUE(c_iter_->Valid());
-  ASSERT_EQ(test::KeyStr("morning", 5, kTypeValue), c_iter_->key().ToString());
+  ASSERT_EQ(test::KeyStr("morning", 5, ValueType::kTypeValue), c_iter_->key().ToString());
   c_iter_->Next();
   ASSERT_TRUE(c_iter_->Valid());
-  ASSERT_EQ(test::KeyStr("night", 3, kTypeValue), c_iter_->key().ToString());
+  ASSERT_EQ(test::KeyStr("night", 3, ValueType::kTypeValue), c_iter_->key().ToString());
   c_iter_->Next();
   ASSERT_OK(c_iter_->status());
   ASSERT_FALSE(c_iter_->Valid());
@@ -411,20 +411,20 @@ TEST_P(CompactionIteratorTest, SimpleRangeDeletion) {
 TEST_P(CompactionIteratorTest, RangeDeletionWithSnapshots) {
   AddSnapshot(10);
   std::vector<std::string> ks1;
-  ks1.push_back(test::KeyStr("ma", 28, kTypeRangeDeletion));
+  ks1.push_back(test::KeyStr("ma", 28, ValueType::kTypeRangeDeletion));
   std::vector<std::string> vs1{"mz"};
-  std::vector<std::string> ks2{test::KeyStr("morning", 15, kTypeValue),
-                               test::KeyStr("morning", 5, kTypeValue),
-                               test::KeyStr("night", 40, kTypeValue),
-                               test::KeyStr("night", 20, kTypeValue)};
+  std::vector<std::string> ks2{test::KeyStr("morning", 15, ValueType::kTypeValue),
+                               test::KeyStr("morning", 5, ValueType::kTypeValue),
+                               test::KeyStr("night", 40, ValueType::kTypeValue),
+                               test::KeyStr("night", 20, ValueType::kTypeValue)};
   std::vector<std::string> vs2{"zao 15", "zao 5", "wan 40", "wan 20"};
   InitIterators(ks2, vs2, ks1, vs1, 40);
   c_iter_->SeekToFirst();
   ASSERT_TRUE(c_iter_->Valid());
-  ASSERT_EQ(test::KeyStr("morning", 5, kTypeValue), c_iter_->key().ToString());
+  ASSERT_EQ(test::KeyStr("morning", 5, ValueType::kTypeValue), c_iter_->key().ToString());
   c_iter_->Next();
   ASSERT_TRUE(c_iter_->Valid());
-  ASSERT_EQ(test::KeyStr("night", 40, kTypeValue), c_iter_->key().ToString());
+  ASSERT_EQ(test::KeyStr("night", 40, ValueType::kTypeValue), c_iter_->key().ToString());
   c_iter_->Next();
   ASSERT_OK(c_iter_->status());
   ASSERT_FALSE(c_iter_->Valid());
@@ -490,18 +490,18 @@ TEST_P(CompactionIteratorTest, CompactionFilterSkipUntil) {
   NoMergingMergeOp merge_op;
   Filter filter;
   InitIterators(
-      {test::KeyStr("a", 50, kTypeValue),  // keep
-       test::KeyStr("a", 45, kTypeMerge),
-       test::KeyStr("b", 60, kTypeValue),  // skip to "d+"
-       test::KeyStr("b", 40, kTypeValue), test::KeyStr("c", 35, kTypeValue),
-       test::KeyStr("d", 70, kTypeMerge),
-       test::KeyStr("e", 71, kTypeMerge),  // keep
-       test::KeyStr("f", 65, kTypeMerge),  // skip to "f", aka keep
-       test::KeyStr("f", 30, kTypeMerge),  // skip to "g+"
-       test::KeyStr("f", 25, kTypeValue), test::KeyStr("g", 90, kTypeValue),
-       test::KeyStr("h", 91, kTypeValue),  // keep
-       test::KeyStr("i", 95, kTypeMerge),  // skip to "z"
-       test::KeyStr("j", 99, kTypeValue)},
+      {test::KeyStr("a", 50, ValueType::kTypeValue),  // keep
+       test::KeyStr("a", 45, ValueType::kTypeMerge),
+       test::KeyStr("b", 60, ValueType::kTypeValue),  // skip to "d+"
+       test::KeyStr("b", 40, ValueType::kTypeValue), test::KeyStr("c", 35, ValueType::kTypeValue),
+       test::KeyStr("d", 70, ValueType::kTypeMerge),
+       test::KeyStr("e", 71, ValueType::kTypeMerge),  // keep
+       test::KeyStr("f", 65, ValueType::kTypeMerge),  // skip to "f", aka keep
+       test::KeyStr("f", 30, ValueType::kTypeMerge),  // skip to "g+"
+       test::KeyStr("f", 25, ValueType::kTypeValue), test::KeyStr("g", 90, ValueType::kTypeValue),
+       test::KeyStr("h", 91, ValueType::kTypeValue),  // keep
+       test::KeyStr("i", 95, ValueType::kTypeMerge),  // skip to "z"
+       test::KeyStr("j", 99, ValueType::kTypeValue)},
       {"av50", "am45", "bv60", "bv40", "cv35", "dm70", "em71", "fm65", "fm30",
        "fv25", "gv90", "hv91", "im95", "jv99"},
       {}, {}, kMaxSequenceNumber, kMaxSequenceNumber, &merge_op, &filter);
@@ -509,15 +509,15 @@ TEST_P(CompactionIteratorTest, CompactionFilterSkipUntil) {
   // Compaction should output just "a", "e" and "h" keys.
   c_iter_->SeekToFirst();
   ASSERT_TRUE(c_iter_->Valid());
-  ASSERT_EQ(test::KeyStr("a", 50, kTypeValue), c_iter_->key().ToString());
+  ASSERT_EQ(test::KeyStr("a", 50, ValueType::kTypeValue), c_iter_->key().ToString());
   ASSERT_EQ("av50", c_iter_->value().ToString());
   c_iter_->Next();
   ASSERT_TRUE(c_iter_->Valid());
-  ASSERT_EQ(test::KeyStr("e", 71, kTypeMerge), c_iter_->key().ToString());
+  ASSERT_EQ(test::KeyStr("e", 71, ValueType::kTypeMerge), c_iter_->key().ToString());
   ASSERT_EQ("em71", c_iter_->value().ToString());
   c_iter_->Next();
   ASSERT_TRUE(c_iter_->Valid());
-  ASSERT_EQ(test::KeyStr("h", 91, kTypeValue), c_iter_->key().ToString());
+  ASSERT_EQ(test::KeyStr("h", 91, ValueType::kTypeValue), c_iter_->key().ToString());
   ASSERT_EQ("hv91", c_iter_->value().ToString());
   c_iter_->Next();
   ASSERT_OK(c_iter_->status());
@@ -544,11 +544,11 @@ TEST_P(CompactionIteratorTest, ShuttingDownInFilter) {
   NoMergingMergeOp merge_op;
   StallingFilter filter;
   InitIterators(
-      {test::KeyStr("1", 1, kTypeValue), test::KeyStr("2", 2, kTypeValue),
-       test::KeyStr("3", 3, kTypeValue), test::KeyStr("4", 4, kTypeValue)},
+      {test::KeyStr("1", 1, ValueType::kTypeValue), test::KeyStr("2", 2, ValueType::kTypeValue),
+       test::KeyStr("3", 3, ValueType::kTypeValue), test::KeyStr("4", 4, ValueType::kTypeValue)},
       {"v1", "v2", "v3", "v4"}, {}, {}, kMaxSequenceNumber, kMaxSequenceNumber,
       &merge_op, &filter);
-  // Don't leave tombstones (kTypeDeletion) for filtered keys.
+  // Don't leave tombstones (ValueType::kTypeDeletion) for filtered keys.
   compaction_proxy_->key_not_exists_beyond_output_level = true;
 
   std::atomic<bool> seek_done{false};
@@ -582,8 +582,8 @@ TEST_P(CompactionIteratorTest, ShuttingDownInMerge) {
   NoMergingMergeOp merge_op;
   StallingFilter filter;
   InitIterators(
-      {test::KeyStr("1", 1, kTypeValue), test::KeyStr("2", 2, kTypeMerge),
-       test::KeyStr("3", 3, kTypeMerge), test::KeyStr("4", 4, kTypeValue)},
+      {test::KeyStr("1", 1, ValueType::kTypeValue), test::KeyStr("2", 2, ValueType::kTypeMerge),
+       test::KeyStr("3", 3, ValueType::kTypeMerge), test::KeyStr("4", 4, ValueType::kTypeValue)},
       {"v1", "v2", "v3", "v4"}, {}, {}, kMaxSequenceNumber, kMaxSequenceNumber,
       &merge_op, &filter);
   compaction_proxy_->key_not_exists_beyond_output_level = true;
@@ -698,17 +698,17 @@ TEST_P(CompactionIteratorTest, SingleMergeOperand) {
   Filter filter;
   InitIterators(
       // a should invoke PartialMergeMulti with a single merge operand.
-      {test::KeyStr("a", 50, kTypeMerge),
+      {test::KeyStr("a", 50, ValueType::kTypeMerge),
        // b should invoke PartialMergeMulti with two operands.
-       test::KeyStr("b", 70, kTypeMerge), test::KeyStr("b", 60, kTypeMerge),
-       // c should invoke FullMerge due to kTypeValue at the beginning.
-       test::KeyStr("c", 90, kTypeMerge), test::KeyStr("c", 80, kTypeValue)},
+       test::KeyStr("b", 70, ValueType::kTypeMerge), test::KeyStr("b", 60, ValueType::kTypeMerge),
+       // c should invoke FullMerge due to ValueType::kTypeValue at the beginning.
+       test::KeyStr("c", 90, ValueType::kTypeMerge), test::KeyStr("c", 80, ValueType::kTypeValue)},
       {"av1", "bv2", "bv1", "cv2", "cv1"}, {}, {}, kMaxSequenceNumber,
       kMaxSequenceNumber, &merge_op, &filter);
 
   c_iter_->SeekToFirst();
   ASSERT_TRUE(c_iter_->Valid());
-  ASSERT_EQ(test::KeyStr("a", 50, kTypeMerge), c_iter_->key().ToString());
+  ASSERT_EQ(test::KeyStr("a", 50, ValueType::kTypeMerge), c_iter_->key().ToString());
   ASSERT_EQ("av1", c_iter_->value().ToString());
   c_iter_->Next();
   ASSERT_TRUE(c_iter_->Valid());
@@ -722,9 +722,9 @@ TEST_P(CompactionIteratorTest, SingleMergeOperand) {
 // with sequence = 0.
 TEST_P(CompactionIteratorTest, ZeroOutSequenceAtBottomLevel) {
   AddSnapshot(1);
-  RunTest({test::KeyStr("a", 1, kTypeValue), test::KeyStr("b", 2, kTypeValue)},
+  RunTest({test::KeyStr("a", 1, ValueType::kTypeValue), test::KeyStr("b", 2, ValueType::kTypeValue)},
           {"v1", "v2"},
-          {test::KeyStr("a", 0, kTypeValue), test::KeyStr("b", 2, kTypeValue)},
+          {test::KeyStr("a", 0, ValueType::kTypeValue), test::KeyStr("b", 2, ValueType::kTypeValue)},
           {"v1", "v2"}, kMaxSequenceNumber /*last_committed_seq*/,
           nullptr /*merge_operator*/, nullptr /*compaction_filter*/,
           true /*bottommost_level*/);
@@ -735,10 +735,10 @@ TEST_P(CompactionIteratorTest, ZeroOutSequenceAtBottomLevel) {
 TEST_P(CompactionIteratorTest, RemoveDeletionAtBottomLevel) {
   AddSnapshot(1);
   RunTest(
-      {test::KeyStr("a", 1, kTypeDeletion), test::KeyStr("b", 3, kTypeDeletion),
-       test::KeyStr("b", 1, kTypeValue)},
+      {test::KeyStr("a", 1, ValueType::kTypeDeletion), test::KeyStr("b", 3, ValueType::kTypeDeletion),
+       test::KeyStr("b", 1, ValueType::kTypeValue)},
       {"", "", ""},
-      {test::KeyStr("b", 3, kTypeDeletion), test::KeyStr("b", 0, kTypeValue)},
+      {test::KeyStr("b", 3, ValueType::kTypeDeletion), test::KeyStr("b", 0, ValueType::kTypeValue)},
       {"", ""}, kMaxSequenceNumber /*last_committed_seq*/,
       nullptr /*merge_operator*/, nullptr /*compaction_filter*/,
       true /*bottommost_level*/);
@@ -748,9 +748,9 @@ TEST_P(CompactionIteratorTest, RemoveDeletionAtBottomLevel) {
 // removed permanently.
 TEST_P(CompactionIteratorTest, RemoveSingleDeletionAtBottomLevel) {
   AddSnapshot(1);
-  RunTest({test::KeyStr("a", 1, kTypeSingleDeletion),
-           test::KeyStr("b", 2, kTypeSingleDeletion)},
-          {"", ""}, {test::KeyStr("b", 2, kTypeSingleDeletion)}, {""},
+  RunTest({test::KeyStr("a", 1, ValueType::kTypeSingleDeletion),
+           test::KeyStr("b", 2, ValueType::kTypeSingleDeletion)},
+          {"", ""}, {test::KeyStr("b", 2, ValueType::kTypeSingleDeletion)}, {""},
           kMaxSequenceNumber /*last_committed_seq*/, nullptr /*merge_operator*/,
           nullptr /*compaction_filter*/, true /*bottommost_level*/);
 }
@@ -758,10 +758,10 @@ TEST_P(CompactionIteratorTest, RemoveSingleDeletionAtBottomLevel) {
 TEST_P(CompactionIteratorTest, ConvertToPutAtBottom) {
   std::shared_ptr<MergeOperator> merge_op =
       MergeOperators::CreateStringAppendOperator();
-  RunTest({test::KeyStr("a", 4, kTypeMerge), test::KeyStr("a", 3, kTypeMerge),
-           test::KeyStr("a", 2, kTypeMerge), test::KeyStr("b", 1, kTypeValue)},
+  RunTest({test::KeyStr("a", 4, ValueType::kTypeMerge), test::KeyStr("a", 3, ValueType::kTypeMerge),
+           test::KeyStr("a", 2, ValueType::kTypeMerge), test::KeyStr("b", 1, ValueType::kTypeValue)},
           {"a4", "a3", "a2", "b1"},
-          {test::KeyStr("a", 0, kTypeValue), test::KeyStr("b", 0, kTypeValue)},
+          {test::KeyStr("a", 0, ValueType::kTypeValue), test::KeyStr("b", 0, ValueType::kTypeValue)},
           {"a2,a3,a4", "b1"}, kMaxSequenceNumber /*last_committed_seq*/,
           merge_op.get(), nullptr /*compaction_filter*/,
           true /*bottomost_level*/);
@@ -789,8 +789,8 @@ TEST_P(PerKeyPlacementCompIteratorTest, SplitLastLevelData) {
   latest_cold_seq = 5;
 
   InitIterators(
-      {test::KeyStr("a", 7, kTypeValue), test::KeyStr("b", 6, kTypeValue),
-       test::KeyStr("c", 5, kTypeValue)},
+      {test::KeyStr("a", 7, ValueType::kTypeValue), test::KeyStr("b", 6, ValueType::kTypeValue),
+       test::KeyStr("c", 5, ValueType::kTypeValue)},
       {"vala", "valb", "valc"}, {}, {}, kMaxSequenceNumber, kMaxSequenceNumber,
       nullptr, nullptr, true);
   c_iter_->SeekToFirst();
@@ -798,16 +798,16 @@ TEST_P(PerKeyPlacementCompIteratorTest, SplitLastLevelData) {
 
   // the first 2 keys are hot, which should has
   // `output_to_penultimate_level()==true` and seq num not zeroed out
-  ASSERT_EQ(test::KeyStr("a", 7, kTypeValue), c_iter_->key().ToString());
+  ASSERT_EQ(test::KeyStr("a", 7, ValueType::kTypeValue), c_iter_->key().ToString());
   ASSERT_TRUE(c_iter_->output_to_penultimate_level());
   c_iter_->Next();
   ASSERT_TRUE(c_iter_->Valid());
-  ASSERT_EQ(test::KeyStr("b", 6, kTypeValue), c_iter_->key().ToString());
+  ASSERT_EQ(test::KeyStr("b", 6, ValueType::kTypeValue), c_iter_->key().ToString());
   ASSERT_TRUE(c_iter_->output_to_penultimate_level());
   c_iter_->Next();
   ASSERT_TRUE(c_iter_->Valid());
   // `a` is cold data, which should be output to bottommost
-  ASSERT_EQ(test::KeyStr("c", 0, kTypeValue), c_iter_->key().ToString());
+  ASSERT_EQ(test::KeyStr("c", 0, ValueType::kTypeValue), c_iter_->key().ToString());
   ASSERT_FALSE(c_iter_->output_to_penultimate_level());
   c_iter_->Next();
   ASSERT_OK(c_iter_->status());
@@ -820,8 +820,8 @@ TEST_P(PerKeyPlacementCompIteratorTest, SnapshotData) {
   AddSnapshot(5);
 
   InitIterators(
-      {test::KeyStr("a", 7, kTypeValue), test::KeyStr("b", 6, kTypeDeletion),
-       test::KeyStr("b", 5, kTypeValue)},
+      {test::KeyStr("a", 7, ValueType::kTypeValue), test::KeyStr("b", 6, ValueType::kTypeDeletion),
+       test::KeyStr("b", 5, ValueType::kTypeValue)},
       {"vala", "", "valb"}, {}, {}, kMaxSequenceNumber, kMaxSequenceNumber,
       nullptr, nullptr, true);
   c_iter_->SeekToFirst();
@@ -829,17 +829,17 @@ TEST_P(PerKeyPlacementCompIteratorTest, SnapshotData) {
 
   // The first key and the tombstone are within snapshot, which should output
   // to the penultimate level (and seq num cannot be zeroed out).
-  ASSERT_EQ(test::KeyStr("a", 7, kTypeValue), c_iter_->key().ToString());
+  ASSERT_EQ(test::KeyStr("a", 7, ValueType::kTypeValue), c_iter_->key().ToString());
   ASSERT_TRUE(c_iter_->output_to_penultimate_level());
   c_iter_->Next();
   ASSERT_TRUE(c_iter_->Valid());
-  ASSERT_EQ(test::KeyStr("b", 6, kTypeDeletion), c_iter_->key().ToString());
+  ASSERT_EQ(test::KeyStr("b", 6, ValueType::kTypeDeletion), c_iter_->key().ToString());
   ASSERT_TRUE(c_iter_->output_to_penultimate_level());
   c_iter_->Next();
   ASSERT_TRUE(c_iter_->Valid());
   // `a` is not protected by the snapshot, the sequence number is zero out and
   // should output bottommost
-  ASSERT_EQ(test::KeyStr("b", 0, kTypeValue), c_iter_->key().ToString());
+  ASSERT_EQ(test::KeyStr("b", 0, ValueType::kTypeValue), c_iter_->key().ToString());
   ASSERT_FALSE(c_iter_->output_to_penultimate_level());
   c_iter_->Next();
   ASSERT_OK(c_iter_->status());
@@ -861,15 +861,15 @@ TEST_P(PerKeyPlacementCompIteratorTest, ConflictWithSnapshot) {
 
   AddSnapshot(5);
 
-  InitIterators({test::KeyStr("a", 7, kTypeValue),
-                 test::KeyStr("unsafe_pb", 6, kTypeValue),
-                 test::KeyStr("c", 5, kTypeValue)},
+  InitIterators({test::KeyStr("a", 7, ValueType::kTypeValue),
+                 test::KeyStr("unsafe_pb", 6, ValueType::kTypeValue),
+                 test::KeyStr("c", 5, ValueType::kTypeValue)},
                 {"vala", "valb", "valc"}, {}, {}, kMaxSequenceNumber,
                 kMaxSequenceNumber, nullptr, nullptr, true);
   c_iter_->SeekToFirst();
   ASSERT_TRUE(c_iter_->Valid());
 
-  ASSERT_EQ(test::KeyStr("a", 7, kTypeValue), c_iter_->key().ToString());
+  ASSERT_EQ(test::KeyStr("a", 7, ValueType::kTypeValue), c_iter_->key().ToString());
   ASSERT_TRUE(c_iter_->output_to_penultimate_level());
   // the 2nd key is unsafe to output_to_penultimate_level, but it's within
   // snapshot so for per_key_placement feature it has to be outputted to the
@@ -900,20 +900,20 @@ class CompactionIteratorWithSnapshotCheckerTest
 TEST_F(CompactionIteratorWithSnapshotCheckerTest,
        PreserveUncommittedKeys_Value) {
   RunTest(
-      {test::KeyStr("foo", 3, kTypeValue), test::KeyStr("foo", 2, kTypeValue),
-       test::KeyStr("foo", 1, kTypeValue)},
+      {test::KeyStr("foo", 3, ValueType::kTypeValue), test::KeyStr("foo", 2, ValueType::kTypeValue),
+       test::KeyStr("foo", 1, ValueType::kTypeValue)},
       {"v3", "v2", "v1"},
-      {test::KeyStr("foo", 3, kTypeValue), test::KeyStr("foo", 2, kTypeValue)},
+      {test::KeyStr("foo", 3, ValueType::kTypeValue), test::KeyStr("foo", 2, ValueType::kTypeValue)},
       {"v3", "v2"}, 2 /*last_committed_seq*/);
 }
 
 TEST_F(CompactionIteratorWithSnapshotCheckerTest,
        PreserveUncommittedKeys_Deletion) {
-  RunTest({test::KeyStr("foo", 2, kTypeDeletion),
-           test::KeyStr("foo", 1, kTypeValue)},
+  RunTest({test::KeyStr("foo", 2, ValueType::kTypeDeletion),
+           test::KeyStr("foo", 1, ValueType::kTypeValue)},
           {"", "v1"},
-          {test::KeyStr("foo", 2, kTypeDeletion),
-           test::KeyStr("foo", 1, kTypeValue)},
+          {test::KeyStr("foo", 2, ValueType::kTypeDeletion),
+           test::KeyStr("foo", 1, ValueType::kTypeValue)},
           {"", "v1"}, 1 /*last_committed_seq*/);
 }
 
@@ -921,31 +921,31 @@ TEST_F(CompactionIteratorWithSnapshotCheckerTest,
        PreserveUncommittedKeys_Merge) {
   auto merge_op = MergeOperators::CreateStringAppendOperator();
   RunTest(
-      {test::KeyStr("foo", 3, kTypeMerge), test::KeyStr("foo", 2, kTypeMerge),
-       test::KeyStr("foo", 1, kTypeValue)},
+      {test::KeyStr("foo", 3, ValueType::kTypeMerge), test::KeyStr("foo", 2, ValueType::kTypeMerge),
+       test::KeyStr("foo", 1, ValueType::kTypeValue)},
       {"v3", "v2", "v1"},
-      {test::KeyStr("foo", 3, kTypeMerge), test::KeyStr("foo", 2, kTypeValue)},
+      {test::KeyStr("foo", 3, ValueType::kTypeMerge), test::KeyStr("foo", 2, ValueType::kTypeValue)},
       {"v3", "v1,v2"}, 2 /*last_committed_seq*/, merge_op.get());
 }
 
 TEST_F(CompactionIteratorWithSnapshotCheckerTest,
        PreserveUncommittedKeys_SingleDelete) {
-  RunTest({test::KeyStr("foo", 2, kTypeSingleDeletion),
-           test::KeyStr("foo", 1, kTypeValue)},
+  RunTest({test::KeyStr("foo", 2, ValueType::kTypeSingleDeletion),
+           test::KeyStr("foo", 1, ValueType::kTypeValue)},
           {"", "v1"},
-          {test::KeyStr("foo", 2, kTypeSingleDeletion),
-           test::KeyStr("foo", 1, kTypeValue)},
+          {test::KeyStr("foo", 2, ValueType::kTypeSingleDeletion),
+           test::KeyStr("foo", 1, ValueType::kTypeValue)},
           {"", "v1"}, 1 /*last_committed_seq*/);
 }
 
 TEST_F(CompactionIteratorWithSnapshotCheckerTest,
        PreserveUncommittedKeys_BlobIndex) {
-  RunTest({test::KeyStr("foo", 3, kTypeBlobIndex),
-           test::KeyStr("foo", 2, kTypeBlobIndex),
-           test::KeyStr("foo", 1, kTypeBlobIndex)},
+  RunTest({test::KeyStr("foo", 3, ValueType::kTypeBlobIndex),
+           test::KeyStr("foo", 2, ValueType::kTypeBlobIndex),
+           test::KeyStr("foo", 1, ValueType::kTypeBlobIndex)},
           {"v3", "v2", "v1"},
-          {test::KeyStr("foo", 3, kTypeBlobIndex),
-           test::KeyStr("foo", 2, kTypeBlobIndex)},
+          {test::KeyStr("foo", 3, ValueType::kTypeBlobIndex),
+           test::KeyStr("foo", 2, ValueType::kTypeBlobIndex)},
           {"v3", "v2"}, 2 /*last_committed_seq*/);
 }
 
@@ -954,24 +954,24 @@ TEST_F(CompactionIteratorWithSnapshotCheckerTest,
 TEST_F(CompactionIteratorWithSnapshotCheckerTest, DedupSameSnapshot_Value) {
   AddSnapshot(2, 1);
   RunTest(
-      {test::KeyStr("foo", 4, kTypeValue), test::KeyStr("foo", 3, kTypeValue),
-       test::KeyStr("foo", 2, kTypeValue), test::KeyStr("foo", 1, kTypeValue)},
+      {test::KeyStr("foo", 4, ValueType::kTypeValue), test::KeyStr("foo", 3, ValueType::kTypeValue),
+       test::KeyStr("foo", 2, ValueType::kTypeValue), test::KeyStr("foo", 1, ValueType::kTypeValue)},
       {"v4", "v3", "v2", "v1"},
-      {test::KeyStr("foo", 4, kTypeValue), test::KeyStr("foo", 3, kTypeValue),
-       test::KeyStr("foo", 1, kTypeValue)},
+      {test::KeyStr("foo", 4, ValueType::kTypeValue), test::KeyStr("foo", 3, ValueType::kTypeValue),
+       test::KeyStr("foo", 1, ValueType::kTypeValue)},
       {"v4", "v3", "v1"}, 3 /*last_committed_seq*/);
 }
 
 TEST_F(CompactionIteratorWithSnapshotCheckerTest, DedupSameSnapshot_Deletion) {
   AddSnapshot(2, 1);
   RunTest(
-      {test::KeyStr("foo", 4, kTypeValue),
-       test::KeyStr("foo", 3, kTypeDeletion),
-       test::KeyStr("foo", 2, kTypeValue), test::KeyStr("foo", 1, kTypeValue)},
+      {test::KeyStr("foo", 4, ValueType::kTypeValue),
+       test::KeyStr("foo", 3, ValueType::kTypeDeletion),
+       test::KeyStr("foo", 2, ValueType::kTypeValue), test::KeyStr("foo", 1, ValueType::kTypeValue)},
       {"v4", "", "v2", "v1"},
-      {test::KeyStr("foo", 4, kTypeValue),
-       test::KeyStr("foo", 3, kTypeDeletion),
-       test::KeyStr("foo", 1, kTypeValue)},
+      {test::KeyStr("foo", 4, ValueType::kTypeValue),
+       test::KeyStr("foo", 3, ValueType::kTypeDeletion),
+       test::KeyStr("foo", 1, ValueType::kTypeValue)},
       {"v4", "", "v1"}, 3 /*last_committed_seq*/);
 }
 
@@ -980,12 +980,12 @@ TEST_F(CompactionIteratorWithSnapshotCheckerTest, DedupSameSnapshot_Merge) {
   AddSnapshot(4, 3);
   auto merge_op = MergeOperators::CreateStringAppendOperator();
   RunTest(
-      {test::KeyStr("foo", 5, kTypeMerge), test::KeyStr("foo", 4, kTypeMerge),
-       test::KeyStr("foo", 3, kTypeMerge), test::KeyStr("foo", 2, kTypeMerge),
-       test::KeyStr("foo", 1, kTypeValue)},
+      {test::KeyStr("foo", 5, ValueType::kTypeMerge), test::KeyStr("foo", 4, ValueType::kTypeMerge),
+       test::KeyStr("foo", 3, ValueType::kTypeMerge), test::KeyStr("foo", 2, ValueType::kTypeMerge),
+       test::KeyStr("foo", 1, ValueType::kTypeValue)},
       {"v5", "v4", "v3", "v2", "v1"},
-      {test::KeyStr("foo", 5, kTypeMerge), test::KeyStr("foo", 4, kTypeMerge),
-       test::KeyStr("foo", 3, kTypeMerge), test::KeyStr("foo", 1, kTypeValue)},
+      {test::KeyStr("foo", 5, ValueType::kTypeMerge), test::KeyStr("foo", 4, ValueType::kTypeMerge),
+       test::KeyStr("foo", 3, ValueType::kTypeMerge), test::KeyStr("foo", 1, ValueType::kTypeValue)},
       {"v5", "v4", "v2,v3", "v1"}, 4 /*last_committed_seq*/, merge_op.get());
 }
 
@@ -993,24 +993,24 @@ TEST_F(CompactionIteratorWithSnapshotCheckerTest,
        DedupSameSnapshot_SingleDeletion) {
   AddSnapshot(2, 1);
   RunTest(
-      {test::KeyStr("foo", 4, kTypeValue),
-       test::KeyStr("foo", 3, kTypeSingleDeletion),
-       test::KeyStr("foo", 2, kTypeValue), test::KeyStr("foo", 1, kTypeValue)},
+      {test::KeyStr("foo", 4, ValueType::kTypeValue),
+       test::KeyStr("foo", 3, ValueType::kTypeSingleDeletion),
+       test::KeyStr("foo", 2, ValueType::kTypeValue), test::KeyStr("foo", 1, ValueType::kTypeValue)},
       {"v4", "", "v2", "v1"},
-      {test::KeyStr("foo", 4, kTypeValue), test::KeyStr("foo", 1, kTypeValue)},
+      {test::KeyStr("foo", 4, ValueType::kTypeValue), test::KeyStr("foo", 1, ValueType::kTypeValue)},
       {"v4", "v1"}, 3 /*last_committed_seq*/);
 }
 
 TEST_F(CompactionIteratorWithSnapshotCheckerTest, DedupSameSnapshot_BlobIndex) {
   AddSnapshot(2, 1);
-  RunTest({test::KeyStr("foo", 4, kTypeBlobIndex),
-           test::KeyStr("foo", 3, kTypeBlobIndex),
-           test::KeyStr("foo", 2, kTypeBlobIndex),
-           test::KeyStr("foo", 1, kTypeBlobIndex)},
+  RunTest({test::KeyStr("foo", 4, ValueType::kTypeBlobIndex),
+           test::KeyStr("foo", 3, ValueType::kTypeBlobIndex),
+           test::KeyStr("foo", 2, ValueType::kTypeBlobIndex),
+           test::KeyStr("foo", 1, ValueType::kTypeBlobIndex)},
           {"v4", "v3", "v2", "v1"},
-          {test::KeyStr("foo", 4, kTypeBlobIndex),
-           test::KeyStr("foo", 3, kTypeBlobIndex),
-           test::KeyStr("foo", 1, kTypeBlobIndex)},
+          {test::KeyStr("foo", 4, ValueType::kTypeBlobIndex),
+           test::KeyStr("foo", 3, ValueType::kTypeBlobIndex),
+           test::KeyStr("foo", 1, ValueType::kTypeBlobIndex)},
           {"v4", "v3", "v1"}, 3 /*last_committed_seq*/);
 }
 
@@ -1020,11 +1020,11 @@ TEST_F(CompactionIteratorWithSnapshotCheckerTest, DedupSameSnapshot_BlobIndex) {
 TEST_F(CompactionIteratorWithSnapshotCheckerTest,
        NotZeroOutSequenceIfNotVisibleToEarliestSnapshot) {
   AddSnapshot(2, 1);
-  RunTest({test::KeyStr("a", 1, kTypeValue), test::KeyStr("b", 2, kTypeValue),
-           test::KeyStr("c", 3, kTypeValue)},
+  RunTest({test::KeyStr("a", 1, ValueType::kTypeValue), test::KeyStr("b", 2, ValueType::kTypeValue),
+           test::KeyStr("c", 3, ValueType::kTypeValue)},
           {"v1", "v2", "v3"},
-          {test::KeyStr("a", 0, kTypeValue), test::KeyStr("b", 2, kTypeValue),
-           test::KeyStr("c", 3, kTypeValue)},
+          {test::KeyStr("a", 0, ValueType::kTypeValue), test::KeyStr("b", 2, ValueType::kTypeValue),
+           test::KeyStr("c", 3, ValueType::kTypeValue)},
           {"v1", "v2", "v3"}, kMaxSequenceNumber /*last_committed_seq*/,
           nullptr /*merge_operator*/, nullptr /*compaction_filter*/,
           true /*bottommost_level*/);
@@ -1034,8 +1034,8 @@ TEST_F(CompactionIteratorWithSnapshotCheckerTest,
        NotRemoveDeletionIfNotVisibleToEarliestSnapshot) {
   AddSnapshot(2, 1);
   RunTest(
-      {test::KeyStr("a", 1, kTypeDeletion), test::KeyStr("b", 2, kTypeDeletion),
-       test::KeyStr("c", 3, kTypeDeletion)},
+      {test::KeyStr("a", 1, ValueType::kTypeDeletion), test::KeyStr("b", 2, ValueType::kTypeDeletion),
+       test::KeyStr("c", 3, ValueType::kTypeDeletion)},
       {"", "", ""}, {}, {"", ""}, kMaxSequenceNumber /*last_committed_seq*/,
       nullptr /*merge_operator*/, nullptr /*compaction_filter*/,
       true /*bottommost_level*/);
@@ -1044,11 +1044,11 @@ TEST_F(CompactionIteratorWithSnapshotCheckerTest,
 TEST_F(CompactionIteratorWithSnapshotCheckerTest,
        NotRemoveDeletionIfValuePresentToEarlierSnapshot) {
   AddSnapshot(2, 1);
-  RunTest({test::KeyStr("a", 4, kTypeDeletion),
-           test::KeyStr("a", 1, kTypeValue), test::KeyStr("b", 3, kTypeValue)},
+  RunTest({test::KeyStr("a", 4, ValueType::kTypeDeletion),
+           test::KeyStr("a", 1, ValueType::kTypeValue), test::KeyStr("b", 3, ValueType::kTypeValue)},
           {"", "", ""},
-          {test::KeyStr("a", 4, kTypeDeletion),
-           test::KeyStr("a", 0, kTypeValue), test::KeyStr("b", 3, kTypeValue)},
+          {test::KeyStr("a", 4, ValueType::kTypeDeletion),
+           test::KeyStr("a", 0, ValueType::kTypeValue), test::KeyStr("b", 3, ValueType::kTypeValue)},
           {"", "", ""}, kMaxSequenceNumber /*last_committed_seq*/,
           nullptr /*merge_operator*/, nullptr /*compaction_filter*/,
           true /*bottommost_level*/);
@@ -1057,12 +1057,12 @@ TEST_F(CompactionIteratorWithSnapshotCheckerTest,
 TEST_F(CompactionIteratorWithSnapshotCheckerTest,
        NotRemoveSingleDeletionIfNotVisibleToEarliestSnapshot) {
   AddSnapshot(2, 1);
-  RunTest({test::KeyStr("a", 1, kTypeSingleDeletion),
-           test::KeyStr("b", 2, kTypeSingleDeletion),
-           test::KeyStr("c", 3, kTypeSingleDeletion)},
+  RunTest({test::KeyStr("a", 1, ValueType::kTypeSingleDeletion),
+           test::KeyStr("b", 2, ValueType::kTypeSingleDeletion),
+           test::KeyStr("c", 3, ValueType::kTypeSingleDeletion)},
           {"", "", ""},
-          {test::KeyStr("b", 2, kTypeSingleDeletion),
-           test::KeyStr("c", 3, kTypeSingleDeletion)},
+          {test::KeyStr("b", 2, ValueType::kTypeSingleDeletion),
+           test::KeyStr("c", 3, ValueType::kTypeSingleDeletion)},
           {"", ""}, kMaxSequenceNumber /*last_committed_seq*/,
           nullptr /*merge_operator*/, nullptr /*compaction_filter*/,
           true /*bottommost_level*/);
@@ -1073,11 +1073,11 @@ TEST_F(CompactionIteratorWithSnapshotCheckerTest,
 TEST_F(CompactionIteratorWithSnapshotCheckerTest,
        SingleDeleteAcrossSnapshotBoundary) {
   AddSnapshot(2, 1);
-  RunTest({test::KeyStr("a", 2, kTypeSingleDeletion),
-           test::KeyStr("a", 1, kTypeValue)},
+  RunTest({test::KeyStr("a", 2, ValueType::kTypeSingleDeletion),
+           test::KeyStr("a", 1, ValueType::kTypeValue)},
           {"", "v1"},
-          {test::KeyStr("a", 2, kTypeSingleDeletion),
-           test::KeyStr("a", 1, kTypeValue)},
+          {test::KeyStr("a", 2, ValueType::kTypeSingleDeletion),
+           test::KeyStr("a", 1, ValueType::kTypeValue)},
           {"", "v1"}, 2 /*last_committed_seq*/);
 }
 
@@ -1087,41 +1087,41 @@ TEST_F(CompactionIteratorWithSnapshotCheckerTest,
 TEST_F(CompactionIteratorWithSnapshotCheckerTest,
        KeepSingleDeletionForWriteConflictChecking) {
   AddSnapshot(2, 0);
-  RunTest({test::KeyStr("a", 2, kTypeSingleDeletion),
-           test::KeyStr("a", 1, kTypeValue)},
+  RunTest({test::KeyStr("a", 2, ValueType::kTypeSingleDeletion),
+           test::KeyStr("a", 1, ValueType::kTypeValue)},
           {"", "v1"},
-          {test::KeyStr("a", 2, kTypeSingleDeletion),
-           test::KeyStr("a", 1, kTypeValue)},
+          {test::KeyStr("a", 2, ValueType::kTypeSingleDeletion),
+           test::KeyStr("a", 1, ValueType::kTypeValue)},
           {"", ""}, 2 /*last_committed_seq*/, nullptr /*merge_operator*/,
           nullptr /*compaction_filter*/, false /*bottommost_level*/,
           2 /*earliest_write_conflict_snapshot*/);
 }
 
 // Same as above but with a blob index. In addition to the value getting
-// trimmed, the type of the KV is changed to kTypeValue.
+// trimmed, the type of the KV is changed to ValueType::kTypeValue.
 TEST_F(CompactionIteratorWithSnapshotCheckerTest,
        KeepSingleDeletionForWriteConflictChecking_BlobIndex) {
   AddSnapshot(2, 0);
-  RunTest({test::KeyStr("a", 2, kTypeSingleDeletion),
-           test::KeyStr("a", 1, kTypeBlobIndex)},
+  RunTest({test::KeyStr("a", 2, ValueType::kTypeSingleDeletion),
+           test::KeyStr("a", 1, ValueType::kTypeBlobIndex)},
           {"", "fake_blob_index"},
-          {test::KeyStr("a", 2, kTypeSingleDeletion),
-           test::KeyStr("a", 1, kTypeValue)},
+          {test::KeyStr("a", 2, ValueType::kTypeSingleDeletion),
+           test::KeyStr("a", 1, ValueType::kTypeValue)},
           {"", ""}, 2 /*last_committed_seq*/, nullptr /*merge_operator*/,
           nullptr /*compaction_filter*/, false /*bottommost_level*/,
           2 /*earliest_write_conflict_snapshot*/);
 }
 
 // Same as above but with a wide-column entity. In addition to the value getting
-// trimmed, the type of the KV is changed to kTypeValue.
+// trimmed, the type of the KV is changed to ValueType::kTypeValue.
 TEST_F(CompactionIteratorWithSnapshotCheckerTest,
        KeepSingleDeletionForWriteConflictChecking_WideColumnEntity) {
   AddSnapshot(2, 0);
-  RunTest({test::KeyStr("a", 2, kTypeSingleDeletion),
-           test::KeyStr("a", 1, kTypeWideColumnEntity)},
+  RunTest({test::KeyStr("a", 2, ValueType::kTypeSingleDeletion),
+           test::KeyStr("a", 1, ValueType::kTypeWideColumnEntity)},
           {"", "fake_entity"},
-          {test::KeyStr("a", 2, kTypeSingleDeletion),
-           test::KeyStr("a", 1, kTypeValue)},
+          {test::KeyStr("a", 2, ValueType::kTypeSingleDeletion),
+           test::KeyStr("a", 1, ValueType::kTypeValue)},
           {"", ""}, 2 /* last_committed_seq */, nullptr /* merge_operator */,
           nullptr /* compaction_filter */, false /* bottommost_level */,
           2 /* earliest_write_conflict_snapshot */);
@@ -1135,11 +1135,11 @@ TEST_F(CompactionIteratorWithSnapshotCheckerTest, CompactionFilter_Value) {
   std::unique_ptr<CompactionFilter> compaction_filter(
       new FilterAllKeysCompactionFilter());
   RunTest(
-      {test::KeyStr("a", 2, kTypeValue), test::KeyStr("a", 1, kTypeValue),
-       test::KeyStr("b", 3, kTypeValue), test::KeyStr("c", 1, kTypeValue)},
+      {test::KeyStr("a", 2, ValueType::kTypeValue), test::KeyStr("a", 1, ValueType::kTypeValue),
+       test::KeyStr("b", 3, ValueType::kTypeValue), test::KeyStr("c", 1, ValueType::kTypeValue)},
       {"v2", "v1", "v3", "v4"},
-      {test::KeyStr("a", 2, kTypeValue), test::KeyStr("a", 1, kTypeDeletion),
-       test::KeyStr("b", 3, kTypeValue), test::KeyStr("c", 1, kTypeDeletion)},
+      {test::KeyStr("a", 2, ValueType::kTypeValue), test::KeyStr("a", 1, ValueType::kTypeDeletion),
+       test::KeyStr("b", 3, ValueType::kTypeValue), test::KeyStr("c", 1, ValueType::kTypeDeletion)},
       {"v2", "", "v3", ""}, 1 /*last_committed_seq*/,
       nullptr /*merge_operator*/, compaction_filter.get());
 }
@@ -1148,10 +1148,10 @@ TEST_F(CompactionIteratorWithSnapshotCheckerTest, CompactionFilter_Deletion) {
   std::unique_ptr<CompactionFilter> compaction_filter(
       new FilterAllKeysCompactionFilter());
   RunTest(
-      {test::KeyStr("a", 2, kTypeDeletion), test::KeyStr("a", 1, kTypeValue)},
+      {test::KeyStr("a", 2, ValueType::kTypeDeletion), test::KeyStr("a", 1, ValueType::kTypeValue)},
       {"", "v1"},
-      {test::KeyStr("a", 2, kTypeDeletion),
-       test::KeyStr("a", 1, kTypeDeletion)},
+      {test::KeyStr("a", 2, ValueType::kTypeDeletion),
+       test::KeyStr("a", 1, ValueType::kTypeDeletion)},
       {"", ""}, 1 /*last_committed_seq*/, nullptr /*merge_operator*/,
       compaction_filter.get());
 }
@@ -1162,9 +1162,9 @@ TEST_F(CompactionIteratorWithSnapshotCheckerTest,
       MergeOperators::CreateStringAppendOperator();
   std::unique_ptr<CompactionFilter> compaction_filter(
       new FilterAllKeysCompactionFilter());
-  RunTest({test::KeyStr("a", 3, kTypeMerge), test::KeyStr("a", 2, kTypeMerge),
-           test::KeyStr("a", 1, kTypeMerge)},
-          {"v3", "v2", "v1"}, {test::KeyStr("a", 3, kTypeMerge)}, {"v3"},
+  RunTest({test::KeyStr("a", 3, ValueType::kTypeMerge), test::KeyStr("a", 2, ValueType::kTypeMerge),
+           test::KeyStr("a", 1, ValueType::kTypeMerge)},
+          {"v3", "v2", "v1"}, {test::KeyStr("a", 3, ValueType::kTypeMerge)}, {"v3"},
           2 /*last_committed_seq*/, merge_op.get(), compaction_filter.get());
 }
 
@@ -1174,10 +1174,10 @@ TEST_F(CompactionIteratorWithSnapshotCheckerTest, CompactionFilter_FullMerge) {
   std::unique_ptr<CompactionFilter> compaction_filter(
       new FilterAllKeysCompactionFilter());
   RunTest(
-      {test::KeyStr("a", 3, kTypeMerge), test::KeyStr("a", 2, kTypeMerge),
-       test::KeyStr("a", 1, kTypeValue)},
+      {test::KeyStr("a", 3, ValueType::kTypeMerge), test::KeyStr("a", 2, ValueType::kTypeMerge),
+       test::KeyStr("a", 1, ValueType::kTypeValue)},
       {"v3", "v2", "v1"},
-      {test::KeyStr("a", 3, kTypeMerge), test::KeyStr("a", 1, kTypeDeletion)},
+      {test::KeyStr("a", 3, ValueType::kTypeMerge), test::KeyStr("a", 1, ValueType::kTypeDeletion)},
       {"v3", ""}, 2 /*last_committed_seq*/, merge_op.get(),
       compaction_filter.get());
 }
@@ -1195,10 +1195,10 @@ class CompactionIteratorWithAllowIngestBehindTest
 TEST_P(CompactionIteratorWithAllowIngestBehindTest, NoConvertToPutAtBottom) {
   std::shared_ptr<MergeOperator> merge_op =
       MergeOperators::CreateStringAppendOperator();
-  RunTest({test::KeyStr("a", 4, kTypeMerge), test::KeyStr("a", 3, kTypeMerge),
-           test::KeyStr("a", 2, kTypeMerge), test::KeyStr("b", 1, kTypeValue)},
+  RunTest({test::KeyStr("a", 4, ValueType::kTypeMerge), test::KeyStr("a", 3, ValueType::kTypeMerge),
+           test::KeyStr("a", 2, ValueType::kTypeMerge), test::KeyStr("b", 1, ValueType::kTypeValue)},
           {"a4", "a3", "a2", "b1"},
-          {test::KeyStr("a", 4, kTypeMerge), test::KeyStr("b", 1, kTypeValue)},
+          {test::KeyStr("a", 4, ValueType::kTypeMerge), test::KeyStr("b", 1, ValueType::kTypeValue)},
           {"a2,a3,a4", "b1"}, kMaxSequenceNumber /*last_committed_seq*/,
           merge_op.get(), nullptr /*compaction_filter*/,
           true /*bottomost_level*/);
@@ -1208,10 +1208,10 @@ TEST_P(CompactionIteratorWithAllowIngestBehindTest,
        MergeToPutIfEncounteredPutAtBottom) {
   std::shared_ptr<MergeOperator> merge_op =
       MergeOperators::CreateStringAppendOperator();
-  RunTest({test::KeyStr("a", 4, kTypeMerge), test::KeyStr("a", 3, kTypeMerge),
-           test::KeyStr("a", 2, kTypeValue), test::KeyStr("b", 1, kTypeValue)},
+  RunTest({test::KeyStr("a", 4, ValueType::kTypeMerge), test::KeyStr("a", 3, ValueType::kTypeMerge),
+           test::KeyStr("a", 2, ValueType::kTypeValue), test::KeyStr("b", 1, ValueType::kTypeValue)},
           {"a4", "a3", "a2", "b1"},
-          {test::KeyStr("a", 4, kTypeValue), test::KeyStr("b", 1, kTypeValue)},
+          {test::KeyStr("a", 4, ValueType::kTypeValue), test::KeyStr("b", 1, ValueType::kTypeValue)},
           {"a2,a3,a4", "b1"}, kMaxSequenceNumber /*last_committed_seq*/,
           merge_op.get(), nullptr /*compaction_filter*/,
           true /*bottomost_level*/);
@@ -1230,10 +1230,10 @@ class CompactionIteratorTsGcTest : public CompactionIteratorTest {
 TEST_P(CompactionIteratorTsGcTest, NoKeyEligibleForGC) {
   constexpr char user_key[][2] = {{'a', '\0'}, {'b', '\0'}};
   const std::vector<std::string> input_keys = {
-      test::KeyStr(/*ts=*/103, user_key[0], /*seq=*/4, kTypeValue),
+      test::KeyStr(/*ts=*/103, user_key[0], /*seq=*/4, ValueType::kTypeValue),
       test::KeyStr(/*ts=*/102, user_key[0], /*seq=*/3,
-                   kTypeDeletionWithTimestamp),
-      test::KeyStr(/*ts=*/104, user_key[1], /*seq=*/5, kTypeValue)};
+                   ValueType::kTypeDeletionWithTimestamp),
+      test::KeyStr(/*ts=*/104, user_key[1], /*seq=*/5, ValueType::kTypeValue)};
   const std::vector<std::string> input_values = {"a3", "", "b2"};
   std::string full_history_ts_low;
   // All keys' timestamps are newer than or equal to 102, thus none of them
@@ -1258,9 +1258,9 @@ TEST_P(CompactionIteratorTsGcTest, NoKeyEligibleForGC) {
 TEST_P(CompactionIteratorTsGcTest, NoMergeEligibleForGc) {
   constexpr char user_key[] = "a";
   const std::vector<std::string> input_keys = {
-      test::KeyStr(10002, user_key, 102, kTypeMerge),
-      test::KeyStr(10001, user_key, 101, kTypeMerge),
-      test::KeyStr(10000, user_key, 100, kTypeValue)};
+      test::KeyStr(10002, user_key, 102, ValueType::kTypeMerge),
+      test::KeyStr(10001, user_key, 101, ValueType::kTypeMerge),
+      test::KeyStr(10000, user_key, 100, ValueType::kTypeValue)};
   const std::vector<std::string> input_values = {"2", "1", "a0"};
   std::shared_ptr<MergeOperator> merge_op =
       MergeOperators::CreateStringAppendTESTOperator();
@@ -1284,10 +1284,10 @@ TEST_P(CompactionIteratorTsGcTest, AllKeysOlderThanThreshold) {
   constexpr char user_key[][2] = {{'a', '\0'}, {'b', '\0'}};
   const std::vector<std::string> input_keys = {
       test::KeyStr(/*ts=*/103, user_key[0], /*seq=*/4,
-                   kTypeDeletionWithTimestamp),
-      test::KeyStr(/*ts=*/102, user_key[0], /*seq=*/3, kTypeValue),
-      test::KeyStr(/*ts=*/101, user_key[0], /*seq=*/2, kTypeValue),
-      test::KeyStr(/*ts=*/104, user_key[1], /*seq=*/5, kTypeValue)};
+                   ValueType::kTypeDeletionWithTimestamp),
+      test::KeyStr(/*ts=*/102, user_key[0], /*seq=*/3, ValueType::kTypeValue),
+      test::KeyStr(/*ts=*/101, user_key[0], /*seq=*/2, ValueType::kTypeValue),
+      test::KeyStr(/*ts=*/104, user_key[1], /*seq=*/5, ValueType::kTypeValue)};
   const std::vector<std::string> input_values = {"", "a2", "a1", "b5"};
   std::string full_history_ts_low;
   PutFixed64(&full_history_ts_low, std::numeric_limits<uint64_t>::max());
@@ -1336,14 +1336,14 @@ TEST_P(CompactionIteratorTsGcTest, AllKeysOlderThanThreshold) {
 TEST_P(CompactionIteratorTsGcTest, SomeMergesOlderThanThreshold) {
   constexpr char user_key[][2] = {"a", "f"};
   const std::vector<std::string> input_keys = {
-      test::KeyStr(/*ts=*/25000, user_key[0], /*seq=*/2500, kTypeMerge),
-      test::KeyStr(/*ts=*/19000, user_key[0], /*seq=*/2300, kTypeMerge),
-      test::KeyStr(/*ts=*/18000, user_key[0], /*seq=*/1800, kTypeMerge),
-      test::KeyStr(/*ts=*/16000, user_key[0], /*seq=*/1600, kTypeValue),
-      test::KeyStr(/*ts=*/19000, user_key[1], /*seq=*/2000, kTypeMerge),
-      test::KeyStr(/*ts=*/17000, user_key[1], /*seq=*/1700, kTypeMerge),
+      test::KeyStr(/*ts=*/25000, user_key[0], /*seq=*/2500, ValueType::kTypeMerge),
+      test::KeyStr(/*ts=*/19000, user_key[0], /*seq=*/2300, ValueType::kTypeMerge),
+      test::KeyStr(/*ts=*/18000, user_key[0], /*seq=*/1800, ValueType::kTypeMerge),
+      test::KeyStr(/*ts=*/16000, user_key[0], /*seq=*/1600, ValueType::kTypeValue),
+      test::KeyStr(/*ts=*/19000, user_key[1], /*seq=*/2000, ValueType::kTypeMerge),
+      test::KeyStr(/*ts=*/17000, user_key[1], /*seq=*/1700, ValueType::kTypeMerge),
       test::KeyStr(/*ts=*/15000, user_key[1], /*seq=*/1600,
-                   kTypeDeletionWithTimestamp)};
+                   ValueType::kTypeDeletionWithTimestamp)};
   const std::vector<std::string> input_values = {"25", "19", "18", "16",
                                                  "19", "17", ""};
   std::shared_ptr<MergeOperator> merge_op =
@@ -1358,14 +1358,14 @@ TEST_P(CompactionIteratorTsGcTest, SomeMergesOlderThanThreshold) {
     AddSnapshot(1600);
     AddSnapshot(1900);
     const std::vector<std::string> expected_keys = {
-        test::KeyStr(/*ts=*/25000, user_key[0], /*seq=*/2500, kTypeMerge),
-        test::KeyStr(/*ts=*/19000, user_key[0], /*seq=*/2300, kTypeMerge),
-        test::KeyStr(/*ts=*/18000, user_key[0], /*seq=*/1800, kTypeMerge),
-        test::KeyStr(/*ts=*/16000, user_key[0], /*seq=*/1600, kTypeValue),
-        test::KeyStr(/*ts=*/19000, user_key[1], /*seq=*/2000, kTypeMerge),
-        test::KeyStr(/*ts=*/17000, user_key[1], /*seq=*/1700, kTypeMerge),
+        test::KeyStr(/*ts=*/25000, user_key[0], /*seq=*/2500, ValueType::kTypeMerge),
+        test::KeyStr(/*ts=*/19000, user_key[0], /*seq=*/2300, ValueType::kTypeMerge),
+        test::KeyStr(/*ts=*/18000, user_key[0], /*seq=*/1800, ValueType::kTypeMerge),
+        test::KeyStr(/*ts=*/16000, user_key[0], /*seq=*/1600, ValueType::kTypeValue),
+        test::KeyStr(/*ts=*/19000, user_key[1], /*seq=*/2000, ValueType::kTypeMerge),
+        test::KeyStr(/*ts=*/17000, user_key[1], /*seq=*/1700, ValueType::kTypeMerge),
         test::KeyStr(/*ts=*/15000, user_key[1], /*seq=*/1600,
-                     kTypeDeletionWithTimestamp)};
+                     ValueType::kTypeDeletionWithTimestamp)};
     const std::vector<std::string> expected_values = {"25", "19", "18", "16",
                                                       "19", "17", ""};
     for (const auto& param : params) {
@@ -1374,13 +1374,13 @@ TEST_P(CompactionIteratorTsGcTest, SomeMergesOlderThanThreshold) {
       auto expected_keys_copy = expected_keys;
       auto expected_values_copy = expected_values;
       if (bottommost_level || key_not_exists_beyond_output_level) {
-        // the kTypeDeletionWithTimestamp will be dropped
+        // the ValueType::kTypeDeletionWithTimestamp will be dropped
         expected_keys_copy.pop_back();
         expected_values_copy.pop_back();
         if (bottommost_level) {
           // seq zero
           expected_keys_copy[3] =
-              test::KeyStr(/*ts=*/0, user_key[0], /*seq=*/0, kTypeValue);
+              test::KeyStr(/*ts=*/0, user_key[0], /*seq=*/0, ValueType::kTypeValue);
         }
       }
       RunTest(input_keys, input_values, expected_keys_copy,
@@ -1396,8 +1396,8 @@ TEST_P(CompactionIteratorTsGcTest, SomeMergesOlderThanThreshold) {
   // No snapshots
   {
     const std::vector<std::string> expected_keys = {
-        test::KeyStr(/*ts=*/25000, user_key[0], /*seq=*/2500, kTypeValue),
-        test::KeyStr(/*ts=*/19000, user_key[1], /*seq=*/2000, kTypeValue)};
+        test::KeyStr(/*ts=*/25000, user_key[0], /*seq=*/2500, ValueType::kTypeValue),
+        test::KeyStr(/*ts=*/19000, user_key[1], /*seq=*/2000, ValueType::kTypeValue)};
     const std::vector<std::string> expected_values = {"16,18,19,25", "17,19"};
     for (const auto& param : params) {
       const bool bottommost_level = param.first;
@@ -1406,7 +1406,7 @@ TEST_P(CompactionIteratorTsGcTest, SomeMergesOlderThanThreshold) {
       auto expected_values_copy = expected_values;
       if (bottommost_level) {
         expected_keys_copy[1] =
-            test::KeyStr(/*ts=*/0, user_key[1], /*seq=*/0, kTypeValue);
+            test::KeyStr(/*ts=*/0, user_key[1], /*seq=*/0, ValueType::kTypeValue);
       }
       RunTest(input_keys, input_values, expected_keys_copy,
               expected_values_copy,
@@ -1421,10 +1421,10 @@ TEST_P(CompactionIteratorTsGcTest, SomeMergesOlderThanThreshold) {
 TEST_P(CompactionIteratorTsGcTest, NewHidesOldSameSnapshot) {
   constexpr char user_key[] = "a";
   const std::vector<std::string> input_keys = {
-      test::KeyStr(/*ts=*/103, user_key, /*seq=*/4, kTypeDeletionWithTimestamp),
-      test::KeyStr(/*ts=*/102, user_key, /*seq=*/3, kTypeValue),
-      test::KeyStr(/*ts=*/101, user_key, /*seq=*/2, kTypeValue),
-      test::KeyStr(/*ts=*/100, user_key, /*seq=*/1, kTypeValue)};
+      test::KeyStr(/*ts=*/103, user_key, /*seq=*/4, ValueType::kTypeDeletionWithTimestamp),
+      test::KeyStr(/*ts=*/102, user_key, /*seq=*/3, ValueType::kTypeValue),
+      test::KeyStr(/*ts=*/101, user_key, /*seq=*/2, ValueType::kTypeValue),
+      test::KeyStr(/*ts=*/100, user_key, /*seq=*/1, ValueType::kTypeValue)};
   const std::vector<std::string> input_values = {"", "a2", "a1", "a0"};
   {
     std::string full_history_ts_low;
@@ -1446,10 +1446,10 @@ TEST_P(CompactionIteratorTsGcTest, NewHidesOldSameSnapshot) {
 TEST_P(CompactionIteratorTsGcTest, DropTombstones) {
   constexpr char user_key[] = "a";
   const std::vector<std::string> input_keys = {
-      test::KeyStr(/*ts=*/103, user_key, /*seq=*/4, kTypeDeletionWithTimestamp),
-      test::KeyStr(/*ts=*/102, user_key, /*seq=*/3, kTypeValue),
-      test::KeyStr(/*ts=*/101, user_key, /*seq=*/2, kTypeDeletionWithTimestamp),
-      test::KeyStr(/*ts=*/100, user_key, /*seq=*/1, kTypeValue)};
+      test::KeyStr(/*ts=*/103, user_key, /*seq=*/4, ValueType::kTypeDeletionWithTimestamp),
+      test::KeyStr(/*ts=*/102, user_key, /*seq=*/3, ValueType::kTypeValue),
+      test::KeyStr(/*ts=*/101, user_key, /*seq=*/2, ValueType::kTypeDeletionWithTimestamp),
+      test::KeyStr(/*ts=*/100, user_key, /*seq=*/1, ValueType::kTypeValue)};
   const std::vector<std::string> input_values = {"", "a2", "", "a0"};
   const std::vector<std::string> expected_keys = {input_keys[0], input_keys[1]};
   const std::vector<std::string> expected_values = {"", "a2"};
@@ -1484,14 +1484,14 @@ TEST_P(CompactionIteratorTsGcTest, DropTombstones) {
 TEST_P(CompactionIteratorTsGcTest, RewriteTs) {
   constexpr char user_key[] = "a";
   const std::vector<std::string> input_keys = {
-      test::KeyStr(/*ts=*/103, user_key, /*seq=*/4, kTypeDeletionWithTimestamp),
-      test::KeyStr(/*ts=*/102, user_key, /*seq=*/3, kTypeValue),
-      test::KeyStr(/*ts=*/101, user_key, /*seq=*/2, kTypeDeletionWithTimestamp),
-      test::KeyStr(/*ts=*/100, user_key, /*seq=*/1, kTypeValue)};
+      test::KeyStr(/*ts=*/103, user_key, /*seq=*/4, ValueType::kTypeDeletionWithTimestamp),
+      test::KeyStr(/*ts=*/102, user_key, /*seq=*/3, ValueType::kTypeValue),
+      test::KeyStr(/*ts=*/101, user_key, /*seq=*/2, ValueType::kTypeDeletionWithTimestamp),
+      test::KeyStr(/*ts=*/100, user_key, /*seq=*/1, ValueType::kTypeValue)};
   const std::vector<std::string> input_values = {"", "a2", "", "a0"};
   const std::vector<std::string> expected_keys = {
       input_keys[0], input_keys[1], input_keys[2],
-      test::KeyStr(/*ts=*/0, user_key, /*seq=*/0, kTypeValue)};
+      test::KeyStr(/*ts=*/0, user_key, /*seq=*/0, ValueType::kTypeValue)};
   const std::vector<std::string> expected_values = {"", "a2", "", "a0"};
 
   AddSnapshot(1);
@@ -1513,9 +1513,9 @@ TEST_P(CompactionIteratorTsGcTest, RewriteTs) {
 TEST_P(CompactionIteratorTsGcTest, SingleDeleteNoKeyEligibleForGC) {
   constexpr char user_key[][2] = {{'a', '\0'}, {'b', '\0'}};
   const std::vector<std::string> input_keys = {
-      test::KeyStr(/*ts=*/104, user_key[0], /*seq=*/4, kTypeSingleDeletion),
-      test::KeyStr(/*ts=*/103, user_key[0], /*seq=*/3, kTypeValue),
-      test::KeyStr(/*ts=*/102, user_key[1], /*seq=*/2, kTypeValue)};
+      test::KeyStr(/*ts=*/104, user_key[0], /*seq=*/4, ValueType::kTypeSingleDeletion),
+      test::KeyStr(/*ts=*/103, user_key[0], /*seq=*/3, ValueType::kTypeValue),
+      test::KeyStr(/*ts=*/102, user_key[1], /*seq=*/2, ValueType::kTypeValue)};
   const std::vector<std::string> input_values = {"", "a3", "b2"};
   std::string full_history_ts_low;
   // All keys' timestamps are newer than or equal to 102, thus none of them
@@ -1540,10 +1540,10 @@ TEST_P(CompactionIteratorTsGcTest, SingleDeleteNoKeyEligibleForGC) {
 TEST_P(CompactionIteratorTsGcTest, SingleDeleteDropTombstones) {
   constexpr char user_key[] = "a";
   const std::vector<std::string> input_keys = {
-      test::KeyStr(/*ts=*/103, user_key, /*seq=*/4, kTypeSingleDeletion),
-      test::KeyStr(/*ts=*/102, user_key, /*seq=*/3, kTypeValue),
-      test::KeyStr(/*ts=*/101, user_key, /*seq=*/2, kTypeSingleDeletion),
-      test::KeyStr(/*ts=*/100, user_key, /*seq=*/1, kTypeValue)};
+      test::KeyStr(/*ts=*/103, user_key, /*seq=*/4, ValueType::kTypeSingleDeletion),
+      test::KeyStr(/*ts=*/102, user_key, /*seq=*/3, ValueType::kTypeValue),
+      test::KeyStr(/*ts=*/101, user_key, /*seq=*/2, ValueType::kTypeSingleDeletion),
+      test::KeyStr(/*ts=*/100, user_key, /*seq=*/1, ValueType::kTypeValue)};
   const std::vector<std::string> input_values = {"", "a2", "", "a0"};
   const std::vector<std::string> expected_keys = {input_keys[0], input_keys[1]};
   const std::vector<std::string> expected_values = {"", "a2"};
@@ -1571,9 +1571,9 @@ TEST_P(CompactionIteratorTsGcTest, SingleDeleteDropTombstones) {
 TEST_P(CompactionIteratorTsGcTest, SingleDeleteAllKeysOlderThanThreshold) {
   constexpr char user_key[][2] = {{'a', '\0'}, {'b', '\0'}};
   const std::vector<std::string> input_keys = {
-      test::KeyStr(/*ts=*/103, user_key[0], /*seq=*/4, kTypeSingleDeletion),
-      test::KeyStr(/*ts=*/102, user_key[0], /*seq=*/3, kTypeValue),
-      test::KeyStr(/*ts=*/104, user_key[1], /*seq=*/5, kTypeValue)};
+      test::KeyStr(/*ts=*/103, user_key[0], /*seq=*/4, ValueType::kTypeSingleDeletion),
+      test::KeyStr(/*ts=*/102, user_key[0], /*seq=*/3, ValueType::kTypeValue),
+      test::KeyStr(/*ts=*/104, user_key[1], /*seq=*/5, ValueType::kTypeValue)};
   const std::vector<std::string> input_values = {"", "a2", "b5"};
   std::string full_history_ts_low;
   PutFixed64(&full_history_ts_low, std::numeric_limits<uint64_t>::max());

@@ -973,7 +973,7 @@ std::string DBTestBase::AllEntriesFor(const Slice& user_key, int cf) {
     iter.set(dbfull()->NewInternalIterator(read_options, &arena,
                                            kMaxSequenceNumber, handles_[cf]));
   }
-  InternalKey target(user_key, kMaxSequenceNumber, kTypeValue);
+  InternalKey target(user_key, kMaxSequenceNumber, ValueType::kTypeValue);
   iter->Seek(target.Encode());
   std::string result;
   if (!iter->status().ok()) {
@@ -982,7 +982,7 @@ std::string DBTestBase::AllEntriesFor(const Slice& user_key, int cf) {
     result = "[ ";
     bool first = true;
     while (iter->Valid()) {
-      ParsedInternalKey ikey(Slice(), 0, kTypeValue);
+      ParsedInternalKey ikey(Slice(), 0, ValueType::kTypeValue);
       if (ParseInternalKey(iter->key(), &ikey, true /* log_err_key */) !=
           Status::OK()) {
         result += "CORRUPTED";
@@ -995,17 +995,17 @@ std::string DBTestBase::AllEntriesFor(const Slice& user_key, int cf) {
         }
         first = false;
         switch (ikey.type) {
-          case kTypeValue:
+          case ValueType::kTypeValue:
             result += iter->value().ToString();
             break;
-          case kTypeMerge:
-            // keep it the same as kTypeValue for testing kMergePut
+          case ValueType::kTypeMerge:
+            // keep it the same as ValueType::kTypeValue for testing kMergePut
             result += iter->value().ToString();
             break;
-          case kTypeDeletion:
+          case ValueType::kTypeDeletion:
             result += "DEL";
             break;
-          case kTypeSingleDeletion:
+          case ValueType::kTypeSingleDeletion:
             result += "SDEL";
             break;
           default:

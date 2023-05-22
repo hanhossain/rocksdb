@@ -106,7 +106,7 @@ Status GetAllKeyVersions(DB* db, ColumnFamilyHandle* cfh, Slice begin_key,
     key_versions->emplace_back(ikey.user_key.ToString() /* _user_key */,
                                iter->value().ToString() /* _value */,
                                ikey.sequence /* _sequence */,
-                               static_cast<int>(ikey.type) /* _type */);
+                               ikey.type /* _type */);
     if (++num_keys >= max_num_ikeys) {
       break;
     }

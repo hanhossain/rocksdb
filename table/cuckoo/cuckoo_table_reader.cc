@@ -348,7 +348,7 @@ void CuckooTableIterator::PrepareKVAtCurrIdx() {
   if (reader_->is_last_level_) {
     // Always return internal key.
     curr_key_.SetInternalKey(Slice(offset, reader_->user_key_length_), 0,
-                             kTypeValue);
+                             ValueType::kTypeValue);
   } else {
     curr_key_.SetInternalKey(Slice(offset, reader_->key_length_));
   }

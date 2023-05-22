@@ -612,8 +612,8 @@ TEST_F(DBTest, PutSingleDeleteGet) {
     // Skip FIFO and universal compaction because they do not apply to the test
     // case. Skip MergePut because single delete does not get removed when it
     // encounters a merge.
-  } while (ChangeOptions(kSkipFIFOCompaction | kSkipUniversalCompaction |
-                         kSkipMergePut));
+  } while (ChangeOptions((int)OptionSkip::kSkipFIFOCompaction | (int)OptionSkip::kSkipUniversalCompaction |
+                         (int)OptionSkip::kSkipMergePut));
 }
 
 TEST_F(DBTest, ReadFromPersistedTier) {
@@ -765,8 +765,8 @@ TEST_F(DBTest, SingleDeleteFlush) {
     // Skip FIFO and universal compaction beccaus they do not apply to the test
     // case. Skip MergePut because single delete does not get removed when it
     // encounters a merge.
-  } while (ChangeOptions(kSkipFIFOCompaction | kSkipUniversalCompaction |
-                         kSkipMergePut));
+  } while (ChangeOptions((int)OptionSkip::kSkipFIFOCompaction | (int)OptionSkip::kSkipUniversalCompaction |
+                         (int)OptionSkip::kSkipMergePut));
 }
 
 TEST_F(DBTest, SingleDeletePutFlush) {
@@ -788,8 +788,8 @@ TEST_F(DBTest, SingleDeletePutFlush) {
     // Skip FIFO and universal compaction because they do not apply to the test
     // case. Skip MergePut because single delete does not get removed when it
     // encounters a merge.
-  } while (ChangeOptions(kSkipFIFOCompaction | kSkipUniversalCompaction |
-                         kSkipMergePut));
+  } while (ChangeOptions((int)OptionSkip::kSkipFIFOCompaction | (int)OptionSkip::kSkipUniversalCompaction |
+                         (int)OptionSkip::kSkipMergePut));
 }
 
 // Disable because not all platform can run it.
@@ -990,7 +990,7 @@ TEST_F(DBTest, GetEncountersEmptyLevel) {
     ASSERT_OK(dbfull()->TEST_WaitForCompact());
 
     ASSERT_EQ(NumTableFilesAtLevel(0, 1), 1);  // XXX
-  } while (ChangeOptions(kSkipUniversalCompaction | kSkipFIFOCompaction));
+  } while (ChangeOptions((int)OptionSkip::kSkipUniversalCompaction | (int)OptionSkip::kSkipFIFOCompaction));
 }
 
 TEST_F(DBTest, FlushMultipleMemtable) {
@@ -1880,8 +1880,8 @@ TEST_F(DBTest, ApproximateSizes) {
       ASSERT_GT(NumTableFilesAtLevel(1, 1), 0);
     }
     // ApproximateOffsetOf() is not yet implemented in plain table format.
-  } while (ChangeOptions(kSkipUniversalCompaction | kSkipFIFOCompaction |
-                         kSkipPlainTable | kSkipHashIndex));
+  } while (ChangeOptions((int)OptionSkip::kSkipUniversalCompaction | (int)OptionSkip::kSkipFIFOCompaction |
+                         (int)OptionSkip::kSkipPlainTable | (int)OptionSkip::kSkipHashIndex));
 }
 
 TEST_F(DBTest, ApproximateSizes_MixOfSmallAndLarge) {
@@ -1932,7 +1932,7 @@ TEST_F(DBTest, ApproximateSizes_MixOfSmallAndLarge) {
       ASSERT_OK(dbfull()->TEST_CompactRange(0, nullptr, nullptr, handles_[1]));
     }
     // ApproximateOffsetOf() is not yet implemented in plain table format.
-  } while (ChangeOptions(kSkipPlainTable));
+  } while (ChangeOptions((int)OptionSkip::kSkipPlainTable));
 }
 
 TEST_F(DBTest, Snapshot) {
@@ -2053,8 +2053,8 @@ TEST_F(DBTest, HiddenValuesAreRemoved) {
     ASSERT_TRUE(Between(size, 0, 1000));
     // ApproximateOffsetOf() is not yet implemented in plain table format,
     // which is used by Size().
-  } while (ChangeOptions(kSkipUniversalCompaction | kSkipFIFOCompaction |
-                         kSkipPlainTable));
+  } while (ChangeOptions((int)OptionSkip::kSkipUniversalCompaction | (int)OptionSkip::kSkipFIFOCompaction |
+                         (int)OptionSkip::kSkipPlainTable));
 }
 
 TEST_F(DBTest, UnremovableSingleDelete) {
@@ -2102,8 +2102,8 @@ TEST_F(DBTest, UnremovableSingleDelete) {
     // Skip FIFO and universal compaction because they do not apply to the test
     // case. Skip MergePut because single delete does not get removed when it
     // encounters a merge.
-  } while (ChangeOptions(kSkipFIFOCompaction | kSkipUniversalCompaction |
-                         kSkipMergePut));
+  } while (ChangeOptions((int)OptionSkip::kSkipFIFOCompaction | (int)OptionSkip::kSkipUniversalCompaction |
+                         (int)OptionSkip::kSkipMergePut));
 }
 
 TEST_F(DBTest, DeletionMarkers1) {
@@ -2223,7 +2223,7 @@ TEST_F(DBTest, OverlapInLevel0) {
     ASSERT_OK(Flush(1));
     ASSERT_EQ("3", FilesPerLevel(1));
     ASSERT_EQ("NOT_FOUND", Get(1, "600"));
-  } while (ChangeOptions(kSkipUniversalCompaction | kSkipFIFOCompaction));
+  } while (ChangeOptions((int)OptionSkip::kSkipUniversalCompaction | (int)OptionSkip::kSkipFIFOCompaction));
 }
 
 TEST_F(DBTest, ComparatorCheck) {
@@ -2948,7 +2948,7 @@ TEST_F(DBTest, GroupCommitTest) {
     HistogramData hist_data;
     options.statistics->histogramData(DB_WRITE, &hist_data);
     ASSERT_GT(hist_data.average, 0.0);
-  } while (ChangeOptions(kSkipNoSeekToLast));
+  } while (ChangeOptions((int)OptionSkip::kSkipNoSeekToLast));
 }
 #endif  // OS_WIN
 
@@ -3475,7 +3475,7 @@ class DBTestRandomized : public DBTest,
     // skip cuckoo hash as it does not support snapshot.
     for (int option_config = (int)OptionConfig::kDefault; option_config < (int)OptionConfig::kEnd; ++option_config) {
       if (!ShouldSkipOptions(option_config,
-                             kSkipDeletesFilterFirst | kSkipNoSeekToLast)) {
+                             (int)OptionSkip::kSkipDeletesFilterFirst | (int)OptionSkip::kSkipNoSeekToLast)) {
         option_configs.push_back(option_config);
       }
     }

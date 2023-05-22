@@ -222,7 +222,7 @@ class MemTable {
 
   // Add an entry into memtable that maps key to value at the
   // specified sequence number and with the specified type.
-  // Typically value will be empty if type==kTypeDeletion.
+  // Typically value will be empty if type==ValueType::kTypeDeletion.
   //
   // REQUIRES: if allow_concurrent = false, external synchronization to prevent
   // simultaneous operations on the same MemTable.
@@ -299,13 +299,13 @@ class MemTable {
   Status Update(SequenceNumber seq, ValueType value_type, const Slice& key,
                 const Slice& value, const ProtectionInfoKVOS64* kv_prot_info);
 
-  // If `key` exists in current memtable with type `kTypeValue` and the existing
+  // If `key` exists in current memtable with type `ValueType::kTypeValue` and the existing
   // value is at least as large as the new value, updates it in-place. Otherwise
-  // if `key` exists in current memtable with type `kTypeValue`, adds the new
+  // if `key` exists in current memtable with type `ValueType::kTypeValue`, adds the new
   // value to the memtable out-of-place.
   //
   // Returns `Status::NotFound` if `key` does not exist in current memtable or
-  // the latest version of `key` does not have `kTypeValue`.
+  // the latest version of `key` does not have `ValueType::kTypeValue`.
   //
   // Returns `Status::TryAgain` if the `seq`, `key` combination already exists
   // in the memtable and `MemTableRepFactory::CanHandleDuplicatedKey()` is true.

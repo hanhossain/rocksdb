@@ -478,37 +478,37 @@ Status ReadableWriteBatch::GetEntryFromDataOffset(size_t data_offset,
     return s;
   }
 
-  switch (tag) {
-    case kTypeColumnFamilyValue:
-    case kTypeValue:
+  switch ((ValueType)tag) {
+    case ValueType::kTypeColumnFamilyValue:
+    case ValueType::kTypeValue:
       *type = kPutRecord;
       break;
-    case kTypeColumnFamilyDeletion:
-    case kTypeDeletion:
+    case ValueType::kTypeColumnFamilyDeletion:
+    case ValueType::kTypeDeletion:
       *type = kDeleteRecord;
       break;
-    case kTypeColumnFamilySingleDeletion:
-    case kTypeSingleDeletion:
+    case ValueType::kTypeColumnFamilySingleDeletion:
+    case ValueType::kTypeSingleDeletion:
       *type = kSingleDeleteRecord;
       break;
-    case kTypeColumnFamilyRangeDeletion:
-    case kTypeRangeDeletion:
+    case ValueType::kTypeColumnFamilyRangeDeletion:
+    case ValueType::kTypeRangeDeletion:
       *type = kDeleteRangeRecord;
       break;
-    case kTypeColumnFamilyMerge:
-    case kTypeMerge:
+    case ValueType::kTypeColumnFamilyMerge:
+    case ValueType::kTypeMerge:
       *type = kMergeRecord;
       break;
-    case kTypeLogData:
+    case ValueType::kTypeLogData:
       *type = kLogDataRecord;
       break;
-    case kTypeNoop:
-    case kTypeBeginPrepareXID:
-    case kTypeBeginPersistedPrepareXID:
-    case kTypeBeginUnprepareXID:
-    case kTypeEndPrepareXID:
-    case kTypeCommitXID:
-    case kTypeRollbackXID:
+    case ValueType::kTypeNoop:
+    case ValueType::kTypeBeginPrepareXID:
+    case ValueType::kTypeBeginPersistedPrepareXID:
+    case ValueType::kTypeBeginUnprepareXID:
+    case ValueType::kTypeEndPrepareXID:
+    case ValueType::kTypeCommitXID:
+    case ValueType::kTypeRollbackXID:
       *type = kXIDRecord;
       break;
     default:

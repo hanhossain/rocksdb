@@ -212,46 +212,46 @@ Status WriteBatchWithIndex::Rep::ReBuildIndex() {
       break;
     }
 
-    switch (tag) {
-      case kTypeColumnFamilyValue:
-      case kTypeValue:
+    switch ((ValueType)tag) {
+      case ValueType::kTypeColumnFamilyValue:
+      case ValueType::kTypeValue:
         found++;
         if (!UpdateExistingEntryWithCfId(column_family_id, key, kPutRecord)) {
           AddNewEntry(column_family_id);
         }
         break;
-      case kTypeColumnFamilyDeletion:
-      case kTypeDeletion:
+      case ValueType::kTypeColumnFamilyDeletion:
+      case ValueType::kTypeDeletion:
         found++;
         if (!UpdateExistingEntryWithCfId(column_family_id, key,
                                          kDeleteRecord)) {
           AddNewEntry(column_family_id);
         }
         break;
-      case kTypeColumnFamilySingleDeletion:
-      case kTypeSingleDeletion:
+      case ValueType::kTypeColumnFamilySingleDeletion:
+      case ValueType::kTypeSingleDeletion:
         found++;
         if (!UpdateExistingEntryWithCfId(column_family_id, key,
                                          kSingleDeleteRecord)) {
           AddNewEntry(column_family_id);
         }
         break;
-      case kTypeColumnFamilyMerge:
-      case kTypeMerge:
+      case ValueType::kTypeColumnFamilyMerge:
+      case ValueType::kTypeMerge:
         found++;
         if (!UpdateExistingEntryWithCfId(column_family_id, key, kMergeRecord)) {
           AddNewEntry(column_family_id);
         }
         break;
-      case kTypeLogData:
-      case kTypeBeginPrepareXID:
-      case kTypeBeginPersistedPrepareXID:
-      case kTypeBeginUnprepareXID:
-      case kTypeEndPrepareXID:
-      case kTypeCommitXID:
-      case kTypeCommitXIDAndTimestamp:
-      case kTypeRollbackXID:
-      case kTypeNoop:
+      case ValueType::kTypeLogData:
+      case ValueType::kTypeBeginPrepareXID:
+      case ValueType::kTypeBeginPersistedPrepareXID:
+      case ValueType::kTypeBeginUnprepareXID:
+      case ValueType::kTypeEndPrepareXID:
+      case ValueType::kTypeCommitXID:
+      case ValueType::kTypeCommitXIDAndTimestamp:
+      case ValueType::kTypeRollbackXID:
+      case ValueType::kTypeNoop:
         break;
       default:
         return Status::Corruption(

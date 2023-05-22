@@ -73,11 +73,11 @@ struct IsRangeOverlappedTestCase {
 };
 
 ParsedInternalKey UncutEndpoint(const Slice& s) {
-  return ParsedInternalKey(s, kMaxSequenceNumber, kTypeRangeDeletion);
+  return ParsedInternalKey(s, kMaxSequenceNumber, ValueType::kTypeRangeDeletion);
 }
 
 ParsedInternalKey InternalValue(const Slice& key, SequenceNumber seq,
-                                ValueType type = kTypeValue) {
+                                ValueType type = ValueType::kTypeValue) {
   return ParsedInternalKey(key, seq, type);
 }
 
@@ -226,29 +226,29 @@ TEST_F(RangeDelAggregatorTest, UntruncatedIter) {
 
   VerifyIterator(
       &iter, bytewise_icmp,
-      {{InternalValue("a", 10, kTypeRangeDeletion), UncutEndpoint("e"), 10},
-       {InternalValue("e", 8, kTypeRangeDeletion), UncutEndpoint("g"), 8},
-       {InternalValue("j", 4, kTypeRangeDeletion), UncutEndpoint("n"), 4}});
+      {{InternalValue("a", 10, ValueType::kTypeRangeDeletion), UncutEndpoint("e"), 10},
+       {InternalValue("e", 8, ValueType::kTypeRangeDeletion), UncutEndpoint("g"), 8},
+       {InternalValue("j", 4, ValueType::kTypeRangeDeletion), UncutEndpoint("n"), 4}});
 
   VerifySeek(
       &iter, bytewise_icmp,
-      {{"d", InternalValue("a", 10, kTypeRangeDeletion), UncutEndpoint("e"),
+      {{"d", InternalValue("a", 10, ValueType::kTypeRangeDeletion), UncutEndpoint("e"),
         10},
-       {"e", InternalValue("e", 8, kTypeRangeDeletion), UncutEndpoint("g"), 8},
-       {"ia", InternalValue("j", 4, kTypeRangeDeletion), UncutEndpoint("n"), 4},
-       {"n", InternalValue("", 0, kTypeRangeDeletion), UncutEndpoint(""), 0,
+       {"e", InternalValue("e", 8, ValueType::kTypeRangeDeletion), UncutEndpoint("g"), 8},
+       {"ia", InternalValue("j", 4, ValueType::kTypeRangeDeletion), UncutEndpoint("n"), 4},
+       {"n", InternalValue("", 0, ValueType::kTypeRangeDeletion), UncutEndpoint(""), 0,
         true /* invalid */},
-       {"", InternalValue("a", 10, kTypeRangeDeletion), UncutEndpoint("e"),
+       {"", InternalValue("a", 10, ValueType::kTypeRangeDeletion), UncutEndpoint("e"),
         10}});
 
   VerifySeekForPrev(
       &iter, bytewise_icmp,
-      {{"d", InternalValue("a", 10, kTypeRangeDeletion), UncutEndpoint("e"),
+      {{"d", InternalValue("a", 10, ValueType::kTypeRangeDeletion), UncutEndpoint("e"),
         10},
-       {"e", InternalValue("e", 8, kTypeRangeDeletion), UncutEndpoint("g"), 8},
-       {"ia", InternalValue("e", 8, kTypeRangeDeletion), UncutEndpoint("g"), 8},
-       {"n", InternalValue("j", 4, kTypeRangeDeletion), UncutEndpoint("n"), 4},
-       {"", InternalValue("", 0, kTypeRangeDeletion), UncutEndpoint(""), 0,
+       {"e", InternalValue("e", 8, ValueType::kTypeRangeDeletion), UncutEndpoint("g"), 8},
+       {"ia", InternalValue("e", 8, ValueType::kTypeRangeDeletion), UncutEndpoint("g"), 8},
+       {"n", InternalValue("j", 4, ValueType::kTypeRangeDeletion), UncutEndpoint("n"), 4},
+       {"", InternalValue("", 0, ValueType::kTypeRangeDeletion), UncutEndpoint(""), 0,
         true /* invalid */}});
 }
 
@@ -266,26 +266,26 @@ TEST_F(RangeDelAggregatorTest, UntruncatedIterWithSnapshot) {
 
   VerifyIterator(
       &iter, bytewise_icmp,
-      {{InternalValue("e", 8, kTypeRangeDeletion), UncutEndpoint("g"), 8},
-       {InternalValue("j", 4, kTypeRangeDeletion), UncutEndpoint("n"), 4}});
+      {{InternalValue("e", 8, ValueType::kTypeRangeDeletion), UncutEndpoint("g"), 8},
+       {InternalValue("j", 4, ValueType::kTypeRangeDeletion), UncutEndpoint("n"), 4}});
 
   VerifySeek(
       &iter, bytewise_icmp,
-      {{"d", InternalValue("e", 8, kTypeRangeDeletion), UncutEndpoint("g"), 8},
-       {"e", InternalValue("e", 8, kTypeRangeDeletion), UncutEndpoint("g"), 8},
-       {"ia", InternalValue("j", 4, kTypeRangeDeletion), UncutEndpoint("n"), 4},
-       {"n", InternalValue("", 0, kTypeRangeDeletion), UncutEndpoint(""), 0,
+      {{"d", InternalValue("e", 8, ValueType::kTypeRangeDeletion), UncutEndpoint("g"), 8},
+       {"e", InternalValue("e", 8, ValueType::kTypeRangeDeletion), UncutEndpoint("g"), 8},
+       {"ia", InternalValue("j", 4, ValueType::kTypeRangeDeletion), UncutEndpoint("n"), 4},
+       {"n", InternalValue("", 0, ValueType::kTypeRangeDeletion), UncutEndpoint(""), 0,
         true /* invalid */},
-       {"", InternalValue("e", 8, kTypeRangeDeletion), UncutEndpoint("g"), 8}});
+       {"", InternalValue("e", 8, ValueType::kTypeRangeDeletion), UncutEndpoint("g"), 8}});
 
   VerifySeekForPrev(
       &iter, bytewise_icmp,
-      {{"d", InternalValue("", 0, kTypeRangeDeletion), UncutEndpoint(""), 0,
+      {{"d", InternalValue("", 0, ValueType::kTypeRangeDeletion), UncutEndpoint(""), 0,
         true /* invalid */},
-       {"e", InternalValue("e", 8, kTypeRangeDeletion), UncutEndpoint("g"), 8},
-       {"ia", InternalValue("e", 8, kTypeRangeDeletion), UncutEndpoint("g"), 8},
-       {"n", InternalValue("j", 4, kTypeRangeDeletion), UncutEndpoint("n"), 4},
-       {"", InternalValue("", 0, kTypeRangeDeletion), UncutEndpoint(""), 0,
+       {"e", InternalValue("e", 8, ValueType::kTypeRangeDeletion), UncutEndpoint("g"), 8},
+       {"ia", InternalValue("e", 8, ValueType::kTypeRangeDeletion), UncutEndpoint("g"), 8},
+       {"n", InternalValue("j", 4, ValueType::kTypeRangeDeletion), UncutEndpoint("n"), 4},
+       {"", InternalValue("", 0, ValueType::kTypeRangeDeletion), UncutEndpoint(""), 0,
         true /* invalid */}});
 }
 
@@ -298,36 +298,36 @@ TEST_F(RangeDelAggregatorTest, TruncatedIterPartiallyCutTombstones) {
       new FragmentedRangeTombstoneIterator(&fragment_list, bytewise_icmp,
                                            kMaxSequenceNumber));
 
-  InternalKey smallest("d", 7, kTypeValue);
-  InternalKey largest("m", 9, kTypeValue);
+  InternalKey smallest("d", 7, ValueType::kTypeValue);
+  InternalKey largest("m", 9, ValueType::kTypeValue);
   TruncatedRangeDelIterator iter(std::move(input_iter), &bytewise_icmp,
                                  &smallest, &largest);
 
   VerifyIterator(
       &iter, bytewise_icmp,
-      {{InternalValue("d", 7, kTypeMaxValid), UncutEndpoint("e"), 10},
-       {InternalValue("e", 8, kTypeRangeDeletion), UncutEndpoint("g"), 8},
-       {InternalValue("j", 4, kTypeRangeDeletion),
-        InternalValue("m", 8, kTypeMaxValid), 4}});
+      {{InternalValue("d", 7, ValueType::kTypeMaxValid), UncutEndpoint("e"), 10},
+       {InternalValue("e", 8, ValueType::kTypeRangeDeletion), UncutEndpoint("g"), 8},
+       {InternalValue("j", 4, ValueType::kTypeRangeDeletion),
+        InternalValue("m", 8, ValueType::kTypeMaxValid), 4}});
 
   VerifySeek(
       &iter, bytewise_icmp,
-      {{"d", InternalValue("d", 7, kTypeMaxValid), UncutEndpoint("e"), 10},
-       {"e", InternalValue("e", 8, kTypeRangeDeletion), UncutEndpoint("g"), 8},
-       {"ia", InternalValue("j", 4, kTypeRangeDeletion),
-        InternalValue("m", 8, kTypeMaxValid), 4, false /* invalid */},
-       {"n", InternalValue("", 0, kTypeRangeDeletion), UncutEndpoint(""), 0,
+      {{"d", InternalValue("d", 7, ValueType::kTypeMaxValid), UncutEndpoint("e"), 10},
+       {"e", InternalValue("e", 8, ValueType::kTypeRangeDeletion), UncutEndpoint("g"), 8},
+       {"ia", InternalValue("j", 4, ValueType::kTypeRangeDeletion),
+        InternalValue("m", 8, ValueType::kTypeMaxValid), 4, false /* invalid */},
+       {"n", InternalValue("", 0, ValueType::kTypeRangeDeletion), UncutEndpoint(""), 0,
         true /* invalid */},
-       {"", InternalValue("d", 7, kTypeMaxValid), UncutEndpoint("e"), 10}});
+       {"", InternalValue("d", 7, ValueType::kTypeMaxValid), UncutEndpoint("e"), 10}});
 
   VerifySeekForPrev(
       &iter, bytewise_icmp,
-      {{"d", InternalValue("d", 7, kTypeMaxValid), UncutEndpoint("e"), 10},
-       {"e", InternalValue("e", 8, kTypeRangeDeletion), UncutEndpoint("g"), 8},
-       {"ia", InternalValue("e", 8, kTypeRangeDeletion), UncutEndpoint("g"), 8},
-       {"n", InternalValue("j", 4, kTypeRangeDeletion),
-        InternalValue("m", 8, kTypeMaxValid), 4, false /* invalid */},
-       {"", InternalValue("", 0, kTypeRangeDeletion), UncutEndpoint(""), 0,
+      {{"d", InternalValue("d", 7, ValueType::kTypeMaxValid), UncutEndpoint("e"), 10},
+       {"e", InternalValue("e", 8, ValueType::kTypeRangeDeletion), UncutEndpoint("g"), 8},
+       {"ia", InternalValue("e", 8, ValueType::kTypeRangeDeletion), UncutEndpoint("g"), 8},
+       {"n", InternalValue("j", 4, ValueType::kTypeRangeDeletion),
+        InternalValue("m", 8, ValueType::kTypeMaxValid), 4, false /* invalid */},
+       {"", InternalValue("", 0, ValueType::kTypeRangeDeletion), UncutEndpoint(""), 0,
         true /* invalid */}});
 }
 
@@ -340,28 +340,28 @@ TEST_F(RangeDelAggregatorTest, TruncatedIterFullyCutTombstones) {
       new FragmentedRangeTombstoneIterator(&fragment_list, bytewise_icmp,
                                            kMaxSequenceNumber));
 
-  InternalKey smallest("f", 7, kTypeValue);
-  InternalKey largest("i", 9, kTypeValue);
+  InternalKey smallest("f", 7, ValueType::kTypeValue);
+  InternalKey largest("i", 9, ValueType::kTypeValue);
   TruncatedRangeDelIterator iter(std::move(input_iter), &bytewise_icmp,
                                  &smallest, &largest);
 
   VerifyIterator(
       &iter, bytewise_icmp,
-      {{InternalValue("f", 7, kTypeMaxValid), UncutEndpoint("g"), 8}});
+      {{InternalValue("f", 7, ValueType::kTypeMaxValid), UncutEndpoint("g"), 8}});
 
   VerifySeek(
       &iter, bytewise_icmp,
-      {{"d", InternalValue("f", 7, kTypeMaxValid), UncutEndpoint("g"), 8},
-       {"f", InternalValue("f", 7, kTypeMaxValid), UncutEndpoint("g"), 8},
-       {"j", InternalValue("", 0, kTypeRangeDeletion), UncutEndpoint(""), 0,
+      {{"d", InternalValue("f", 7, ValueType::kTypeMaxValid), UncutEndpoint("g"), 8},
+       {"f", InternalValue("f", 7, ValueType::kTypeMaxValid), UncutEndpoint("g"), 8},
+       {"j", InternalValue("", 0, ValueType::kTypeRangeDeletion), UncutEndpoint(""), 0,
         true /* invalid */}});
 
   VerifySeekForPrev(
       &iter, bytewise_icmp,
-      {{"d", InternalValue("", 0, kTypeRangeDeletion), UncutEndpoint(""), 0,
+      {{"d", InternalValue("", 0, ValueType::kTypeRangeDeletion), UncutEndpoint(""), 0,
         true /* invalid */},
-       {"f", InternalValue("f", 7, kTypeMaxValid), UncutEndpoint("g"), 8},
-       {"j", InternalValue("f", 7, kTypeMaxValid), UncutEndpoint("g"), 8}});
+       {"f", InternalValue("f", 7, ValueType::kTypeMaxValid), UncutEndpoint("g"), 8},
+       {"j", InternalValue("f", 7, ValueType::kTypeMaxValid), UncutEndpoint("g"), 8}});
 }
 
 TEST_F(RangeDelAggregatorTest, SingleIterInAggregator) {
@@ -456,11 +456,11 @@ TEST_F(RangeDelAggregatorTest, MultipleTruncatedItersInAggregator) {
   auto fragment_lists = MakeFragmentedTombstoneLists(
       {{{"a", "z", 10}}, {{"a", "z", 10}}, {{"a", "z", 10}}});
   std::vector<std::pair<InternalKey, InternalKey>> iter_bounds = {
-      {InternalKey("a", 4, kTypeValue),
-       InternalKey("m", kMaxSequenceNumber, kTypeRangeDeletion)},
-      {InternalKey("m", 20, kTypeValue),
-       InternalKey("x", kMaxSequenceNumber, kTypeRangeDeletion)},
-      {InternalKey("x", 5, kTypeValue), InternalKey("zz", 30, kTypeValue)}};
+      {InternalKey("a", 4, ValueType::kTypeValue),
+       InternalKey("m", kMaxSequenceNumber, ValueType::kTypeRangeDeletion)},
+      {InternalKey("m", 20, ValueType::kTypeValue),
+       InternalKey("x", kMaxSequenceNumber, ValueType::kTypeRangeDeletion)},
+      {InternalKey("x", 5, ValueType::kTypeValue), InternalKey("zz", 30, ValueType::kTypeValue)}};
 
   ReadRangeDelAggregator range_del_agg(&bytewise_icmp, 19);
   for (size_t i = 0; i < fragment_lists.size(); i++) {
@@ -496,11 +496,11 @@ TEST_F(RangeDelAggregatorTest, MultipleTruncatedItersInAggregatorSameLevel) {
   auto fragment_lists = MakeFragmentedTombstoneLists(
       {{{"a", "z", 10}}, {{"a", "z", 10}}, {{"a", "z", 10}}});
   std::vector<std::pair<InternalKey, InternalKey>> iter_bounds = {
-      {InternalKey("a", 4, kTypeValue),
-       InternalKey("m", kMaxSequenceNumber, kTypeRangeDeletion)},
-      {InternalKey("m", 20, kTypeValue),
-       InternalKey("x", kMaxSequenceNumber, kTypeRangeDeletion)},
-      {InternalKey("x", 5, kTypeValue), InternalKey("zz", 30, kTypeValue)}};
+      {InternalKey("a", 4, ValueType::kTypeValue),
+       InternalKey("m", kMaxSequenceNumber, ValueType::kTypeRangeDeletion)},
+      {InternalKey("m", 20, ValueType::kTypeValue),
+       InternalKey("x", kMaxSequenceNumber, ValueType::kTypeRangeDeletion)},
+      {InternalKey("x", 5, ValueType::kTypeValue), InternalKey("zz", 30, ValueType::kTypeValue)}};
 
   ReadRangeDelAggregator range_del_agg(&bytewise_icmp, 19);
 
@@ -643,8 +643,8 @@ TEST_F(RangeDelAggregatorTest, CompactionAggregatorEmptyIteratorRight) {
     range_del_agg.AddTombstones(std::move(input_iter));
   }
 
-  InternalKey start_buf("p", 0, kTypeRangeDeletion);
-  InternalKey end_buf("q", 0, kTypeRangeDeletion);
+  InternalKey start_buf("p", 0, ValueType::kTypeRangeDeletion);
+  InternalKey end_buf("q", 0, ValueType::kTypeRangeDeletion);
   Slice start = start_buf.Encode();
   Slice end = end_buf.Encode();
   auto range_del_compaction_iter = range_del_agg.NewIterator(&start, &end);
@@ -665,8 +665,8 @@ TEST_F(RangeDelAggregatorTest, CompactionAggregatorBoundedIterator) {
     range_del_agg.AddTombstones(std::move(input_iter));
   }
 
-  InternalKey start_buf("bb", 0, kTypeRangeDeletion);
-  InternalKey end_buf("e", 9, kTypeRangeDeletion);
+  InternalKey start_buf("bb", 0, ValueType::kTypeRangeDeletion);
+  InternalKey end_buf("e", 9, ValueType::kTypeRangeDeletion);
   Slice start = start_buf.Encode();
   Slice end = end_buf.Encode();
   auto range_del_compaction_iter = range_del_agg.NewIterator(&start, &end);
@@ -689,8 +689,8 @@ TEST_F(RangeDelAggregatorTest,
     range_del_agg.AddTombstones(std::move(input_iter));
   }
 
-  InternalKey start_buf("bb", 0, kTypeRangeDeletion);
-  InternalKey end_buf("e", 0, kTypeRangeDeletion);
+  InternalKey start_buf("bb", 0, ValueType::kTypeRangeDeletion);
+  InternalKey end_buf("e", 0, ValueType::kTypeRangeDeletion);
   Slice start = start_buf.Encode();
   Slice end = end_buf.Encode();
   auto range_del_compaction_iter = range_del_agg.NewIterator(&start, &end);

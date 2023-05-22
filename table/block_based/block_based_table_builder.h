@@ -53,8 +53,8 @@ class BlockBasedTableBuilder : public TableBuilder {
   ~BlockBasedTableBuilder();
 
   // Add key,value to the table being constructed.
-  // REQUIRES: Unless key has type kTypeRangeDeletion, key is after any
-  //           previously added non-kTypeRangeDeletion key according to
+  // REQUIRES: Unless key has type ValueType::kTypeRangeDeletion, key is after any
+  //           previously added non-ValueType::kTypeRangeDeletion key according to
   //           comparator.
   // REQUIRES: Finish(), Abandon() have not been called
   void Add(const Slice& key, const Slice& value) override;
