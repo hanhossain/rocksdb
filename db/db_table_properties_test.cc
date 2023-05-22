@@ -425,7 +425,7 @@ class DBTableHostnamePropertyTest
 };
 
 TEST_P(DBTableHostnamePropertyTest, DbHostLocationProperty) {
-  option_config_ = std::get<0>(GetParam());
+  option_config_ = (int)std::get<0>(GetParam());
   Options opts = CurrentOptions();
   std::string expected_host_id = std::get<1>(GetParam());
   ;
@@ -453,15 +453,15 @@ INSTANTIATE_TEST_CASE_P(
     DBTableHostnamePropertyTest, DBTableHostnamePropertyTest,
     ::testing::Values(
         // OptionConfig, override db_host_location
-        std::make_tuple(DBTestBase::OptionConfig::kDefault,
+        std::make_tuple((int)DBTestBase::OptionConfig::kDefault,
                         kHostnameForDbHostId),
-        std::make_tuple(DBTestBase::OptionConfig::kDefault, "foobar"),
-        std::make_tuple(DBTestBase::OptionConfig::kDefault, ""),
-        std::make_tuple(DBTestBase::OptionConfig::kPlainTableFirstBytePrefix,
+        std::make_tuple((int)DBTestBase::OptionConfig::kDefault, "foobar"),
+        std::make_tuple((int)DBTestBase::OptionConfig::kDefault, ""),
+        std::make_tuple((int)DBTestBase::OptionConfig::kPlainTableFirstBytePrefix,
                         kHostnameForDbHostId),
-        std::make_tuple(DBTestBase::OptionConfig::kPlainTableFirstBytePrefix,
+        std::make_tuple((int)DBTestBase::OptionConfig::kPlainTableFirstBytePrefix,
                         "foobar"),
-        std::make_tuple(DBTestBase::OptionConfig::kPlainTableFirstBytePrefix,
+        std::make_tuple((int)DBTestBase::OptionConfig::kPlainTableFirstBytePrefix,
                         "")));
 
 class DeletionTriggeredCompactionTestListener : public EventListener {

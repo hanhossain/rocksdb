@@ -2827,7 +2827,7 @@ class MultiThreadedDBTest
 
   static std::vector<int> GenerateOptionConfigs() {
     std::vector<int> optionConfigs;
-    for (int optionConfig = kDefault; optionConfig < kEnd; ++optionConfig) {
+    for (int optionConfig = (int)OptionConfig::kDefault; optionConfig < (int)OptionConfig::kEnd; ++optionConfig) {
       optionConfigs.push_back(optionConfig);
     }
     return optionConfigs;
@@ -2837,7 +2837,7 @@ class MultiThreadedDBTest
 };
 
 TEST_P(MultiThreadedDBTest, MultiThreaded) {
-  if (option_config_ == kPipelinedWrite) return;
+  if (option_config_ == (int)OptionConfig::kPipelinedWrite) return;
   anon::OptionsOverride options_override;
   options_override.skip_policy = (int)SkipPolicy::kSkipNoSnapshot;
   Options options = CurrentOptions(options_override);
@@ -3473,13 +3473,13 @@ class DBTestRandomized : public DBTest,
   static std::vector<int> GenerateOptionConfigs() {
     std::vector<int> option_configs;
     // skip cuckoo hash as it does not support snapshot.
-    for (int option_config = kDefault; option_config < kEnd; ++option_config) {
+    for (int option_config = (int)OptionConfig::kDefault; option_config < (int)OptionConfig::kEnd; ++option_config) {
       if (!ShouldSkipOptions(option_config,
                              kSkipDeletesFilterFirst | kSkipNoSeekToLast)) {
         option_configs.push_back(option_config);
       }
     }
-    option_configs.push_back(kBlockBasedTableWithIndexRestartInterval);
+    option_configs.push_back((int)OptionConfig::kBlockBasedTableWithIndexRestartInterval);
     return option_configs;
   }
 };
@@ -3504,10 +3504,10 @@ TEST_P(DBTestRandomized, Randomized) {
     // TODO(sanjay): Test Get() works
     int p = rnd.Uniform(100);
     int minimum = 0;
-    if (option_config_ == kHashSkipList || option_config_ == kHashLinkList ||
-        option_config_ == kPlainTableFirstBytePrefix ||
-        option_config_ == kBlockBasedTableWithWholeKeyHashIndex ||
-        option_config_ == kBlockBasedTableWithPrefixHashIndex) {
+    if (option_config_ == (int)OptionConfig::kHashSkipList || option_config_ == (int)OptionConfig::kHashLinkList ||
+        option_config_ == (int)OptionConfig::kPlainTableFirstBytePrefix ||
+        option_config_ == (int)OptionConfig::kBlockBasedTableWithWholeKeyHashIndex ||
+        option_config_ == (int)OptionConfig::kBlockBasedTableWithPrefixHashIndex) {
       minimum = 1;
     }
     if (p < 45) {  // Put
@@ -3545,8 +3545,8 @@ TEST_P(DBTestRandomized, Randomized) {
       // For DB instances that use the hash index + block-based table, the
       // iterator will be invalid right when seeking a non-existent key, right
       // than return a key that is close to it.
-      if (option_config_ != kBlockBasedTableWithWholeKeyHashIndex &&
-          option_config_ != kBlockBasedTableWithPrefixHashIndex) {
+      if (option_config_ != (int)OptionConfig::kBlockBasedTableWithWholeKeyHashIndex &&
+          option_config_ != (int)OptionConfig::kBlockBasedTableWithPrefixHashIndex) {
         ASSERT_TRUE(CompareIterators(step, &model, db_, nullptr, nullptr));
         ASSERT_TRUE(CompareIterators(step, &model, db_, model_snap, db_snap));
       }

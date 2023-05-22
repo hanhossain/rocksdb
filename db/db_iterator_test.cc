@@ -762,10 +762,10 @@ TEST_P(DBIteratorTest, IterMultiWithDelete) {
     ASSERT_EQ(IterStatus(iter), "kc->vc");
     if (!CurrentOptions().merge_operator) {
       // TODO: merge operator does not support backward iteration yet
-      if (kPlainTableAllBytesPrefix != option_config_ &&
-          kBlockBasedTableWithWholeKeyHashIndex != option_config_ &&
-          kHashLinkList != option_config_ &&
-          kHashSkipList != option_config_) {  // doesn't support SeekToLast
+      if ((int)OptionConfig::kPlainTableAllBytesPrefix != option_config_ &&
+          (int)OptionConfig::kBlockBasedTableWithWholeKeyHashIndex != option_config_ &&
+          (int)OptionConfig::kHashLinkList != option_config_ &&
+          (int)OptionConfig::kHashSkipList != option_config_) {  // doesn't support SeekToLast
         iter->Prev();
         ASSERT_EQ(IterStatus(iter), "ka->va");
       }
@@ -829,9 +829,9 @@ TEST_P(DBIteratorTest, IterWithSnapshot) {
     ASSERT_EQ(IterStatus(iter), "key5->val5");
     if (!CurrentOptions().merge_operator) {
       // TODO: merge operator does not support backward iteration yet
-      if (kPlainTableAllBytesPrefix != option_config_ &&
-          kBlockBasedTableWithWholeKeyHashIndex != option_config_ &&
-          kHashLinkList != option_config_ && kHashSkipList != option_config_) {
+      if ((int)OptionConfig::kPlainTableAllBytesPrefix != option_config_ &&
+          (int)OptionConfig::kBlockBasedTableWithWholeKeyHashIndex != option_config_ &&
+          (int)OptionConfig::kHashLinkList != option_config_ && (int)OptionConfig::kHashSkipList != option_config_) {
         iter->Prev();
         ASSERT_EQ(IterStatus(iter), "key4->val4");
         iter->Prev();
@@ -848,9 +848,9 @@ TEST_P(DBIteratorTest, IterWithSnapshot) {
 
     if (!CurrentOptions().merge_operator) {
       // TODO(gzh): merge operator does not support backward iteration yet
-      if (kPlainTableAllBytesPrefix != option_config_ &&
-          kBlockBasedTableWithWholeKeyHashIndex != option_config_ &&
-          kHashLinkList != option_config_ && kHashSkipList != option_config_) {
+      if ((int)OptionConfig::kPlainTableAllBytesPrefix != option_config_ &&
+          (int)OptionConfig::kBlockBasedTableWithWholeKeyHashIndex != option_config_ &&
+          (int)OptionConfig::kHashLinkList != option_config_ && (int)OptionConfig::kHashSkipList != option_config_) {
         iter->SeekForPrev("key1");
         ASSERT_EQ(IterStatus(iter), "key1->val1");
         iter->Next();

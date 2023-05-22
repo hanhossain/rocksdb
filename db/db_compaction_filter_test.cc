@@ -30,15 +30,15 @@ class DBTestCompactionFilterWithCompactParam
       public ::testing::WithParamInterface<DBTestBase::OptionConfig> {
  public:
   DBTestCompactionFilterWithCompactParam() : DBTestCompactionFilter() {
-    option_config_ = GetParam();
+    option_config_ = (int)GetParam();
     Destroy(last_options_);
     auto options = CurrentOptions();
-    if (option_config_ == kDefault || option_config_ == kUniversalCompaction ||
-        option_config_ == kUniversalCompactionMultiLevel) {
+    if (option_config_ == (int)OptionConfig::kDefault || option_config_ == (int)OptionConfig::kUniversalCompaction ||
+        option_config_ == (int)OptionConfig::kUniversalCompactionMultiLevel) {
       options.create_if_missing = true;
     }
-    if (option_config_ == kLevelSubcompactions ||
-        option_config_ == kUniversalSubcompactions) {
+    if (option_config_ == (int)OptionConfig::kLevelSubcompactions ||
+        option_config_ == (int)OptionConfig::kUniversalSubcompactions) {
       assert(options.max_subcompactions > 1);
     }
     Reopen(options);
@@ -547,8 +547,8 @@ TEST_P(DBTestCompactionFilterWithCompactParam,
 
   // push all files to  lower levels
   ASSERT_OK(Flush(1));
-  if (option_config_ != kUniversalCompactionMultiLevel &&
-      option_config_ != kUniversalSubcompactions) {
+  if (option_config_ != (int)OptionConfig::kUniversalCompactionMultiLevel &&
+      option_config_ != (int)OptionConfig::kUniversalSubcompactions) {
     ASSERT_OK(dbfull()->TEST_CompactRange(0, nullptr, nullptr, handles_[1]));
     ASSERT_OK(dbfull()->TEST_CompactRange(1, nullptr, nullptr, handles_[1]));
   } else {
@@ -566,8 +566,8 @@ TEST_P(DBTestCompactionFilterWithCompactParam,
   // push all files to  lower levels. This should
   // invoke the compaction filter for all 100000 keys.
   ASSERT_OK(Flush(1));
-  if (option_config_ != kUniversalCompactionMultiLevel &&
-      option_config_ != kUniversalSubcompactions) {
+  if (option_config_ != (int)OptionConfig::kUniversalCompactionMultiLevel &&
+      option_config_ != (int)OptionConfig::kUniversalSubcompactions) {
     ASSERT_OK(dbfull()->TEST_CompactRange(0, nullptr, nullptr, handles_[1]));
     ASSERT_OK(dbfull()->TEST_CompactRange(1, nullptr, nullptr, handles_[1]));
   } else {

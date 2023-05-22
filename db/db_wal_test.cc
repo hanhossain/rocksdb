@@ -319,7 +319,7 @@ TEST_F(DBWALTest, RecoverWithTableHandle) {
 
     options = CurrentOptions();
     const int kSmallMaxOpenFiles = 13;
-    if (option_config_ == kDBLogDir) {
+    if (option_config_ == (int)OptionConfig::kDBLogDir) {
       // Use this option to check not preloading files
       // Set the max open files to be small enough so no preload will
       // happen.
@@ -331,7 +331,7 @@ TEST_F(DBWALTest, RecoverWithTableHandle) {
             *max_open_files = kSmallMaxOpenFiles;
           });
 
-    } else if (option_config_ == kWalDirAndMmapReads) {
+    } else if (option_config_ == (int)OptionConfig::kWalDirAndMmapReads) {
       // Use this option to check always loading all files.
       options.max_open_files = 100;
     } else {

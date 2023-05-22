@@ -958,7 +958,7 @@ class TargetCacheChargeTrackingCache : public CacheWrapper {
 class DBTestBase : public testing::Test {
  public:
   // Sequence of option configurations to try
-  enum OptionConfig : int {
+  enum class OptionConfig : int {
     kDefault = 0,
     kBlockBasedTableWithPrefixHashIndex = 1,
     kBlockBasedTableWithWholeKeyHashIndex = 2,

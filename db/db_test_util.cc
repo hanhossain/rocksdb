@@ -62,7 +62,7 @@ SpecialEnv::SpecialEnv(Env* base, bool time_elapse_only_sleep)
   table_write_callback_ = nullptr;
 }
 DBTestBase::DBTestBase(const std::string path, bool env_do_fsync)
-    : mem_env_(nullptr), encrypted_env_(nullptr), option_config_(kDefault) {
+    : mem_env_(nullptr), encrypted_env_(nullptr), option_config_((int)OptionConfig::kDefault) {
   Env* base_env = Env::Default();
   ConfigOptions config_options;
   EXPECT_OK(test::CreateEnvFromSystem(config_options, &base_env, &env_guard_));
@@ -121,37 +121,38 @@ DBTestBase::~DBTestBase() {
   delete env_;
 }
 
-bool DBTestBase::ShouldSkipOptions(int option_config, int skip_mask) {
+bool DBTestBase::ShouldSkipOptions(int option_config_int, int skip_mask) {
+  OptionConfig option_config = (OptionConfig)option_config_int;
 
   if ((skip_mask & kSkipUniversalCompaction) &&
-      (option_config == kUniversalCompaction ||
-       option_config == kUniversalCompactionMultiLevel ||
-       option_config == kUniversalSubcompactions)) {
+      (option_config == OptionConfig::kUniversalCompaction ||
+       option_config == OptionConfig::kUniversalCompactionMultiLevel ||
+       option_config == OptionConfig::kUniversalSubcompactions)) {
     return true;
   }
-  if ((skip_mask & kSkipMergePut) && option_config == kMergePut) {
+  if ((skip_mask & kSkipMergePut) && option_config == OptionConfig::kMergePut) {
     return true;
   }
   if ((skip_mask & kSkipNoSeekToLast) &&
-      (option_config == kHashLinkList || option_config == kHashSkipList)) {
+      (option_config == OptionConfig::kHashLinkList || option_config == OptionConfig::kHashSkipList)) {
     return true;
   }
   if ((skip_mask & kSkipPlainTable) &&
-      (option_config == kPlainTableAllBytesPrefix ||
-       option_config == kPlainTableFirstBytePrefix ||
-       option_config == kPlainTableCappedPrefix ||
-       option_config == kPlainTableCappedPrefixNonMmap)) {
+      (option_config == OptionConfig::kPlainTableAllBytesPrefix ||
+       option_config == OptionConfig::kPlainTableFirstBytePrefix ||
+       option_config == OptionConfig::kPlainTableCappedPrefix ||
+       option_config == OptionConfig::kPlainTableCappedPrefixNonMmap)) {
     return true;
   }
   if ((skip_mask & kSkipHashIndex) &&
-      (option_config == kBlockBasedTableWithPrefixHashIndex ||
-       option_config == kBlockBasedTableWithWholeKeyHashIndex)) {
+      (option_config == OptionConfig::kBlockBasedTableWithPrefixHashIndex ||
+       option_config == OptionConfig::kBlockBasedTableWithWholeKeyHashIndex)) {
     return true;
   }
-  if ((skip_mask & kSkipFIFOCompaction) && option_config == kFIFOCompaction) {
+  if ((skip_mask & kSkipFIFOCompaction) && option_config == OptionConfig::kFIFOCompaction) {
     return true;
   }
-  if ((skip_mask & kSkipMmapReads) && option_config == kWalDirAndMmapReads) {
+  if ((skip_mask & kSkipMmapReads) && option_config == OptionConfig::kWalDirAndMmapReads) {
     return true;
   }
   return false;
@@ -160,14 +161,14 @@ bool DBTestBase::ShouldSkipOptions(int option_config, int skip_mask) {
 // Switch to a fresh database with the next option configuration to
 // test.  Return false if there are no more configurations to test.
 bool DBTestBase::ChangeOptions(int skip_mask) {
-  for (option_config_++; option_config_ < kEnd; option_config_++) {
+  for (option_config_++; option_config_ < (int)OptionConfig::kEnd; option_config_++) {
     if (ShouldSkipOptions(option_config_, skip_mask)) {
       continue;
     }
     break;
   }
 
-  if (option_config_ >= kEnd) {
+  if (option_config_ >= (int)OptionConfig::kEnd) {
     Destroy(last_options_);
     return false;
   } else {
@@ -180,29 +181,29 @@ bool DBTestBase::ChangeOptions(int skip_mask) {
 
 // Switch between different compaction styles.
 bool DBTestBase::ChangeCompactOptions() {
-  if (option_config_ == kDefault) {
-    option_config_ = kUniversalCompaction;
+  if (option_config_ == (int)OptionConfig::kDefault) {
+    option_config_ = (int)OptionConfig::kUniversalCompaction;
     Destroy(last_options_);
     auto options = CurrentOptions();
     options.create_if_missing = true;
     Reopen(options);
     return true;
-  } else if (option_config_ == kUniversalCompaction) {
-    option_config_ = kUniversalCompactionMultiLevel;
+  } else if (option_config_ == (int)OptionConfig::kUniversalCompaction) {
+    option_config_ = (int)OptionConfig::kUniversalCompactionMultiLevel;
     Destroy(last_options_);
     auto options = CurrentOptions();
     options.create_if_missing = true;
     Reopen(options);
     return true;
-  } else if (option_config_ == kUniversalCompactionMultiLevel) {
-    option_config_ = kLevelSubcompactions;
+  } else if (option_config_ == (int)OptionConfig::kUniversalCompactionMultiLevel) {
+    option_config_ = (int)OptionConfig::kLevelSubcompactions;
     Destroy(last_options_);
     auto options = CurrentOptions();
     assert(options.max_subcompactions > 1);
     Reopen(options);
     return true;
-  } else if (option_config_ == kLevelSubcompactions) {
-    option_config_ = kUniversalSubcompactions;
+  } else if (option_config_ == (int)OptionConfig::kLevelSubcompactions) {
+    option_config_ = (int)OptionConfig::kUniversalSubcompactions;
     Destroy(last_options_);
     auto options = CurrentOptions();
     assert(options.max_subcompactions > 1);
@@ -215,24 +216,24 @@ bool DBTestBase::ChangeCompactOptions() {
 
 // Switch between different WAL settings
 bool DBTestBase::ChangeWalOptions() {
-  if (option_config_ == kDefault) {
-    option_config_ = kDBLogDir;
+  if (option_config_ == (int)OptionConfig::kDefault) {
+    option_config_ = (int)OptionConfig::kDBLogDir;
     Destroy(last_options_);
     auto options = CurrentOptions();
     Destroy(options);
     options.create_if_missing = true;
     Reopen(options);
     return true;
-  } else if (option_config_ == kDBLogDir) {
-    option_config_ = kWalDirAndMmapReads;
+  } else if (option_config_ == (int)OptionConfig::kDBLogDir) {
+    option_config_ = (int)OptionConfig::kWalDirAndMmapReads;
     Destroy(last_options_);
     auto options = CurrentOptions();
     Destroy(options);
     options.create_if_missing = true;
     Reopen(options);
     return true;
-  } else if (option_config_ == kWalDirAndMmapReads) {
-    option_config_ = kRecycleLogFiles;
+  } else if (option_config_ == (int)OptionConfig::kWalDirAndMmapReads) {
+    option_config_ = (int)OptionConfig::kRecycleLogFiles;
     Destroy(last_options_);
     auto options = CurrentOptions();
     Destroy(options);
@@ -246,12 +247,12 @@ bool DBTestBase::ChangeWalOptions() {
 // Switch between different filter policy
 // Jump from kDefault to kFilter to kFullFilter
 bool DBTestBase::ChangeFilterOptions() {
-  if (option_config_ == kDefault) {
-    option_config_ = kFilter;
-  } else if (option_config_ == kFilter) {
-    option_config_ = kFullFilterWithNewTableReaderForCompactions;
-  } else if (option_config_ == kFullFilterWithNewTableReaderForCompactions) {
-    option_config_ = kPartitionedFilterWithNewTableReaderForCompactions;
+  if (option_config_ == (int)OptionConfig::kDefault) {
+    option_config_ = (int)OptionConfig::kFilter;
+  } else if (option_config_ == (int)OptionConfig::kFilter) {
+    option_config_ = (int)OptionConfig::kFullFilterWithNewTableReaderForCompactions;
+  } else if (option_config_ == (int)OptionConfig::kFullFilterWithNewTableReaderForCompactions) {
+    option_config_ = (int)OptionConfig::kPartitionedFilterWithNewTableReaderForCompactions;
   } else {
     return false;
   }
@@ -265,36 +266,36 @@ bool DBTestBase::ChangeFilterOptions() {
 
 // Switch between different DB options for file ingestion tests.
 bool DBTestBase::ChangeOptionsForFileIngestionTest() {
-  if (option_config_ == kDefault) {
-    option_config_ = kUniversalCompaction;
+  if (option_config_ == (int)OptionConfig::kDefault) {
+    option_config_ = (int)OptionConfig::kUniversalCompaction;
     Destroy(last_options_);
     auto options = CurrentOptions();
     options.create_if_missing = true;
     TryReopen(options);
     return true;
-  } else if (option_config_ == kUniversalCompaction) {
-    option_config_ = kUniversalCompactionMultiLevel;
+  } else if (option_config_ == (int)OptionConfig::kUniversalCompaction) {
+    option_config_ = (int)OptionConfig::kUniversalCompactionMultiLevel;
     Destroy(last_options_);
     auto options = CurrentOptions();
     options.create_if_missing = true;
     TryReopen(options);
     return true;
-  } else if (option_config_ == kUniversalCompactionMultiLevel) {
-    option_config_ = kLevelSubcompactions;
+  } else if (option_config_ == (int)OptionConfig::kUniversalCompactionMultiLevel) {
+    option_config_ = (int)OptionConfig::kLevelSubcompactions;
     Destroy(last_options_);
     auto options = CurrentOptions();
     assert(options.max_subcompactions > 1);
     TryReopen(options);
     return true;
-  } else if (option_config_ == kLevelSubcompactions) {
-    option_config_ = kUniversalSubcompactions;
+  } else if (option_config_ == (int)OptionConfig::kLevelSubcompactions) {
+    option_config_ = (int)OptionConfig::kUniversalSubcompactions;
     Destroy(last_options_);
     auto options = CurrentOptions();
     assert(options.max_subcompactions > 1);
     TryReopen(options);
     return true;
-  } else if (option_config_ == kUniversalSubcompactions) {
-    option_config_ = kDirectIO;
+  } else if (option_config_ == (int)OptionConfig::kUniversalSubcompactions) {
+    option_config_ = (int)OptionConfig::kDirectIO;
     Destroy(last_options_);
     auto options = CurrentOptions();
     TryReopen(options);
@@ -358,112 +359,112 @@ Options DBTestBase::GetOptions(
   }
 
   bool can_allow_mmap = IsMemoryMappedAccessSupported();
-  switch (option_config) {
-    case kHashSkipList:
+  switch ((OptionConfig)option_config) {
+    case OptionConfig::kHashSkipList:
       options.prefix_extractor.reset(NewFixedPrefixTransform(1));
       options.memtable_factory.reset(NewHashSkipListRepFactory(16));
       options.allow_concurrent_memtable_write = false;
       options.unordered_write = false;
       break;
-    case kPlainTableFirstBytePrefix:
+    case OptionConfig::kPlainTableFirstBytePrefix:
       options.table_factory.reset(NewPlainTableFactory());
       options.prefix_extractor.reset(NewFixedPrefixTransform(1));
       options.allow_mmap_reads = can_allow_mmap;
       options.max_sequential_skip_in_iterations = 999999;
       set_block_based_table_factory = false;
       break;
-    case kPlainTableCappedPrefix:
+    case OptionConfig::kPlainTableCappedPrefix:
       options.table_factory.reset(NewPlainTableFactory());
       options.prefix_extractor.reset(NewCappedPrefixTransform(8));
       options.allow_mmap_reads = can_allow_mmap;
       options.max_sequential_skip_in_iterations = 999999;
       set_block_based_table_factory = false;
       break;
-    case kPlainTableCappedPrefixNonMmap:
+    case OptionConfig::kPlainTableCappedPrefixNonMmap:
       options.table_factory.reset(NewPlainTableFactory());
       options.prefix_extractor.reset(NewCappedPrefixTransform(8));
       options.allow_mmap_reads = false;
       options.max_sequential_skip_in_iterations = 999999;
       set_block_based_table_factory = false;
       break;
-    case kPlainTableAllBytesPrefix:
+    case OptionConfig::kPlainTableAllBytesPrefix:
       options.table_factory.reset(NewPlainTableFactory());
       options.prefix_extractor.reset(NewNoopTransform());
       options.allow_mmap_reads = can_allow_mmap;
       options.max_sequential_skip_in_iterations = 999999;
       set_block_based_table_factory = false;
       break;
-    case kVectorRep:
+    case OptionConfig::kVectorRep:
       options.memtable_factory.reset(new VectorRepFactory(100));
       options.allow_concurrent_memtable_write = false;
       options.unordered_write = false;
       break;
-    case kHashLinkList:
+    case OptionConfig::kHashLinkList:
       options.prefix_extractor.reset(NewFixedPrefixTransform(1));
       options.memtable_factory.reset(
           NewHashLinkListRepFactory(4, 0, 3, true, 4));
       options.allow_concurrent_memtable_write = false;
       options.unordered_write = false;
       break;
-    case kDirectIO: {
+    case OptionConfig::kDirectIO: {
       options.use_direct_reads = true;
       options.use_direct_io_for_flush_and_compaction = true;
       options.compaction_readahead_size = 2 * 1024 * 1024;
       SetupSyncPointsToMockDirectIO();
       break;
     }
-    case kMergePut:
+    case OptionConfig::kMergePut:
       options.merge_operator = MergeOperators::CreatePutOperator();
       break;
-    case kFilter:
+    case OptionConfig::kFilter:
       table_options.filter_policy.reset(NewBloomFilterPolicy(10, true));
       break;
-    case kFullFilterWithNewTableReaderForCompactions:
+    case OptionConfig::kFullFilterWithNewTableReaderForCompactions:
       table_options.filter_policy.reset(NewBloomFilterPolicy(10, false));
       options.compaction_readahead_size = 10 * 1024 * 1024;
       break;
-    case kPartitionedFilterWithNewTableReaderForCompactions:
+    case OptionConfig::kPartitionedFilterWithNewTableReaderForCompactions:
       table_options.filter_policy.reset(NewBloomFilterPolicy(10, false));
       table_options.partition_filters = true;
       table_options.index_type =
           BlockBasedTableOptions::IndexType::kTwoLevelIndexSearch;
       options.compaction_readahead_size = 10 * 1024 * 1024;
       break;
-    case kUncompressed:
+    case OptionConfig::kUncompressed:
       options.compression = kNoCompression;
       break;
-    case kNumLevel_3:
+    case OptionConfig::kNumLevel_3:
       options.num_levels = 3;
       break;
-    case kDBLogDir:
+    case OptionConfig::kDBLogDir:
       options.db_log_dir = alternative_db_log_dir_;
       break;
-    case kWalDirAndMmapReads:
+    case OptionConfig::kWalDirAndMmapReads:
       options.wal_dir = alternative_wal_dir_;
       // mmap reads should be orthogonal to WalDir setting, so we piggyback to
       // this option config to test mmap reads as well
       options.allow_mmap_reads = can_allow_mmap;
       break;
-    case kManifestFileSize:
+    case OptionConfig::kManifestFileSize:
       options.max_manifest_file_size = 50;  // 50 bytes
       break;
-    case kPerfOptions:
+    case OptionConfig::kPerfOptions:
       options.delayed_write_rate = 8 * 1024 * 1024;
       options.report_bg_io_stats = true;
       // TODO(3.13) -- test more options
       break;
-    case kUniversalCompaction:
+    case OptionConfig::kUniversalCompaction:
       options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
       options.num_levels = 1;
       break;
-    case kUniversalCompactionMultiLevel:
+    case OptionConfig::kUniversalCompactionMultiLevel:
       options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
       options.num_levels = 8;
       break;
-    case kInfiniteMaxOpenFiles:
+    case OptionConfig::kInfiniteMaxOpenFiles:
       options.max_open_files = -1;
       break;
-    case kCRC32cChecksum: {
+    case OptionConfig::kCRC32cChecksum: {
       // Old default was CRC32c, but XXH3 (new default) is faster on common
       // hardware
       table_options.checksum = kCRC32c;
@@ -471,28 +472,28 @@ Options DBTestBase::GetOptions(
       options.DisableExtraChecks();
       break;
     }
-    case kFIFOCompaction: {
+    case OptionConfig::kFIFOCompaction: {
       options.compaction_style = rs::advanced_options::CompactionStyle::FIFO;
       options.max_open_files = -1;
       break;
     }
-    case kBlockBasedTableWithPrefixHashIndex: {
+    case OptionConfig::kBlockBasedTableWithPrefixHashIndex: {
       table_options.index_type = BlockBasedTableOptions::kHashSearch;
       options.prefix_extractor.reset(NewFixedPrefixTransform(1));
       break;
     }
-    case kBlockBasedTableWithWholeKeyHashIndex: {
+    case OptionConfig::kBlockBasedTableWithWholeKeyHashIndex: {
       table_options.index_type = BlockBasedTableOptions::kHashSearch;
       options.prefix_extractor.reset(NewNoopTransform());
       break;
     }
-    case kBlockBasedTableWithPartitionedIndex: {
+    case OptionConfig::kBlockBasedTableWithPartitionedIndex: {
       table_options.format_version = 3;
       table_options.index_type = BlockBasedTableOptions::kTwoLevelIndexSearch;
       options.prefix_extractor.reset(NewNoopTransform());
       break;
     }
-    case kBlockBasedTableWithPartitionedIndexFormat4: {
+    case OptionConfig::kBlockBasedTableWithPartitionedIndexFormat4: {
       table_options.format_version = 4;
       // Format 4 changes the binary index format. Since partitioned index is a
       // super-set of simple indexes, we are also using kTwoLevelIndexSearch to
@@ -504,54 +505,54 @@ Options DBTestBase::GetOptions(
       table_options.index_block_restart_interval = 8;
       break;
     }
-    case kBlockBasedTableWithIndexRestartInterval: {
+    case OptionConfig::kBlockBasedTableWithIndexRestartInterval: {
       table_options.index_block_restart_interval = 8;
       break;
     }
-    case kBlockBasedTableWithLatestFormat: {
+    case OptionConfig::kBlockBasedTableWithLatestFormat: {
       // In case different from default
       table_options.format_version = kLatestFormatVersion;
       break;
     }
-    case kOptimizeFiltersForHits: {
+    case OptionConfig::kOptimizeFiltersForHits: {
       options.optimize_filters_for_hits = true;
       set_block_based_table_factory = true;
       break;
     }
-    case kRowCache: {
+    case OptionConfig::kRowCache: {
       options.row_cache = NewLRUCache(1024 * 1024);
       break;
     }
-    case kRecycleLogFiles: {
+    case OptionConfig::kRecycleLogFiles: {
       options.recycle_log_file_num = 2;
       break;
     }
-    case kLevelSubcompactions: {
+    case OptionConfig::kLevelSubcompactions: {
       options.max_subcompactions = 4;
       break;
     }
-    case kUniversalSubcompactions: {
+    case OptionConfig::kUniversalSubcompactions: {
       options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
       options.num_levels = 8;
       options.max_subcompactions = 4;
       break;
     }
-    case kConcurrentSkipList: {
+    case OptionConfig::kConcurrentSkipList: {
       options.allow_concurrent_memtable_write = true;
       options.enable_write_thread_adaptive_yield = true;
       break;
     }
-    case kPipelinedWrite: {
+    case OptionConfig::kPipelinedWrite: {
       options.enable_pipelined_write = true;
       break;
     }
-    case kConcurrentWALWrites: {
+    case OptionConfig::kConcurrentWALWrites: {
       // This options optimize 2PC commit path
       options.two_write_queues = true;
       options.manual_wal_flush = true;
       break;
     }
-    case kUnorderedWrite: {
+    case OptionConfig::kUnorderedWrite: {
       options.allow_concurrent_memtable_write = false;
       options.unordered_write = false;
       break;
@@ -734,7 +735,7 @@ Status DBTestBase::Flush(const std::vector<int>& cf_ids) {
 }
 
 Status DBTestBase::Put(const Slice& k, const Slice& v, WriteOptions wo) {
-  if (kMergePut == option_config_) {
+  if ((int)OptionConfig::kMergePut == option_config_) {
     return db_->Merge(wo, k, v);
   } else {
     return db_->Put(wo, k, v);
@@ -743,7 +744,7 @@ Status DBTestBase::Put(const Slice& k, const Slice& v, WriteOptions wo) {
 
 Status DBTestBase::Put(int cf, const Slice& k, const Slice& v,
                        WriteOptions wo) {
-  if (kMergePut == option_config_) {
+  if ((int)OptionConfig::kMergePut == option_config_) {
     return db_->Merge(wo, handles_[cf], k, v);
   } else {
     return db_->Put(wo, handles_[cf], k, v);

@@ -790,8 +790,8 @@ class PerConfigMergeOperatorPinningTest
 INSTANTIATE_TEST_CASE_P(
     MergeOperatorPinningTest, PerConfigMergeOperatorPinningTest,
     ::testing::Combine(::testing::Bool(),
-                       ::testing::Range(static_cast<int>(DBTestBase::kDefault),
-                                        static_cast<int>(DBTestBase::kEnd))));
+                       ::testing::Range(static_cast<int>(DBTestBase::OptionConfig::kDefault),
+                                        static_cast<int>(DBTestBase::OptionConfig::kEnd))));
 
 TEST_P(PerConfigMergeOperatorPinningTest, Randomized) {
   if (ShouldSkipOptions(option_config_, kSkipMergePut)) {

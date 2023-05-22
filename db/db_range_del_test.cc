@@ -30,8 +30,8 @@ TEST_F(DBRangeDelTest, NonBlockBasedTableNotSupported) {
   // TODO: figure out why MmapReads trips the iterator pinning assertion in
   // RangeDelAggregator. Ideally it would be supported; otherwise it should at
   // least be explicitly unsupported.
-  for (auto config : {kPlainTableAllBytesPrefix, /* kWalDirAndMmapReads */}) {
-    option_config_ = config;
+  for (auto config : {OptionConfig::kPlainTableAllBytesPrefix, /* kWalDirAndMmapReads */}) {
+    option_config_ = (int)config;
     DestroyAndReopen(CurrentOptions());
     ASSERT_TRUE(db_->DeleteRange(WriteOptions(), db_->DefaultColumnFamily(),
                                  "dr1", "dr1")

@@ -35,8 +35,8 @@ TEST_F(DBIOFailureTest, DropWrites) {
     env_->sleep_counter_.Reset();
     env_->SetMockSleep();
     for (int i = 0; i < 5; i++) {
-      if (option_config_ != kUniversalCompactionMultiLevel &&
-          option_config_ != kUniversalSubcompactions) {
+      if (option_config_ != (int)OptionConfig::kUniversalCompactionMultiLevel &&
+          option_config_ != (int)OptionConfig::kUniversalSubcompactions) {
         for (int level = 0; level < dbfull()->NumberLevels(); level++) {
           if (level > 0 && level == dbfull()->NumberLevels() - 1) {
             break;

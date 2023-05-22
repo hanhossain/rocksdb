@@ -773,7 +773,7 @@ class DBBasicMultiConfigs : public DBBasicTest,
 
   static std::vector<int> GenerateOptionConfigs() {
     std::vector<int> option_configs;
-    for (int option_config = kDefault; option_config < kEnd; ++option_config) {
+    for (int option_config = (int)OptionConfig::kDefault; option_config < (int)OptionConfig::kEnd; ++option_config) {
       if (!ShouldSkipOptions(option_config, kSkipFIFOCompaction)) {
         option_configs.push_back(option_config);
       }
@@ -2812,7 +2812,7 @@ class DBMultiGetRowCacheTest : public DBBasicTest,
 
 TEST_P(DBMultiGetRowCacheTest, MultiGetBatched) {
   do {
-    option_config_ = kRowCache;
+    option_config_ = (int)OptionConfig::kRowCache;
     Options options = CurrentOptions();
     options.statistics = ROCKSDB_NAMESPACE::CreateDBStatistics();
     CreateAndReopenWithCF({"pikachu"}, options);
@@ -4585,7 +4585,7 @@ TEST_P(DBBasicTestDeadline, PointLookupDeadline) {
   bool set_deadline = std::get<0>(GetParam());
   bool set_timeout = std::get<1>(GetParam());
 
-  for (int option_config = kDefault; option_config < kEnd; ++option_config) {
+  for (int option_config = (int)OptionConfig::kDefault; option_config < (int)OptionConfig::kEnd; ++option_config) {
     if (ShouldSkipOptions(option_config, kSkipPlainTable | kSkipMmapReads)) {
       continue;
     }
@@ -4678,7 +4678,7 @@ TEST_P(DBBasicTestDeadline, IteratorDeadline) {
   bool set_deadline = std::get<0>(GetParam());
   bool set_timeout = std::get<1>(GetParam());
 
-  for (int option_config = kDefault; option_config < kEnd; ++option_config) {
+  for (int option_config = (int)OptionConfig::kDefault; option_config < (int)OptionConfig::kEnd; ++option_config) {
     if (ShouldSkipOptions(option_config, kSkipPlainTable | kSkipMmapReads)) {
       continue;
     }
