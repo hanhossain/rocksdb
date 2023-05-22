@@ -28,4 +28,4 @@ RocksDB is dual-licensed under both the GPLv2 (found in the COPYING file in the 
 
 ## Rust migration TODO:
 - Convert all c++ structs into final structs. Find them with regex `(?:struct \w+(?!final))\s*\{`
-- Convert all enums into enum class. Find themw ith regex `(enum (?!class)).*\{`
+- Convert all enums into enum class. Find them with regex `(enum (?!class)).*\{`
