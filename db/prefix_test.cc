@@ -241,27 +241,27 @@ class PrefixTest : public testing::Test {
     return std::shared_ptr<DB>(db);
   }
 
-  void FirstOption() { option_config_ = kBegin; }
+  void FirstOption() { option_config_ = (int)OptionConfig::kBegin; }
 
   bool NextOptions(int bucket_count) {
     // skip some options
     option_config_++;
-    if (option_config_ < kEnd) {
+    if (option_config_ < (int)OptionConfig::kEnd) {
       options.prefix_extractor.reset(NewFixedPrefixTransform(8));
-      switch (option_config_) {
-        case kHashSkipList:
+      switch ((OptionConfig)option_config_) {
+        case OptionConfig::kHashSkipList:
           options.memtable_factory.reset(
               NewHashSkipListRepFactory(bucket_count, FLAGS_skiplist_height));
           return true;
-        case kHashLinkList:
+        case OptionConfig::kHashLinkList:
           options.memtable_factory.reset(
               NewHashLinkListRepFactory(bucket_count));
           return true;
-        case kHashLinkListHugePageTlb:
+        case OptionConfig::kHashLinkListHugePageTlb:
           options.memtable_factory.reset(
               NewHashLinkListRepFactory(bucket_count, 2 * 1024 * 1024));
           return true;
-        case kHashLinkListTriggerSkipList:
+        case OptionConfig::kHashLinkListTriggerSkipList:
           options.memtable_factory.reset(
               NewHashLinkListRepFactory(bucket_count, 0, 3));
           return true;
@@ -272,13 +272,13 @@ class PrefixTest : public testing::Test {
     return false;
   }
 
-  PrefixTest() : option_config_(kBegin) {
+  PrefixTest() : option_config_((int)OptionConfig::kBegin) {
     options.comparator = new TestKeyComparator();
   }
   ~PrefixTest() override { delete options.comparator; }
 
  protected:
-  enum OptionConfig {
+  enum class OptionConfig {
     kBegin,
     kHashSkipList,
     kHashLinkList,
