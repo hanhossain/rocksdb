@@ -17,7 +17,7 @@
 namespace ROCKSDB_NAMESPACE {
 namespace log {
 
-enum RecordType {
+enum class RecordType {
   // Zero is reserved for preallocated files
   kZeroType = 0,
   kFullType = 1,
@@ -36,7 +36,7 @@ enum RecordType {
   // Compression Type
   kSetCompressionType = 9,
 };
-static const int kMaxRecordType = kSetCompressionType;
+static const int kMaxRecordType = (int)RecordType::kSetCompressionType;
 
 static const unsigned int kBlockSize = 32768;
 

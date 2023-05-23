@@ -92,12 +92,12 @@ bool Reader::ReadRecord(Slice* record, std::string* scratch,
     const unsigned int record_type =
         ReadPhysicalRecord(&fragment, &drop_size, record_checksum);
     switch (record_type) {
-      case kFullType:
-      case kRecyclableFullType:
+      case (int)RecordType::kFullType:
+      case (int)RecordType::kRecyclableFullType:
         if (in_fragmented_record && !scratch->empty()) {
           // Handle bug in earlier versions of log::Writer where
-          // it could emit an empty kFirstType record at the tail end
-          // of a block followed by a kFullType or kFirstType record
+          // it could emit an empty RecordType::kFirstType record at the tail end
+          // of a block followed by a RecordType::kFullType or RecordType::kFirstType record
           // at the beginning of the next block.
           ReportCorruption(scratch->size(), "partial record without end(1)");
         }
@@ -115,12 +115,12 @@ bool Reader::ReadRecord(Slice* record, std::string* scratch,
         first_record_read_ = true;
         return true;
 
-      case kFirstType:
-      case kRecyclableFirstType:
+      case (int)RecordType::kFirstType:
+      case (int)RecordType::kRecyclableFirstType:
         if (in_fragmented_record && !scratch->empty()) {
           // Handle bug in earlier versions of log::Writer where
-          // it could emit an empty kFirstType record at the tail end
-          // of a block followed by a kFullType or kFirstType record
+          // it could emit an empty RecordType::kFirstType record at the tail end
+          // of a block followed by a RecordType::kFullType or RecordType::kFirstType record
           // at the beginning of the next block.
           ReportCorruption(scratch->size(), "partial record without end(2)");
           XXH3_64bits_reset(hash_state_);
@@ -133,8 +133,8 @@ bool Reader::ReadRecord(Slice* record, std::string* scratch,
         in_fragmented_record = true;
         break;
 
-      case kMiddleType:
-      case kRecyclableMiddleType:
+      case (int)RecordType::kMiddleType:
+      case (int)RecordType::kRecyclableMiddleType:
         if (!in_fragmented_record) {
           ReportCorruption(fragment.size(),
                            "missing start of fragmented record(1)");
@@ -146,8 +146,8 @@ bool Reader::ReadRecord(Slice* record, std::string* scratch,
         }
         break;
 
-      case kLastType:
-      case kRecyclableLastType:
+      case (int)RecordType::kLastType:
+      case (int)RecordType::kRecyclableLastType:
         if (!in_fragmented_record) {
           ReportCorruption(fragment.size(),
                            "missing start of fragmented record(2)");
@@ -257,7 +257,7 @@ bool Reader::ReadRecord(Slice* record, std::string* scratch,
         }
         break;
 
-      case kSetCompressionType: {
+      case (int)RecordType::kSetCompressionType: {
         if (compression_type_record_read_) {
           ReportCorruption(fragment.size(),
                            "read multiple SetCompressionType records");
@@ -444,7 +444,7 @@ unsigned int Reader::ReadPhysicalRecord(Slice* result, size_t* drop_size,
     const unsigned int type = header[6];
     const uint32_t length = a | (b << 8);
     int header_size = kHeaderSize;
-    if (type >= kRecyclableFullType && type <= kRecyclableLastType) {
+    if (type >= (int)RecordType::kRecyclableFullType && type <= (int)RecordType::kRecyclableLastType) {
       if (end_of_buffer_offset_ - buffer_.size() == 0) {
         recycled_ = true;
       }
@@ -473,7 +473,7 @@ unsigned int Reader::ReadPhysicalRecord(Slice* result, size_t* drop_size,
       return kBadRecordLen;
     }
 
-    if (type == kZeroType && length == 0) {
+    if (type == (int)RecordType::kZeroType && length == 0) {
       // Skip zero length record without reporting any drops since
       // such records are produced by the mmap based writing code in
       // env_posix.cc that preallocates file regions.
@@ -500,7 +500,7 @@ unsigned int Reader::ReadPhysicalRecord(Slice* result, size_t* drop_size,
 
     buffer_.remove_prefix(header_size + length);
 
-    if (!uncompress_ || type == kSetCompressionType) {
+    if (!uncompress_ || type == (int)RecordType::kSetCompressionType) {
       *result = Slice(header + header_size, length);
       return type;
     } else {
@@ -585,8 +585,8 @@ bool FragmentBufferedReader::ReadRecord(Slice* record, std::string* scratch,
   Slice fragment;
   while (TryReadFragment(&fragment, &drop_size, &fragment_type_or_err)) {
     switch (fragment_type_or_err) {
-      case kFullType:
-      case kRecyclableFullType:
+      case (int)RecordType::kFullType:
+      case (int)RecordType::kRecyclableFullType:
         if (in_fragmented_record_ && !fragments_.empty()) {
           ReportCorruption(fragments_.size(), "partial record without end(1)");
         }
@@ -598,8 +598,8 @@ bool FragmentBufferedReader::ReadRecord(Slice* record, std::string* scratch,
         in_fragmented_record_ = false;
         return true;
 
-      case kFirstType:
-      case kRecyclableFirstType:
+      case (int)RecordType::kFirstType:
+      case (int)RecordType::kRecyclableFirstType:
         if (in_fragmented_record_ || !fragments_.empty()) {
           ReportCorruption(fragments_.size(), "partial record without end(2)");
         }
@@ -608,8 +608,8 @@ bool FragmentBufferedReader::ReadRecord(Slice* record, std::string* scratch,
         in_fragmented_record_ = true;
         break;
 
-      case kMiddleType:
-      case kRecyclableMiddleType:
+      case (int)RecordType::kMiddleType:
+      case (int)RecordType::kRecyclableMiddleType:
         if (!in_fragmented_record_) {
           ReportCorruption(fragment.size(),
                            "missing start of fragmented record(1)");
@@ -618,8 +618,8 @@ bool FragmentBufferedReader::ReadRecord(Slice* record, std::string* scratch,
         }
         break;
 
-      case kLastType:
-      case kRecyclableLastType:
+      case (int)RecordType::kLastType:
+      case (int)RecordType::kRecyclableLastType:
         if (!in_fragmented_record_) {
           ReportCorruption(fragment.size(),
                            "missing start of fragmented record(2)");
@@ -659,7 +659,7 @@ bool FragmentBufferedReader::ReadRecord(Slice* record, std::string* scratch,
         }
         break;
 
-      case kSetCompressionType: {
+      case (int)RecordType::kSetCompressionType: {
         if (compression_type_record_read_) {
           ReportCorruption(fragment.size(),
                            "read multiple SetCompressionType records");
@@ -770,7 +770,7 @@ bool FragmentBufferedReader::TryReadFragment(
   const unsigned int type = header[6];
   const uint32_t length = a | (b << 8);
   int header_size = kHeaderSize;
-  if (type >= kRecyclableFullType && type <= kRecyclableLastType) {
+  if (type >= (int)RecordType::kRecyclableFullType && type <= (int)RecordType::kRecyclableLastType) {
     if (end_of_buffer_offset_ - buffer_.size() == 0) {
       recycled_ = true;
     }
@@ -803,7 +803,7 @@ bool FragmentBufferedReader::TryReadFragment(
     }
   }
 
-  if (type == kZeroType && length == 0) {
+  if (type == (int)RecordType::kZeroType && length == 0) {
     buffer_.clear();
     *fragment_type_or_err = kBadRecord;
     return true;
@@ -822,7 +822,7 @@ bool FragmentBufferedReader::TryReadFragment(
 
   buffer_.remove_prefix(header_size + length);
 
-  if (!uncompress_ || type == kSetCompressionType) {
+  if (!uncompress_ || type == (int)RecordType::kSetCompressionType) {
     *fragment = Slice(header + header_size, length);
     *fragment_type_or_err = type;
     return true;

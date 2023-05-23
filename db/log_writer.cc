@@ -133,13 +133,13 @@ IOStatus Writer::AddRecord(const Slice& slice,
     RecordType type;
     const bool end = (left == fragment_length && compress_remaining == 0);
     if (begin && end) {
-      type = recycle_log_files_ ? kRecyclableFullType : kFullType;
+      type = recycle_log_files_ ? RecordType::kRecyclableFullType : RecordType::kFullType;
     } else if (begin) {
-      type = recycle_log_files_ ? kRecyclableFirstType : kFirstType;
+      type = recycle_log_files_ ? RecordType::kRecyclableFirstType : RecordType::kFirstType;
     } else if (end) {
-      type = recycle_log_files_ ? kRecyclableLastType : kLastType;
+      type = recycle_log_files_ ? RecordType::kRecyclableLastType : RecordType::kLastType;
     } else {
-      type = recycle_log_files_ ? kRecyclableMiddleType : kMiddleType;
+      type = recycle_log_files_ ? RecordType::kRecyclableMiddleType : RecordType::kMiddleType;
     }
 
     s = EmitPhysicalRecord(type, ptr, fragment_length, rate_limiter_priority);
@@ -170,7 +170,7 @@ IOStatus Writer::AddCompressionTypeRecord() {
   std::string encode;
   record.EncodeTo(&encode);
   IOStatus s =
-      EmitPhysicalRecord(kSetCompressionType, encode.data(), encode.size());
+      EmitPhysicalRecord(RecordType::kSetCompressionType, encode.data(), encode.size());
   if (s.ok()) {
     if (!manual_flush_) {
       s = dest_->Flush();
@@ -208,8 +208,8 @@ IOStatus Writer::EmitPhysicalRecord(RecordType t, const char* ptr, size_t n,
   buf[5] = static_cast<char>(n >> 8);
   buf[6] = static_cast<char>(t);
 
-  uint32_t crc = type_crc_[t];
-  if (t < kRecyclableFullType || t == kSetCompressionType) {
+  uint32_t crc = type_crc_[(int)t];
+  if (t < RecordType::kRecyclableFullType || t == RecordType::kSetCompressionType) {
     // Legacy record format
     assert(block_offset_ + kHeaderSize + n <= kBlockSize);
     header_size = kHeaderSize;

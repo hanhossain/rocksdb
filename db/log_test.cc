@@ -472,8 +472,8 @@ TEST_P(LogTest, ChecksumMismatch) {
 TEST_P(LogTest, UnexpectedMiddleType) {
   Write("foo");
   bool recyclable_log = (std::get<0>(GetParam()) != 0);
-  SetByte(6, static_cast<char>(recyclable_log ? kRecyclableMiddleType
-                                              : kMiddleType));
+  SetByte(6, static_cast<char>(recyclable_log ? RecordType::kRecyclableMiddleType
+                                              : RecordType::kMiddleType));
   FixChecksum(0, 3, !!recyclable_log);
   ASSERT_EQ("EOF", Read());
   ASSERT_EQ(3U, DroppedBytes());
@@ -484,7 +484,7 @@ TEST_P(LogTest, UnexpectedLastType) {
   Write("foo");
   bool recyclable_log = (std::get<0>(GetParam()) != 0);
   SetByte(6,
-          static_cast<char>(recyclable_log ? kRecyclableLastType : kLastType));
+          static_cast<char>(recyclable_log ? RecordType::kRecyclableLastType : RecordType::kLastType));
   FixChecksum(0, 3, !!recyclable_log);
   ASSERT_EQ("EOF", Read());
   ASSERT_EQ(3U, DroppedBytes());
@@ -496,7 +496,7 @@ TEST_P(LogTest, UnexpectedFullType) {
   Write("bar");
   bool recyclable_log = (std::get<0>(GetParam()) != 0);
   SetByte(
-      6, static_cast<char>(recyclable_log ? kRecyclableFirstType : kFirstType));
+      6, static_cast<char>(recyclable_log ? RecordType::kRecyclableFirstType : RecordType::kFirstType));
   FixChecksum(0, 3, !!recyclable_log);
   ASSERT_EQ("bar", Read());
   ASSERT_EQ("EOF", Read());
@@ -509,7 +509,7 @@ TEST_P(LogTest, UnexpectedFirstType) {
   Write(BigString("bar", 100000));
   bool recyclable_log = (std::get<0>(GetParam()) != 0);
   SetByte(
-      6, static_cast<char>(recyclable_log ? kRecyclableFirstType : kFirstType));
+      6, static_cast<char>(recyclable_log ? RecordType::kRecyclableFirstType : RecordType::kFirstType));
   FixChecksum(0, 3, !!recyclable_log);
   ASSERT_EQ(BigString("bar", 100000), Read());
   ASSERT_EQ("EOF", Read());
