@@ -171,55 +171,55 @@ bool VersionEdit::EncodeTo(std::string* dst) const {
     //   tag kNeedCompaction:
     //        now only can take one char value 1 indicating need-compaction
     //
-    PutVarint32(dst, NewFileCustomTag::kOldestAncesterTime);
+    PutVarint32(dst, (int)NewFileCustomTag::kOldestAncesterTime);
     std::string varint_oldest_ancester_time;
     PutVarint64(&varint_oldest_ancester_time, f.oldest_ancester_time);
     TEST_SYNC_POINT_CALLBACK("VersionEdit::EncodeTo:VarintOldestAncesterTime",
                              &varint_oldest_ancester_time);
     PutLengthPrefixedSlice(dst, Slice(varint_oldest_ancester_time));
 
-    PutVarint32(dst, NewFileCustomTag::kFileCreationTime);
+    PutVarint32(dst, (int)NewFileCustomTag::kFileCreationTime);
     std::string varint_file_creation_time;
     PutVarint64(&varint_file_creation_time, f.file_creation_time);
     TEST_SYNC_POINT_CALLBACK("VersionEdit::EncodeTo:VarintFileCreationTime",
                              &varint_file_creation_time);
     PutLengthPrefixedSlice(dst, Slice(varint_file_creation_time));
 
-    PutVarint32(dst, NewFileCustomTag::kEpochNumber);
+    PutVarint32(dst, (int)NewFileCustomTag::kEpochNumber);
     std::string varint_epoch_number;
     PutVarint64(&varint_epoch_number, f.epoch_number);
     PutLengthPrefixedSlice(dst, Slice(varint_epoch_number));
 
-    PutVarint32(dst, NewFileCustomTag::kFileChecksum);
+    PutVarint32(dst, (int)NewFileCustomTag::kFileChecksum);
     PutLengthPrefixedSlice(dst, Slice(f.file_checksum));
 
-    PutVarint32(dst, NewFileCustomTag::kFileChecksumFuncName);
+    PutVarint32(dst, (int)NewFileCustomTag::kFileChecksumFuncName);
     PutLengthPrefixedSlice(dst, Slice(f.file_checksum_func_name));
 
     if (f.fd.GetPathId() != 0) {
-      PutVarint32(dst, NewFileCustomTag::kPathId);
+      PutVarint32(dst, (int)NewFileCustomTag::kPathId);
       char p = static_cast<char>(f.fd.GetPathId());
       PutLengthPrefixedSlice(dst, Slice(&p, 1));
     }
     if (f.temperature != rs::advanced_options::Temperature::Unknown) {
-      PutVarint32(dst, NewFileCustomTag::kTemperature);
+      PutVarint32(dst, (int)NewFileCustomTag::kTemperature);
       char p = static_cast<char>(f.temperature);
       PutLengthPrefixedSlice(dst, Slice(&p, 1));
     }
     if (f.marked_for_compaction) {
-      PutVarint32(dst, NewFileCustomTag::kNeedCompaction);
+      PutVarint32(dst, (int)NewFileCustomTag::kNeedCompaction);
       char p = static_cast<char>(1);
       PutLengthPrefixedSlice(dst, Slice(&p, 1));
     }
     if (has_min_log_number_to_keep_ && !min_log_num_written) {
-      PutVarint32(dst, NewFileCustomTag::kMinLogNumberToKeepHack);
+      PutVarint32(dst, (int)NewFileCustomTag::kMinLogNumberToKeepHack);
       std::string varint_log_number;
       PutFixed64(&varint_log_number, min_log_number_to_keep_);
       PutLengthPrefixedSlice(dst, Slice(varint_log_number));
       min_log_num_written = true;
     }
     if (f.oldest_blob_file_number != kInvalidBlobFileNumber) {
-      PutVarint32(dst, NewFileCustomTag::kOldestBlobFileNumber);
+      PutVarint32(dst, (int)NewFileCustomTag::kOldestBlobFileNumber);
       std::string oldest_blob_file_number;
       PutVarint64(&oldest_blob_file_number, f.oldest_blob_file_number);
       PutLengthPrefixedSlice(dst, Slice(oldest_blob_file_number));
@@ -227,12 +227,12 @@ bool VersionEdit::EncodeTo(std::string* dst) const {
     UniqueId64x2 unique_id = f.unique_id;
     TEST_SYNC_POINT_CALLBACK("VersionEdit::EncodeTo:UniqueId", &unique_id);
     if (unique_id != kNullUniqueId64x2) {
-      PutVarint32(dst, NewFileCustomTag::kUniqueId);
+      PutVarint32(dst, (int)NewFileCustomTag::kUniqueId);
       std::string unique_id_str = EncodeUniqueIdBytes(&unique_id);
       PutLengthPrefixedSlice(dst, Slice(unique_id_str));
     }
     if (f.compensated_range_deletion_size) {
-      PutVarint32(dst, kCompensatedRangeDeletionSize);
+      PutVarint32(dst, (int)NewFileCustomTag::kCompensatedRangeDeletionSize);
       std::string compensated_range_deletion_size;
       PutVarint64(&compensated_range_deletion_size,
                   f.compensated_range_deletion_size);
@@ -242,7 +242,7 @@ bool VersionEdit::EncodeTo(std::string* dst) const {
     TEST_SYNC_POINT_CALLBACK("VersionEdit::EncodeTo:NewFile4:CustomizeFields",
                              dst);
 
-    PutVarint32(dst, NewFileCustomTag::kTerminate);
+    PutVarint32(dst, (int)NewFileCustomTag::kTerminate);
   }
 
   for (const auto& blob_file_addition : blob_file_additions_) {
@@ -339,14 +339,14 @@ const char* VersionEdit::DecodeNewFile4From(Slice* input) {
       if (!GetVarint32(input, &custom_tag)) {
         return "new-file4 custom field";
       }
-      if (custom_tag == kTerminate) {
+      if (custom_tag == (int)NewFileCustomTag::kTerminate) {
         break;
       }
       if (!GetLengthPrefixedSlice(input, &field)) {
         return "new-file4 custom field length prefixed slice error";
       }
-      switch (custom_tag) {
-        case kPathId:
+      switch ((NewFileCustomTag)custom_tag) {
+        case NewFileCustomTag::kPathId:
           if (field.size() != 1) {
             return "path_id field wrong size";
           }
@@ -355,34 +355,34 @@ const char* VersionEdit::DecodeNewFile4From(Slice* input) {
             return "path_id wrong vaue";
           }
           break;
-        case kOldestAncesterTime:
+        case NewFileCustomTag::kOldestAncesterTime:
           if (!GetVarint64(&field, &f.oldest_ancester_time)) {
             return "invalid oldest ancester time";
           }
           break;
-        case kFileCreationTime:
+        case NewFileCustomTag::kFileCreationTime:
           if (!GetVarint64(&field, &f.file_creation_time)) {
             return "invalid file creation time";
           }
           break;
-        case kEpochNumber:
+        case NewFileCustomTag::kEpochNumber:
           if (!GetVarint64(&field, &f.epoch_number)) {
             return "invalid epoch number";
           }
           break;
-        case kFileChecksum:
+        case NewFileCustomTag::kFileChecksum:
           f.file_checksum = field.ToString();
           break;
-        case kFileChecksumFuncName:
+        case NewFileCustomTag::kFileChecksumFuncName:
           f.file_checksum_func_name = field.ToString();
           break;
-        case kNeedCompaction:
+        case NewFileCustomTag::kNeedCompaction:
           if (field.size() != 1) {
             return "need_compaction field wrong size";
           }
           f.marked_for_compaction = (field[0] == 1);
           break;
-        case kMinLogNumberToKeepHack:
+        case NewFileCustomTag::kMinLogNumberToKeepHack:
           // This is a hack to encode Tag::kMinLogNumberToKeep in a
           // forward-compatible fashion.
           if (!GetFixed64(&field, &min_log_number_to_keep_)) {
@@ -390,12 +390,12 @@ const char* VersionEdit::DecodeNewFile4From(Slice* input) {
           }
           has_min_log_number_to_keep_ = true;
           break;
-        case kOldestBlobFileNumber:
+        case NewFileCustomTag::kOldestBlobFileNumber:
           if (!GetVarint64(&field, &f.oldest_blob_file_number)) {
             return "invalid oldest blob file number";
           }
           break;
-        case kTemperature:
+        case NewFileCustomTag::kTemperature:
           if (field.size() != 1) {
             return "temperature field wrong size";
           } else {
@@ -405,19 +405,19 @@ const char* VersionEdit::DecodeNewFile4From(Slice* input) {
             }
           }
           break;
-        case kUniqueId:
+        case NewFileCustomTag::kUniqueId:
           if (!DecodeUniqueIdBytes(field.ToString(), &f.unique_id).ok()) {
             f.unique_id = kNullUniqueId64x2;
             return "invalid unique id";
           }
           break;
-        case kCompensatedRangeDeletionSize:
+        case NewFileCustomTag::kCompensatedRangeDeletionSize:
           if (!GetVarint64(&field, &f.compensated_range_deletion_size)) {
             return "Invalid compensated range deletion size";
           }
           break;
         default:
-          if ((custom_tag & kCustomTagNonSafeIgnoreMask) != 0) {
+          if ((custom_tag & (int)NewFileCustomTag::kCustomTagNonSafeIgnoreMask) != 0) {
             // Should not proceed if cannot understand it
             return "new-file4 custom field not supported";
           }

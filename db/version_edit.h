@@ -72,7 +72,7 @@ enum class Tag : uint32_t {
   kWalDeletion2,
 };
 
-enum NewFileCustomTag : uint32_t {
+enum class NewFileCustomTag : uint32_t {
   kTerminate = 1,  // The end of customized fields
   kNeedCompaction = 2,
   // Since Manifest is not entirely forward-compatible, we currently encode
