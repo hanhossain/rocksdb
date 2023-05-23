@@ -95,40 +95,40 @@ void VersionEdit::Clear() {
 
 bool VersionEdit::EncodeTo(std::string* dst) const {
   if (has_db_id_) {
-    PutVarint32(dst, kDbId);
+    PutVarint32(dst, (int)Tag::kDbId);
     PutLengthPrefixedSlice(dst, db_id_);
   }
   if (has_comparator_) {
-    PutVarint32(dst, kComparator);
+    PutVarint32(dst, (int)Tag::kComparator);
     PutLengthPrefixedSlice(dst, comparator_);
   }
   if (has_log_number_) {
-    PutVarint32Varint64(dst, kLogNumber, log_number_);
+    PutVarint32Varint64(dst, (int)Tag::kLogNumber, log_number_);
   }
   if (has_prev_log_number_) {
-    PutVarint32Varint64(dst, kPrevLogNumber, prev_log_number_);
+    PutVarint32Varint64(dst, (int)Tag::kPrevLogNumber, prev_log_number_);
   }
   if (has_next_file_number_) {
-    PutVarint32Varint64(dst, kNextFileNumber, next_file_number_);
+    PutVarint32Varint64(dst, (int)Tag::kNextFileNumber, next_file_number_);
   }
   if (has_max_column_family_) {
-    PutVarint32Varint32(dst, kMaxColumnFamily, max_column_family_);
+    PutVarint32Varint32(dst, (int)Tag::kMaxColumnFamily, max_column_family_);
   }
   if (has_min_log_number_to_keep_) {
-    PutVarint32Varint64(dst, kMinLogNumberToKeep, min_log_number_to_keep_);
+    PutVarint32Varint64(dst, (int)Tag::kMinLogNumberToKeep, min_log_number_to_keep_);
   }
   if (has_last_sequence_) {
-    PutVarint32Varint64(dst, kLastSequence, last_sequence_);
+    PutVarint32Varint64(dst, (int)Tag::kLastSequence, last_sequence_);
   }
   for (size_t i = 0; i < compact_cursors_.size(); i++) {
     if (compact_cursors_[i].second.Valid()) {
-      PutVarint32(dst, kCompactCursor);
+      PutVarint32(dst, (int)Tag::kCompactCursor);
       PutVarint32(dst, compact_cursors_[i].first);  // level
       PutLengthPrefixedSlice(dst, compact_cursors_[i].second.Encode());
     }
   }
   for (const auto& deleted : deleted_files_) {
-    PutVarint32Varint32Varint64(dst, kDeletedFile, deleted.first /* level */,
+    PutVarint32Varint32Varint64(dst, (int)Tag::kDeletedFile, deleted.first /* level */,
                                 deleted.second /* file number */);
   }
 
@@ -139,7 +139,7 @@ bool VersionEdit::EncodeTo(std::string* dst) const {
         f.epoch_number == kUnknownEpochNumber) {
       return false;
     }
-    PutVarint32(dst, kNewFile4);
+    PutVarint32(dst, (int)Tag::kNewFile4);
     PutVarint32Varint64(dst, new_files_[i].first /* level */, f.fd.GetNumber());
     PutVarint64(dst, f.fd.GetFileSize());
     PutLengthPrefixedSlice(dst, f.smallest.Encode());
@@ -246,24 +246,24 @@ bool VersionEdit::EncodeTo(std::string* dst) const {
   }
 
   for (const auto& blob_file_addition : blob_file_additions_) {
-    PutVarint32(dst, kBlobFileAddition);
+    PutVarint32(dst, (int)Tag::kBlobFileAddition);
     blob_file_addition.EncodeTo(dst);
   }
 
   for (const auto& blob_file_garbage : blob_file_garbages_) {
-    PutVarint32(dst, kBlobFileGarbage);
+    PutVarint32(dst, (int)Tag::kBlobFileGarbage);
     blob_file_garbage.EncodeTo(dst);
   }
 
   for (const auto& wal_addition : wal_additions_) {
-    PutVarint32(dst, kWalAddition2);
+    PutVarint32(dst, (int)Tag::kWalAddition2);
     std::string encoded;
     wal_addition.EncodeTo(&encoded);
     PutLengthPrefixedSlice(dst, encoded);
   }
 
   if (!wal_deletion_.IsEmpty()) {
-    PutVarint32(dst, kWalDeletion2);
+    PutVarint32(dst, (int)Tag::kWalDeletion2);
     std::string encoded;
     wal_deletion_.EncodeTo(&encoded);
     PutLengthPrefixedSlice(dst, encoded);
@@ -271,25 +271,25 @@ bool VersionEdit::EncodeTo(std::string* dst) const {
 
   // 0 is default and does not need to be explicitly written
   if (column_family_ != 0) {
-    PutVarint32Varint32(dst, kColumnFamily, column_family_);
+    PutVarint32Varint32(dst, (int)Tag::kColumnFamily, column_family_);
   }
 
   if (is_column_family_add_) {
-    PutVarint32(dst, kColumnFamilyAdd);
+    PutVarint32(dst, (int)Tag::kColumnFamilyAdd);
     PutLengthPrefixedSlice(dst, Slice(column_family_name_));
   }
 
   if (is_column_family_drop_) {
-    PutVarint32(dst, kColumnFamilyDrop);
+    PutVarint32(dst, (int)Tag::kColumnFamilyDrop);
   }
 
   if (is_in_atomic_group_) {
-    PutVarint32(dst, kInAtomicGroup);
+    PutVarint32(dst, (int)Tag::kInAtomicGroup);
     PutVarint32(dst, remaining_entries_);
   }
 
   if (HasFullHistoryTsLow()) {
-    PutVarint32(dst, kFullHistoryTsLow);
+    PutVarint32(dst, (int)Tag::kFullHistoryTsLow);
     PutLengthPrefixedSlice(dst, full_history_ts_low_);
   }
   return true;
@@ -383,7 +383,7 @@ const char* VersionEdit::DecodeNewFile4From(Slice* input) {
           f.marked_for_compaction = (field[0] == 1);
           break;
         case kMinLogNumberToKeepHack:
-          // This is a hack to encode kMinLogNumberToKeep in a
+          // This is a hack to encode Tag::kMinLogNumberToKeep in a
           // forward-compatible fashion.
           if (!GetFixed64(&field, &min_log_number_to_keep_)) {
             return "deleted log number malformatted";
@@ -451,12 +451,12 @@ Status VersionEdit::DecodeFrom(const Slice& src) {
   InternalKey key;
   while (msg == nullptr && GetVarint32(&input, &tag)) {
 #ifndef NDEBUG
-    if (ignore_ignorable_tags && tag > kTagSafeIgnoreMask) {
-      tag = kTagSafeIgnoreMask;
+    if (ignore_ignorable_tags && tag > (int)Tag::kTagSafeIgnoreMask) {
+      tag = (int)Tag::kTagSafeIgnoreMask;
     }
 #endif
-    switch (tag) {
-      case kDbId:
+    switch ((Tag)tag) {
+      case Tag::kDbId:
         if (GetLengthPrefixedSlice(&input, &str)) {
           db_id_ = str.ToString();
           has_db_id_ = true;
@@ -464,7 +464,7 @@ Status VersionEdit::DecodeFrom(const Slice& src) {
           msg = "db id";
         }
         break;
-      case kComparator:
+      case Tag::kComparator:
         if (GetLengthPrefixedSlice(&input, &str)) {
           comparator_ = str.ToString();
           has_comparator_ = true;
@@ -473,7 +473,7 @@ Status VersionEdit::DecodeFrom(const Slice& src) {
         }
         break;
 
-      case kLogNumber:
+      case Tag::kLogNumber:
         if (GetVarint64(&input, &log_number_)) {
           has_log_number_ = true;
         } else {
@@ -481,7 +481,7 @@ Status VersionEdit::DecodeFrom(const Slice& src) {
         }
         break;
 
-      case kPrevLogNumber:
+      case Tag::kPrevLogNumber:
         if (GetVarint64(&input, &prev_log_number_)) {
           has_prev_log_number_ = true;
         } else {
@@ -489,7 +489,7 @@ Status VersionEdit::DecodeFrom(const Slice& src) {
         }
         break;
 
-      case kNextFileNumber:
+      case Tag::kNextFileNumber:
         if (GetVarint64(&input, &next_file_number_)) {
           has_next_file_number_ = true;
         } else {
@@ -497,7 +497,7 @@ Status VersionEdit::DecodeFrom(const Slice& src) {
         }
         break;
 
-      case kMaxColumnFamily:
+      case Tag::kMaxColumnFamily:
         if (GetVarint32(&input, &max_column_family_)) {
           has_max_column_family_ = true;
         } else {
@@ -505,7 +505,7 @@ Status VersionEdit::DecodeFrom(const Slice& src) {
         }
         break;
 
-      case kMinLogNumberToKeep:
+      case Tag::kMinLogNumberToKeep:
         if (GetVarint64(&input, &min_log_number_to_keep_)) {
           has_min_log_number_to_keep_ = true;
         } else {
@@ -513,7 +513,7 @@ Status VersionEdit::DecodeFrom(const Slice& src) {
         }
         break;
 
-      case kLastSequence:
+      case Tag::kLastSequence:
         if (GetVarint64(&input, &last_sequence_)) {
           has_last_sequence_ = true;
         } else {
@@ -521,7 +521,7 @@ Status VersionEdit::DecodeFrom(const Slice& src) {
         }
         break;
 
-      case kCompactCursor:
+      case Tag::kCompactCursor:
         if (GetLevel(&input, &level, &msg) && GetInternalKey(&input, &key)) {
           // Here we re-use the output format of compact pointer in LevelDB
           // to persist compact_cursors_
@@ -533,7 +533,7 @@ Status VersionEdit::DecodeFrom(const Slice& src) {
         }
         break;
 
-      case kDeletedFile: {
+      case Tag::kDeletedFile: {
         uint64_t number = 0;
         if (GetLevel(&input, &level, &msg) && GetVarint64(&input, &number)) {
           deleted_files_.insert(std::make_pair(level, number));
@@ -545,7 +545,7 @@ Status VersionEdit::DecodeFrom(const Slice& src) {
         break;
       }
 
-      case kNewFile: {
+      case Tag::kNewFile: {
         uint64_t number = 0;
         uint64_t file_size = 0;
         if (GetLevel(&input, &level, &msg) && GetVarint64(&input, &number) &&
@@ -561,7 +561,7 @@ Status VersionEdit::DecodeFrom(const Slice& src) {
         }
         break;
       }
-      case kNewFile2: {
+      case Tag::kNewFile2: {
         uint64_t number = 0;
         uint64_t file_size = 0;
         SequenceNumber smallest_seqno = 0;
@@ -583,7 +583,7 @@ Status VersionEdit::DecodeFrom(const Slice& src) {
         break;
       }
 
-      case kNewFile3: {
+      case Tag::kNewFile3: {
         uint64_t number = 0;
         uint32_t path_id = 0;
         uint64_t file_size = 0;
@@ -606,13 +606,13 @@ Status VersionEdit::DecodeFrom(const Slice& src) {
         break;
       }
 
-      case kNewFile4: {
+      case Tag::kNewFile4: {
         msg = DecodeNewFile4From(&input);
         break;
       }
 
-      case kBlobFileAddition:
-      case kBlobFileAddition_DEPRECATED: {
+      case Tag::kBlobFileAddition:
+      case Tag::kBlobFileAddition_DEPRECATED: {
         BlobFileAddition blob_file_addition;
         const Status s = blob_file_addition.DecodeFrom(&input);
         if (!s.ok()) {
@@ -623,8 +623,8 @@ Status VersionEdit::DecodeFrom(const Slice& src) {
         break;
       }
 
-      case kBlobFileGarbage:
-      case kBlobFileGarbage_DEPRECATED: {
+      case Tag::kBlobFileGarbage:
+      case Tag::kBlobFileGarbage_DEPRECATED: {
         BlobFileGarbage blob_file_garbage;
         const Status s = blob_file_garbage.DecodeFrom(&input);
         if (!s.ok()) {
@@ -635,7 +635,7 @@ Status VersionEdit::DecodeFrom(const Slice& src) {
         break;
       }
 
-      case kWalAddition: {
+      case Tag::kWalAddition: {
         WalAddition wal_addition;
         const Status s = wal_addition.DecodeFrom(&input);
         if (!s.ok()) {
@@ -646,7 +646,7 @@ Status VersionEdit::DecodeFrom(const Slice& src) {
         break;
       }
 
-      case kWalAddition2: {
+      case Tag::kWalAddition2: {
         Slice encoded;
         if (!GetLengthPrefixedSlice(&input, &encoded)) {
           msg = "WalAddition not prefixed by length";
@@ -663,7 +663,7 @@ Status VersionEdit::DecodeFrom(const Slice& src) {
         break;
       }
 
-      case kWalDeletion: {
+      case Tag::kWalDeletion: {
         WalDeletion wal_deletion;
         const Status s = wal_deletion.DecodeFrom(&input);
         if (!s.ok()) {
@@ -674,7 +674,7 @@ Status VersionEdit::DecodeFrom(const Slice& src) {
         break;
       }
 
-      case kWalDeletion2: {
+      case Tag::kWalDeletion2: {
         Slice encoded;
         if (!GetLengthPrefixedSlice(&input, &encoded)) {
           msg = "WalDeletion not prefixed by length";
@@ -691,7 +691,7 @@ Status VersionEdit::DecodeFrom(const Slice& src) {
         break;
       }
 
-      case kColumnFamily:
+      case Tag::kColumnFamily:
         if (!GetVarint32(&input, &column_family_)) {
           if (!msg) {
             msg = "set column family id";
@@ -699,7 +699,7 @@ Status VersionEdit::DecodeFrom(const Slice& src) {
         }
         break;
 
-      case kColumnFamilyAdd:
+      case Tag::kColumnFamilyAdd:
         if (GetLengthPrefixedSlice(&input, &str)) {
           is_column_family_add_ = true;
           column_family_name_ = str.ToString();
@@ -710,11 +710,11 @@ Status VersionEdit::DecodeFrom(const Slice& src) {
         }
         break;
 
-      case kColumnFamilyDrop:
+      case Tag::kColumnFamilyDrop:
         is_column_family_drop_ = true;
         break;
 
-      case kInAtomicGroup:
+      case Tag::kInAtomicGroup:
         is_in_atomic_group_ = true;
         if (!GetVarint32(&input, &remaining_entries_)) {
           if (!msg) {
@@ -723,7 +723,7 @@ Status VersionEdit::DecodeFrom(const Slice& src) {
         }
         break;
 
-      case kFullHistoryTsLow:
+      case Tag::kFullHistoryTsLow:
         if (!GetLengthPrefixedSlice(&input, &str)) {
           msg = "full_history_ts_low";
         } else if (str.empty()) {
@@ -734,7 +734,7 @@ Status VersionEdit::DecodeFrom(const Slice& src) {
         break;
 
       default:
-        if (tag & kTagSafeIgnoreMask) {
+        if (tag & (int)Tag::kTagSafeIgnoreMask) {
           // Tag from future which can be safely ignored.
           // The next field must be the length of the entry.
           uint32_t field_len;
