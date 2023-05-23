@@ -108,7 +108,7 @@ MemTable::MemTable(const InternalKeyComparator& cmp,
                  ? moptions_.inplace_update_num_locks
                  : 0),
       prefix_extractor_(mutable_cf_options.prefix_extractor.get()),
-      flush_state_(FLUSH_NOT_REQUESTED),
+      flush_state_(FlushStateEnum::FLUSH_NOT_REQUESTED),
       clock_(ioptions.clock),
       insert_with_hint_prefix_extractor_(
           ioptions.memtable_insert_with_hint_prefix_extractor.get()),
@@ -231,10 +231,10 @@ bool MemTable::ShouldFlushNow() {
 
 void MemTable::UpdateFlushState() {
   auto state = flush_state_.load(std::memory_order_relaxed);
-  if (state == FLUSH_NOT_REQUESTED && ShouldFlushNow()) {
+  if (state == FlushStateEnum::FLUSH_NOT_REQUESTED && ShouldFlushNow()) {
     // ignore CAS failure, because that means somebody else requested
     // a flush
-    flush_state_.compare_exchange_strong(state, FLUSH_REQUESTED,
+    flush_state_.compare_exchange_strong(state, FlushStateEnum::FLUSH_REQUESTED,
                                          std::memory_order_relaxed,
                                          std::memory_order_relaxed);
   }

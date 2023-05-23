@@ -177,14 +177,14 @@ class MemTable {
   // This method heuristically determines if the memtable should continue to
   // host more data.
   bool ShouldScheduleFlush() const {
-    return flush_state_.load(std::memory_order_relaxed) == FLUSH_REQUESTED;
+    return flush_state_.load(std::memory_order_relaxed) == FlushStateEnum::FLUSH_REQUESTED;
   }
 
   // Returns true if a flush should be scheduled and the caller should
   // be the one to schedule it
   bool MarkFlushScheduled() {
-    auto before = FLUSH_REQUESTED;
-    return flush_state_.compare_exchange_strong(before, FLUSH_SCHEDULED,
+    auto before = FlushStateEnum::FLUSH_REQUESTED;
+    return flush_state_.compare_exchange_strong(before, FlushStateEnum::FLUSH_SCHEDULED,
                                                 std::memory_order_relaxed,
                                                 std::memory_order_relaxed);
   }
@@ -533,7 +533,7 @@ class MemTable {
                                     bool allow_data_in_errors = false);
 
  private:
-  enum FlushStateEnum { FLUSH_NOT_REQUESTED, FLUSH_REQUESTED, FLUSH_SCHEDULED };
+  enum class FlushStateEnum { FLUSH_NOT_REQUESTED, FLUSH_REQUESTED, FLUSH_SCHEDULED };
 
   friend class MemTableIterator;
   friend class MemTableBackwardIterator;
