@@ -9,7 +9,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include "rocksdb-rs-cxx/convenience.h"
 #include "rocksdb/compression_type.h"
 #include "rocksdb/db.h"
 #include "rocksdb/status.h"

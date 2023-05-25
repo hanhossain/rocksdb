@@ -1,5 +1,4 @@
 pub mod advanced_options;
-pub mod convenience;
 pub mod options;
 
 #[cxx::bridge]
@@ -246,5 +245,27 @@ mod ffi {
         DontPrepare = 0x4000,
         /// The option serializes to a name only
         StringNameOnly = 0x8000,
+    }
+
+    /// This enum defines the RocksDB options sanity level.
+    #[namespace = "rs::convenience"]
+    enum SanityLevel {
+        /// Performs no sanity check at all.
+        None = 0x01,
+        /// Performs minimum check to ensure the RocksDB instance can be
+        /// opened without corrupting / mis-interpreting the data.
+        LooselyCompatible = 0x02,
+        /// Perform exact match sanity check.
+        ExactMatch = 0xFF,
+    }
+
+    #[namespace = "rs::convenience"]
+    enum Depth {
+        /// Traverse nested options that are not flagged as "shallow"
+        Default,
+        /// Do not traverse into any nested options
+        Shallow,
+        /// Traverse nested options, overriding the options shallow setting
+        Detailed,
     }
 }
