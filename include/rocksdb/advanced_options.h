@@ -10,7 +10,7 @@
 
 #include <memory>
 
-#include "rocksdb-rs-cxx/advanced_options.h"
+#include "rocksdb-rs-cxx/lib.h"
 #include "rocksdb/cache.h"
 #include "rocksdb/compression_type.h"
 #include "rocksdb/memtablerep.h"
