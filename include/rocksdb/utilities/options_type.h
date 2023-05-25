@@ -18,7 +18,6 @@
 #include <memory>
 #include <unordered_map>
 
-#include "rocksdb-rs-cxx/options_type.h"
 #include "rocksdb/convenience.h"
 #include "rocksdb/rocksdb_namespace.h"
 #include "rocksdb/status.h"
