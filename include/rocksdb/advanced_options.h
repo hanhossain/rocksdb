@@ -14,7 +14,6 @@
 #include "rocksdb/cache.h"
 #include "rocksdb/compression_type.h"
 #include "rocksdb/memtablerep.h"
-#include "rocksdb/universal_compaction.h"
 
 namespace rocksdb {
 
@@ -652,7 +651,7 @@ struct AdvancedColumnFamilyOptions {
   // Dynamically changeable through SetOptions() API
   // Dynamic change example:
   // SetOptions("compaction_options_universal", "{size_ratio=2;}")
-  CompactionOptionsUniversal compaction_options_universal;
+  rs::universal_compaction::CompactionOptionsUniversal compaction_options_universal;
 
   // The options for FIFO compaction style
   //

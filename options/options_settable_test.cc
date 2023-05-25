@@ -12,6 +12,7 @@
 #include "options/cf_options.h"
 #include "options/db_options.h"
 #include "options/options_helper.h"
+#include "rocksdb-rs-cxx/lib.h"
 #include "rocksdb/convenience.h"
 #include "test_util/testharness.h"
 
@@ -457,7 +458,7 @@ TEST_F(OptionsSettableTest, ColumnFamilyOptionsAllFieldsSettable) {
 
   // Following options are not settable through
   // GetColumnFamilyOptionsFromString():
-  options->compaction_options_universal = CompactionOptionsUniversal();
+  options->compaction_options_universal = CompactionOptionsUniversal_new();
   options->num_levels = 42;  // Initialize options for MutableCF
   options->compaction_filter = nullptr;
   options->sst_partitioner_factory = nullptr;

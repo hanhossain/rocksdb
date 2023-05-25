@@ -6719,7 +6719,7 @@ class DBCompactionTestL0FilesMisorderCorruption : public DBCompactionTest {
       options_.num_levels = 1;
       options_.level0_file_num_compaction_trigger = 5;
 
-      CompactionOptionsUniversal universal_options;
+      rs::universal_compaction::CompactionOptionsUniversal universal_options = rs::universal_compaction::CompactionOptionsUniversal_new();
       if (compaction_path_to_test == "PickCompactionToReduceSizeAmp") {
         universal_options.max_size_amplification_percent = 50;
       } else if (compaction_path_to_test ==
@@ -6735,7 +6735,7 @@ class DBCompactionTestL0FilesMisorderCorruption : public DBCompactionTest {
       options_.num_levels = 1;
       options_.level0_file_num_compaction_trigger = 3;
 
-      rs::advanced_options::CompactionOptionsFIFO fifo_options;
+      rs::advanced_options::CompactionOptionsFIFO fifo_options = rs::advanced_options::CompactionOptionsFIFO_new();
       if (compaction_path_to_test == "FindIntraL0Compaction" ||
           compaction_path_to_test == "CompactRange") {
         fifo_options.allow_compaction = true;
@@ -8599,7 +8599,7 @@ TEST_F(DBCompactionTest, FIFOWarm) {
   options.max_open_files = -1;
   options.level0_file_num_compaction_trigger = 2;
   options.create_if_missing = true;
-  rs::advanced_options::CompactionOptionsFIFO fifo_options;
+  rs::advanced_options::CompactionOptionsFIFO fifo_options = rs::advanced_options::CompactionOptionsFIFO_new();
   fifo_options.age_for_warm = 1000;
   fifo_options.max_table_files_size = 100000000;
   options.compaction_options_fifo = fifo_options;
