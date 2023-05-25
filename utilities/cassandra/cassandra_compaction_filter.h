@@ -10,7 +10,7 @@
 #include "rocksdb/slice.h"
 #include "utilities/cassandra/cassandra_options.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 namespace cassandra {
 
 /**
@@ -54,4 +54,4 @@ class CassandraCompactionFilterFactory : public CompactionFilterFactory {
   CassandraOptions options_;
 };
 }  // namespace cassandra
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

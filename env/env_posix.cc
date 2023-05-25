@@ -81,7 +81,7 @@
 #define EXT4_SUPER_MAGIC 0xEF53
 #endif
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 #if defined(OS_WIN)
 static const std::string kSharedLibExt = ".dll";
 static const char kPathSeparator = ';';
@@ -515,6 +515,6 @@ const std::shared_ptr<SystemClock>& SystemClock::Default() {
   (std::make_shared<PosixClock>());
   return instance;
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 #endif

@@ -14,7 +14,7 @@
 #include "folly/Executor.h"
 #include "util/async_file_reader.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 // Implements a simple executor that runs callback functions in the same
 // thread, unlike CPUThreadExecutor which may schedule the callback on
 // another thread. Runs in a tight loop calling the queued callbacks,
@@ -52,5 +52,5 @@ class SingleThreadExecutor : public folly::Executor {
   AsyncFileReader& reader_;
   bool busy_;
 };
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 #endif  // USE_COROUTINES

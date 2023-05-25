@@ -9,7 +9,7 @@
 
 #include "db/db_impl/db_impl.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // TODO: Share common structure with DBImplSecondary and DBImplReadOnly
 class CompactedDBImpl : public DBImpl {
@@ -147,4 +147,4 @@ class CompactedDBImpl : public DBImpl {
   const Comparator* user_comparator_;
   LevelFilesBrief files_;
 };
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

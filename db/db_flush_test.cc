@@ -23,7 +23,7 @@
 #include "utilities/fault_injection_env.h"
 #include "utilities/fault_injection_fs.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // This is a static filter used for filtering
 // kvs during the compaction process.
@@ -780,12 +780,12 @@ TEST_F(
   write_opts.disableWAL = true;
   ASSERT_OK(Put(1, "k1", "v1", write_opts));
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency({{
+  rocksdb::SyncPoint::GetInstance()->LoadDependency({{
       "DBImpl::WaitUntilFlushWouldNotStallWrites:StallWait",
       "DBFlushTest::"
       "UnrecoverableWriteInAtomicFlushWaitUntilFlushWouldNotStallWrites::Write",
   }});
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   // Write to db when atomic flush releases the lock to wait on write stall
   // condition to be gone in `WaitUntilFlushWouldNotStallWrites()`
@@ -827,7 +827,7 @@ TEST_F(
   // resulting in a "recovery hole" as "k3" can be recovered. It's due to the
   // invariant violation described above.
   ASSERT_EQ(Get(0, "k2"), "v2");
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
 }
 
 TEST_F(DBFlushTest, FixFlushReasonRaceFromConcurrentFlushes) {
@@ -852,7 +852,7 @@ TEST_F(DBFlushTest, FixFlushReasonRaceFromConcurrentFlushes) {
 
   // Coerce a manual flush happenning in the middle of GetLiveFiles's flush
   bool get_live_files_paused_at_sync_point = false;
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::AtomicFlushMemTables:AfterScheduleFlush", [&](void* /* arg */) {
         if (get_live_files_paused_at_sync_point) {
           // To prevent non-GetLiveFiles() flush from pausing at this sync point
@@ -869,7 +869,7 @@ TEST_F(DBFlushTest, FixFlushReasonRaceFromConcurrentFlushes) {
         sleeping_task->WakeUp();
         sleeping_task->WaitUntilDone();
       });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   std::vector<std::string> files;
   uint64_t manifest_file_size;
@@ -881,8 +881,8 @@ TEST_F(DBFlushTest, FixFlushReasonRaceFromConcurrentFlushes) {
   ASSERT_OK(db_->GetLiveFiles(files, &manifest_file_size, /*flush*/ true));
   ASSERT_TRUE(get_live_files_paused_at_sync_point);
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
 }
 
 TEST_F(DBFlushTest, MemPurgeBasic) {
@@ -929,12 +929,12 @@ TEST_F(DBFlushTest, MemPurgeBasic) {
 
   std::atomic<uint32_t> mempurge_count{0};
   std::atomic<uint32_t> sst_count{0};
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::FlushJob:MemPurgeSuccessful",
       [&](void* /*arg*/) { mempurge_count++; });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::FlushJob:SSTFileCreated", [&](void* /*arg*/) { sst_count++; });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   std::string KEY1 = "IamKey1";
   std::string KEY2 = "IamKey2";
@@ -1103,12 +1103,12 @@ TEST_F(DBFlushTest, MemPurgeBasicToggle) {
       db_->SetOptions(cfh, {{"experimental_mempurge_threshold", "3.7898"}}));
   std::atomic<uint32_t> mempurge_count{0};
   std::atomic<uint32_t> sst_count{0};
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::FlushJob:MemPurgeSuccessful",
       [&](void* /*arg*/) { mempurge_count++; });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::FlushJob:SSTFileCreated", [&](void* /*arg*/) { sst_count++; });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
   const size_t KVSIZE = 3;
   std::vector<std::string> KEYS(KVSIZE);
   for (size_t k = 0; k < KVSIZE; k++) {
@@ -1235,12 +1235,12 @@ TEST_F(DBFlushTest, MemPurgeWithAtomicFlush) {
 
   std::atomic<uint32_t> mempurge_count{0};
   std::atomic<uint32_t> sst_count{0};
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::FlushJob:MemPurgeSuccessful",
       [&](void* /*arg*/) { mempurge_count++; });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::FlushJob:SSTFileCreated", [&](void* /*arg*/) { sst_count++; });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   const size_t KVSIZE = 3;
   std::vector<std::string> KEYS(KVSIZE);
@@ -1302,12 +1302,12 @@ TEST_F(DBFlushTest, MemPurgeDeleteAndDeleteRange) {
 
   std::atomic<uint32_t> mempurge_count{0};
   std::atomic<uint32_t> sst_count{0};
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::FlushJob:MemPurgeSuccessful",
       [&](void* /*arg*/) { mempurge_count++; });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::FlushJob:SSTFileCreated", [&](void* /*arg*/) { sst_count++; });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   std::string KEY1 = "ThisIsKey1";
   std::string KEY2 = "ThisIsKey2";
@@ -1507,12 +1507,12 @@ TEST_F(DBFlushTest, MemPurgeAndCompactionFilter) {
 
   std::atomic<uint32_t> mempurge_count{0};
   std::atomic<uint32_t> sst_count{0};
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::FlushJob:MemPurgeSuccessful",
       [&](void* /*arg*/) { mempurge_count++; });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::FlushJob:SSTFileCreated", [&](void* /*arg*/) { sst_count++; });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   Random rnd(53);
   const size_t NUM_REPEAT = 1000;
@@ -1599,12 +1599,12 @@ TEST_F(DBFlushTest, DISABLED_MemPurgeWALSupport) {
     ASSERT_OK(Put(1, "foo", "v3"));
     std::atomic<uint32_t> mempurge_count{0};
     std::atomic<uint32_t> sst_count{0};
-    ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+    rocksdb::SyncPoint::GetInstance()->SetCallBack(
         "DBImpl::FlushJob:MemPurgeSuccessful",
         [&](void* /*arg*/) { mempurge_count++; });
-    ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+    rocksdb::SyncPoint::GetInstance()->SetCallBack(
         "DBImpl::FlushJob:SSTFileCreated", [&](void* /*arg*/) { sst_count++; });
-    ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+    rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
     std::vector<std::string> keys;
     for (size_t k = 0; k < KVSIZE; k++) {
@@ -1771,12 +1771,12 @@ TEST_F(DBFlushTest, MemPurgeCorrectLogNumberAndSSTFileCreation) {
 
   std::atomic<uint32_t> mempurge_count{0};
   std::atomic<uint32_t> sst_count{0};
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::FlushJob:MemPurgeSuccessful",
       [&](void* /*arg*/) { mempurge_count++; });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::FlushJob:SSTFileCreated", [&](void* /*arg*/) { sst_count++; });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   // Dummy variable used for the following callback function.
   uint64_t ZERO = 0;
@@ -1787,7 +1787,7 @@ TEST_F(DBFlushTest, MemPurgeCorrectLogNumberAndSSTFileCreation) {
   // This is when we observed in the past that some SST files created
   // were not properly added to the DB version (via the VersionEdit obj).
   std::atomic<uint64_t> num_memtable_at_first_flush(0);
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "FlushJob::WriteLevel0Table:num_memtables", [&](void* arg) {
         uint64_t* mems_size = reinterpret_cast<uint64_t*>(arg);
         // atomic_compare_exchange_strong sometimes updates the value
@@ -2191,7 +2191,7 @@ TEST_F(DBFlushTest, FlushWithChecksumHandoff1) {
   SyncPoint::GetInstance()->EnableProcessing();
   Status s = Flush();
   ASSERT_EQ(s.severity(),
-            ROCKSDB_NAMESPACE::Status::Severity::kUnrecoverableError);
+            rocksdb::Status::Severity::kUnrecoverableError);
   SyncPoint::GetInstance()->DisableProcessing();
   Destroy(options);
   Reopen(options);
@@ -2215,7 +2215,7 @@ TEST_F(DBFlushTest, FlushWithChecksumHandoff1) {
   SyncPoint::GetInstance()->EnableProcessing();
   s = Flush();
   ASSERT_EQ(s.severity(),
-            ROCKSDB_NAMESPACE::Status::Severity::kUnrecoverableError);
+            rocksdb::Status::Severity::kUnrecoverableError);
   SyncPoint::GetInstance()->DisableProcessing();
 
   Destroy(options);
@@ -2310,7 +2310,7 @@ TEST_F(DBFlushTest, FlushWithChecksumHandoffManifest1) {
   ASSERT_OK(Put("key4", "value4"));
   SyncPoint::GetInstance()->EnableProcessing();
   Status s = Flush();
-  ASSERT_EQ(s.severity(), ROCKSDB_NAMESPACE::Status::Severity::kFatalError);
+  ASSERT_EQ(s.severity(), rocksdb::Status::Severity::kFatalError);
   SyncPoint::GetInstance()->DisableProcessing();
   Destroy(options);
 }
@@ -2349,7 +2349,7 @@ TEST_F(DBFlushTest, FlushWithChecksumHandoffManifest2) {
   ASSERT_OK(Put("key8", "value8"));
   SyncPoint::GetInstance()->EnableProcessing();
   Status s = Flush();
-  ASSERT_EQ(s.severity(), ROCKSDB_NAMESPACE::Status::Severity::kFatalError);
+  ASSERT_EQ(s.severity(), rocksdb::Status::Severity::kFatalError);
   SyncPoint::GetInstance()->DisableProcessing();
 
   Destroy(options);
@@ -3192,7 +3192,7 @@ INSTANTIATE_TEST_CASE_P(DBFlushDirectIOTest, DBFlushDirectIOTest,
 
 INSTANTIATE_TEST_CASE_P(DBAtomicFlushTest, DBAtomicFlushTest, testing::Bool());
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

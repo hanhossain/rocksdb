@@ -9,7 +9,7 @@
 
 #include "rocksdb/unique_id.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // Standard size unique ID, good enough for almost all practical purposes
 using UniqueId64x2 = std::array<uint64_t, 2>;
@@ -90,4 +90,4 @@ std::string EncodeSessionId(uint64_t upper, uint64_t lower);
 Status DecodeSessionId(const std::string &db_session_id, uint64_t *upper,
                        uint64_t *lower);
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

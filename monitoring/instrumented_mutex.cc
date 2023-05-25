@@ -10,7 +10,7 @@
 #include "rocksdb/system_clock.h"
 #include "test_util/sync_point.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 namespace {
 #ifndef NPERF_CONTEXT
 Statistics* stats_for_report(SystemClock* clock, Statistics* stats) {
@@ -87,4 +87,4 @@ bool InstrumentedCondVar::TimedWaitInternal(uint64_t abs_time_us) {
   return cond_.TimedWait(abs_time_us);
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

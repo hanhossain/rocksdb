@@ -13,9 +13,8 @@
 #include <algorithm>
 #include <random>
 
-#include "rocksdb/rocksdb_namespace.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // A very simple random number generator.  Not especially good at
 // generating truly random bits, but good enough for our needs in this
@@ -187,4 +186,4 @@ void RandomShuffle(RandomIt first, RandomIt last) {
   RandomShuffle(first, last, std::random_device{}());
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

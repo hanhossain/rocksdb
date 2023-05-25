@@ -15,7 +15,7 @@
 #include "db/version_edit.h"
 #include "rocksdb/comparator.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 FileIndexer::FileIndexer(const Comparator* ucmp)
     : num_levels_(0), ucmp_(ucmp), level_rb_(nullptr) {}
@@ -215,4 +215,4 @@ void FileIndexer::CalculateRB(
   }
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

@@ -23,7 +23,7 @@ int main() {
 #include "test_util/testutil.h"
 #include "tools/io_tracer_parser_tool.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 namespace {
 const int kMaxArgCount = 100;
@@ -34,7 +34,7 @@ class IOTracerParserTest : public testing::Test {
  public:
   IOTracerParserTest() {
     test_path_ = test::PerThreadDBPath("io_tracer_parser_test");
-    env_ = ROCKSDB_NAMESPACE::Env::Default();
+    env_ = rocksdb::Env::Default();
     EXPECT_OK(env_->CreateDirIfMissing(test_path_));
     trace_file_path_ = test_path_ + "/io_trace_file";
     dbname_ = test_path_ + "/db";
@@ -94,7 +94,7 @@ class IOTracerParserTest : public testing::Test {
       argv[argc++] = arg_buffer + cursor;
       cursor += static_cast<int>(arg.size()) + 1;
     }
-    ASSERT_EQ(0, ROCKSDB_NAMESPACE::io_tracer_parser(argc, argv));
+    ASSERT_EQ(0, rocksdb::io_tracer_parser(argc, argv));
   }
 
   DB* db_;
@@ -122,7 +122,7 @@ TEST_F(IOTracerParserTest, InvalidArguments) {
       argv[argc++] = arg_buffer + cursor;
       cursor += static_cast<int>(arg.size()) + 1;
     }
-    ASSERT_EQ(1, ROCKSDB_NAMESPACE::io_tracer_parser(argc, argv));
+    ASSERT_EQ(1, rocksdb::io_tracer_parser(argc, argv));
   }
 }
 
@@ -172,7 +172,7 @@ TEST_F(IOTracerParserTest, NoRecordingBeforeStartIOTrace) {
     RunIOTracerParserTool();
   }
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

@@ -37,7 +37,7 @@
 #include "util/string_util.h"
 #include "utilities/merge_operators.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 class PlainTableKeyDecoderTest : public testing::Test {};
 
 TEST_F(PlainTableKeyDecoderTest, ReadNonMmap) {
@@ -644,9 +644,9 @@ TEST_P(PlainTableDBTest, Immortal) {
     ASSERT_OK(dbfull()->TEST_FlushMemTable());
 
     int copied = 0;
-    ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+    rocksdb::SyncPoint::GetInstance()->SetCallBack(
         "GetContext::SaveValue::PinSelf", [&](void* /*arg*/) { copied++; });
-    ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+    rocksdb::SyncPoint::GetInstance()->EnableProcessing();
     ASSERT_EQ("b", Get("0000000000000bar"));
     ASSERT_EQ("v1", Get("1000000000000foo"));
     ASSERT_EQ(2, copied);
@@ -663,7 +663,7 @@ TEST_P(PlainTableDBTest, Immortal) {
     } else {
       ASSERT_EQ(2, copied);
     }
-    ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+    rocksdb::SyncPoint::GetInstance()->DisableProcessing();
   }
 }
 
@@ -1339,7 +1339,7 @@ TEST_P(PlainTableDBTest, AdaptiveTable) {
 
 INSTANTIATE_TEST_CASE_P(PlainTableDBTest, PlainTableDBTest, ::testing::Bool());
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

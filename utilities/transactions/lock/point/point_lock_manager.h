@@ -20,7 +20,7 @@
 #include "utilities/transactions/lock/lock_manager.h"
 #include "utilities/transactions/lock/point/point_lock_tracker.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class ColumnFamilyHandle;
 struct LockInfo;
@@ -219,4 +219,4 @@ class PointLockManager : public LockManager {
                             const autovector<TransactionID>& wait_ids);
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

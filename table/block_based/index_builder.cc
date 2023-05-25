@@ -21,7 +21,7 @@
 #include "table/block_based/partitioned_filter_block.h"
 #include "table/format.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // Create a index builder based on its type.
 IndexBuilder* IndexBuilder::CreateIndexBuilder(
@@ -279,4 +279,4 @@ Status PartitionedIndexBuilder::Finish(
 }
 
 size_t PartitionedIndexBuilder::NumPartitions() const { return partition_cnt_; }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

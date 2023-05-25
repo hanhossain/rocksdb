@@ -19,7 +19,7 @@
 #include "table/table_builder.h"
 #include "util/autovector.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class CuckooTableBuilder : public TableBuilder {
  public:
@@ -132,5 +132,5 @@ class CuckooTableBuilder : public TableBuilder {
   bool closed_;  // Either Finish() or Abandon() has been called.
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 

@@ -13,7 +13,7 @@
 #include <cassert>
 #include <utility>
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 Cleanable::Cleanable() {
   cleanup_.function = nullptr;
@@ -178,4 +178,4 @@ void SharedCleanablePtr::MoveAsCleanupTo(Cleanable* target) {
   }
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

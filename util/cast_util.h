@@ -7,9 +7,8 @@
 
 #include <type_traits>
 
-#include "rocksdb/rocksdb_namespace.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 // The helper function to assert the move from dynamic_cast<> to
 // static_cast<> is correct. This function is to deal with legacy code.
 // It is not recommended to add new code to issue class casting. The preferred
@@ -39,4 +38,4 @@ inline To lossless_cast(From x) {
   return static_cast<To>(x);
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

@@ -33,7 +33,7 @@
 #include "util/string_util.h"
 #include "util/xxhash.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 extern const uint64_t kLegacyBlockBasedTableMagicNumber;
 extern const uint64_t kBlockBasedTableMagicNumber;
@@ -570,4 +570,4 @@ Status ReifyDbHostIdProperty(Env* env, std::string* db_host_id) {
 
   return Status::OK();
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

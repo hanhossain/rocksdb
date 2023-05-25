@@ -26,7 +26,7 @@
 #include "utilities/transactions/transaction_util.h"
 #include "utilities/write_batch_with_index/write_batch_with_index_internal.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 struct WriteOptions;
 
@@ -1174,4 +1174,4 @@ Status PessimisticTransaction::SetName(const TransactionName& name) {
   return s;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

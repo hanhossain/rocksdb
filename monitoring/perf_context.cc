@@ -8,7 +8,7 @@
 
 #include "monitoring/perf_context_imp.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 /*
  * Please add new metrics to this macro and appropriate fields will be copied,
@@ -310,4 +310,4 @@ void PerfContext::ClearPerLevelPerfContext() {
   per_level_perf_context_enabled = false;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

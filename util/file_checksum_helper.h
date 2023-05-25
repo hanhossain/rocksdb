@@ -15,7 +15,7 @@
 #include "util/crc32c.h"
 #include "util/math.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // This is the class to generate the file checksum based on Crc32. It
 // will be used as the default checksum method for SST file checksum
@@ -98,4 +98,4 @@ Status GetFileChecksumsFromManifest(Env* src_env, const std::string& abs_path,
                                     uint64_t manifest_file_size,
                                     FileChecksumList* checksum_list);
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

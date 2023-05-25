@@ -11,9 +11,8 @@
 #include "rocksdb/customizable.h"
 #include "rocksdb/env.h"
 #include "rocksdb/file_system.h"
-#include "rocksdb/rocksdb_namespace.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class EncryptionProvider;
 
@@ -459,5 +458,5 @@ class EncryptedFileSystem : public FileSystemWrapper {
     }
   }
 };
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 

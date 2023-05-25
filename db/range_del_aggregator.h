@@ -27,7 +27,7 @@
 #include "util/heap.h"
 #include "util/kv_map.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class TruncatedRangeDelIterator {
  public:
@@ -475,4 +475,4 @@ class CompactionRangeDelAggregator : public RangeDelAggregator {
   Slice trim_ts_{};
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

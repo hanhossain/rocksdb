@@ -15,7 +15,7 @@
 #include "rocksdb/system_clock.h"
 #include "util/cast_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 HistogramWindowingImpl::HistogramWindowingImpl() {
   clock_ = SystemClock::Default();
@@ -191,4 +191,4 @@ void HistogramWindowingImpl::SwapHistoryBucket() {
   }
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

@@ -17,7 +17,7 @@
 #include "rocksdb/slice.h"
 #include "rocksdb/status.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class Logger;
 class SecondaryCacheResultHandle;
@@ -617,4 +617,4 @@ class CacheWrapper : public Cache {
 // reservations
 extern const Cache::CacheItemHelper kNoopCacheItemHelper;
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

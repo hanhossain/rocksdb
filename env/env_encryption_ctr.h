@@ -8,7 +8,7 @@
 
 #include "rocksdb/env_encryption.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 // CTRCipherStream implements BlockAccessCipherStream using an
 // Counter operations mode.
 // See https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation
@@ -110,5 +110,5 @@ Status NewEncryptedFileSystemImpl(
     const std::shared_ptr<EncryptionProvider>& provider,
     std::unique_ptr<FileSystem>* fs);
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 

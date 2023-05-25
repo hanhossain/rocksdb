@@ -14,7 +14,7 @@
 #include "util/compression.h"
 #include "util/core_local.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 namespace compression_cache {
 
 void* const SentinelValue = nullptr;
@@ -103,4 +103,4 @@ void CompressionContextCache::ReturnCachedZSTDUncompressData(int64_t idx) {
 
 CompressionContextCache::~CompressionContextCache() { delete rep_; }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

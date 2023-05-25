@@ -15,7 +15,7 @@
 #include "test_util/testutil.h"
 #include "util/random.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class RandomAccessFileReaderTest : public testing::Test {
  public:
@@ -90,13 +90,13 @@ TEST_F(RandomAccessFileReaderTest, ReadDirectIO) {
 
 TEST_F(RandomAccessFileReaderTest, MultiReadDirectIO) {
   std::vector<FSReadRequest> aligned_reqs;
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "RandomAccessFileReader::MultiRead:AlignedReqs", [&](void* reqs) {
         // Copy reqs, since it's allocated on stack inside MultiRead, which will
         // be deallocated after MultiRead returns.
         aligned_reqs = *reinterpret_cast<std::vector<FSReadRequest>*>(reqs);
       });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   // Creates a file with 3 pages.
   std::string fname = "multi-read-direct-io";
@@ -278,8 +278,8 @@ TEST_F(RandomAccessFileReaderTest, MultiReadDirectIO) {
     ASSERT_EQ(aligned_r1.len, page_size);
   }
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
 }
 
 
@@ -469,7 +469,7 @@ TEST(FSReadRequest, TryMerge) {
   }
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

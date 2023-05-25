@@ -12,6 +12,6 @@ int main() {
 #else  // GFLAGS
 #include "tools/io_tracer_parser_tool.h"
 int main(int argc, char** argv) {
-  return ROCKSDB_NAMESPACE::io_tracer_parser(argc, argv);
+  return rocksdb::io_tracer_parser(argc, argv);
 }
 #endif  // GFLAGS

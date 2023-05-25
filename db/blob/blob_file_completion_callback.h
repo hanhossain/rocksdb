@@ -13,7 +13,7 @@
 #include "file/sst_file_manager_impl.h"
 #include "rocksdb/status.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class BlobFileCompletionCallback {
  public:
@@ -81,4 +81,4 @@ class BlobFileCompletionCallback {
   std::vector<std::shared_ptr<EventListener>> listeners_;
   std::string dbname_;
 };
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

@@ -10,7 +10,7 @@
 #include "rocksdb/customizable.h"
 #include "rocksdb/table.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class Slice;
 class BlockBuilder;
@@ -72,4 +72,4 @@ class FlushBlockBySizePolicyFactory : public FlushBlockPolicyFactory {
       const BlockBuilder& data_block_builder);
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

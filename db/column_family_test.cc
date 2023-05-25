@@ -29,7 +29,7 @@
 #include "utilities/fault_injection_env.h"
 #include "utilities/merge_operators.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 static const int kValueSize = 1000;
 
@@ -73,7 +73,7 @@ class ColumnFamilyTestBase : public testing::Test {
       EXPECT_OK(s);
       column_families.push_back(cfdescriptor);
     }
-    ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+    rocksdb::SyncPoint::GetInstance()->DisableProcessing();
     Destroy(column_families);
     delete env_;
   }
@@ -535,14 +535,14 @@ TEST_P(ColumnFamilyTest, DontReuseColumnFamilyID) {
 TEST_P(ColumnFamilyTest, CreateCFRaceWithGetAggProperty) {
   Open();
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
+  rocksdb::SyncPoint::GetInstance()->LoadDependency(
       {{"DBImpl::WriteOptionsFile:1",
         "ColumnFamilyTest.CreateCFRaceWithGetAggProperty:1"},
        {"ColumnFamilyTest.CreateCFRaceWithGetAggProperty:2",
         "DBImpl::WriteOptionsFile:2"}});
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
-  ROCKSDB_NAMESPACE::port::Thread thread(
+  rocksdb::port::Thread thread(
       [&] { CreateColumnFamilies({"one"}); });
 
   TEST_SYNC_POINT("ColumnFamilyTest.CreateCFRaceWithGetAggProperty:1");
@@ -552,7 +552,7 @@ TEST_P(ColumnFamilyTest, CreateCFRaceWithGetAggProperty) {
 
   thread.join();
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
 }
 
 class FlushEmptyCFTestWithParam
@@ -1184,14 +1184,14 @@ TEST_P(ColumnFamilyTest, DifferentWriteBufferSizes) {
 // }
 
 class TestComparator : public Comparator {
-  int Compare(const ROCKSDB_NAMESPACE::Slice& /*a*/,
-              const ROCKSDB_NAMESPACE::Slice& /*b*/) const override {
+  int Compare(const rocksdb::Slice& /*a*/,
+              const rocksdb::Slice& /*b*/) const override {
     return 0;
   }
   const char* Name() const override { return "Test"; }
   void FindShortestSeparator(
       std::string* /*start*/,
-      const ROCKSDB_NAMESPACE::Slice& /*limit*/) const override {}
+      const rocksdb::Slice& /*limit*/) const override {}
   void FindShortSuccessor(std::string* /*key*/) const override {}
 };
 
@@ -1356,11 +1356,11 @@ TEST_P(ColumnFamilyTest, MultipleManualCompactions) {
     AssertFilesPerLevel(std::to_string(i + 1), 1);
   }
   std::atomic_bool cf_1_1{true};
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
+  rocksdb::SyncPoint::GetInstance()->LoadDependency(
       {{"ColumnFamilyTest::MultiManual:4", "ColumnFamilyTest::MultiManual:1"},
        {"ColumnFamilyTest::MultiManual:2", "ColumnFamilyTest::MultiManual:5"},
        {"ColumnFamilyTest::MultiManual:2", "ColumnFamilyTest::MultiManual:3"}});
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::BackgroundCompaction:NonTrivial:AfterRun", [&](void* /*arg*/) {
         if (cf_1_1.exchange(false)) {
           TEST_SYNC_POINT("ColumnFamilyTest::MultiManual:4");
@@ -1368,7 +1368,7 @@ TEST_P(ColumnFamilyTest, MultipleManualCompactions) {
         }
       });
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
   std::vector<port::Thread> threads;
   threads.emplace_back([&] {
     CompactRangeOptions compact_options;
@@ -1411,8 +1411,8 @@ TEST_P(ColumnFamilyTest, MultipleManualCompactions) {
     ASSERT_NE("NOT_FOUND", Get(1, *key_iter));
     key_iter++;
   }
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
   Close();
 }
 
@@ -1451,18 +1451,18 @@ TEST_P(ColumnFamilyTest, AutomaticAndManualCompactions) {
       dbfull()->TEST_write_controler().GetCompactionPressureToken();
 
   std::atomic_bool cf_1_1{true};
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
+  rocksdb::SyncPoint::GetInstance()->LoadDependency(
       {{"ColumnFamilyTest::AutoManual:4", "ColumnFamilyTest::AutoManual:1"},
        {"ColumnFamilyTest::AutoManual:2", "ColumnFamilyTest::AutoManual:5"},
        {"ColumnFamilyTest::AutoManual:2", "ColumnFamilyTest::AutoManual:3"}});
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::BackgroundCompaction:NonTrivial:AfterRun", [&](void* /*arg*/) {
         if (cf_1_1.exchange(false)) {
           TEST_SYNC_POINT("ColumnFamilyTest::AutoManual:4");
           TEST_SYNC_POINT("ColumnFamilyTest::AutoManual:3");
         }
       });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
   // SETUP column family "one" -- universal style
   for (int i = 0; i < one.level0_file_num_compaction_trigger; ++i) {
     PutRandomData(1, 10, 12000, true);
@@ -1480,7 +1480,7 @@ TEST_P(ColumnFamilyTest, AutomaticAndManualCompactions) {
     WaitForFlush(2);
     AssertFilesPerLevel(std::to_string(i + 1), 2);
   }
-  ROCKSDB_NAMESPACE::port::Thread threads([&] {
+  rocksdb::port::Thread threads([&] {
     CompactRangeOptions compact_options;
     compact_options.exclusive_manual_compaction = false;
     ASSERT_OK(
@@ -1507,8 +1507,8 @@ TEST_P(ColumnFamilyTest, AutomaticAndManualCompactions) {
     ASSERT_NE("NOT_FOUND", Get(1, *key_iter));
     key_iter++;
   }
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
 }
 
 TEST_P(ColumnFamilyTest, ManualAndAutomaticCompactions) {
@@ -1554,11 +1554,11 @@ TEST_P(ColumnFamilyTest, ManualAndAutomaticCompactions) {
   }
   std::atomic_bool cf_1_1{true};
   std::atomic_bool cf_1_2{true};
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
+  rocksdb::SyncPoint::GetInstance()->LoadDependency(
       {{"ColumnFamilyTest::ManualAuto:4", "ColumnFamilyTest::ManualAuto:1"},
        {"ColumnFamilyTest::ManualAuto:5", "ColumnFamilyTest::ManualAuto:2"},
        {"ColumnFamilyTest::ManualAuto:2", "ColumnFamilyTest::ManualAuto:3"}});
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::BackgroundCompaction:NonTrivial:AfterRun", [&](void* /*arg*/) {
         if (cf_1_1.exchange(false)) {
           TEST_SYNC_POINT("ColumnFamilyTest::ManualAuto:4");
@@ -1568,8 +1568,8 @@ TEST_P(ColumnFamilyTest, ManualAndAutomaticCompactions) {
         }
       });
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
-  ROCKSDB_NAMESPACE::port::Thread threads([&] {
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::port::Thread threads([&] {
     CompactRangeOptions compact_options;
     compact_options.exclusive_manual_compaction = false;
     ASSERT_OK(
@@ -1604,8 +1604,8 @@ TEST_P(ColumnFamilyTest, ManualAndAutomaticCompactions) {
     ASSERT_NE("NOT_FOUND", Get(1, *key_iter));
     key_iter++;
   }
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
 }
 
 TEST_P(ColumnFamilyTest, SameCFManualManualCompactions) {
@@ -1646,13 +1646,13 @@ TEST_P(ColumnFamilyTest, SameCFManualManualCompactions) {
   }
   std::atomic_bool cf_1_1{true};
   std::atomic_bool cf_1_2{true};
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
+  rocksdb::SyncPoint::GetInstance()->LoadDependency(
       {{"ColumnFamilyTest::ManualManual:4", "ColumnFamilyTest::ManualManual:2"},
        {"ColumnFamilyTest::ManualManual:4", "ColumnFamilyTest::ManualManual:5"},
        {"ColumnFamilyTest::ManualManual:1", "ColumnFamilyTest::ManualManual:2"},
        {"ColumnFamilyTest::ManualManual:1",
         "ColumnFamilyTest::ManualManual:3"}});
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::BackgroundCompaction:NonTrivial:AfterRun", [&](void* /*arg*/) {
         if (cf_1_1.exchange(false)) {
           TEST_SYNC_POINT("ColumnFamilyTest::ManualManual:4");
@@ -1662,8 +1662,8 @@ TEST_P(ColumnFamilyTest, SameCFManualManualCompactions) {
         }
       });
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
-  ROCKSDB_NAMESPACE::port::Thread threads([&] {
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::port::Thread threads([&] {
     CompactRangeOptions compact_options;
     compact_options.exclusive_manual_compaction = true;
     ASSERT_OK(
@@ -1683,7 +1683,7 @@ TEST_P(ColumnFamilyTest, SameCFManualManualCompactions) {
         std::to_string(one.level0_file_num_compaction_trigger + i), 1);
   }
 
-  ROCKSDB_NAMESPACE::port::Thread threads1([&] {
+  rocksdb::port::Thread threads1([&] {
     CompactRangeOptions compact_options;
     compact_options.exclusive_manual_compaction = false;
     ASSERT_OK(
@@ -1704,8 +1704,8 @@ TEST_P(ColumnFamilyTest, SameCFManualManualCompactions) {
     ASSERT_NE("NOT_FOUND", Get(1, *key_iter));
     key_iter++;
   }
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
 }
 
 TEST_P(ColumnFamilyTest, SameCFManualAutomaticCompactions) {
@@ -1746,12 +1746,12 @@ TEST_P(ColumnFamilyTest, SameCFManualAutomaticCompactions) {
   }
   std::atomic_bool cf_1_1{true};
   std::atomic_bool cf_1_2{true};
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
+  rocksdb::SyncPoint::GetInstance()->LoadDependency(
       {{"ColumnFamilyTest::ManualAuto:4", "ColumnFamilyTest::ManualAuto:2"},
        {"ColumnFamilyTest::ManualAuto:4", "ColumnFamilyTest::ManualAuto:5"},
        {"ColumnFamilyTest::ManualAuto:1", "ColumnFamilyTest::ManualAuto:2"},
        {"ColumnFamilyTest::ManualAuto:1", "ColumnFamilyTest::ManualAuto:3"}});
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::BackgroundCompaction:NonTrivial:AfterRun", [&](void* /*arg*/) {
         if (cf_1_1.exchange(false)) {
           TEST_SYNC_POINT("ColumnFamilyTest::ManualAuto:4");
@@ -1761,8 +1761,8 @@ TEST_P(ColumnFamilyTest, SameCFManualAutomaticCompactions) {
         }
       });
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
-  ROCKSDB_NAMESPACE::port::Thread threads([&] {
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::port::Thread threads([&] {
     CompactRangeOptions compact_options;
     compact_options.exclusive_manual_compaction = false;
     ASSERT_OK(
@@ -1795,8 +1795,8 @@ TEST_P(ColumnFamilyTest, SameCFManualAutomaticCompactions) {
     ASSERT_NE("NOT_FOUND", Get(1, *key_iter));
     key_iter++;
   }
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
 }
 
 TEST_P(ColumnFamilyTest, SameCFManualAutomaticCompactionsLevel) {
@@ -1837,14 +1837,14 @@ TEST_P(ColumnFamilyTest, SameCFManualAutomaticCompactionsLevel) {
   }
   std::atomic_bool cf_1_1{true};
   std::atomic_bool cf_1_2{true};
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
+  rocksdb::SyncPoint::GetInstance()->LoadDependency(
       {{"ColumnFamilyTest::ManualAuto:4", "ColumnFamilyTest::ManualAuto:2"},
        {"ColumnFamilyTest::ManualAuto:4", "ColumnFamilyTest::ManualAuto:5"},
        {"ColumnFamilyTest::ManualAuto:3", "ColumnFamilyTest::ManualAuto:2"},
        {"LevelCompactionPicker::PickCompactionBySize:0",
         "ColumnFamilyTest::ManualAuto:3"},
        {"ColumnFamilyTest::ManualAuto:1", "ColumnFamilyTest::ManualAuto:3"}});
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::BackgroundCompaction:NonTrivial:AfterRun", [&](void* /*arg*/) {
         if (cf_1_1.exchange(false)) {
           TEST_SYNC_POINT("ColumnFamilyTest::ManualAuto:4");
@@ -1854,8 +1854,8 @@ TEST_P(ColumnFamilyTest, SameCFManualAutomaticCompactionsLevel) {
         }
       });
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
-  ROCKSDB_NAMESPACE::port::Thread threads([&] {
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::port::Thread threads([&] {
     CompactRangeOptions compact_options;
     compact_options.exclusive_manual_compaction = false;
     ASSERT_OK(
@@ -1886,8 +1886,8 @@ TEST_P(ColumnFamilyTest, SameCFManualAutomaticCompactionsLevel) {
     ASSERT_NE("NOT_FOUND", Get(1, *key_iter));
     key_iter++;
   }
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
 }
 
 // In this test, we generate enough files to trigger automatic compactions.
@@ -1927,12 +1927,12 @@ TEST_P(ColumnFamilyTest, SameCFAutomaticManualCompactions) {
 
   std::atomic_bool cf_1_1{true};
   std::atomic_bool cf_1_2{true};
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
+  rocksdb::SyncPoint::GetInstance()->LoadDependency(
       {{"ColumnFamilyTest::AutoManual:4", "ColumnFamilyTest::AutoManual:2"},
        {"ColumnFamilyTest::AutoManual:4", "ColumnFamilyTest::AutoManual:5"},
        {"CompactionPicker::CompactRange:Conflict",
         "ColumnFamilyTest::AutoManual:3"}});
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::BackgroundCompaction:NonTrivial:AfterRun", [&](void* /*arg*/) {
         if (cf_1_1.exchange(false)) {
           TEST_SYNC_POINT("ColumnFamilyTest::AutoManual:4");
@@ -1942,7 +1942,7 @@ TEST_P(ColumnFamilyTest, SameCFAutomaticManualCompactions) {
         }
       });
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   // SETUP column family "one" -- universal style
   for (int i = 0; i < one.level0_file_num_compaction_trigger; ++i) {
@@ -1976,8 +1976,8 @@ TEST_P(ColumnFamilyTest, SameCFAutomaticManualCompactions) {
     ASSERT_NE("NOT_FOUND", Get(1, *key_iter));
     key_iter++;
   }
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
 }
 
 namespace {
@@ -2337,7 +2337,7 @@ TEST_P(ColumnFamilyTest, FlushAndDropRaceCondition) {
   options.write_buffer_size = 100000;  // small write buffer size
   Reopen({options, options});
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
+  rocksdb::SyncPoint::GetInstance()->LoadDependency(
       {{"VersionSet::LogAndApply::ColumnFamilyDrop:0",
         "FlushJob::WriteLevel0Table"},
        {"VersionSet::LogAndApply::ColumnFamilyDrop:1",
@@ -2345,7 +2345,7 @@ TEST_P(ColumnFamilyTest, FlushAndDropRaceCondition) {
        {"FlushJob::InstallResults",
         "VersionSet::LogAndApply::ColumnFamilyDrop:2"}});
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
   test::SleepingBackgroundTask sleeping_task;
 
   env_->Schedule(&test::SleepingBackgroundTask::DoSleepTask, &sleeping_task,
@@ -2428,7 +2428,7 @@ TEST_P(ColumnFamilyTest, CreateAndDropRace) {
 
   auto main_thread_id = std::this_thread::get_id();
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "PersistRocksDBOptions:start", [&](void* /*arg*/) {
         auto current_thread_id = std::this_thread::get_id();
         // If it's the main thread hitting this sync-point, then it
@@ -2442,7 +2442,7 @@ TEST_P(ColumnFamilyTest, CreateAndDropRace) {
         }
       });
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "WriteThread::EnterUnbatched:Wait", [&](void* /*arg*/) {
         // This means a thread doing DropColumnFamily() is waiting for
         // other thread to finish persisting options.
@@ -2454,11 +2454,11 @@ TEST_P(ColumnFamilyTest, CreateAndDropRace) {
   Open({"default", "one", "two", "three"},
        {cf_opts[0], cf_opts[1], cf_opts[2], cf_opts[3]});
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   // Start a thread that will drop the first column family
   // and its comparator
-  ROCKSDB_NAMESPACE::port::Thread drop_cf_thread(DropSingleColumnFamily, this,
+  rocksdb::port::Thread drop_cf_thread(DropSingleColumnFamily, this,
                                                  1, &comparators);
 
   DropColumnFamilies({2});
@@ -2472,8 +2472,8 @@ TEST_P(ColumnFamilyTest, CreateAndDropRace) {
     }
   }
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
 }
 
 TEST_P(ColumnFamilyTest, WriteStallSingleColumnFamily) {
@@ -2907,10 +2907,10 @@ TEST_P(ColumnFamilyTest, FlushCloseWALFiles) {
   ASSERT_OK(Put(0, "fodor", "mirko"));
   ASSERT_OK(Put(1, "fodor", "mirko"));
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency({
+  rocksdb::SyncPoint::GetInstance()->LoadDependency({
       {"DBImpl::BGWorkFlush:done", "FlushCloseWALFiles:0"},
   });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   // Block flush jobs from running
   test::SleepingBackgroundTask sleeping_task;
@@ -2929,7 +2929,7 @@ TEST_P(ColumnFamilyTest, FlushCloseWALFiles) {
   sleeping_task.WakeUp();
   sleeping_task.WaitUntilDone();
   TEST_SYNC_POINT("FlushCloseWALFiles:0");
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
   ASSERT_EQ(1, env.num_open_wal_file_.load());
 
   Reopen();
@@ -3012,14 +3012,14 @@ TEST_P(ColumnFamilyTest, IteratorCloseWALFile2) {
   ASSERT_OK(Put(0, "fodor", "mirko"));
   ASSERT_OK(Put(1, "fodor", "mirko"));
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency({
+  rocksdb::SyncPoint::GetInstance()->LoadDependency({
       {"ColumnFamilyTest::IteratorCloseWALFile2:0",
        "DBImpl::BGWorkPurge:start"},
       {"ColumnFamilyTest::IteratorCloseWALFile2:2",
        "DBImpl::BackgroundCallFlush:start"},
       {"DBImpl::BGWorkPurge:end", "ColumnFamilyTest::IteratorCloseWALFile2:1"},
   });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   WriteOptions wo;
   wo.sync = true;
@@ -3037,7 +3037,7 @@ TEST_P(ColumnFamilyTest, IteratorCloseWALFile2) {
   TEST_SYNC_POINT("ColumnFamilyTest::IteratorCloseWALFile2:2");
   WaitForFlush(1);
   ASSERT_EQ(1, env.num_open_wal_file_.load());
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
 
   Reopen();
   ASSERT_EQ("mirko", Get(0, "fodor"));
@@ -3080,14 +3080,14 @@ TEST_P(ColumnFamilyTest, ForwardIteratorCloseWALFile) {
   ASSERT_OK(Put(0, "fodor", "mirko"));
   ASSERT_OK(Put(1, "fodor", "mirko"));
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency({
+  rocksdb::SyncPoint::GetInstance()->LoadDependency({
       {"ColumnFamilyTest::IteratorCloseWALFile2:0",
        "DBImpl::BGWorkPurge:start"},
       {"ColumnFamilyTest::IteratorCloseWALFile2:2",
        "DBImpl::BackgroundCallFlush:start"},
       {"DBImpl::BGWorkPurge:end", "ColumnFamilyTest::IteratorCloseWALFile2:1"},
   });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   WriteOptions wo;
   wo.sync = true;
@@ -3113,7 +3113,7 @@ TEST_P(ColumnFamilyTest, ForwardIteratorCloseWALFile) {
   ASSERT_EQ(1, env.delete_count_.load());
 
   delete it;
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
 
   Reopen();
   ASSERT_EQ("mirko", Get(0, "fodor"));
@@ -3132,15 +3132,15 @@ TEST_P(ColumnFamilyTest, LogSyncConflictFlush) {
   ASSERT_OK(Put(0, "", ""));
   ASSERT_OK(Put(1, "foo", "bar"));
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
+  rocksdb::SyncPoint::GetInstance()->LoadDependency(
       {{"DBImpl::SyncWAL:BeforeMarkLogsSynced:1",
         "ColumnFamilyTest::LogSyncConflictFlush:1"},
        {"ColumnFamilyTest::LogSyncConflictFlush:2",
         "DBImpl::SyncWAL:BeforeMarkLogsSynced:2"}});
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
-  ROCKSDB_NAMESPACE::port::Thread thread([&] { ASSERT_OK(db_->SyncWAL()); });
+  rocksdb::port::Thread thread([&] { ASSERT_OK(db_->SyncWAL()); });
 
   TEST_SYNC_POINT("ColumnFamilyTest::LogSyncConflictFlush:1");
   ASSERT_OK(Flush(1));
@@ -3151,7 +3151,7 @@ TEST_P(ColumnFamilyTest, LogSyncConflictFlush) {
 
   thread.join();
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
   Close();
 }
 #endif
@@ -3371,7 +3371,7 @@ TEST(ColumnFamilyTest, ValidateMemtableKVChecksumOption) {
   ASSERT_OK(ColumnFamilyData::ValidateOptions(db_options, cf_options));
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

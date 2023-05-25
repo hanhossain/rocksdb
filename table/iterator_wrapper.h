@@ -14,7 +14,7 @@
 #include "table/internal_iterator.h"
 #include "test_util/sync_point.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // A internal wrapper class with an interface similar to Iterator that caches
 // the valid() and key() results for an underlying iterator.
@@ -187,4 +187,4 @@ class Arena;
 template <class TValue = Slice>
 extern InternalIteratorBase<TValue>* NewEmptyInternalIterator(Arena* arena);
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

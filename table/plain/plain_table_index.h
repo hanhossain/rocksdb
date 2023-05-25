@@ -14,7 +14,7 @@
 #include "options/cf_options.h"
 #include "rocksdb/options.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // The file contains two classes PlainTableIndex and PlainTableIndexBuilder
 // The two classes implement the index format of PlainTable.
@@ -242,5 +242,5 @@ class PlainTableIndexBuilder {
   static const size_t kRecordsPerGroup = 256;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 

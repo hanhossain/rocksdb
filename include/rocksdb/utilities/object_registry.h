@@ -17,7 +17,7 @@
 
 #include "rocksdb/status.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 class Customizable;
 class Logger;
 class ObjectLibrary;
@@ -580,4 +580,4 @@ class ObjectRegistry {
   mutable std::mutex objects_mutex_;  // Mutex for managed objects
   mutable std::mutex library_mutex_;  // Mutex for managed libraries
 };
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

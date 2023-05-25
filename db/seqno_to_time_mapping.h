@@ -16,7 +16,7 @@
 #include "rocksdb/status.h"
 #include "rocksdb/types.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 constexpr uint64_t kUnknownSeqnoTime = 0;
 
@@ -186,4 +186,4 @@ inline bool operator<(const SequenceNumber& seqno,
   return seqno < other.seqno;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

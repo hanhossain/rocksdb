@@ -9,7 +9,7 @@
 
 #include "util/timer.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 class SystemClock;
 
 using PeriodicTaskFunc = std::function<void()>;
@@ -104,5 +104,5 @@ class PeriodicTaskScheduler {
   static constexpr uint64_t kMicrosInSecond = 1000U * 1000U;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 

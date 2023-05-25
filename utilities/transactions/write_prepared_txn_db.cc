@@ -37,7 +37,7 @@
 extern "C" bool rocksdb_write_prepared_TEST_ShouldClearCommitCache(void)
     __attribute__((__weak__));
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 Status WritePreparedTxnDB::Initialize(
     const std::vector<size_t>& compaction_enabled_cf_indices,
@@ -1035,4 +1035,4 @@ void SubBatchCounter::AddKey(const uint32_t cf, const Slice& key) {
   }
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

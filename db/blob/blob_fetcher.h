@@ -8,7 +8,7 @@
 #include "rocksdb/options.h"
 #include "rocksdb/status.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class Version;
 class Slice;
@@ -34,4 +34,4 @@ class BlobFetcher {
   const Version* version_;
   ReadOptions read_options_;
 };
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

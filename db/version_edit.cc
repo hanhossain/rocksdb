@@ -18,7 +18,7 @@
 #include "util/coding.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 namespace {}  // anonymous namespace
 
@@ -1042,4 +1042,4 @@ std::string VersionEdit::DebugJSON(int edit_num, bool hex_key) const {
   return jw.Get();
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

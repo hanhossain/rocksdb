@@ -23,7 +23,7 @@
 
 #include "status.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class IOStatus : public Status {
  public:
@@ -241,4 +241,4 @@ inline IOStatus status_to_io_status(Status&& status) {
   return io_s;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

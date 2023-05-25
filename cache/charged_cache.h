@@ -10,7 +10,7 @@
 #include "port/port.h"
 #include "rocksdb/advanced_cache.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class ConcurrentCacheReservationManager;
 
@@ -56,4 +56,4 @@ class ChargedCache : public CacheWrapper {
   std::shared_ptr<ConcurrentCacheReservationManager> cache_res_mgr_;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

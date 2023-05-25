@@ -21,7 +21,7 @@
 #include "util/coding.h"
 #include "utilities/merge_operators.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 bool use_compression;
 
@@ -452,7 +452,7 @@ void testPartialMerge(Counters* counters, DB* db, size_t max_merge,
   // Test case 2: partial merge should not be called when a put is found.
   resetNumPartialMergeCalls();
   tmp_sum = 0;
-  ASSERT_OK(db->Put(ROCKSDB_NAMESPACE::WriteOptions(), "c", "10"));
+  ASSERT_OK(db->Put(rocksdb::WriteOptions(), "c", "10"));
   for (size_t i = 1; i <= count; i++) {
     counters->assert_add("c", i);
     tmp_sum += i;
@@ -606,12 +606,12 @@ TEST_F(MergeTest, MergeWithCompactionAndFlush) {
   ASSERT_OK(DestroyDB(dbname, Options()));
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
-  ROCKSDB_NAMESPACE::use_compression = false;
+  rocksdb::use_compression = false;
   if (argc > 1) {
-    ROCKSDB_NAMESPACE::use_compression = true;
+    rocksdb::use_compression = true;
   }
 
     ::testing::InitGoogleTest(&argc, argv);

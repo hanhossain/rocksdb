@@ -25,7 +25,7 @@
 #include "rocksdb/secondary_cache.h"
 #include "util/autovector.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 namespace clock_cache {
 
@@ -698,4 +698,4 @@ class HyperClockCache
 
 }  // namespace clock_cache
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

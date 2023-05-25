@@ -41,7 +41,7 @@
 #define ROCKSDB_DEPRECATED_FUNC __declspec(deprecated)
 #endif
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 struct ColumnFamilyOptions;
 struct CompactionOptions;
@@ -166,7 +166,7 @@ class DB {
   // ListColumnFamilies().
   //
   // The default column family name is 'default' and it's stored
-  // in ROCKSDB_NAMESPACE::kDefaultColumnFamilyName.
+  // in rocksdb::kDefaultColumnFamilyName.
   // If everything is OK, handles will on return be the same size
   // as column_families --- handles[i] will be a handle that you
   // will use to operate on column family column_family[i].
@@ -199,7 +199,7 @@ class DB {
   // When opening DB with read only, you can specify only a subset of column
   // families in the database that should be opened. However, you always need
   // to specify default column family. The default column family name is
-  // 'default' and it's stored in ROCKSDB_NAMESPACE::kDefaultColumnFamilyName
+  // 'default' and it's stored in rocksdb::kDefaultColumnFamilyName
   //
   static Status OpenForReadOnly(
       const DBOptions& db_options, const std::string& name,
@@ -239,7 +239,7 @@ class DB {
   // When opening DB in secondary mode, you can specify only a subset of column
   // families in the database that should be opened. However, you always need
   // to specify default column family. The default column family name is
-  // 'default' and it's stored in ROCKSDB_NAMESPACE::kDefaultColumnFamilyName
+  // 'default' and it's stored in rocksdb::kDefaultColumnFamilyName
   //
   // Column families created by the primary after the secondary instance starts
   // are currently ignored by the secondary instance.  Column families opened
@@ -1958,4 +1958,4 @@ Status RepairDB(const std::string& dbname, const DBOptions& db_options,
 Status RepairDB(const std::string& dbname, const Options& options);
 
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

@@ -8,7 +8,7 @@
 
 #if defined(WITHOUT_COROUTINES) || \
     (defined(USE_COROUTINES) && defined(WITH_COROUTINES))
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 #if defined(WITHOUT_COROUTINES)
 #endif
@@ -126,5 +126,5 @@ DEFINE_SYNC_AND_ASYNC(Status, TableCache::MultiGet)
   }
   CO_RETURN s;
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 #endif

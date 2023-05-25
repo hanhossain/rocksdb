@@ -16,7 +16,7 @@
 #include "rocksdb/table.h"
 #include "util/random.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class DBSSTTest : public DBTestBase {
  public:
@@ -336,14 +336,14 @@ TEST_F(DBSSTTest, DBWithSstFileManager) {
   int files_added = 0;
   int files_deleted = 0;
   int files_moved = 0;
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "SstFileManagerImpl::OnAddFile", [&](void* /*arg*/) { files_added++; });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "SstFileManagerImpl::OnDeleteFile",
       [&](void* /*arg*/) { files_deleted++; });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "SstFileManagerImpl::OnMoveFile", [&](void* /*arg*/) { files_moved++; });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   Options options = CurrentOptions();
   options.sst_file_manager = sst_file_manager;
@@ -395,7 +395,7 @@ TEST_F(DBSSTTest, DBWithSstFileManager) {
   ASSERT_EQ(sfm->GetTrackedFiles(), files_in_db);
   ASSERT_EQ(sfm->GetTotalSize(), total_files_size);
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
 }
 
 TEST_F(DBSSTTest, DBWithSstFileManagerForBlobFiles) {
@@ -407,7 +407,7 @@ TEST_F(DBSSTTest, DBWithSstFileManagerForBlobFiles) {
   int files_moved = 0;
   int files_scheduled_to_delete = 0;
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "SstFileManagerImpl::OnAddFile", [&](void* arg) {
         const std::string* const file_path =
             static_cast<const std::string*>(arg);
@@ -416,7 +416,7 @@ TEST_F(DBSSTTest, DBWithSstFileManagerForBlobFiles) {
         }
       });
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "SstFileManagerImpl::OnDeleteFile", [&](void* arg) {
         const std::string* const file_path =
             static_cast<const std::string*>(arg);
@@ -425,7 +425,7 @@ TEST_F(DBSSTTest, DBWithSstFileManagerForBlobFiles) {
         }
       });
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "SstFileManagerImpl::ScheduleFileDeletion", [&](void* arg) {
         assert(arg);
         const std::string* const file_path =
@@ -435,9 +435,9 @@ TEST_F(DBSSTTest, DBWithSstFileManagerForBlobFiles) {
         }
       });
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "SstFileManagerImpl::OnMoveFile", [&](void* /*arg*/) { files_moved++; });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   Options options = CurrentOptions();
   options.sst_file_manager = sst_file_manager;
@@ -509,8 +509,8 @@ TEST_F(DBSSTTest, DBWithSstFileManagerForBlobFiles) {
   ASSERT_EQ(files_deleted, blob_files.size());
   ASSERT_EQ(files_scheduled_to_delete, blob_files.size());
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
 }
 
 TEST_F(DBSSTTest, DBWithSstFileManagerForBlobFilesWithGC) {
@@ -529,7 +529,7 @@ TEST_F(DBSSTTest, DBWithSstFileManagerForBlobFilesWithGC) {
   int files_moved = 0;
   int files_scheduled_to_delete = 0;
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "SstFileManagerImpl::OnAddFile", [&](void* arg) {
         const std::string* const file_path =
             static_cast<const std::string*>(arg);
@@ -538,7 +538,7 @@ TEST_F(DBSSTTest, DBWithSstFileManagerForBlobFilesWithGC) {
         }
       });
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "SstFileManagerImpl::OnDeleteFile", [&](void* arg) {
         const std::string* const file_path =
             static_cast<const std::string*>(arg);
@@ -547,7 +547,7 @@ TEST_F(DBSSTTest, DBWithSstFileManagerForBlobFilesWithGC) {
         }
       });
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "SstFileManagerImpl::ScheduleFileDeletion", [&](void* arg) {
         assert(arg);
         const std::string* const file_path =
@@ -557,9 +557,9 @@ TEST_F(DBSSTTest, DBWithSstFileManagerForBlobFilesWithGC) {
         }
       });
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "SstFileManagerImpl::OnMoveFile", [&](void* /*arg*/) { files_moved++; });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   DestroyAndReopen(options);
   Random rnd(301);
@@ -652,8 +652,8 @@ TEST_F(DBSSTTest, DBWithSstFileManagerForBlobFilesWithGC) {
   ASSERT_EQ(files_deleted, 5);
   ASSERT_EQ(files_scheduled_to_delete, 5);
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
 }
 
 class DBSSTTestRateLimit : public DBSSTTest,
@@ -665,16 +665,16 @@ class DBSSTTestRateLimit : public DBSSTTest,
 
 TEST_P(DBSSTTestRateLimit, RateLimitedDelete) {
   Destroy(last_options_);
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency({
+  rocksdb::SyncPoint::GetInstance()->LoadDependency({
       {"DBSSTTest::RateLimitedDelete:1",
        "DeleteScheduler::BackgroundEmptyTrash"},
   });
 
   std::vector<uint64_t> penalties;
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DeleteScheduler::BackgroundEmptyTrash:Wait",
       [&](void* arg) { penalties.push_back(*(static_cast<uint64_t*>(arg))); });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "InstrumentedCondVar::TimedWaitInternal", [&](void* arg) {
         // Turn timed wait into a simulated sleep
         uint64_t* abs_time_us = static_cast<uint64_t*>(arg);
@@ -693,13 +693,13 @@ TEST_P(DBSSTTestRateLimit, RateLimitedDelete) {
 
   // Disable PeriodicTaskScheduler as it also has TimedWait, which could update
   // the simulated sleep time
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::StartPeriodicTaskScheduler:DisableScheduler", [&](void* arg) {
         bool* disable_scheduler = static_cast<bool*>(arg);
         *disable_scheduler = true;
       });
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   bool different_wal_dir = GetParam();
   Options options = CurrentOptions();
@@ -765,7 +765,7 @@ TEST_P(DBSSTTestRateLimit, RateLimitedDelete) {
   ASSERT_EQ(
       0, options.statistics->getAndResetTickerCount(FILES_DELETED_IMMEDIATELY));
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
 }
 
 INSTANTIATE_TEST_CASE_P(RateLimitedDelete, DBSSTTestRateLimit,
@@ -775,7 +775,7 @@ TEST_F(DBSSTTest, RateLimitedWALDelete) {
   Destroy(last_options_);
 
   std::vector<uint64_t> penalties;
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DeleteScheduler::BackgroundEmptyTrash:Wait",
       [&](void* arg) { penalties.push_back(*(static_cast<uint64_t*>(arg))); });
 
@@ -795,7 +795,7 @@ TEST_F(DBSSTTest, RateLimitedWALDelete) {
   SetTimeElapseOnlySleepOnReopen(&options);
 
   ASSERT_OK(TryReopen(options));
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   // Create 4 files in L0
   for (char v = 'a'; v <= 'd'; v++) {
@@ -820,7 +820,7 @@ TEST_F(DBSSTTest, RateLimitedWALDelete) {
   sfm->WaitForEmptyTrash();
   ASSERT_EQ(penalties.size(), 8);
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
 }
 
 class DBWALTestWithParam
@@ -965,12 +965,12 @@ TEST_F(DBSSTTest, OpenDBWithExistingTrash) {
 // files in the second path were not.
 TEST_F(DBSSTTest, DeleteSchedulerMultipleDBPaths) {
   std::atomic<int> bg_delete_file(0);
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DeleteScheduler::DeleteTrashFile:DeleteFile",
       [&](void* /*arg*/) { bg_delete_file++; });
   // The deletion scheduler sometimes skips marking file as trash according to
   // a heuristic. In that case the deletion will go through the below SyncPoint.
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DeleteScheduler::DeleteFile", [&](void* /*arg*/) { bg_delete_file++; });
 
   Options options = CurrentOptions();
@@ -989,7 +989,7 @@ TEST_F(DBSSTTest, DeleteSchedulerMultipleDBPaths) {
   auto sfm = static_cast<SstFileManagerImpl*>(options.sst_file_manager.get());
 
   DestroyAndReopen(options);
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   WriteOptions wo;
   wo.disableWAL = true;
@@ -1037,15 +1037,15 @@ TEST_F(DBSSTTest, DeleteSchedulerMultipleDBPaths) {
   sfm->WaitForEmptyTrash();
   ASSERT_EQ(bg_delete_file, 10);
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
 }
 
 TEST_F(DBSSTTest, DestroyDBWithRateLimitedDelete) {
   int bg_delete_file = 0;
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DeleteScheduler::DeleteTrashFile:DeleteFile",
       [&](void* /*arg*/) { bg_delete_file++; });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   Status s;
   Options options = CurrentOptions();
@@ -1159,20 +1159,20 @@ TEST_F(DBSSTTest, DBWithMaxSpaceAllowedWithBlobFiles) {
   bool delete_blob_file = false;
   // Sync point called after blob file is closed and max allowed space is
   // checked.
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "BlobFileCompletionCallback::CallBack::MaxAllowedSpaceReached",
       [&](void* /*arg*/) { max_allowed_space_reached = true; });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "BuildTable::AfterDeleteFile",
       [&](void* /*arg*/) { delete_blob_file = true; });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency({
+  rocksdb::SyncPoint::GetInstance()->LoadDependency({
       {
           "BuildTable::AfterDeleteFile",
           "DBSSTTest::DBWithMaxSpaceAllowedWithBlobFiles:1",
       },
   });
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   ASSERT_OK(Put("key1", "val1"));
   // This flush will fail
@@ -1181,7 +1181,7 @@ TEST_F(DBSSTTest, DBWithMaxSpaceAllowedWithBlobFiles) {
 
   TEST_SYNC_POINT("DBSSTTest::DBWithMaxSpaceAllowedWithBlobFiles:1");
   ASSERT_TRUE(delete_blob_file);
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
 }
 
 TEST_F(DBSSTTest, CancellingCompactionsWorks) {
@@ -1195,15 +1195,15 @@ TEST_F(DBSSTTest, CancellingCompactionsWorks) {
   DestroyAndReopen(options);
 
   int completed_compactions = 0;
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::BackgroundCompaction():CancelledCompaction", [&](void* /*arg*/) {
         sfm->SetMaxAllowedSpaceUsage(0);
         ASSERT_EQ(sfm->GetCompactionsReservedSize(), 0);
       });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::BackgroundCompaction:NonTrivial:AfterRun",
       [&](void* /*arg*/) { completed_compactions++; });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   Random rnd(301);
 
@@ -1239,7 +1239,7 @@ TEST_F(DBSSTTest, CancellingCompactionsWorks) {
   ASSERT_EQ(4,
             dbfull()->immutable_db_options().statistics.get()->getTickerCount(
                 FILES_DELETED_IMMEDIATELY));
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
 }
 
 TEST_F(DBSSTTest, CancellingManualCompactionsWorks) {
@@ -1292,7 +1292,7 @@ TEST_F(DBSSTTest, CancellingManualCompactionsWorks) {
   auto l0_files = collector->GetFlushedFiles();
   ASSERT_TRUE(
       dbfull()
-          ->CompactFiles(ROCKSDB_NAMESPACE::CompactionOptions(), l0_files, 0)
+          ->CompactFiles(rocksdb::CompactionOptions(), l0_files, 0)
           .IsCompactionTooLarge());
 
   // Wait for manual compaction to get scheduled and finish
@@ -1307,18 +1307,18 @@ TEST_F(DBSSTTest, CancellingManualCompactionsWorks) {
   // returns to normal
   sfm->SetMaxAllowedSpaceUsage(0);
   int completed_compactions = 0;
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "CompactFilesImpl:End", [&](void* /*arg*/) { completed_compactions++; });
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
-  ASSERT_OK(dbfull()->CompactFiles(ROCKSDB_NAMESPACE::CompactionOptions(),
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
+  ASSERT_OK(dbfull()->CompactFiles(rocksdb::CompactionOptions(),
                                    l0_files, 0));
   ASSERT_OK(dbfull()->TEST_WaitForCompact(true));
 
   ASSERT_EQ(sfm->GetCompactionsReservedSize(), 0);
   ASSERT_GT(completed_compactions, 0);
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
 }
 
 TEST_F(DBSSTTest, DBWithMaxSpaceAllowedRandomized) {
@@ -1332,7 +1332,7 @@ TEST_F(DBSSTTest, DBWithMaxSpaceAllowedRandomized) {
 
   std::atomic<int> reached_max_space_on_flush(0);
   std::atomic<int> reached_max_space_on_compaction(0);
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::FlushMemTableToOutputFile:MaxAllowedSpaceReached",
       [&](void* arg) {
         Status* bg_error = static_cast<Status*>(arg);
@@ -1342,13 +1342,13 @@ TEST_F(DBSSTTest, DBWithMaxSpaceAllowedRandomized) {
         *bg_error = Status::OK();
       });
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::BackgroundCompaction():CancelledCompaction", [&](void* arg) {
         bool* enough_room = static_cast<bool*>(arg);
         *enough_room = true;
       });
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "CompactionJob::FinishCompactionOutputFile:MaxAllowedSpaceReached",
       [&](void* /*arg*/) {
         bg_error_set = true;
@@ -1357,8 +1357,8 @@ TEST_F(DBSSTTest, DBWithMaxSpaceAllowedRandomized) {
 
   for (auto limit_mb : max_space_limits_mbs) {
     bg_error_set = false;
-    ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearTrace();
-    ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+    rocksdb::SyncPoint::GetInstance()->ClearTrace();
+    rocksdb::SyncPoint::GetInstance()->EnableProcessing();
     std::shared_ptr<SstFileManager> sst_file_manager(NewSstFileManager(env_));
     auto sfm = static_cast<SstFileManagerImpl*>(sst_file_manager.get());
 
@@ -1383,7 +1383,7 @@ TEST_F(DBSSTTest, DBWithMaxSpaceAllowedRandomized) {
     std::unordered_map<std::string, uint64_t> files_in_db;
     ASSERT_OK(GetAllDataFiles(rs::types::FileType::TableFile, &files_in_db, &total_sst_files_size));
     ASSERT_GE(total_sst_files_size, limit_mb * 1024 * 1024);
-    ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+    rocksdb::SyncPoint::GetInstance()->DisableProcessing();
   }
 
   ASSERT_GT(reached_max_space_on_flush, 0);
@@ -1524,12 +1524,12 @@ TEST_F(DBSSTTest, GetTotalSstFilesSize) {
   // we encode table properties as varint64. Force time to be 0 to work around
   // it. Should remove the workaround after we propagate the property on
   // compaction.
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "FlushJob::WriteLevel0Table:oldest_ancester_time", [&](void* arg) {
         uint64_t* current_time = static_cast<uint64_t*>(arg);
         *current_time = 0;
       });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   Options options = CurrentOptions();
   options.disable_auto_compactions = true;
@@ -1625,7 +1625,7 @@ TEST_F(DBSSTTest, GetTotalSstFilesSize) {
   // Total SST files = 0
   ASSERT_EQ(total_sst_files_size, 0);
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
 }
 
 TEST_F(DBSSTTest, OpenDBWithoutGetFileSizeInvocations) {
@@ -1774,7 +1774,7 @@ TEST_F(DBSSTTest, DBWithSFMForBlobFilesAtomicFlush) {
   int files_deleted = 0;
   int files_scheduled_to_delete = 0;
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "SstFileManagerImpl::OnAddFile", [&](void* arg) {
         const std::string* const file_path =
             static_cast<const std::string*>(arg);
@@ -1783,7 +1783,7 @@ TEST_F(DBSSTTest, DBWithSFMForBlobFilesAtomicFlush) {
         }
       });
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "SstFileManagerImpl::OnDeleteFile", [&](void* arg) {
         const std::string* const file_path =
             static_cast<const std::string*>(arg);
@@ -1792,7 +1792,7 @@ TEST_F(DBSSTTest, DBWithSFMForBlobFilesAtomicFlush) {
         }
       });
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "SstFileManagerImpl::ScheduleFileDeletion", [&](void* arg) {
         assert(arg);
         const std::string* const file_path =
@@ -1802,7 +1802,7 @@ TEST_F(DBSSTTest, DBWithSFMForBlobFilesAtomicFlush) {
         }
       });
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   DestroyAndReopen(options);
   Random rnd(301);
@@ -1849,12 +1849,12 @@ TEST_F(DBSSTTest, DBWithSFMForBlobFilesAtomicFlush) {
 
   ASSERT_EQ(files_deleted, 4);
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
 }
 
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

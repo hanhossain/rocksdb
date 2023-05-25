@@ -16,22 +16,22 @@
 #include "util/file_checksum_helper.h"
 #include "util/xxhash.h"
 
-ROCKSDB_NAMESPACE::Env* db_stress_listener_env = nullptr;
-ROCKSDB_NAMESPACE::Env* db_stress_env = nullptr;
+rocksdb::Env* db_stress_listener_env = nullptr;
+rocksdb::Env* db_stress_env = nullptr;
 // If non-null, injects read error at a rate specified by the
 // read_fault_one_in or write_fault_one_in flag
-std::shared_ptr<ROCKSDB_NAMESPACE::FaultInjectionTestFS> fault_fs_guard;
-enum ROCKSDB_NAMESPACE::CompressionType compression_type_e =
-    ROCKSDB_NAMESPACE::kSnappyCompression;
-enum ROCKSDB_NAMESPACE::CompressionType bottommost_compression_type_e =
-    ROCKSDB_NAMESPACE::kSnappyCompression;
-enum ROCKSDB_NAMESPACE::ChecksumType checksum_type_e =
-    ROCKSDB_NAMESPACE::kCRC32c;
+std::shared_ptr<rocksdb::FaultInjectionTestFS> fault_fs_guard;
+enum rocksdb::CompressionType compression_type_e =
+    rocksdb::kSnappyCompression;
+enum rocksdb::CompressionType bottommost_compression_type_e =
+    rocksdb::kSnappyCompression;
+enum rocksdb::ChecksumType checksum_type_e =
+    rocksdb::kCRC32c;
 enum RepFactory FLAGS_rep_factory = kSkipList;
 std::vector<double> sum_probs(100001);
 constexpr int64_t zipf_sum_size = 100000;
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // Zipfian distribution is generated based on a pre-calculated array.
 // It should be used before start the stress test.
@@ -113,7 +113,7 @@ void PoolSizeChangeThread(void* v) {
       new_thread_pool_size = 1;
     }
     db_stress_env->SetBackgroundThreads(new_thread_pool_size,
-                                        ROCKSDB_NAMESPACE::Env::Priority::LOW);
+                                        rocksdb::Env::Priority::LOW);
     // Sleep up to 3 seconds
     db_stress_env->SleepForMicroseconds(
         thread->rand.Next() % FLAGS_compaction_thread_pool_adjust_interval *
@@ -487,5 +487,5 @@ Status DestroyUnverifiedSubdir(const std::string& dirname) {
   return s;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 #endif  // GFLAGS

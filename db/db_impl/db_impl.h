@@ -66,7 +66,7 @@
 #include "util/stop_watch.h"
 #include "util/thread_local.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class Arena;
 class ArenaWrappedDBIter;
@@ -2829,4 +2829,4 @@ inline Status DBImpl::FailIfTsMismatchCf(ColumnFamilyHandle* column_family,
   return Status::OK();
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

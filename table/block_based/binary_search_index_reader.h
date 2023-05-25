@@ -9,7 +9,7 @@
 #pragma once
 #include "table/block_based/index_reader_common.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 // Index that allows binary search lookup for the first key of each block.
 // This class can be viewed as a thin wrapper for `Block` class which already
 // supports binary search.
@@ -45,4 +45,4 @@ class BinarySearchIndexReader : public BlockBasedTable::IndexReaderCommon {
                           CachableEntry<Block>&& index_block)
       : IndexReaderCommon(t, std::move(index_block)) {}
 };
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

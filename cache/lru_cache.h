@@ -19,7 +19,7 @@
 #include "util/autovector.h"
 #include "util/distributed_mutex.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 namespace lru_cache {
 
 // LRU cache implementation. This class is not thread-safe.
@@ -464,4 +464,4 @@ using LRUCache = lru_cache::LRUCache;
 using LRUHandle = lru_cache::LRUHandle;
 using LRUCacheShard = lru_cache::LRUCacheShard;
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

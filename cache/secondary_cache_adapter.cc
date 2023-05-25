@@ -7,7 +7,7 @@
 
 #include "monitoring/perf_context_imp.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 namespace {
 // A distinct pointer value for marking "dummy" cache entries
@@ -292,4 +292,4 @@ const char* CacheWithSecondaryAdapter::Name() const {
   // a secondary cache. So we pretend to be that cache
   return target_->Name();
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

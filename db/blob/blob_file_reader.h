@@ -11,10 +11,9 @@
 #include "db/blob/blob_read_request.h"
 #include "file/random_access_file_reader.h"
 #include "rocksdb/compression_type.h"
-#include "rocksdb/rocksdb_namespace.h"
 #include "util/autovector.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class Status;
 struct ImmutableOptions;
@@ -109,4 +108,4 @@ class BlobFileReader {
   Statistics* statistics_;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

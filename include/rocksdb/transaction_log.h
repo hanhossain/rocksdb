@@ -12,7 +12,7 @@
 #include "rocksdb/types.h"
 #include "rocksdb/write_batch.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class LogFile;
 using VectorLogPtr = std::vector<std::unique_ptr<LogFile>>;
@@ -119,4 +119,4 @@ class TransactionLogIterator {
         : verify_checksums_(verify_checksums) {}
   };
 };
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

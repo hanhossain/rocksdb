@@ -18,7 +18,7 @@
 #include "util/hash.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 namespace {
 bool ShouldTrace(const Slice& block_key,
@@ -319,7 +319,7 @@ BlockCacheHumanReadableTraceWriter::~BlockCacheHumanReadableTraceWriter() {
 
 Status BlockCacheHumanReadableTraceWriter::NewWritableFile(
     const std::string& human_readable_trace_file_path,
-    ROCKSDB_NAMESPACE::Env* env) {
+    rocksdb::Env* env) {
   if (human_readable_trace_file_path.empty()) {
     return Status::InvalidArgument(
         "The provided human_readable_trace_file_path is null.");
@@ -506,4 +506,4 @@ std::unique_ptr<BlockCacheTraceWriter> NewBlockCacheTraceWriter(
       clock, trace_options, std::move(trace_writer)));
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

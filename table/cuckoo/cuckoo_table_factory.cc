@@ -11,7 +11,7 @@
 #include "table/cuckoo/cuckoo_table_builder.h"
 #include "table/cuckoo/cuckoo_table_reader.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 Status CuckooTableFactory::NewTableReader(
     const ReadOptions& /*ro*/, const TableReaderOptions& table_reader_options,
@@ -97,4 +97,4 @@ TableFactory* NewCuckooTableFactory(const CuckooTableOptions& table_options) {
   return new CuckooTableFactory(table_options);
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

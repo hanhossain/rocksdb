@@ -10,11 +10,11 @@
 
 #include "rocksdb/cache.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 extern std::array<std::string, kNumCacheEntryRoles>
     kCacheEntryRoleToCamelString;
 extern std::array<std::string, kNumCacheEntryRoles>
     kCacheEntryRoleToHyphenString;
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

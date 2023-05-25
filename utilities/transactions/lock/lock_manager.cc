@@ -8,7 +8,7 @@
 
 #include "utilities/transactions/lock/point/point_lock_manager.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 std::shared_ptr<LockManager> NewLockManager(PessimisticTransactionDB* db,
                                             const TransactionDBOptions& opt) {
@@ -23,5 +23,5 @@ std::shared_ptr<LockManager> NewLockManager(PessimisticTransactionDB* db,
   }
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 

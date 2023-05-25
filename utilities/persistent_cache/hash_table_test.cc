@@ -18,7 +18,7 @@
 #include "utilities/persistent_cache/hash_table_evictable.h"
 
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 struct HashTableTest : public testing::Test {
   ~HashTableTest() override { map_.Clear(&HashTableTest::ClearNode); }
@@ -152,7 +152,7 @@ TEST_F(EvictableHashTableTest, TestEvict) {
   }
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

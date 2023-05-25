@@ -15,7 +15,7 @@
 #include "util/coding.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 void Configurable::RegisterOptions(
     const std::string& name, void* opt_ptr,
@@ -709,4 +709,4 @@ Status Configurable::GetOptionsMap(
   }
   return status;
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

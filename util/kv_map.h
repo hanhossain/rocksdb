@@ -11,7 +11,7 @@
 #include "rocksdb/slice.h"
 #include "util/coding.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 namespace stl_wrappers {
 
 struct LessOfComparator {
@@ -30,4 +30,4 @@ struct LessOfComparator {
 
 using KVMap = std::map<std::string, std::string, LessOfComparator>;
 }  // namespace stl_wrappers
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

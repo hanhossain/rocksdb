@@ -16,7 +16,7 @@
 #include "table/block_based/flush_block_policy.h"
 #include "table/format.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // Flush block by size
 class FlushBlockBySizePolicy : public FlushBlockPolicy {
@@ -129,4 +129,4 @@ Status FlushBlockPolicyFactory::CreateFromString(
                                                      factory);
   }
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

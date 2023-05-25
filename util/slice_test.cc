@@ -13,7 +13,7 @@
 #include "test_util/testharness.h"
 #include "test_util/testutil.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 TEST(SliceTest, StringView) {
   std::string s = "foo";
@@ -242,7 +242,7 @@ TEST_F(SmallEnumSetTest, SmallEnumSetTest2) {
   }
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

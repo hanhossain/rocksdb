@@ -16,7 +16,7 @@
 
 #include "rocksdb/statistics.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class HistogramBucketMapper {
  public:
@@ -140,4 +140,4 @@ class HistogramImpl : public Histogram {
   std::mutex mutex_;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

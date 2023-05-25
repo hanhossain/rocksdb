@@ -69,7 +69,7 @@
 #include "util/duplicate_detector.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // anon namespace for file-local types
 namespace {
@@ -3139,4 +3139,4 @@ Status WriteBatchInternal::UpdateProtectionInfo(WriteBatch* wb,
       "WriteBatch protection info must be zero or eight bytes/key");
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

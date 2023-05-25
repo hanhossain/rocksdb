@@ -20,7 +20,7 @@
 #include "util/coding.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 const std::string kTraceMagic = "feedcafedeadbeef";
 
@@ -619,4 +619,4 @@ Status Tracer::WriteTrace(const Trace& trace) {
 
 Status Tracer::Close() { return WriteFooter(); }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

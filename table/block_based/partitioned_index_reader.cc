@@ -13,7 +13,7 @@
 #include "table/block_based/block_based_table_reader.h"
 #include "table/block_based/partitioned_index_iterator.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 Status PartitionIndexReader::Create(
     const BlockBasedTable* table, const ReadOptions& ro,
     FilePrefetchBuffer* prefetch_buffer, bool use_cache, bool prefetch,
@@ -218,4 +218,4 @@ Status PartitionIndexReader::CacheDependencies(const ReadOptions& ro,
   return s;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

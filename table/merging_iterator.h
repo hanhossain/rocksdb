@@ -14,7 +14,7 @@
 #include "rocksdb/types.h"
 #include "table/iterator_wrapper.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class Arena;
 class ArenaWrappedDBIter;
@@ -94,4 +94,4 @@ class MergeIteratorBuilder {
       range_del_iter_ptrs_;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

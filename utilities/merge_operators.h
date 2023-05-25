@@ -11,7 +11,7 @@
 
 #include "rocksdb/merge_operator.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class MergeOperators {
  public:
@@ -33,4 +33,4 @@ class MergeOperators {
       const std::string& name);
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

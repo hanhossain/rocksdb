@@ -17,7 +17,7 @@
 #include "lib/locktree/lock_request.h"
 #include "lib/locktree/locktree.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class RangeTreeLockManager;
 
@@ -143,4 +143,4 @@ class RangeTreeLockTrackerFactory : public LockTrackerFactory {
   RangeTreeLockTrackerFactory() {}
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

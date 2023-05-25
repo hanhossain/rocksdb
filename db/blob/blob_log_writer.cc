@@ -16,7 +16,7 @@
 #include "util/coding.h"
 #include "util/stop_watch.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 BlobLogWriter::BlobLogWriter(std::unique_ptr<WritableFileWriter>&& dest,
                              SystemClock* clock, Statistics* statistics,
@@ -175,4 +175,4 @@ Status BlobLogWriter::EmitPhysicalRecord(const std::string& headerbuf,
   return s;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

@@ -9,7 +9,7 @@
 #include "db/db_impl/db_impl.h"
 #include "rocksdb/utilities/options_type.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 static std::unordered_map<std::string, ValueType> value_type_string_map = {
     {"TypeDeletion", ValueType::kTypeDeletion},
@@ -114,5 +114,5 @@ Status GetAllKeyVersions(DB* db, ColumnFamilyHandle* cfh, Slice begin_key,
   return Status::OK();
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 

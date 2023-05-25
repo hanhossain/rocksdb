@@ -21,7 +21,7 @@
 #include "db/output_validator.h"
 #include "db/range_del_aggregator.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // Maintains state and outputs for each sub-compaction
 // It contains 2 `CompactionOutputs`:
@@ -217,4 +217,4 @@ class SubcompactionState {
   bool has_penultimate_level_outputs_ = false;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

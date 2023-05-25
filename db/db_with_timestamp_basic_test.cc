@@ -17,7 +17,7 @@
 #include "utilities/fault_injection_env.h"
 #include "utilities/merge_operators/string_append/stringappend2.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 class DBBasicTestWithTimestamp : public DBBasicTestWithTimestampBase {
  public:
   DBBasicTestWithTimestamp()
@@ -935,7 +935,7 @@ TEST_F(DBBasicTestWithTimestamp, ChangeIterationDirection) {
   TestComparator test_cmp(kTimestampSize);
   options.comparator = &test_cmp;
   options.prefix_extractor.reset(NewFixedPrefixTransform(1));
-  options.statistics = ROCKSDB_NAMESPACE::CreateDBStatistics();
+  options.statistics = rocksdb::CreateDBStatistics();
   DestroyAndReopen(options);
   const std::vector<std::string> timestamps = {Timestamp(1, 1), Timestamp(0, 2),
                                                Timestamp(4, 3)};
@@ -1281,7 +1281,7 @@ TEST_F(DBBasicTestWithTimestamp, ReseekToTargetTimestamp) {
   options.create_if_missing = true;
   constexpr size_t kNumKeys = 16;
   options.max_sequential_skip_in_iterations = kNumKeys / 2;
-  options.statistics = ROCKSDB_NAMESPACE::CreateDBStatistics();
+  options.statistics = rocksdb::CreateDBStatistics();
   const size_t kTimestampSize = Timestamp(0, 0).size();
   TestComparator test_cmp(kTimestampSize);
   options.comparator = &test_cmp;
@@ -1324,7 +1324,7 @@ TEST_F(DBBasicTestWithTimestamp, ReseekToNextUserKey) {
   options.create_if_missing = true;
   constexpr size_t kNumKeys = 16;
   options.max_sequential_skip_in_iterations = kNumKeys / 2;
-  options.statistics = ROCKSDB_NAMESPACE::CreateDBStatistics();
+  options.statistics = rocksdb::CreateDBStatistics();
   const size_t kTimestampSize = Timestamp(0, 0).size();
   TestComparator test_cmp(kTimestampSize);
   options.comparator = &test_cmp;
@@ -1369,7 +1369,7 @@ TEST_F(DBBasicTestWithTimestamp, ReseekToUserKeyBeforeSavedKey) {
   options.create_if_missing = true;
   constexpr size_t kNumKeys = 16;
   options.max_sequential_skip_in_iterations = kNumKeys / 2;
-  options.statistics = ROCKSDB_NAMESPACE::CreateDBStatistics();
+  options.statistics = rocksdb::CreateDBStatistics();
   const size_t kTimestampSize = Timestamp(0, 0).size();
   TestComparator test_cmp(kTimestampSize);
   options.comparator = &test_cmp;
@@ -3922,7 +3922,7 @@ TEST_F(DBBasicTestWithTimestamp, TimestampFilterTableReadOnGet) {
   Options options = CurrentOptions();
   options.env = env_;
   options.create_if_missing = true;
-  options.statistics = ROCKSDB_NAMESPACE::CreateDBStatistics();
+  options.statistics = rocksdb::CreateDBStatistics();
   const size_t kTimestampSize = Timestamp(0, 0).size();
   TestComparator test_cmp(kTimestampSize);
   options.comparator = &test_cmp;
@@ -4005,7 +4005,7 @@ TEST_F(DBBasicTestWithTimestamp, TimestampFilterTableReadOnGet) {
   Close();
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

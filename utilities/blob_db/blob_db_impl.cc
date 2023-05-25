@@ -47,7 +47,7 @@ namespace {
 int kBlockBasedTableVersionFormat = 2;
 }  // end namespace
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 namespace blob_db {
 
 bool BlobFileComparator::operator()(
@@ -2182,4 +2182,4 @@ void BlobDBImpl::TEST_ProcessCompactionJobInfo(const CompactionJobInfo& info) {
 #endif  //  !NDEBUG
 
 }  // namespace blob_db
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

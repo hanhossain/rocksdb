@@ -22,7 +22,7 @@
 #undef GetCurrentTime
 #endif
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 struct ConfigOptions;
 class ObjectLibrary;
 class ObjectRegistry;
@@ -240,4 +240,4 @@ extern "C" {
 int RegisterTtlObjects(ObjectLibrary& library, const std::string& /*arg*/);
 }  // extern "C"
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

@@ -10,7 +10,7 @@
 #include "db/db_impl/db_impl.h"
 #include "util/cast_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 void CancelAllBackgroundWork(DB* db, bool wait) {
   (static_cast_with_check<DBImpl>(db->GetRootDB()))
@@ -78,4 +78,4 @@ Status VerifySstFileChecksum(const Options& options,
   return s;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

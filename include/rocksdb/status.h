@@ -26,7 +26,7 @@
 
 #include "rocksdb/slice.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class Status {
  public:
@@ -566,4 +566,4 @@ inline bool Status::operator!=(const Status& rhs) const {
   return !(*this == rhs);
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

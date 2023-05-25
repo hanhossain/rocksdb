@@ -11,7 +11,7 @@
 #include "utilities/transactions/write_prepared_txn.h"
 #include "utilities/transactions/write_unprepared_txn_db.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class WriteUnpreparedTxnDB;
 class WriteUnpreparedTxn;
@@ -335,5 +335,5 @@ class WriteUnpreparedTxn : public WritePreparedTxn {
   KeySet untracked_keys_;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 

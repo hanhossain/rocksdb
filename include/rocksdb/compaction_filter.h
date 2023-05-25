@@ -16,11 +16,10 @@
 
 #include "rocksdb-rs-cxx/lib.h"
 #include "rocksdb/customizable.h"
-#include "rocksdb/rocksdb_namespace.h"
 #include "rocksdb/types.h"
 #include "rocksdb/wide_columns.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class Slice;
 class SliceTransform;
@@ -361,4 +360,4 @@ class CompactionFilterFactory : public Customizable {
   virtual const char* Name() const override = 0;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

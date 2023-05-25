@@ -5,7 +5,7 @@
 
 #include "util/compression.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 StreamingCompress* StreamingCompress::Create(CompressionType compression_type,
                                              const CompressionOptions& opts,
@@ -119,4 +119,4 @@ void ZSTDStreamingUncompress::Reset() {
 #endif
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

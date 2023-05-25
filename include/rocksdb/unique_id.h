@@ -7,7 +7,7 @@
 
 #include "rocksdb/table_properties.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // Computes a stable, universally unique 128-bit (16 binary char) identifier
 // for an SST file from TableProperties. This is supported for table (SST)
@@ -52,4 +52,4 @@ Status GetExtendedUniqueIdFromTableProperties(const TableProperties &props,
 // Also works on unique id prefix.
 std::string UniqueIdToHumanString(const std::string &id);
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

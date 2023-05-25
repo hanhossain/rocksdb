@@ -12,7 +12,7 @@
 #include "utilities/compaction_filters/layered_compaction_filter_base.h"
 #include "utilities/compaction_filters/remove_emptyvalue_compactionfilter.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 static int RegisterBuiltinCompactionFilters(ObjectLibrary& library,
                                             const std::string& /*arg*/) {
   library.AddFactory<CompactionFilter>(
@@ -49,4 +49,4 @@ Status CompactionFilterFactory::CreateFromString(
       LoadSharedObject<CompactionFilterFactory>(config_options, value, result);
   return status;
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

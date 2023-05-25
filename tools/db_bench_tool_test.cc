@@ -19,7 +19,7 @@
 #ifdef GFLAGS
 #include "util/gflags_compat.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 namespace {
 static const int kMaxArgCount = 100;
 static const size_t kArgBufferSize = 100000;
@@ -325,7 +325,7 @@ TEST_F(DBBenchTest, OptionsFileFromFile) {
   VerifyOptions(SanitizeOptions(db_path_, opt));
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

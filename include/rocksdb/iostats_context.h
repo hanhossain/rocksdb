@@ -13,7 +13,7 @@
 // A thread local context for gathering io-stats efficiently and transparently.
 // Use SetPerfLevel(PerfLevel::kEnableTime) to enable time stats.
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // EXPERIMENTAL: the IO statistics for tiered storage. It matches with each
 // item in rs::advanced_options::Temperature class.
@@ -95,4 +95,4 @@ struct IOStatsContext {
 // This function never returns nullptr.
 IOStatsContext* get_iostats_context();
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

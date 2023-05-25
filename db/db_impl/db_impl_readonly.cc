@@ -14,7 +14,7 @@
 #include "monitoring/perf_context_imp.h"
 #include "util/cast_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 
 DBImplReadOnly::DBImplReadOnly(const DBOptions& db_options,
@@ -331,4 +331,4 @@ Status DBImplReadOnly::OpenForReadOnlyWithoutCheck(
 }
 
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

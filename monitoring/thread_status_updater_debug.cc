@@ -9,7 +9,7 @@
 #include "monitoring/thread_status_updater.h"
 #include "util/cast_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 #ifndef NDEBUG
 #ifdef ROCKSDB_USING_THREAD_STATUS
@@ -40,4 +40,4 @@ void ThreadStatusUpdater::TEST_VerifyColumnFamilyInfoMap(
 #endif  // ROCKSDB_USING_THREAD_STATUS
 #endif  // !NDEBUG
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

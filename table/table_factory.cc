@@ -13,7 +13,7 @@
 #include "table/cuckoo/cuckoo_table_factory.h"
 #include "table/plain/plain_table_factory.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 static void RegisterTableFactories(const std::string& /*arg*/) {
   static std::once_flag loaded;
@@ -49,4 +49,4 @@ Status TableFactory::CreateFromString(const ConfigOptions& config_options,
   RegisterTableFactories("");
   return LoadSharedObject<TableFactory>(config_options, value, factory);
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

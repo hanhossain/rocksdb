@@ -27,7 +27,7 @@
 #include "utilities/merge_operators.h"
 #include "utilities/merge_operators/string_append/stringappend.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 static bool enable_io_uring = true;
 extern "C" bool RocksDbIOUringEnable() { return enable_io_uring; }
@@ -1310,8 +1310,8 @@ TEST_P(DBMultiGetTestWithParam, MultiGetMultiCF) {
   }
 
   int get_sv_count = 0;
-  ROCKSDB_NAMESPACE::DBImpl* db = static_cast_with_check<DBImpl>(db_);
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::DBImpl* db = static_cast_with_check<DBImpl>(db_);
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::MultiGet::AfterRefSV", [&](void* /*arg*/) {
         if (++get_sv_count == 2) {
           // After MultiGet refs a couple of CFs, flush all CFs so MultiGet
@@ -1335,7 +1335,7 @@ TEST_P(DBMultiGetTestWithParam, MultiGetMultiCF) {
           }
         }
       });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   std::vector<int> cfs;
   std::vector<std::string> keys;
@@ -1411,12 +1411,12 @@ TEST_P(DBMultiGetTestWithParam, MultiGetMultiCFMutex) {
   int get_sv_count = 0;
   int retries = 0;
   bool last_try = false;
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::MultiGet::LastTry", [&](void* /*arg*/) {
         last_try = true;
-        ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+        rocksdb::SyncPoint::GetInstance()->DisableProcessing();
       });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::MultiGet::AfterRefSV", [&](void* /*arg*/) {
         if (last_try) {
           return;
@@ -1432,7 +1432,7 @@ TEST_P(DBMultiGetTestWithParam, MultiGetMultiCFMutex) {
           }
         }
       });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   std::vector<int> cfs;
   std::vector<std::string> keys;
@@ -1478,8 +1478,8 @@ TEST_P(DBMultiGetTestWithParam, MultiGetMultiCFSnapshot) {
   }
 
   int get_sv_count = 0;
-  ROCKSDB_NAMESPACE::DBImpl* db = static_cast_with_check<DBImpl>(db_);
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::DBImpl* db = static_cast_with_check<DBImpl>(db_);
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::MultiGet::AfterRefSV", [&](void* /*arg*/) {
         if (++get_sv_count == 2) {
           for (int i = 0; i < 8; ++i) {
@@ -1499,7 +1499,7 @@ TEST_P(DBMultiGetTestWithParam, MultiGetMultiCFSnapshot) {
           }
         }
       });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   std::vector<int> cfs;
   std::vector<std::string> keys;
@@ -2168,7 +2168,7 @@ class DBMultiGetAsyncIOTest : public DBBasicTest,
                               public ::testing::WithParamInterface<bool> {
  public:
   DBMultiGetAsyncIOTest()
-      : DBBasicTest(), statistics_(ROCKSDB_NAMESPACE::CreateDBStatistics()) {
+      : DBBasicTest(), statistics_(rocksdb::CreateDBStatistics()) {
     BlockBasedTableOptions bbto;
     bbto.filter_policy.reset(NewBloomFilterPolicy(10));
     options_ = CurrentOptions();
@@ -2648,7 +2648,7 @@ TEST_F(DBBasicTest, MultiGetStats) {
   options.create_if_missing = true;
   options.disable_auto_compactions = true;
   options.env = env_;
-  options.statistics = ROCKSDB_NAMESPACE::CreateDBStatistics();
+  options.statistics = rocksdb::CreateDBStatistics();
   BlockBasedTableOptions table_options;
   table_options.block_size = 1;
   table_options.index_type =
@@ -2814,7 +2814,7 @@ TEST_P(DBMultiGetRowCacheTest, MultiGetBatched) {
   do {
     option_config_ = (int)OptionConfig::kRowCache;
     Options options = CurrentOptions();
-    options.statistics = ROCKSDB_NAMESPACE::CreateDBStatistics();
+    options.statistics = rocksdb::CreateDBStatistics();
     CreateAndReopenWithCF({"pikachu"}, options);
     SetPerfLevel(kEnableCount);
     ASSERT_OK(Put(1, "k1", "v1"));
@@ -4526,7 +4526,7 @@ TEST_F(DBBasicTest, VerifyFileChecksumsReadahead) {
   ASSERT_OK(env_->GetFileSize(dbname_ + '/' + sst_name, &sst_size));
 
   bool last_read = false;
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "GenerateOneFileChecksum::Chunk:0", [&](void* /*arg*/) {
         if (env_->random_read_bytes_counter_.load() == sst_size) {
           EXPECT_FALSE(last_read);
@@ -4536,7 +4536,7 @@ TEST_F(DBBasicTest, VerifyFileChecksumsReadahead) {
                     0);
         }
       });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
   env_->count_random_reads_ = true;
   env_->random_read_bytes_counter_ = 0;
   env_->random_read_counter_.Reset();
@@ -4544,7 +4544,7 @@ TEST_F(DBBasicTest, VerifyFileChecksumsReadahead) {
   ReadOptions ro;
   ro.readahead_size = alignment;
   ASSERT_OK(db_->VerifyFileChecksums(ro));
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
   ASSERT_TRUE(last_read);
   ASSERT_EQ(env_->random_read_counter_.Read(),
             (sst_size + alignment - 1) / (alignment));
@@ -4766,7 +4766,7 @@ INSTANTIATE_TEST_CASE_P(DBBasicTestDeadline, DBBasicTestDeadline,
                         ::testing::Values(std::make_tuple(true, false),
                                           std::make_tuple(false, true),
                                           std::make_tuple(true, true)));
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

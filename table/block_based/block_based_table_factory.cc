@@ -24,7 +24,6 @@
 #include "rocksdb/convenience.h"
 #include "rocksdb/filter_policy.h"
 #include "rocksdb/flush_block_policy.h"
-#include "rocksdb/rocksdb_namespace.h"
 #include "rocksdb/table.h"
 #include "rocksdb/utilities/options_type.h"
 #include "table/block_based/block_based_table_builder.h"
@@ -33,7 +32,7 @@
 #include "util/mutexlock.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 void TailPrefetchStats::RecordEffectiveSize(size_t len) {
   MutexLock l(&mutex_);
@@ -959,4 +958,4 @@ const std::string kHashIndexPrefixesMetadataBlock =
 const std::string kPropTrue = "1";
 const std::string kPropFalse = "0";
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

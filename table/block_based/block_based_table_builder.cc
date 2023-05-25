@@ -55,7 +55,7 @@
 #include "util/string_util.h"
 #include "util/work_queue.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 extern const std::string kHashIndexPrefixesBlock;
 extern const std::string kHashIndexPrefixesMetadataBlock;
@@ -2014,4 +2014,4 @@ const std::string BlockBasedTable::kObsoleteFilterBlockPrefix = "filter.";
 const std::string BlockBasedTable::kFullFilterBlockPrefix = "fullfilter.";
 const std::string BlockBasedTable::kPartitionedFilterBlockPrefix =
     "partitionedfilter.";
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

@@ -25,7 +25,7 @@
 #include "rocksdb/status.h"
 #include "rocksdb/wide_columns.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class Iterator : public Cleanable {
  public:
@@ -141,4 +141,4 @@ extern Iterator* NewEmptyIterator();
 // Return an empty iterator with the specified status.
 extern Iterator* NewErrorIterator(const Status& status);
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

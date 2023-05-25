@@ -67,7 +67,7 @@
 #include "utilities/fault_injection_env.h"
 #include "utilities/fault_injection_fs.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 using port::kPageSize;
 
@@ -236,15 +236,15 @@ TEST_F(EnvPosixTest, DISABLED_FilePermission) {
 TEST_F(EnvPosixTest, LowerThreadPoolCpuPriority) {
   std::atomic<CpuPriority> from_priority(CpuPriority::kNormal);
   std::atomic<CpuPriority> to_priority(CpuPriority::kNormal);
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "ThreadPoolImpl::BGThread::BeforeSetCpuPriority", [&](void* pri) {
         from_priority.store(*reinterpret_cast<CpuPriority*>(pri));
       });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "ThreadPoolImpl::BGThread::AfterSetCpuPriority", [&](void* pri) {
         to_priority.store(*reinterpret_cast<CpuPriority*>(pri));
       });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   env_->SetBackgroundThreads(1, Env::BOTTOM);
   env_->SetBackgroundThreads(1, Env::HIGH);
@@ -307,8 +307,8 @@ TEST_F(EnvPosixTest, LowerThreadPoolCpuPriority) {
     ASSERT_EQ(to_priority, CpuPriority::kIdle);
   }
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
 }
 #endif
 
@@ -845,22 +845,22 @@ TEST_P(EnvPosixTestWithParam, ReserveThreads) {
   ASSERT_EQ(env_->GetBackgroundThreads(Env::HIGH), 1);
   constexpr int kWaitMicros = 10000000;  // 10seconds
   std::vector<test::SleepingBackgroundTask> tasks(4);
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
   // Set the sync point to ensure thread 0 can terminate
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
+  rocksdb::SyncPoint::GetInstance()->LoadDependency(
       {{"ThreadPoolImpl::BGThread::Termination:th0",
         "EnvTest::ReserveThreads:0"}});
   // Empty the thread pool to ensure all the threads can start later
   env_->SetBackgroundThreads(0, Env::Priority::HIGH);
   TEST_SYNC_POINT("EnvTest::ReserveThreads:0");
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
   // Set the sync point to ensure threads start and pass the sync point
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
+  rocksdb::SyncPoint::GetInstance()->LoadDependency(
       {{"ThreadPoolImpl::BGThread::Start:th0", "EnvTest::ReserveThreads:1"},
        {"ThreadPoolImpl::BGThread::Start:th1", "EnvTest::ReserveThreads:2"},
        {"ThreadPoolImpl::BGThread::Start:th2", "EnvTest::ReserveThreads:3"},
        {"ThreadPoolImpl::BGThread::Start:th3", "EnvTest::ReserveThreads:4"}});
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   // Set number of thread to 3 first.
   env_->SetBackgroundThreads(3, Env::Priority::HIGH);
@@ -905,14 +905,14 @@ TEST_P(EnvPosixTestWithParam, ReserveThreads) {
 
   // Reset the sync points for the next iteration in BGThread or the
   // next time Submit() is called
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->LoadDependency(
       {{"ThreadPoolImpl::BGThread::WaitingThreadsInc",
         "EnvTest::ReserveThreads:5"},
        {"ThreadPoolImpl::BGThread::Termination", "EnvTest::ReserveThreads:6"},
        {"ThreadPoolImpl::Submit::Enqueue", "EnvTest::ReserveThreads:7"}});
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
   tasks[0].WakeUp();
   ASSERT_FALSE(tasks[0].TimedWaitUntilDone(kWaitMicros));
   // Add sync point to ensure the number of waiting threads increases
@@ -964,7 +964,7 @@ TEST_P(EnvPosixTestWithParam, ReserveThreads) {
   tasks[3].WakeUp();
   ASSERT_FALSE(tasks[3].TimedWaitUntilDone(kWaitMicros));
   WaitThreadPoolsEmpty();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
 }
 
 #if (defined OS_LINUX || defined OS_WIN)
@@ -1408,7 +1408,7 @@ TEST_P(EnvPosixTestWithParam, MultiRead) {
   for (uint32_t attempt = 0; attempt < 20; attempt++) {
     // Random Read
     Random rnd(301 + attempt);
-    ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+    rocksdb::SyncPoint::GetInstance()->SetCallBack(
         "UpdateResults::io_uring_result", [&](void* arg) {
           if (attempt > 0) {
             // No failure in the first attempt.
@@ -1422,7 +1422,7 @@ TEST_P(EnvPosixTestWithParam, MultiRead) {
           }
         });
 
-    ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+    rocksdb::SyncPoint::GetInstance()->EnableProcessing();
     std::unique_ptr<RandomAccessFile> file;
     std::vector<ReadRequest> reqs(3);
     std::vector<std::unique_ptr<char, Deleter>> data;
@@ -1447,7 +1447,7 @@ TEST_P(EnvPosixTestWithParam, MultiRead) {
       ASSERT_OK(reqs[i].status);
       ASSERT_EQ(memcmp(reqs[i].scratch, buf.get(), kSectorSize), 0);
     }
-    ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+    rocksdb::SyncPoint::GetInstance()->DisableProcessing();
   }
 }
 
@@ -1478,7 +1478,7 @@ TEST_F(EnvPosixTest, MultiReadNonAlignedLargeNum) {
     // too long, we can modify the io uring depth with SyncPoint here.
     const int num_reads = rnd.Uniform(512) + 1;
 
-    ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+    rocksdb::SyncPoint::GetInstance()->SetCallBack(
         "UpdateResults::io_uring_result", [&](void* arg) {
           if (attempt > 5) {
             // Improve partial result rates in second half of the run to
@@ -1494,7 +1494,7 @@ TEST_F(EnvPosixTest, MultiReadNonAlignedLargeNum) {
             }
           }
         });
-    ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+    rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
     // Generate (offset, len) pairs
     std::set<int> start_offsets;
@@ -1544,7 +1544,7 @@ TEST_F(EnvPosixTest, MultiReadNonAlignedLargeNum) {
           reqs[i].result.ToString(true));
     }
 
-    ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+    rocksdb::SyncPoint::GetInstance()->DisableProcessing();
   }
 }
 
@@ -1569,14 +1569,14 @@ TEST_F(EnvPosixTest, NonAlignedDirectIOMultiReadBeyondFileSize) {
 #if !defined(OS_MACOSX) && !defined(OS_WIN) && !defined(OS_SOLARIS) && \
     !defined(OS_AIX) && !defined(OS_OPENBSD) && !defined(OS_FREEBSD)
   if (soptions.use_direct_reads) {
-    ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+    rocksdb::SyncPoint::GetInstance()->SetCallBack(
         "NewRandomAccessFile:O_DIRECT", [&](void* arg) {
           int* val = static_cast<int*>(arg);
           *val &= ~O_DIRECT;
         });
   }
 #endif
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   const int num_reads = 2;
   // Create requests
@@ -1616,7 +1616,7 @@ TEST_F(EnvPosixTest, NonAlignedDirectIOMultiReadBeyondFileSize) {
     ASSERT_OK(reqs[i].status);
   }
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
 }
 
 #if defined(ROCKSDB_IOURING_PRESENT)
@@ -1740,7 +1740,7 @@ TEST_P(EnvPosixTestWithParam, DISABLED_InvalidateCache) {
 #else
 TEST_P(EnvPosixTestWithParam, InvalidateCache) {
 #endif
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
   EnvOptions soptions;
   soptions.use_direct_reads = soptions.use_direct_writes = direct_io_;
   std::string fname = test::PerThreadDBPath(env_, "testfile");
@@ -1805,7 +1805,7 @@ TEST_P(EnvPosixTestWithParam, InvalidateCache) {
   }
   // Delete the file
   ASSERT_OK(env_->DeleteFile(fname));
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearTrace();
+  rocksdb::SyncPoint::GetInstance()->ClearTrace();
 }
 #endif  // OS_LINUX || OS_WIN
 
@@ -1927,7 +1927,7 @@ TEST_P(EnvPosixTestWithParam, LogBufferMaxSizeTest) {
 }
 
 TEST_P(EnvPosixTestWithParam, Preallocation) {
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
   const std::string src = test::PerThreadDBPath(env_, "testfile");
   std::unique_ptr<WritableFile> srcfile;
   EnvOptions soptions;
@@ -1935,7 +1935,7 @@ TEST_P(EnvPosixTestWithParam, Preallocation) {
 #if !defined(OS_MACOSX) && !defined(OS_WIN) && !defined(OS_SOLARIS) && \
     !defined(OS_AIX) && !defined(OS_OPENBSD) && !defined(OS_FREEBSD)
   if (soptions.use_direct_writes) {
-    ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+    rocksdb::SyncPoint::GetInstance()->SetCallBack(
         "NewWritableFile:O_DIRECT", [&](void* arg) {
           int* val = static_cast<int*>(arg);
           *val &= ~O_DIRECT;
@@ -1978,13 +1978,13 @@ TEST_P(EnvPosixTestWithParam, Preallocation) {
     srcfile->GetPreallocationStatus(&block_size, &last_allocated_block);
     ASSERT_EQ(last_allocated_block, 7UL);
   }
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearTrace();
+  rocksdb::SyncPoint::GetInstance()->ClearTrace();
 }
 
 // Test that the two ways to get children file attributes (in bulk or
 // individually) behave consistently.
 TEST_P(EnvPosixTestWithParam, ConsistentChildrenAttributes) {
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
   EnvOptions soptions;
   soptions.use_direct_reads = soptions.use_direct_writes = direct_io_;
   const int kNumChildren = 10;
@@ -1998,7 +1998,7 @@ TEST_P(EnvPosixTestWithParam, ConsistentChildrenAttributes) {
 #if !defined(OS_MACOSX) && !defined(OS_WIN) && !defined(OS_SOLARIS) && \
     !defined(OS_AIX) && !defined(OS_OPENBSD) && !defined(OS_FREEBSD)
     if (soptions.use_direct_writes) {
-      ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+      rocksdb::SyncPoint::GetInstance()->SetCallBack(
           "NewWritableFile:O_DIRECT", [&](void* arg) {
             int* val = static_cast<int*>(arg);
             *val &= ~O_DIRECT;
@@ -2027,7 +2027,7 @@ TEST_P(EnvPosixTestWithParam, ConsistentChildrenAttributes) {
     ASSERT_EQ(size, 4096 * i);
     ASSERT_EQ(size, file_attrs_iter->size_bytes);
   }
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearTrace();
+  rocksdb::SyncPoint::GetInstance()->ClearTrace();
 }
 
 // Test that all WritableFileWrapper forwards all calls to WritableFile.
@@ -3536,7 +3536,7 @@ TEST_F(TestAsyncRead, ReadAsync) {
     }
   }
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

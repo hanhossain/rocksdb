@@ -33,7 +33,7 @@
 #include "utilities/blob_db/blob_db.h"
 #include "utilities/blob_db/blob_file.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class DBImpl;
 class ColumnFamilyHandle;
@@ -498,4 +498,4 @@ class BlobDBImpl : public BlobDB {
 };
 
 }  // namespace blob_db
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

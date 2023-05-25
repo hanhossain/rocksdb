@@ -15,7 +15,7 @@
 #include "utilities/fault_injection_fs.h"
 #include "utilities/transactions/write_prepared_txn_db.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // The description of A and C can be found in multi_ops_txns_stress.h
 DEFINE_int32(lb_a, 0, "(Inclusive) lower bound of A");
@@ -1756,6 +1756,6 @@ void CheckAndSetOptionsForMultiOpsTxnStressTest() {
     exit(1);
   }
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 #endif  // GFLAGS

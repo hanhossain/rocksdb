@@ -8,7 +8,7 @@
 
 #include "port/sys_time.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 StderrLogger::~StderrLogger() {}
 
 void StderrLogger::Logv(const char* format, va_list ap) {
@@ -27,4 +27,4 @@ void StderrLogger::Logv(const char* format, va_list ap) {
   vfprintf(stderr, format, ap);
   fprintf(stderr, "\n");
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

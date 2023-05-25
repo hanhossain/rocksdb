@@ -18,7 +18,7 @@
 #include "rocksdb/options.h"
 #include "table/table_reader.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class Arena;
 class TableReader;
@@ -97,4 +97,4 @@ class CuckooTableReader : public TableReader {
                               uint64_t max_num_buckets);
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

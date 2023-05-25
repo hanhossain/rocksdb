@@ -13,7 +13,7 @@
 
 #include "port/port.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // This file contains utilities to handle the alignment of pages and buffers.
 
@@ -232,4 +232,4 @@ class AlignedBuffer {
 
   void Size(size_t cursize) { cursize_ = cursize; }
 };
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

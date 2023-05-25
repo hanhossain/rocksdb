@@ -16,7 +16,7 @@
 #include "monitoring/thread_status_updater.h"
 #include "util/cast_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 uint64_t DBImpl::TEST_GetLevel0TotalSize() {
   InstrumentedMutexLock l(&mutex_);
   return default_cf_handle_->cfd()->current()->storage_info()->NumLevelBytes(0);
@@ -310,5 +310,5 @@ SeqnoToTimeMapping DBImpl::TEST_GetSeqnoToTimeMapping() const {
 size_t DBImpl::TEST_EstimateInMemoryStatsHistorySize() const {
   return EstimateInMemoryStatsHistorySize();
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 #endif  // NDEBUG

@@ -11,7 +11,7 @@
 #include "table/get_context.h"
 #include "util/cast_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 extern void MarkKeyMayExist(void* arg);
 extern bool SaveValue(void* arg, const ParsedInternalKey& parsed_key,
@@ -257,4 +257,4 @@ Status CompactedDBImpl::Open(const Options& options, const std::string& dbname,
   return s;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

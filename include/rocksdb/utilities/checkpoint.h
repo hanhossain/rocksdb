@@ -12,7 +12,7 @@
 
 #include "rocksdb/status.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class DB;
 class ColumnFamilyHandle;
@@ -60,4 +60,4 @@ class Checkpoint {
   virtual ~Checkpoint() {}
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

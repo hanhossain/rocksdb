@@ -37,7 +37,7 @@
 #include "util/compression.h"
 #include "util/random.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 SstFileDumper::SstFileDumper(const Options& options,
                              const std::string& file_path,
@@ -279,12 +279,12 @@ Status SstFileDumper::ShowCompressionSize(
     size_t block_size, CompressionType compress_type,
     const CompressionOptions& compress_opt) {
   Options opts;
-  opts.statistics = ROCKSDB_NAMESPACE::CreateDBStatistics();
+  opts.statistics = rocksdb::CreateDBStatistics();
   opts.statistics->set_stats_level(StatsLevel::kAll);
   const ImmutableOptions imoptions(opts);
   const ColumnFamilyOptions cfo(opts);
   const MutableCFOptions moptions(cfo);
-  ROCKSDB_NAMESPACE::InternalKeyComparator ikc(opts.comparator);
+  rocksdb::InternalKeyComparator ikc(opts.comparator);
   IntTblPropCollectorFactories block_based_table_factories;
 
   std::string column_family_name;
@@ -358,7 +358,7 @@ Status SstFileDumper::ReadTableProperties(uint64_t table_magic_number,
                                           FilePrefetchBuffer* prefetch_buffer) {
   // TODO: plumb Env::IOActivity
   const ReadOptions read_options;
-  Status s = ROCKSDB_NAMESPACE::ReadTableProperties(
+  Status s = rocksdb::ReadTableProperties(
       file, file_size, table_magic_number, ioptions_, read_options,
       &table_properties_,
       /* memory_allocator= */ nullptr, prefetch_buffer);
@@ -517,4 +517,4 @@ Status SstFileDumper::ReadTableProperties(
   *table_properties = table_reader_->GetTableProperties();
   return init_result_;
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

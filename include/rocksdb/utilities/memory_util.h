@@ -14,7 +14,7 @@
 #include "rocksdb/cache.h"
 #include "rocksdb/db.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // Returns the current memory usage of the specified DB instances.
 class MemoryUtil {
@@ -45,4 +45,4 @@ class MemoryUtil {
       const std::unordered_set<const Cache*> cache_set,
       std::map<MemoryUtil::UsageType, uint64_t>* usage_by_type);
 };
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

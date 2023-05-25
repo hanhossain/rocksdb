@@ -13,7 +13,7 @@
 #include "db_stress_tool/db_stress_common.h"
 #include "db_stress_tool/db_stress_shared_state.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 class SystemClock;
 class Transaction;
 class TransactionDB;
@@ -323,5 +323,5 @@ extern void InitializeOptionsGeneral(
 // user-defined timestamp.
 extern void CheckAndSetOptionsForUserTimestamp(Options& options);
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 #endif  // GFLAGS

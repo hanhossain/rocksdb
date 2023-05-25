@@ -10,7 +10,7 @@
 #ifdef GFLAGS
 #include "db_stress_tool/db_stress_common.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // This file defines MultiOpsTxnsStress so that we can stress test RocksDB
 // transactions on a simple, emulated relational table.
@@ -442,5 +442,5 @@ class MultiOpsTxnsStressListener : public EventListener {
   MultiOpsTxnsStressTest* const stress_test_ = nullptr;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 #endif  // GFLAGS

@@ -11,7 +11,7 @@
 
 #include "utilities/transactions/lock/lock_tracker.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 struct TrackedKeyInfo {
   // Earliest sequence number that is relevant to this transaction for this key
@@ -94,4 +94,4 @@ class PointLockTrackerFactory : public LockTrackerFactory {
   PointLockTrackerFactory() {}
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

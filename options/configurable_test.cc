@@ -29,7 +29,7 @@ using GFLAGS_NAMESPACE::ParseCommandLineFlags;
 DEFINE_bool(enable_print, false, "Print options generated to console.");
 #endif  // GFLAGS
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 namespace test {
 class StringLogger : public Logger {
  public:
@@ -850,7 +850,7 @@ INSTANTIATE_TEST_CASE_P(
                                             "no_block_cache=true;")));
 
 }  // namespace test
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
 #ifdef GFLAGS

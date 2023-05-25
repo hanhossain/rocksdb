@@ -8,7 +8,7 @@
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 #include "table/block_based/partitioned_index_iterator.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 void PartitionedIndexIterator::Seek(const Slice& target) { SeekImpl(&target); }
 
 void PartitionedIndexIterator::SeekToFirst() { SeekImpl(nullptr); }
@@ -160,4 +160,4 @@ void PartitionedIndexIterator::FindKeyBackward() {
     }
   }
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

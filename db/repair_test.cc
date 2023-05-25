@@ -18,7 +18,7 @@
 #include "table/unique_id_impl.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class RepairTest : public DBTestBase {
  public:
@@ -474,7 +474,7 @@ TEST_F(RepairTest, DbNameContainsTrailingSlash) {
   ReopenWithSstIdVerify();
   ASSERT_EQ(Get("key"), "val");
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

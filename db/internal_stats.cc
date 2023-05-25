@@ -31,7 +31,7 @@
 #include "util/hash_containers.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 
 const std::map<LevelStatType, LevelStat> InternalStats::compaction_level_stats =
@@ -2101,4 +2101,4 @@ void InternalStats::DumpCFFileHistogram(std::string* value) {
 }
 
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

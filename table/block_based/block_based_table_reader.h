@@ -35,7 +35,7 @@
 #include "util/coro_utils.h"
 #include "util/hash_containers.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class Cache;
 class FilterBlockReader;
@@ -643,7 +643,7 @@ struct BlockBasedTable::Rep {
   uint64_t cf_id_for_tracing() const {
     return table_properties
                ? table_properties->column_family_id
-               : ROCKSDB_NAMESPACE::TablePropertiesCollectorFactory::Context::
+               : rocksdb::TablePropertiesCollectorFactory::Context::
                      kUnknownColumnFamily;
   }
 
@@ -736,4 +736,4 @@ class WritableFileStringStreamAdapter : public std::stringbuf {
   WritableFile* file_;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

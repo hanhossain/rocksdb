@@ -14,7 +14,7 @@
 #include "test_util/testharness.h"
 #include "util/file_checksum_helper.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class DBRateLimiterOnReadTest
     : public DBTestBase,
@@ -427,7 +427,7 @@ TEST_P(DBRateLimiterOnWriteWALTest, AutoWalFlush) {
   EXPECT_EQ(actual_auto_wal_flush_request,
             options_.rate_limiter->GetTotalRequests(Env::IO_USER));
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

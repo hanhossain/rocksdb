@@ -36,7 +36,7 @@
 #include "rocksdb/types.h"
 #include "util/hash.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 template <typename T>
 class ProtectionInfo;
@@ -481,4 +481,4 @@ void ProtectionInfoKVOS<T>::UpdateS(SequenceNumber old_sequence_number,
                   sizeof(new_sequence_number), ProtectionInfo<T>::kSeedS));
   SetVal(val);
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

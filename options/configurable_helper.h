@@ -13,7 +13,7 @@
 #include "rocksdb/configurable.h"
 #include "rocksdb/convenience.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 // Helper class defining static methods for supporting the Configurable
 // class.  The purpose of this class is to keep the Configurable class
 // as tight as possible and provide methods for doing the actual work
@@ -182,4 +182,4 @@ class ConfigurableHelper {
       const std::string& name, const std::string& value, void* opt_ptr);
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

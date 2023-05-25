@@ -5,12 +5,6 @@
 
 BAD=""
 
-git grep -n 'namespace rocksdb' -- '*.[ch]*'
-if [ "$?" != "1" ]; then
-  echo "^^^^^ Do not hardcode namespace rocksdb. Use ROCKSDB_NAMESPACE"
-  BAD=1
-fi
-
 git grep -n -i 'nocommit' -- ':!build_tools/check-sources.sh'
 if [ "$?" != "1" ]; then
   echo "^^^^^ Code was not intended to be committed"

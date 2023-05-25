@@ -19,7 +19,7 @@
 #include "test_util/sync_point.h"
 #include "util/coding_lean.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // A generic helper object for gathering stats about cache entries by
 // iterating over them with ApplyToAllEntries. This class essentially
@@ -179,4 +179,4 @@ class CacheEntryStatsCollector {
   SystemClock *const clock_;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

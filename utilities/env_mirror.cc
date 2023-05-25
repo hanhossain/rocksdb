@@ -10,7 +10,7 @@
 
 #include "rocksdb/utilities/env_mirror.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // An implementation of Env that mirrors all work over two backend
 // Env's.  This is useful for debugging purposes.
@@ -270,4 +270,4 @@ Status EnvMirror::ReuseWritableFile(const std::string& fname,
   return as;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

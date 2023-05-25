@@ -8,7 +8,7 @@
 
 #include "table/block_based/filter_policy_internal.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 ParsedFullFilterBlock::ParsedFullFilterBlock(const FilterPolicy* filter_policy,
                                              BlockContents&& contents)
@@ -20,4 +20,4 @@ ParsedFullFilterBlock::ParsedFullFilterBlock(const FilterPolicy* filter_policy,
 
 ParsedFullFilterBlock::~ParsedFullFilterBlock() = default;
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

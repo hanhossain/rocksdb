@@ -20,7 +20,7 @@
 #include "rocksdb/sst_file_writer.h"
 #include "util/autovector.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class Directories;
 class SystemClock;
@@ -235,4 +235,4 @@ class ExternalSstFileIngestionJob {
   std::vector<Compaction*> file_ingesting_compactions_;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

@@ -10,15 +10,15 @@
 #include "rocksdb/utilities/optimistic_transaction_db.h"
 #include "rocksdb/utilities/transaction.h"
 
-using ROCKSDB_NAMESPACE::DB;
-using ROCKSDB_NAMESPACE::OptimisticTransactionDB;
-using ROCKSDB_NAMESPACE::OptimisticTransactionOptions;
-using ROCKSDB_NAMESPACE::Options;
-using ROCKSDB_NAMESPACE::ReadOptions;
-using ROCKSDB_NAMESPACE::Snapshot;
-using ROCKSDB_NAMESPACE::Status;
-using ROCKSDB_NAMESPACE::Transaction;
-using ROCKSDB_NAMESPACE::WriteOptions;
+using rocksdb::DB;
+using rocksdb::OptimisticTransactionDB;
+using rocksdb::OptimisticTransactionOptions;
+using rocksdb::Options;
+using rocksdb::ReadOptions;
+using rocksdb::Snapshot;
+using rocksdb::Status;
+using rocksdb::Transaction;
+using rocksdb::WriteOptions;
 
 #if defined(OS_WIN)
 std::string kDBPath = "C:\\Windows\\TEMP\\rocksdb_transaction_example";

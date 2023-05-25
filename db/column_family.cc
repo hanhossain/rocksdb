@@ -41,7 +41,7 @@
 #include "util/cast_util.h"
 #include "util/compression.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 ColumnFamilyHandleImpl::ColumnFamilyHandleImpl(
     ColumnFamilyData* column_family_data, DBImpl* db, InstrumentedMutex* mutex)
@@ -1680,4 +1680,4 @@ const Comparator* GetColumnFamilyUserComparator(
   return nullptr;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

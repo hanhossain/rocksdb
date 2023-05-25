@@ -9,7 +9,7 @@
 
 #include "db/column_family.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 void TrimHistoryScheduler::ScheduleWork(ColumnFamilyData* cfd) {
   std::lock_guard<std::mutex> lock(checking_mutex_);
@@ -51,4 +51,4 @@ void TrimHistoryScheduler::Clear() {
   assert(Empty());
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

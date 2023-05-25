@@ -12,7 +12,7 @@
 #include "rocksdb/status.h"
 #include "util/autovector.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // A read Blob request structure for use in BlobSource::MultiGetBlob and
 // BlobFileReader::MultiGetBlob.
@@ -55,4 +55,4 @@ using BlobFileReadRequests =
     std::tuple<uint64_t /* file_number */, uint64_t /* file_size */,
                autovector<BlobReadRequest>>;
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

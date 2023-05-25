@@ -7,7 +7,7 @@
 #if USE_COROUTINES
 #include "util/async_file_reader.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 bool AsyncFileReader::MultiReadAsyncImpl(ReadAwaiter* awaiter) {
   if (tail_) {
     tail_->next_ = awaiter;
@@ -77,5 +77,5 @@ void AsyncFileReader::Wait() {
   RecordInHistogram(stats_, MULTIGET_IO_BATCH_SIZE, num_reqs_);
   num_reqs_ = 0;
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 #endif  // USE_COROUTINES

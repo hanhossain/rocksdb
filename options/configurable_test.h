@@ -16,7 +16,7 @@
 #include "rocksdb/configurable.h"
 #include "rocksdb/utilities/options_type.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 struct ColumnFamilyOptions;
 struct DBOptions;
 
@@ -113,4 +113,4 @@ class TestConfigurable : public Configurable {
 };
 
 }  // namespace test
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

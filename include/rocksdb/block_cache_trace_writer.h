@@ -11,7 +11,7 @@
 #include "rocksdb/trace_reader_writer.h"
 #include "rocksdb/trace_record.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 // A record for block cache lookups/inserts. This is passed by the table
 // reader to the BlockCacheTraceWriter for every block cache op.
 struct BlockCacheTraceRecord {
@@ -146,4 +146,4 @@ std::unique_ptr<BlockCacheTraceWriter> NewBlockCacheTraceWriter(
     SystemClock* clock, const BlockCacheTraceWriterOptions& trace_options,
     std::unique_ptr<TraceWriter>&& trace_writer);
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

@@ -20,7 +20,7 @@
 #include "util/stop_watch.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 const std::string kCurrentFileName = "CURRENT";
 const std::string kOptionsFileNamePrefix = "OPTIONS-";
@@ -520,4 +520,4 @@ std::string NormalizePath(const std::string& path) {
   return dst;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

@@ -25,7 +25,7 @@
 #include "util/cast_util.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 static const std::string option_file_header =
     "# This is a RocksDB option file.\n"
@@ -730,5 +730,5 @@ Status RocksDBOptionsParser::VerifyTableFactory(
   }
   return Status::OK();
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 

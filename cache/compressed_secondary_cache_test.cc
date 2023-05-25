@@ -16,7 +16,7 @@
 #include "test_util/testharness.h"
 #include "test_util/testutil.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 using secondary_cache_test_util::GetTestingCacheTypes;
 using secondary_cache_test_util::WithCacheType;
@@ -974,7 +974,7 @@ TEST_P(CompressedSecondaryCacheTest, SplictValueAndMergeChunksTest) {
   SplictValueAndMergeChunksTest();
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

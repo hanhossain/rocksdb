@@ -9,7 +9,7 @@
 #include "table/format.h"
 #include "table/table_builder.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 AdaptiveTableFactory::AdaptiveTableFactory(
     std::shared_ptr<TableFactory> table_factory_to_write,
@@ -122,4 +122,4 @@ extern TableFactory* NewAdaptiveTableFactory(
                                   plain_table_factory, cuckoo_table_factory);
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

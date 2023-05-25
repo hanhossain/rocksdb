@@ -14,7 +14,7 @@
 #include "rocksdb/system_clock.h"
 #include "util/threadpool_imp.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 ReplayerImpl::ReplayerImpl(DB* db,
                            const std::vector<ColumnFamilyHandle*>& handles,
@@ -311,4 +311,4 @@ void ReplayerImpl::BackgroundWork(void* arg) {
   record.reset();
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

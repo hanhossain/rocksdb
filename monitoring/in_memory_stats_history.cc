@@ -10,7 +10,7 @@
 
 #include "db/db_impl/db_impl.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 InMemoryStatsHistoryIterator::~InMemoryStatsHistoryIterator() {}
 
@@ -47,4 +47,4 @@ void InMemoryStatsHistoryIterator::AdvanceIteratorByTime(uint64_t start_time,
   }
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

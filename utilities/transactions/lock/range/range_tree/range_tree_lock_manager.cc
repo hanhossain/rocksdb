@@ -22,7 +22,7 @@
 #include "utilities/transactions/pessimistic_transaction_db.h"
 #include "utilities/transactions/transaction_db_mutex_impl.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 RangeLockManagerHandle* NewRangeLockManager(
     std::shared_ptr<TransactionDBMutexFactory> mutex_factory) {
@@ -497,5 +497,5 @@ LockManager::RangeLockStatus RangeTreeLockManager::GetRangeLockStatus() {
   return data;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 #endif  // OS_WIN

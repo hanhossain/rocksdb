@@ -15,7 +15,7 @@
 #include "rocksdb/trace_record.h"
 #include "trace_replay/trace_replay.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 class SystemClock;
 class TraceReader;
 class TraceWriter;
@@ -182,4 +182,4 @@ class IOTracer {
   bool tracing_enabled;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

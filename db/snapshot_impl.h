@@ -14,7 +14,7 @@
 #include "rocksdb/db.h"
 #include "util/autovector.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class SnapshotList;
 
@@ -236,4 +236,4 @@ class TimestampedSnapshotList {
   std::map<uint64_t, std::shared_ptr<const SnapshotImpl>> snapshots_;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

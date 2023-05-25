@@ -12,7 +12,7 @@
 #include "rocksdb/slice.h"
 #include "table/internal_iterator.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class HistoryTrimmingIterator : public InternalIterator {
  public:
@@ -92,4 +92,4 @@ class HistoryTrimmingIterator : public InternalIterator {
   const Comparator* const cmp_;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

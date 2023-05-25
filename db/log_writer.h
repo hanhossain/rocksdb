@@ -19,7 +19,7 @@
 #include "rocksdb/status.h"
 #include "util/compression.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class WritableFileWriter;
 
@@ -125,4 +125,4 @@ class Writer {
 };
 
 }  // namespace log
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

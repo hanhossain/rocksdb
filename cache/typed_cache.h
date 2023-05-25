@@ -32,7 +32,7 @@
 #include "rocksdb/advanced_cache.h"
 #include "rocksdb/advanced_options.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // For future consideration:
 // * Pass in value to Insert with std::unique_ptr& to simplify ownership
@@ -372,4 +372,4 @@ using FullTypedSharedCacheInterface =
 
 #undef CACHE_TYPE_DEFS
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

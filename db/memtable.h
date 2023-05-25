@@ -32,7 +32,7 @@
 #include "util/hash.h"
 #include "util/hash_containers.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 struct FlushJobInfo;
 class Mutex;
@@ -657,4 +657,4 @@ class MemTable {
 
 extern const char* EncodeKey(std::string* scratch, const Slice& target);
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

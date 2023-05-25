@@ -12,7 +12,7 @@
 
 // BlobDBImpl methods to get snapshot of files, e.g. for replication.
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 namespace blob_db {
 
 Status BlobDBImpl::DisableFileDeletions() {
@@ -108,4 +108,4 @@ void BlobDBImpl::GetLiveFilesMetaData(std::vector<LiveFileMetaData>* metadata) {
 }
 
 }  // namespace blob_db
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

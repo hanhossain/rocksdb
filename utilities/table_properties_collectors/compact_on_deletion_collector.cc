@@ -14,7 +14,7 @@
 #include "rocksdb/utilities/table_properties_collectors.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 CompactOnDeletionCollector::CompactOnDeletionCollector(
     size_t sliding_window_size, size_t deletion_trigger, double deletion_ratio)
@@ -218,4 +218,4 @@ Status TablePropertiesCollectorFactory::CreateFromString(
                                                            result);
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

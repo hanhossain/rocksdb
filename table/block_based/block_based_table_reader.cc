@@ -74,7 +74,7 @@
 #include "util/stop_watch.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 namespace {
 
 CacheAllocationPtr CopyBufferToHeap(MemoryAllocator* allocator, Slice& buf) {
@@ -104,7 +104,7 @@ INSTANTIATE_RETRIEVE_BLOCK(Block_kFilterPartitionIndex);
 INSTANTIATE_RETRIEVE_BLOCK(Block_kRangeDeletion);
 INSTANTIATE_RETRIEVE_BLOCK(Block_kMetaIndex);
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 // Generate the regular and coroutine versions of some methods by
 // including block_based_table_reader_sync_and_async.h twice
@@ -119,7 +119,7 @@ INSTANTIATE_RETRIEVE_BLOCK(Block_kMetaIndex);
 #undef WITH_COROUTINES
 // clang-format on
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 extern const uint64_t kBlockBasedTableMagicNumber;
 extern const std::string kHashIndexPrefixesBlock;
@@ -2767,7 +2767,7 @@ Status BlockBasedTable::DumpTable(WritableFile* out_file) {
   }
 
   // Output TableProperties
-  const ROCKSDB_NAMESPACE::TableProperties* table_properties;
+  const rocksdb::TableProperties* table_properties;
   table_properties = rep_->table_properties.get();
 
   if (table_properties != nullptr) {
@@ -3001,4 +3001,4 @@ void BlockBasedTable::DumpKeyValue(const Slice& key, const Slice& value,
   out_stream << "  ------\n";
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

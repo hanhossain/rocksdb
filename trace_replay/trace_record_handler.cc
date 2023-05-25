@@ -9,7 +9,7 @@
 #include "rocksdb/trace_record_result.h"
 #include "rocksdb/write_batch.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // TraceExecutionHandler
 TraceExecutionHandler::TraceExecutionHandler(
@@ -187,4 +187,4 @@ Status TraceExecutionHandler::Handle(
   return Status::OK();
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

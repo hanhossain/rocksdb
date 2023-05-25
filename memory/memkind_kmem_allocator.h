@@ -9,7 +9,7 @@
 #include "rocksdb/memory_allocator.h"
 #include "utilities/memory_allocators.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class MemkindKmemAllocator : public BaseMemoryAllocator {
  public:
@@ -40,4 +40,4 @@ class MemkindKmemAllocator : public BaseMemoryAllocator {
 #endif  // MEMKIND
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

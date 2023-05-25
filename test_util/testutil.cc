@@ -34,7 +34,7 @@
 void RegisterCustomObjects(int /*argc*/, char** /*argv*/) {}
 #endif
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 namespace test {
 
 const uint32_t kDefaultFormatVersion = BlockBasedTableOptions().format_version;
@@ -719,4 +719,4 @@ void RegisterTestLibrary(const std::string& arg) {
   }
 }
 }  // namespace test
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

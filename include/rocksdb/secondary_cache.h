@@ -15,7 +15,7 @@
 #include "rocksdb/statistics.h"
 #include "rocksdb/status.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // A handle for lookup result. Immediately after SecondaryCache::Lookup() with
 // wait=false (and depending on the implementation), the handle could be in any
@@ -136,4 +136,4 @@ class SecondaryCache : public Customizable {
   }
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

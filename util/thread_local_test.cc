@@ -16,7 +16,7 @@
 #include "test_util/testutil.h"
 #include "util/autovector.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class ThreadLocalTest : public testing::Test {
  public:
@@ -552,7 +552,7 @@ void* AccessThreadLocal(void* /*arg*/) {
 // this test and only see an ASAN error on SyncPoint, it means you pass the
 // test.
 TEST_F(ThreadLocalTest, DISABLED_MainThreadDiesFirst) {
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
+  rocksdb::SyncPoint::GetInstance()->LoadDependency(
       {{"AccessThreadLocal:Start", "MainThreadDiesFirst:End"},
        {"PosixEnv::~PosixEnv():End", "AccessThreadLocal:End"}});
 
@@ -560,7 +560,7 @@ TEST_F(ThreadLocalTest, DISABLED_MainThreadDiesFirst) {
   Env::Default();
 
   try {
-    ROCKSDB_NAMESPACE::port::Thread th(&AccessThreadLocal, nullptr);
+    rocksdb::port::Thread th(&AccessThreadLocal, nullptr);
     th.detach();
     TEST_SYNC_POINT("MainThreadDiesFirst:End");
   } catch (const std::system_error& ex) {
@@ -569,7 +569,7 @@ TEST_F(ThreadLocalTest, DISABLED_MainThreadDiesFirst) {
   }
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

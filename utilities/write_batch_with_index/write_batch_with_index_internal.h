@@ -19,7 +19,7 @@
 #include "rocksdb/status.h"
 #include "rocksdb/utilities/write_batch_with_index.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class MergeContext;
 class WBWIIteratorImpl;
@@ -339,4 +339,4 @@ class WriteBatchWithIndexInternal {
   MergeContext merge_context_;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

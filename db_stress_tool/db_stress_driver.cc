@@ -12,7 +12,7 @@
 #include "db_stress_tool/db_stress_common.h"
 #include "utilities/fault_injection_fs.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 void ThreadBody(void* v) {
   ThreadState* thread = reinterpret_cast<ThreadState*>(v);
   SharedState* shared = thread->shared;
@@ -212,5 +212,5 @@ bool RunStressTest(SharedState* shared) {
   ThreadStatusUtil::UnregisterThread();
   return result;
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 #endif  // GFLAGS

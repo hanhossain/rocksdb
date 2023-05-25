@@ -16,7 +16,7 @@
 #include "db/log_writer.h"
 #include "db/version_set.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class MemTable;
 struct SuperVersion;
@@ -234,4 +234,4 @@ struct JobContext {
   }
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

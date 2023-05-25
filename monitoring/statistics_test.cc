@@ -11,7 +11,7 @@
 #include "test_util/testharness.h"
 #include "test_util/testutil.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class StatisticsTest : public testing::Test {};
 
@@ -78,7 +78,7 @@ TEST_F(StatisticsTest, NoNameStats) {
   ASSERT_NE(stats->inner, nullptr);
   ASSERT_NE("", stats->inner->ToString(options));  // ... even if it does...
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

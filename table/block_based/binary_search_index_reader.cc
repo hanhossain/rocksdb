@@ -8,7 +8,7 @@
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 #include "table/block_based/binary_search_index_reader.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 Status BinarySearchIndexReader::Create(
     const BlockBasedTable* table, const ReadOptions& ro,
     FilePrefetchBuffer* prefetch_buffer, bool use_cache, bool prefetch,
@@ -70,4 +70,4 @@ InternalIteratorBase<IndexValue>* BinarySearchIndexReader::NewIterator(
 
   return it;
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

@@ -19,7 +19,7 @@
 #include "logging/logging.h"
 #include "utilities/blob_db/blob_db_impl.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 namespace blob_db {
 
@@ -313,4 +313,4 @@ Status BlobFile::ReadMetadata(const std::shared_ptr<FileSystem>& fs,
 }
 
 }  // namespace blob_db
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

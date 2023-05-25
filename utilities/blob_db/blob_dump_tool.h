@@ -13,7 +13,7 @@
 #include "rocksdb/slice.h"
 #include "rocksdb/status.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 namespace blob_db {
 
 class BlobDumpTool {
@@ -52,5 +52,5 @@ class BlobDumpTool {
 };
 
 }  // namespace blob_db
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 

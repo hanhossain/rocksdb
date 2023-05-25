@@ -15,7 +15,7 @@
 #include "test_util/sync_point.h"
 #include "utilities/fault_injection_env.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class DBBlobBasicTest : public DBTestBase {
  protected:
@@ -1599,7 +1599,7 @@ TEST_F(DBBlobBasicTest, WarmCacheWithBlobsDuringFlush) {
   options.enable_blob_garbage_collection = true;
   options.blob_garbage_collection_age_cutoff = 1.0;
   options.prepopulate_blob_cache = rs::advanced_options::PrepopulateBlobCache::FlushOnly;
-  options.statistics = ROCKSDB_NAMESPACE::CreateDBStatistics();
+  options.statistics = rocksdb::CreateDBStatistics();
 
   DestroyAndReopen(options);
 
@@ -1649,7 +1649,7 @@ TEST_F(DBBlobBasicTest, DynamicallyWarmCacheDuringFlush) {
   options.enable_blob_garbage_collection = true;
   options.blob_garbage_collection_age_cutoff = 1.0;
   options.prepopulate_blob_cache = rs::advanced_options::PrepopulateBlobCache::FlushOnly;
-  options.statistics = ROCKSDB_NAMESPACE::CreateDBStatistics();
+  options.statistics = rocksdb::CreateDBStatistics();
 
   DestroyAndReopen(options);
 
@@ -2226,7 +2226,7 @@ TEST_F(DBBlobWithTimestampTest, IterateBlobs) {
   }
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

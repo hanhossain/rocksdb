@@ -8,9 +8,8 @@
 #include <cassert>
 
 #include "rocksdb/advanced_cache.h"
-#include "rocksdb/rocksdb_namespace.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // Returns the cached value given a cache handle.
 template <typename T>
@@ -136,4 +135,4 @@ Status WarmInCache(Cache* cache, const Slice& key, const Slice& saved,
                    Cache::Priority priority = Cache::Priority::LOW,
                    size_t* out_charge = nullptr);
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

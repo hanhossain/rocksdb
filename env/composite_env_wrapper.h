@@ -16,7 +16,7 @@
 #undef LoadLibrary
 #endif
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class CompositeEnv : public Env {
  public:
@@ -375,4 +375,4 @@ class CompositeEnvWrapper : public CompositeEnv {
  private:
   EnvWrapper::Target target_;
 };
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

@@ -946,7 +946,7 @@ foreach(PLUGIN IN LISTS PLUGINS)
   string(REGEX MATCH "_FUNC = ([^\n]*)" FOO ${PLUGINMK})
   if (NOT ${CMAKE_MATCH_1} STREQUAL "")
     string(APPEND ROCKSDB_PLUGIN_BUILTINS "{\"${PLUGIN}\", " ${CMAKE_MATCH_1} "},")
-    string(APPEND ROCKSDB_PLUGIN_EXTERNS "int " ${CMAKE_MATCH_1} "(ROCKSDB_NAMESPACE::ObjectLibrary&, const std::string&); ")
+    string(APPEND ROCKSDB_PLUGIN_EXTERNS "int " ${CMAKE_MATCH_1} "(rocksdb::ObjectLibrary&, const std::string&); ")
   endif()
 
   string(REGEX MATCH "_LIBS = ([^\n]*)" FOO ${PLUGINMK})

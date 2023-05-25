@@ -10,13 +10,13 @@
 #include "rocksdb/options.h"
 #include "rocksdb/slice.h"
 
-using ROCKSDB_NAMESPACE::DB;
-using ROCKSDB_NAMESPACE::Options;
-using ROCKSDB_NAMESPACE::PinnableSlice;
-using ROCKSDB_NAMESPACE::ReadOptions;
-using ROCKSDB_NAMESPACE::Status;
-using ROCKSDB_NAMESPACE::WriteBatch;
-using ROCKSDB_NAMESPACE::WriteOptions;
+using rocksdb::DB;
+using rocksdb::Options;
+using rocksdb::PinnableSlice;
+using rocksdb::ReadOptions;
+using rocksdb::Status;
+using rocksdb::WriteBatch;
+using rocksdb::WriteOptions;
 
 #if defined(OS_WIN)
 std::string kDBPath = "C:\\Windows\\TEMP\\rocksdb_simple_example";

@@ -31,7 +31,7 @@
 #include "utilities/blob_db/blob_db_impl.h"
 #include "utilities/fault_injection_env.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 namespace blob_db {
 
 class BlobDBTest : public testing::Test {
@@ -773,7 +773,7 @@ TEST_F(BlobDBTest, SstFileManager) {
   Options db_options;
 
   int files_scheduled_to_delete = 0;
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "SstFileManagerImpl::ScheduleFileDeletion", [&](void *arg) {
         assert(arg);
         const std::string *const file_path =
@@ -807,7 +807,7 @@ TEST_F(BlobDBTest, SstFileManager) {
 
 TEST_F(BlobDBTest, SstFileManagerRestart) {
   int files_scheduled_to_delete = 0;
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "SstFileManagerImpl::ScheduleFileDeletion", [&](void *arg) {
         assert(arg);
         const std::string *const file_path =
@@ -2420,7 +2420,7 @@ TEST_F(BlobDBTest, SyncBlobFileBeforeCloseIOError) {
 }
 
 }  //  namespace blob_db
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 // A black-box test for the ttl wrapper around rocksdb
 int main(int argc, char **argv) {

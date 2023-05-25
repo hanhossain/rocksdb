@@ -8,9 +8,8 @@
 
 #pragma once
 
-#include "rocksdb/rocksdb_namespace.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 enum class CpuPriority {
   kIdle = 0,
@@ -19,4 +18,4 @@ enum class CpuPriority {
   kHigh = 3,
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

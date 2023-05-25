@@ -11,7 +11,7 @@
 
 #include "db/db_impl/db_impl.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // TODO: Share common structure with CompactedDBImpl and DBImplSecondary
 class DBImplReadOnly : public DBImpl {
@@ -162,5 +162,5 @@ class DBImplReadOnly : public DBImpl {
       bool error_if_wal_file_exists = false);
   friend class DB;
 };
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 

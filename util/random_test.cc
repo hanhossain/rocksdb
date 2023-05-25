@@ -14,7 +14,7 @@
 
 #include "test_util/testharness.h"
 
-using ROCKSDB_NAMESPACE::Random;
+using rocksdb::Random;
 
 TEST(RandomTest, Uniform) {
   const int average = 20;

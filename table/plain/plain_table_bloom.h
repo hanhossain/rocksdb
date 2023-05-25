@@ -14,7 +14,7 @@
 #include "util/hash.h"
 #include "util/math.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 class Slice;
 class Allocator;
 class Logger;
@@ -129,4 +129,4 @@ class BloomBlockBuilder {
   PlainTableBloomV1 bloom_;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

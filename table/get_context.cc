@@ -17,7 +17,7 @@
 #include "rocksdb/statistics.h"
 #include "rocksdb/system_clock.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 namespace {
 
@@ -613,4 +613,4 @@ void replayGetContextLog(const Slice& replay_log, const Slice& user_key,
   }
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

@@ -55,7 +55,7 @@
 #include "util/coding.h"
 #include "util/random.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 template <class Comparator>
 class InlineSkipList {
@@ -1048,4 +1048,4 @@ void InlineSkipList<Comparator>::TEST_Validate() const {
   }
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

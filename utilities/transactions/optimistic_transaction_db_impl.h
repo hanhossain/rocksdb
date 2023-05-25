@@ -13,7 +13,7 @@
 #include "rocksdb/options.h"
 #include "rocksdb/utilities/optimistic_transaction_db.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class OptimisticTransactionDBImpl : public OptimisticTransactionDB {
  public:
@@ -83,4 +83,4 @@ class OptimisticTransactionDBImpl : public OptimisticTransactionDB {
                                    OptimisticTransactionOptions());
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

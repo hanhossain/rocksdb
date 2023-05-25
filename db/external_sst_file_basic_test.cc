@@ -14,7 +14,7 @@
 #include "util/random.h"
 #include "utilities/fault_injection_env.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class ExternalSSTFileBasicTest
     : public DBTestBase,
@@ -1090,12 +1090,12 @@ TEST_F(ExternalSSTFileBasicTest, FadviseTrigger) {
   const int kNumKeys = 10000;
 
   size_t total_fadvised_bytes = 0;
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "SstFileWriter::Rep::InvalidatePageCache", [&](void* arg) {
         size_t fadvise_size = *(reinterpret_cast<size_t*>(arg));
         total_fadvised_bytes += fadvise_size;
       });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   std::unique_ptr<SstFileWriter> sst_file_writer;
 
@@ -1122,7 +1122,7 @@ TEST_F(ExternalSSTFileBasicTest, FadviseTrigger) {
   ASSERT_EQ(total_fadvised_bytes, sst_file_writer->FileSize());
   ASSERT_GT(total_fadvised_bytes, 0);
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
 }
 
 TEST_F(ExternalSSTFileBasicTest, SyncFailure) {
@@ -2028,10 +2028,10 @@ TEST_F(ExternalSSTFileBasicTest, StableSnapshotWhileLoggingToManifest) {
   }
 
   const Snapshot* snapshot = nullptr;
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "VersionSet::LogAndApply:WriteManifest", [&](void* /* arg */) {
         // prevent background compaction job to call this callback
-        ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+        rocksdb::SyncPoint::GetInstance()->DisableProcessing();
         snapshot = db_->GetSnapshot();
         ReadOptions read_opts;
         read_opts.snapshot = snapshot;
@@ -2039,7 +2039,7 @@ TEST_F(ExternalSSTFileBasicTest, StableSnapshotWhileLoggingToManifest) {
         ASSERT_OK(db_->Get(read_opts, "k", &value));
         ASSERT_EQ(kPutVal, value);
       });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   ASSERT_OK(db_->IngestExternalFile(db_->DefaultColumnFamily(), {external_file},
                                     IngestExternalFileOptions()));
@@ -2073,7 +2073,7 @@ INSTANTIATE_TEST_CASE_P(ExternalSSTFileBasicTest, ExternalSSTFileBasicTest,
                                         std::make_tuple(false, false)));
 
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

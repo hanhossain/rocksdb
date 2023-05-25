@@ -12,7 +12,7 @@
 #include "rocksdb/utilities/options_type.h"
 #include "utilities/memory_allocators.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 namespace {
 static std::unordered_map<std::string, OptionTypeInfo> ma_wrapper_type_info = {
     {"target", OptionTypeInfo::AsCustomSharedPtr<MemoryAllocator>(
@@ -77,4 +77,4 @@ Status MemoryAllocator::CreateFromString(
   copy.invoke_prepare_options = true;
   return LoadManagedObject<MemoryAllocator>(copy, value, result);
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

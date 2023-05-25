@@ -10,7 +10,7 @@
 #include "rocksdb/statistics.h"
 #include "util/random.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class DBStatisticsTest : public DBTestBase {
  public:
@@ -31,7 +31,7 @@ TEST_F(DBStatisticsTest, CompressionStatsTest) {
 
     Options options = CurrentOptions();
     options.compression = type;
-    options.statistics = ROCKSDB_NAMESPACE::CreateDBStatistics();
+    options.statistics = rocksdb::CreateDBStatistics();
     options.statistics->set_stats_level(StatsLevel::kExceptTimeForMutex);
     BlockBasedTableOptions bbto;
     bbto.enable_index_compression = false;
@@ -133,7 +133,7 @@ TEST_F(DBStatisticsTest, CompressionStatsTest) {
 TEST_F(DBStatisticsTest, MutexWaitStatsDisabledByDefault) {
   Options options = CurrentOptions();
   options.create_if_missing = true;
-  options.statistics = ROCKSDB_NAMESPACE::CreateDBStatistics();
+  options.statistics = rocksdb::CreateDBStatistics();
   CreateAndReopenWithCF({"pikachu"}, options);
   const uint64_t kMutexWaitDelay = 100;
   ThreadStatusUtil::TEST_SetStateDelay(ThreadStatus::STATE_MUTEX_WAIT,
@@ -146,7 +146,7 @@ TEST_F(DBStatisticsTest, MutexWaitStatsDisabledByDefault) {
 TEST_F(DBStatisticsTest, MutexWaitStats) {
   Options options = CurrentOptions();
   options.create_if_missing = true;
-  options.statistics = ROCKSDB_NAMESPACE::CreateDBStatistics();
+  options.statistics = rocksdb::CreateDBStatistics();
   options.statistics->set_stats_level(StatsLevel::kAll);
   CreateAndReopenWithCF({"pikachu"}, options);
   const uint64_t kMutexWaitDelay = 100;
@@ -160,7 +160,7 @@ TEST_F(DBStatisticsTest, MutexWaitStats) {
 TEST_F(DBStatisticsTest, ResetStats) {
   Options options = CurrentOptions();
   options.create_if_missing = true;
-  options.statistics = ROCKSDB_NAMESPACE::CreateDBStatistics();
+  options.statistics = rocksdb::CreateDBStatistics();
   DestroyAndReopen(options);
   for (int i = 0; i < 2; ++i) {
     // pick arbitrary ticker and histogram. On first iteration they're zero
@@ -184,7 +184,7 @@ TEST_F(DBStatisticsTest, ResetStats) {
 
 TEST_F(DBStatisticsTest, ExcludeTickers) {
   Options options = CurrentOptions();
-  options.statistics = ROCKSDB_NAMESPACE::CreateDBStatistics();
+  options.statistics = rocksdb::CreateDBStatistics();
   DestroyAndReopen(options);
   options.statistics->set_stats_level(StatsLevel::kExceptTickers);
   ASSERT_OK(Put("foo", "value"));
@@ -199,7 +199,7 @@ TEST_F(DBStatisticsTest, ExcludeTickers) {
 TEST_F(DBStatisticsTest, VerifyChecksumReadStat) {
   Options options = CurrentOptions();
   options.file_checksum_gen_factory = GetFileChecksumGenCrc32cFactory();
-  options.statistics = ROCKSDB_NAMESPACE::CreateDBStatistics();
+  options.statistics = rocksdb::CreateDBStatistics();
   Reopen(options);
 
   // Expected to be populated regardless of `PerfLevel` in user thread
@@ -242,7 +242,7 @@ TEST_F(DBStatisticsTest, VerifyChecksumReadStat) {
 }
 
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

@@ -13,7 +13,7 @@
 #include "utilities/cassandra/format.h"
 #include "utilities/cassandra/merge_operator.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 namespace cassandra {
 static std::unordered_map<std::string, OptionTypeInfo>
     cassandra_filter_type_info = {
@@ -103,4 +103,4 @@ int RegisterCassandraObjects(ObjectLibrary& library,
   return static_cast<int>(library.GetFactoryCount(&num_types));
 }
 }  // namespace cassandra
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

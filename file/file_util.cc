@@ -14,7 +14,7 @@
 #include "file/writable_file_writer.h"
 #include "rocksdb/env.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // Utility function to copy a file up to a specified length
 IOStatus CopyFile(FileSystem* fs, const std::string& source,
@@ -274,4 +274,4 @@ Status DestroyDir(Env* env, const std::string& dir) {
   return s;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

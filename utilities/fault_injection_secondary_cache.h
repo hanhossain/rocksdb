@@ -7,7 +7,7 @@
 #include "util/random.h"
 #include "util/thread_local.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // This class implements a custom SecondaryCache that randomly injects an
 // error status into Inserts/Lookups based on a specified probability.
@@ -106,4 +106,4 @@ class FaultInjectionSecondaryCache : public SecondaryCache {
   ErrorContext* GetErrorContext();
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

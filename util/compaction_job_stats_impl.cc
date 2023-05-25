@@ -5,7 +5,7 @@
 
 #include "rocksdb/compaction_job_stats.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 
 void CompactionJobStats::Reset() {
@@ -89,4 +89,4 @@ void CompactionJobStats::Add(const CompactionJobStats& stats) {
 }
 
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

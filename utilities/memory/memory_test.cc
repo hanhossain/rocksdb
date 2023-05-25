@@ -15,7 +15,7 @@
 #include "util/random.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class MemoryTest : public testing::Test {
  public:
@@ -255,7 +255,7 @@ TEST_F(MemoryTest, MemTableAndTableReadersTotal) {
     delete dbs[i];
   }
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
 #if !(defined NDEBUG) || !defined(OS_WIN)

@@ -9,7 +9,7 @@
 
 #include "rocksdb/table_properties.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // A factory of a table property collector that marks a SST
 // file as need-compaction when it observe at least "D" deletion
@@ -84,5 +84,5 @@ extern std::shared_ptr<CompactOnDeletionCollectorFactory>
 NewCompactOnDeletionCollectorFactory(size_t sliding_window_size,
                                      size_t deletion_trigger,
                                      double deletion_ratio = 0);
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 

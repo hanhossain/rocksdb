@@ -23,7 +23,7 @@
 #include "util/crc32c.h"
 #include "util/stop_watch.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 Status BlobFileReader::Create(
     const ImmutableOptions& immutable_options, const ReadOptions& read_options,
@@ -621,4 +621,4 @@ Status BlobFileReader::UncompressBlobIfNeeded(
   return Status::OK();
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

@@ -14,7 +14,7 @@
 #include "rocksdb/comparator.h"
 #include "rocksdb/table_properties.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // Base class for internal table properties collector.
 class IntTblPropCollector {
@@ -174,4 +174,4 @@ class TimestampTablePropertiesCollector : public IntTblPropCollector {
   std::string timestamp_max_;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

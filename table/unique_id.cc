@@ -10,7 +10,7 @@
 #include "util/hash.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 std::string EncodeSessionId(uint64_t upper, uint64_t lower) {
   std::string db_session_id(20U, '\0');
@@ -220,4 +220,4 @@ std::string InternalUniqueIdToHumanString(UniqueIdPtr in) {
   return str;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

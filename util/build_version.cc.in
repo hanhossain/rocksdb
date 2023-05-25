@@ -25,11 +25,11 @@ extern "C" {
 @ROCKSDB_PLUGIN_EXTERNS@
 } // extern "C"
 
-std::unordered_map<std::string, ROCKSDB_NAMESPACE::RegistrarFunc> ROCKSDB_NAMESPACE::ObjectRegistry::builtins_ = {
+std::unordered_map<std::string, rocksdb::RegistrarFunc> rocksdb::ObjectRegistry::builtins_ = {
   @ROCKSDB_PLUGIN_BUILTINS@
 };
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 static void AddProperty(std::unordered_map<std::string, std::string> *props, const std::string& name) {
   size_t colon = name.find(":");
   if (colon != std::string::npos && colon > 0 && colon < name.length() - 1) {
@@ -76,4 +76,4 @@ std::string GetRocksBuildInfoAsString(const std::string& program, bool verbose) 
   }
   return info;
 }
-} // namespace ROCKSDB_NAMESPACE
+} // namespace rocksdb

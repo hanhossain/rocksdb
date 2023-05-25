@@ -11,9 +11,8 @@
 #include <folly/container/F14Map.h>
 #endif
 
-#include "rocksdb/rocksdb_namespace.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // Helper methods to estimate memroy usage by std containers.
 
@@ -35,4 +34,4 @@ size_t ApproximateMemoryUsage(const folly::F14FastMap<Key, Value, Hash>& umap) {
 }
 #endif
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

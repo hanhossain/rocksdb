@@ -13,18 +13,18 @@
 #include "rocksdb/write_batch.h"
 #include "test_util/testharness.h"
 
-using ROCKSDB_NAMESPACE::CompactionFilter;
-using ROCKSDB_NAMESPACE::CompactRangeOptions;
-using ROCKSDB_NAMESPACE::CompressionType;
-using ROCKSDB_NAMESPACE::DB;
-using ROCKSDB_NAMESPACE::DestroyDB;
-using ROCKSDB_NAMESPACE::FlushOptions;
-using ROCKSDB_NAMESPACE::Iterator;
-using ROCKSDB_NAMESPACE::Options;
-using ROCKSDB_NAMESPACE::ReadOptions;
-using ROCKSDB_NAMESPACE::Slice;
-using ROCKSDB_NAMESPACE::WriteBatch;
-using ROCKSDB_NAMESPACE::WriteOptions;
+using rocksdb::CompactionFilter;
+using rocksdb::CompactRangeOptions;
+using rocksdb::CompressionType;
+using rocksdb::DB;
+using rocksdb::DestroyDB;
+using rocksdb::FlushOptions;
+using rocksdb::Iterator;
+using rocksdb::Options;
+using rocksdb::ReadOptions;
+using rocksdb::Slice;
+using rocksdb::WriteBatch;
+using rocksdb::WriteOptions;
 
 
 namespace {
@@ -48,7 +48,7 @@ class ManualCompactionTest : public testing::Test {
  public:
   ManualCompactionTest() {
     // Get rid of any state from an old run.
-    dbname_ = ROCKSDB_NAMESPACE::test::PerThreadDBPath(
+    dbname_ = rocksdb::test::PerThreadDBPath(
         "rocksdb_manual_compaction_test");
     EXPECT_OK(DestroyDB(dbname_, Options()));
   }

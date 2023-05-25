@@ -16,7 +16,7 @@
 #include "util/vector_iterator.h"
 #include "utilities/merge_operators.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // Expects no merging attempts.
 class NoMergingMergeOp : public MergeOperator {
@@ -552,7 +552,7 @@ TEST_P(CompactionIteratorTest, ShuttingDownInFilter) {
   compaction_proxy_->key_not_exists_beyond_output_level = true;
 
   std::atomic<bool> seek_done{false};
-  ROCKSDB_NAMESPACE::port::Thread compaction_thread([&] {
+  rocksdb::port::Thread compaction_thread([&] {
     c_iter_->SeekToFirst();
     EXPECT_FALSE(c_iter_->Valid());
     EXPECT_TRUE(c_iter_->status().IsShutdownInProgress());
@@ -589,7 +589,7 @@ TEST_P(CompactionIteratorTest, ShuttingDownInMerge) {
   compaction_proxy_->key_not_exists_beyond_output_level = true;
 
   std::atomic<bool> seek_done{false};
-  ROCKSDB_NAMESPACE::port::Thread compaction_thread([&] {
+  rocksdb::port::Thread compaction_thread([&] {
     c_iter_->SeekToFirst();
     ASSERT_FALSE(c_iter_->Valid());
     ASSERT_TRUE(c_iter_->status().IsShutdownInProgress());
@@ -1609,7 +1609,7 @@ INSTANTIATE_TEST_CASE_P(CompactionIteratorTsGcTestInstance,
                         CompactionIteratorTsGcTest,
                         testing::Values(true, false));
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

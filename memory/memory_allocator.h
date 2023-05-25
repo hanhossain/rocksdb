@@ -10,7 +10,7 @@
 
 #include "rocksdb/memory_allocator.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 struct CustomDeleter {
   CustomDeleter(MemoryAllocator* a = nullptr) : allocator(a) {}
@@ -44,4 +44,4 @@ inline CacheAllocationPtr AllocateAndCopyBlock(const Slice& data,
   return cap;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

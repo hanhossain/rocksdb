@@ -18,7 +18,7 @@
 #include "rocksdb/env.h"
 #include "util/mutexlock.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // HashTable<T, Hash, Equal>
 //
@@ -233,5 +233,5 @@ class HashTable {
   std::unique_ptr<port::RWMutex[]> locks_;  // Granular locks
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 

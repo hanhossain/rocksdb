@@ -11,7 +11,7 @@
 #include "utilities/transactions/lock/lock_tracker.h"
 #include "utilities/transactions/pessimistic_transaction.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class PessimisticTransactionDB;
 
@@ -76,5 +76,5 @@ class LockManager {
 std::shared_ptr<LockManager> NewLockManager(PessimisticTransactionDB* db,
                                             const TransactionDBOptions& opt);
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 

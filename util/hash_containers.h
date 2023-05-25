@@ -10,14 +10,13 @@
 
 #pragma once
 
-#include "rocksdb/rocksdb_namespace.h"
 
 #ifdef USE_FOLLY
 
 #include <folly/container/F14Map.h>
 #include <folly/container/F14Set.h>
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 template <typename K, typename V>
 using UnorderedMap = folly::F14FastMap<K, V>;
@@ -28,14 +27,14 @@ using UnorderedMapH = folly::F14FastMap<K, V, H>;
 template <typename K>
 using UnorderedSet = folly::F14FastSet<K>;
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 #else
 
 #include <unordered_map>
 #include <unordered_set>
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 template <typename K, typename V>
 using UnorderedMap = std::unordered_map<K, V>;
@@ -46,6 +45,6 @@ using UnorderedMapH = std::unordered_map<K, V, H>;
 template <typename K>
 using UnorderedSet = std::unordered_set<K>;
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 #endif

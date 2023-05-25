@@ -9,7 +9,7 @@
 #include "rocksdb/env.h"
 #include "rocksdb/system_clock.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 #ifdef ROCKSDB_USING_THREAD_STATUS
 thread_local ThreadStatusUpdater*
@@ -205,4 +205,4 @@ AutoThreadOperationStageUpdater::~AutoThreadOperationStageUpdater() {}
 
 #endif  // ROCKSDB_USING_THREAD_STATUS
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

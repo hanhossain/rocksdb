@@ -21,7 +21,7 @@
 #include "util/autovector.h"
 #include "util/defer.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 uint64_t DBImpl::MinLogNumberToKeep() {
   return versions_->min_log_number_to_keep();
@@ -1011,4 +1011,4 @@ Status DBImpl::DeleteUnreferencedSstFiles(RecoveryContext* recovery_ctx) {
   return s;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

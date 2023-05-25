@@ -9,7 +9,7 @@
 
 #include "rocksdb/slice.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // Define all public custom types here.
 
@@ -20,4 +20,4 @@ using SequenceNumber = uint64_t;
 
 const SequenceNumber kMinUnCommittedSeq = 1;  // 0 is always committed
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

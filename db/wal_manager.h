@@ -26,7 +26,7 @@
 #include "rocksdb/transaction_log.h"
 #include "rocksdb/types.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 
 // WAL manager provides the abstraction for reading the WAL files as a single
@@ -133,4 +133,4 @@ class WalManager {
   std::shared_ptr<IOTracer> io_tracer_;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

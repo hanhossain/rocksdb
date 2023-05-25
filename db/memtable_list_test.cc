@@ -19,7 +19,7 @@
 #include "test_util/testutil.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class MemTableListTest : public testing::Test {
  public:
@@ -1028,7 +1028,7 @@ TEST_F(MemTableListTest, AtomicFlusTest) {
   }
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

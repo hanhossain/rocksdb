@@ -8,10 +8,9 @@
 #include <functional>
 #include <memory>
 
-#include "rocksdb/rocksdb_namespace.h"
 #include "rocksdb/status.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class TraceRecord;
 class TraceRecordResult;
@@ -82,4 +81,4 @@ class Replayer {
           result_callback) = 0;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

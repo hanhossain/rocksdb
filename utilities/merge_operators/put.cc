@@ -10,7 +10,7 @@
 #include "utilities/merge_operators.h"
 #include "utilities/merge_operators/put_operator.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // A merge operator that mimics Put semantics
 // Since this merge-operator will not be used in production,
@@ -71,4 +71,4 @@ std::shared_ptr<MergeOperator> MergeOperators::CreateDeprecatedPutOperator() {
 std::shared_ptr<MergeOperator> MergeOperators::CreatePutOperator() {
   return std::make_shared<PutOperatorV2>();
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

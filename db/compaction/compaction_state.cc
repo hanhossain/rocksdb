@@ -10,7 +10,7 @@
 
 #include "db/compaction/compaction_state.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 Slice CompactionState::SmallestUserKey() {
   for (const auto& sub_compact_state : sub_compact_states) {
@@ -43,4 +43,4 @@ void CompactionState::AggregateCompactionStats(
     compaction_job_stats.Add(sc.compaction_job_stats);
   }
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

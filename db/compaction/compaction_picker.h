@@ -22,7 +22,7 @@
 #include "rocksdb/options.h"
 #include "rocksdb/status.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // The file contains an abstract class CompactionPicker, and its two
 // sub-classes LevelCompactionPicker and NullCompactionPicker, as
@@ -315,4 +315,4 @@ CompressionOptions GetCompressionOptions(
     const VersionStorageInfo* vstorage, int level,
     const bool enable_compression = true);
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

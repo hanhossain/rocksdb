@@ -11,7 +11,7 @@
 #include "table/block_based/block_based_table_reader.h"
 #include "table/block_based/parsed_full_filter_block.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 template <typename TBlocklike>
 Status FilterBlockReaderCommon<TBlocklike>::ReadFilterBlock(
@@ -160,4 +160,4 @@ bool FilterBlockReaderCommon<TBlocklike>::IsFilterCompatible(
 template class FilterBlockReaderCommon<Block_kFilterPartitionIndex>;
 template class FilterBlockReaderCommon<ParsedFullFilterBlock>;
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

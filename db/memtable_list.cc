@@ -25,7 +25,7 @@
 #include "test_util/sync_point.h"
 #include "util/coding.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class InternalKeyComparator;
 class Mutex;
@@ -984,4 +984,4 @@ void MemTableList::RemoveOldMemTables(uint64_t log_number,
   ResetTrimHistoryNeeded();
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

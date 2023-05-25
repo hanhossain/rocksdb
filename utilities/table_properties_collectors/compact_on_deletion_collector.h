@@ -6,7 +6,7 @@
 #pragma once
 
 #include "rocksdb/utilities/table_properties_collectors.h"
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class CompactOnDeletionCollector : public TablePropertiesCollector {
  public:
@@ -65,4 +65,4 @@ class CompactOnDeletionCollector : public TablePropertiesCollector {
   bool need_compaction_;
   bool finished_;
 };
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

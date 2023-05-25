@@ -8,7 +8,7 @@
 
 #include "monitoring/perf_level_imp.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 thread_local PerfLevel perf_level = kEnableCount;
 
@@ -20,4 +20,4 @@ void SetPerfLevel(PerfLevel level) {
 
 PerfLevel GetPerfLevel() { return perf_level; }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

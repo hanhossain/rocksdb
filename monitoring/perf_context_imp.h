@@ -8,7 +8,7 @@
 #include "rocksdb/perf_context.h"
 #include "util/stop_watch.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 #if defined(NPERF_CONTEXT)
 extern PerfContext perf_context;
 #else
@@ -93,4 +93,4 @@ extern thread_local PerfContext perf_context;
 
 #endif
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

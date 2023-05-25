@@ -7,7 +7,7 @@
 
 #include "db/wide/wide_column_serialization.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 const Slice kDefaultWideColumnName;
 
@@ -19,4 +19,4 @@ Status PinnableWideColumns::CreateIndexForWideColumns() {
   return WideColumnSerialization::Deserialize(value_copy, columns_);
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

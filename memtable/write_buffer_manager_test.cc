@@ -12,7 +12,7 @@
 #include "rocksdb/advanced_cache.h"
 #include "test_util/testharness.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 class WriteBufferManagerTest : public testing::Test {};
 
 const size_t kSizeDummyEntry = 256 * 1024;
@@ -295,7 +295,7 @@ TEST_F(ChargeWriteBufferTest, BasicWithCacheFull) {
             46 * kSizeDummyEntry + kMetaDataChargeOverhead);
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

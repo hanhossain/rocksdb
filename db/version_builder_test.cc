@@ -17,7 +17,7 @@
 #include "test_util/testutil.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class VersionBuilderTest : public testing::Test {
  public:
@@ -1811,7 +1811,7 @@ TEST_F(VersionBuilderTest, EstimatedActiveKeys) {
             (kEntriesPerFile - 2 * kDeletionsPerFile) * kNumFiles);
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

@@ -19,7 +19,7 @@
 #include "table/plain/plain_table_reader.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 static std::unordered_map<std::string, OptionTypeInfo> plain_table_type_info = {
     {"user_key_len",
      {offsetof(struct PlainTableOptions, user_key_len), rs::options_type::OptionType::UInt32T,
@@ -293,4 +293,4 @@ const std::string PlainTablePropertyNames::kBloomVersion =
 const std::string PlainTablePropertyNames::kNumBloomBlocks =
     "rocksdb.plain.table.bloom.numblocks";
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

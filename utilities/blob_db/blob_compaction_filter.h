@@ -13,7 +13,7 @@
 #include "utilities/blob_db/blob_db_impl.h"
 #include "utilities/compaction_filters/layered_compaction_filter_base.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 class SystemClock;
 namespace blob_db {
 
@@ -199,4 +199,4 @@ class BlobIndexCompactionFilterFactoryGC
 };
 
 }  // namespace blob_db
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

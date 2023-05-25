@@ -20,7 +20,7 @@
 #include "table/block_based/parsed_full_filter_block.h"
 #include "util/hash.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class FilterPolicy;
 class FilterBitsBuilder;
@@ -144,4 +144,4 @@ class FullFilterBlockReader
                 const ReadOptions& read_options) const;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

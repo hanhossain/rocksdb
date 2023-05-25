@@ -6,7 +6,7 @@
 #include "db/db_test_util.h"
 #include "test_util/sync_point.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class DBBlobCorruptionTest : public DBTestBase {
  protected:
@@ -39,7 +39,7 @@ TEST_F(DBBlobCorruptionTest, VerifyWholeBlobFileChecksum) {
   options.min_blob_size = 0;
   options.create_if_missing = true;
   options.file_checksum_gen_factory =
-      ROCKSDB_NAMESPACE::GetFileChecksumGenCrc32cFactory();
+      rocksdb::GetFileChecksumGenCrc32cFactory();
   Reopen(options);
 
   ASSERT_OK(Put(Slice("key_1"), Slice("blob_value_1")));
@@ -66,10 +66,10 @@ TEST_F(DBBlobCorruptionTest, VerifyWholeBlobFileChecksum) {
   ASSERT_TRUE(db_->VerifyFileChecksums(ReadOptions()).IsCorruption());
   ASSERT_EQ(1, count);
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

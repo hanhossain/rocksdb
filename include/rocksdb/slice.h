@@ -27,7 +27,7 @@
 
 #include "rocksdb/cleanable.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class Slice {
  public:
@@ -261,4 +261,4 @@ inline size_t Slice::difference_offset(const Slice& b) const {
   return off;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

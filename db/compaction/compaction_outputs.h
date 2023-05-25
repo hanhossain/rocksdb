@@ -16,7 +16,7 @@
 #include "db/internal_stats.h"
 #include "db/output_validator.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class CompactionOutputs;
 using CompactionFileOpenFunc = std::function<Status(CompactionOutputs&)>;
@@ -400,4 +400,4 @@ struct OutputIterator {
   size_t idx_;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

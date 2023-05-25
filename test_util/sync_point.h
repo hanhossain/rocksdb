@@ -12,7 +12,6 @@
 #include <thread>
 #include <vector>
 
-#include "rocksdb/rocksdb_namespace.h"
 #include "rocksdb/slice.h"
 
 #ifdef NDEBUG
@@ -21,7 +20,7 @@
 #define TEST_KILL_RANDOM(kill_point)
 #else
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // To avoid crashing always at some frequently executed codepaths (during
 // kill random test), use this factor to reduce odds
@@ -49,7 +48,7 @@ struct KillPoint {
         kill_point, rocksdb_kill_odds_weight, __FILE__, __LINE__);         \
   }
 #define TEST_KILL_RANDOM(kill_point) TEST_KILL_RANDOM_WITH_WEIGHT(kill_point, 1)
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 #endif
 
@@ -60,7 +59,7 @@ struct KillPoint {
 #define INIT_SYNC_POINT_SINGLETONS()
 #else
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // This class provides facility to reproduce race conditions deterministically
 // in unit tests.
@@ -146,7 +145,7 @@ class SyncPoint {
 // Sets up sync points to mock direct IO instead of actually issuing direct IO
 // to the file system.
 void SetupSyncPointsToMockDirectIO();
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 // Use TEST_SYNC_POINT to specify sync points inside code base.
 // Sync points can have happens-after dependency on other sync points,
@@ -155,14 +154,14 @@ void SetupSyncPointsToMockDirectIO();
 // See TransactionLogIteratorRace in db_test.cc for an example use case.
 // TEST_SYNC_POINT is no op in release build.
 #define TEST_SYNC_POINT(x) \
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->Process(x)
+  rocksdb::SyncPoint::GetInstance()->Process(x)
 #define TEST_IDX_SYNC_POINT(x, index)                      \
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->Process(x + \
+  rocksdb::SyncPoint::GetInstance()->Process(x + \
                                                        std::to_string(index))
 #define TEST_SYNC_POINT_CALLBACK(x, y) \
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->Process(x, y)
+  rocksdb::SyncPoint::GetInstance()->Process(x, y)
 #define INIT_SYNC_POINT_SINGLETONS() \
-  (void)ROCKSDB_NAMESPACE::SyncPoint::GetInstance();
+  (void)rocksdb::SyncPoint::GetInstance();
 #endif  // NDEBUG
 
 // Callback sync point for any read IO errors that should be ignored by

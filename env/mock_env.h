@@ -19,7 +19,7 @@
 #include "rocksdb/status.h"
 #include "rocksdb/system_clock.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 class MemFile;
 class MockFileSystem : public FileSystem {
  public:
@@ -141,4 +141,4 @@ class MockEnv : public CompositeEnvWrapper {
           const std::shared_ptr<SystemClock>& clock);
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

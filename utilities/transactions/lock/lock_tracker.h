@@ -7,12 +7,11 @@
 
 #include <memory>
 
-#include "rocksdb/rocksdb_namespace.h"
 #include "rocksdb/status.h"
 #include "rocksdb/types.h"
 #include "rocksdb/utilities/transaction_db.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // Request for locking a single key.
 struct PointLockRequest {
@@ -204,4 +203,4 @@ class LockTrackerFactory {
   virtual ~LockTrackerFactory() {}
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

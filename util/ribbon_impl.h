@@ -11,7 +11,7 @@
 #include "util/fastrange.h"
 #include "util/ribbon_alg.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 namespace ribbon {
 
@@ -109,7 +109,7 @@ struct AddInputSelector<Key, ResultRow, true /*IsFilter*/> {
                                                                              \
   /* Some more additions */                                                  \
   using QueryInput = Key;                                                    \
-  using AddInput = typename ROCKSDB_NAMESPACE::ribbon::AddInputSelector<     \
+  using AddInput = typename rocksdb::ribbon::AddInputSelector<     \
       Key, ResultRow, TypesAndSettings::kIsFilter>::T;                       \
   static constexpr auto kCoeffBits =                                         \
       static_cast<Index>(sizeof(CoeffRow) * 8U);                             \
@@ -1119,17 +1119,17 @@ class SerializableInterleavedSolution {
 
 }  // namespace ribbon
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 // For convenience working with templates
 #define IMPORT_RIBBON_IMPL_TYPES(TypesAndSettings)                            \
-  using Hasher = ROCKSDB_NAMESPACE::ribbon::StandardHasher<TypesAndSettings>; \
+  using Hasher = rocksdb::ribbon::StandardHasher<TypesAndSettings>; \
   using Banding =                                                             \
-      ROCKSDB_NAMESPACE::ribbon::StandardBanding<TypesAndSettings>;           \
+      rocksdb::ribbon::StandardBanding<TypesAndSettings>;           \
   using SimpleSoln =                                                          \
-      ROCKSDB_NAMESPACE::ribbon::InMemSimpleSolution<TypesAndSettings>;       \
+      rocksdb::ribbon::InMemSimpleSolution<TypesAndSettings>;       \
   using InterleavedSoln =                                                     \
-      ROCKSDB_NAMESPACE::ribbon::SerializableInterleavedSolution<             \
+      rocksdb::ribbon::SerializableInterleavedSolution<             \
           TypesAndSettings>;                                                  \
   static_assert(sizeof(Hasher) + sizeof(Banding) + sizeof(SimpleSoln) +       \
                         sizeof(InterleavedSoln) >                             \

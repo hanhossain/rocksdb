@@ -8,7 +8,7 @@
 #include "test_util/testharness.h"
 #include "util/coding.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 TEST(WideColumnSerializationTest, Construct) {
   constexpr char foo[] = "foo";
@@ -329,7 +329,7 @@ TEST(WideColumnSerializationTest, DeserializeColumnsOutOfOrder) {
   ASSERT_TRUE(std::strstr(s.getState(), "order"));
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

@@ -24,7 +24,7 @@
 #include "util/random.h"
 
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // A helper function that ensures the table properties returned in
 // `GetPropertiesOfAllTablesTest` is correct.
@@ -485,7 +485,7 @@ TEST_P(DBTablePropertiesTest, DeletionTriggeredCompactionMarking) {
       NewCompactOnDeletionCollectorFactory(kWindowSize, kNumDelsTrigger);
 
   Options opts = CurrentOptions();
-  opts.statistics = ROCKSDB_NAMESPACE::CreateDBStatistics();
+  opts.statistics = rocksdb::CreateDBStatistics();
   opts.table_properties_collector_factories.emplace_back(compact_on_del);
 
   if (GetParam() == "kCompactionStyleUniversal") {
@@ -570,7 +570,7 @@ TEST_P(DBTablePropertiesTest, RatioBasedDeletionTriggeredCompactionMarking) {
                                            kDeletionRatio);
 
   Options opts = CurrentOptions();
-  opts.statistics = ROCKSDB_NAMESPACE::CreateDBStatistics();
+  opts.statistics = rocksdb::CreateDBStatistics();
   opts.table_properties_collector_factories.emplace_back(compact_on_del);
 
   Reopen(opts);
@@ -612,7 +612,7 @@ INSTANTIATE_TEST_CASE_P(DBTablePropertiesTest, DBTablePropertiesTest,
                         ::testing::Values("kCompactionStyleLevel",
                                           "kCompactionStyleUniversal"));
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 
 int main(int argc, char** argv) {

@@ -18,7 +18,7 @@
 #include "utilities/cassandra/test_utils.h"
 #include "utilities/merge_operators.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 namespace cassandra {
 
 // Path to the database on file system
@@ -435,7 +435,7 @@ TEST_F(CassandraFunctionalTest, LoadCompactionFilterFactory) {
 }
 
 }  // namespace cassandra
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

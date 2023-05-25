@@ -24,7 +24,7 @@
 #include "rocksdb/table.h"
 #include "util/hash.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class RandomAccessFile;
 struct ReadOptions;
@@ -375,4 +375,4 @@ inline BlockHandle::BlockHandle() : BlockHandle(~uint64_t{0}, ~uint64_t{0}) {}
 inline BlockHandle::BlockHandle(uint64_t _offset, uint64_t _size)
     : offset_(_offset), size_(_size) {}
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

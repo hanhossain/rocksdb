@@ -18,18 +18,18 @@
 #include "rocksdb/table.h"
 #include "rocksdb/utilities/options_util.h"
 
-using ROCKSDB_NAMESPACE::BlockBasedTableOptions;
-using ROCKSDB_NAMESPACE::ColumnFamilyDescriptor;
-using ROCKSDB_NAMESPACE::ColumnFamilyHandle;
-using ROCKSDB_NAMESPACE::ColumnFamilyOptions;
-using ROCKSDB_NAMESPACE::CompactionFilter;
-using ROCKSDB_NAMESPACE::ConfigOptions;
-using ROCKSDB_NAMESPACE::DB;
-using ROCKSDB_NAMESPACE::DBOptions;
-using ROCKSDB_NAMESPACE::NewLRUCache;
-using ROCKSDB_NAMESPACE::Options;
-using ROCKSDB_NAMESPACE::Slice;
-using ROCKSDB_NAMESPACE::Status;
+using rocksdb::BlockBasedTableOptions;
+using rocksdb::ColumnFamilyDescriptor;
+using rocksdb::ColumnFamilyHandle;
+using rocksdb::ColumnFamilyOptions;
+using rocksdb::CompactionFilter;
+using rocksdb::ConfigOptions;
+using rocksdb::DB;
+using rocksdb::DBOptions;
+using rocksdb::NewLRUCache;
+using rocksdb::Options;
+using rocksdb::Slice;
+using rocksdb::Status;
 
 #if defined(OS_WIN)
 std::string kDBPath = "C:\\Windows\\TEMP\\rocksdb_options_file_example";
@@ -57,7 +57,7 @@ int main() {
 
   std::vector<ColumnFamilyDescriptor> cf_descs;
   cf_descs.push_back(
-      {ROCKSDB_NAMESPACE::kDefaultColumnFamilyName, ColumnFamilyOptions()});
+      {rocksdb::kDefaultColumnFamilyName, ColumnFamilyOptions()});
   cf_descs.push_back({"new_cf", ColumnFamilyOptions()});
 
   // initialize BlockBasedTableOptions
@@ -75,7 +75,7 @@ int main() {
 
   // destroy and open DB
   DB* db;
-  Status s = ROCKSDB_NAMESPACE::DestroyDB(kDBPath,
+  Status s = rocksdb::DestroyDB(kDBPath,
                                           Options(db_opt, cf_descs[0].options));
   assert(s.ok());
   s = DB::Open(Options(db_opt, cf_descs[0].options), kDBPath, &db);

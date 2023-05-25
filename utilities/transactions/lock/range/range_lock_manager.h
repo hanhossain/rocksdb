@@ -11,7 +11,7 @@
 
 #include "utilities/transactions/lock/lock_manager.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 /*
   A base class for all Range-based lock managers
@@ -31,4 +31,4 @@ class RangeLockManagerBase : public LockManager {
   }
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

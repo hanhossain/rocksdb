@@ -24,7 +24,7 @@
 #include "util/random.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // TODO(icanadi) Mock out everything else:
 // 1. VersionSet
@@ -734,7 +734,7 @@ TEST_F(FlushJobTimestampTest, NoKeyExpired) {
   ASSERT_TRUE(to_delete.empty());
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

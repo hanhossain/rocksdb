@@ -13,7 +13,7 @@
 #include "db_stress_tool/db_stress_shared_state.h"
 #include "rocksdb/compaction_filter.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // DbStressCompactionFilter is safe to use with db_stress as it does not perform
 // any mutation. It only makes `kRemove` decisions for keys that are already
@@ -93,4 +93,4 @@ class DbStressCompactionFilterFactory : public CompactionFilterFactory {
   SharedState* state_;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

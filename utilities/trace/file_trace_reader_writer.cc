@@ -11,7 +11,7 @@
 #include "trace_replay/trace_replay.h"
 #include "util/coding.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 const unsigned int FileTraceReader::kBufferSize = 1024;  // 1KB
 
@@ -130,4 +130,4 @@ Status NewFileTraceWriter(Env* env, const EnvOptions& env_options,
   return s;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

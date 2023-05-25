@@ -27,7 +27,7 @@
 #include "test_util/testutil.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class DeleteFileTest : public DBTestBase {
  public:
@@ -435,13 +435,13 @@ TEST_F(DeleteFileTest, BackgroundPurgeTestMultipleJobs) {
   // 5 sst files after 2 compactions with 2 live iterators
   CheckFileTypeCounts(dbname_, 0, 5, 1);
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
   // ~DBImpl should wait until all BGWorkPurge are finished
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
+  rocksdb::SyncPoint::GetInstance()->LoadDependency(
       {{"DBImpl::~DBImpl:WaitJob", "DBImpl::BGWorkPurge"},
        {"DeleteFileTest::GuardFinish",
         "DeleteFileTest::BackgroundPurgeTestMultipleJobs:DBClose"}});
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   delete itr1;
   env_->Schedule(&DeleteFileTest::DoSleep, this, Env::Priority::HIGH);
@@ -591,7 +591,7 @@ TEST_F(DeleteFileTest, DeleteNonDefaultColumnFamily) {
   }
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

@@ -14,7 +14,7 @@
 #include "rocksdb/system_clock.h"
 #include "util/mutexlock.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // -- AutoRollLogger
 
@@ -365,4 +365,4 @@ Status CreateLoggerFromOptions(const std::string& dbname,
   return s;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

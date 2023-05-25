@@ -18,7 +18,7 @@
 #include "test_util/sync_point.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 size_t Arena::OptimizeBlockSize(size_t block_size) {
   // Make sure block_size is in optimal range
@@ -167,4 +167,4 @@ char* Arena::AllocateNewBlock(size_t block_bytes) {
   return block;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

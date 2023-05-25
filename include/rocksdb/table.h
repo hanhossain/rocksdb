@@ -28,7 +28,7 @@
 #include "rocksdb/options.h"
 #include "rocksdb/status.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // -- Block-based Table
 class Cache;
@@ -924,4 +924,4 @@ extern TableFactory* NewAdaptiveTableFactory(
     std::shared_ptr<TableFactory> cuckoo_table_factory = nullptr);
 
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

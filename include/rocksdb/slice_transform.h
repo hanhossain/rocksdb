@@ -18,9 +18,8 @@
 #include <string>
 
 #include "rocksdb/customizable.h"
-#include "rocksdb/rocksdb_namespace.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class Slice;
 struct ConfigOptions;
@@ -132,4 +131,4 @@ extern const SliceTransform* NewCappedPrefixTransform(size_t cap_len);
 // Prefix is equal to key. All keys are InDomain.
 extern const SliceTransform* NewNoopTransform();
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

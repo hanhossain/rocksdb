@@ -44,7 +44,7 @@
 #define F_SET_RW_HINT (F_LINUX_SPECIFIC_BASE + 12)
 #endif
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 std::string IOErrorMsg(const std::string& context,
                        const std::string& file_name) {
@@ -1727,5 +1727,5 @@ IOStatus PosixDirectory::FsyncWithDirOptions(
 #endif  // OS_AIX
   return s;
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 #endif

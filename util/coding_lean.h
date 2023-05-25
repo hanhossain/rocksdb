@@ -16,7 +16,7 @@
 
 #include "port/port.h"  // for port::kLittleEndian
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // Lower-level versions of Put... that write directly into a character buffer
 // REQUIRES: dst has enough space for the value being written
@@ -98,4 +98,4 @@ inline uint64_t DecodeFixed64(const char* ptr) {
   }
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

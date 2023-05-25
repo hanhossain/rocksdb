@@ -16,7 +16,7 @@
 
 #include "rocksdb/merge_operator.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 class Logger;
 class Slice;
 
@@ -53,4 +53,4 @@ class PutOperatorV2 : public PutOperator {
                    MergeOperationOutput* merge_out) const override;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

@@ -9,7 +9,7 @@
 #include "db/version_edit.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 uint64_t SeqnoToTimeMapping::GetOldestApproximateTime(
     const SequenceNumber seqno) const {
@@ -338,4 +338,4 @@ SeqnoToTimeMapping::SeqnoTimePair SeqnoToTimeMapping::SeqnoTimePair::operator-(
   return res;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

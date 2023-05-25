@@ -12,7 +12,7 @@
 #include "file/sequence_file_reader.h"
 #include "util/defer.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 TransactionLogIteratorImpl::TransactionLogIteratorImpl(
     const std::string& dir, const ImmutableDBOptions* options,
@@ -293,4 +293,4 @@ Status TransactionLogIteratorImpl::OpenLogReader(const LogFile* log_file) {
                       read_options_.verify_checksums_, log_file->LogNumber()));
   return Status::OK();
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

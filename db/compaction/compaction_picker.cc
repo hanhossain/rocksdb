@@ -25,7 +25,7 @@
 #include "util/random.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 bool FindIntraL0Compaction(const std::vector<FileMetaData*>& level_files,
                            size_t min_files_to_compact,
@@ -1222,4 +1222,4 @@ bool CompactionPicker::GetOverlappingL0Files(
   return true;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

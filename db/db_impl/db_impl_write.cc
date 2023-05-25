@@ -17,7 +17,7 @@
 #include "test_util/sync_point.h"
 #include "util/cast_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 // Convenience methods
 Status DBImpl::Put(const WriteOptions& o, ColumnFamilyHandle* column_family,
                    const Slice& key, const Slice& val) {
@@ -2484,4 +2484,4 @@ Status DB::Merge(const WriteOptions& opt, ColumnFamilyHandle* column_family,
   return Write(opt, &batch);
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

@@ -12,7 +12,7 @@
 
 #include "rocksdb/utilities/ldb_cmd.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class CompactorCommand : public LDBCommand {
  public:
@@ -741,4 +741,4 @@ class UnsafeRemoveSstFileCommand : public LDBCommand {
   uint64_t sst_file_number_;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

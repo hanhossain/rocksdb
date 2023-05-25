@@ -12,7 +12,7 @@
 #include "db_stress_tool/db_stress_common.h"
 #include "monitoring/thread_status_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 class DbStressRandomAccessFileWrapper : public FSRandomAccessFileOwnerWrapper {
  public:
   explicit DbStressRandomAccessFileWrapper(
@@ -74,5 +74,5 @@ class DbStressFSWrapper : public FileSystemWrapper {
   // If true, all manifest files will not be delted in DeleteFile().
   bool if_preserve_all_manifests = true;
 };
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 #endif  // GFLAGS

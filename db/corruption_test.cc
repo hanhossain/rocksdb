@@ -36,7 +36,7 @@
 #include "util/random.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 static constexpr int kValueSize = 1000;
 namespace {
@@ -144,7 +144,7 @@ class CorruptionTest : public testing::Test {
   void RepairDB() {
     delete db_;
     db_ = nullptr;
-    ASSERT_OK(::ROCKSDB_NAMESPACE::RepairDB(dbname_, options_));
+    ASSERT_OK(::rocksdb::RepairDB(dbname_, options_));
   }
 
   void Build(int n, int start, int flush_every) {
@@ -1064,11 +1064,11 @@ TEST_F(CorruptionTest, FlushKeyOrderCheck) {
           mem_iter->Prev();
         }
       });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
   Status s = static_cast_with_check<DBImpl>(db_)->TEST_FlushMemTable();
   ASSERT_NOK(s);
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
 }
 
 TEST_F(CorruptionTest, DisableKeyOrderCheck) {
@@ -1078,7 +1078,7 @@ TEST_F(CorruptionTest, DisableKeyOrderCheck) {
   SyncPoint::GetInstance()->SetCallBack(
       "OutputValidator::Add:order_check",
       [&](void* /*arg*/) { ASSERT_TRUE(false); });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
   ASSERT_OK(db_->Put(WriteOptions(), "foo1", "v1"));
   ASSERT_OK(db_->Put(WriteOptions(), "foo3", "v1"));
   ASSERT_OK(dbi->TEST_FlushMemTable());
@@ -1089,8 +1089,8 @@ TEST_F(CorruptionTest, DisableKeyOrderCheck) {
   cro.bottommost_level_compaction = rs::options::BottommostLevelCompaction::Force;
   ASSERT_OK(
       dbi->CompactRange(cro, dbi->DefaultColumnFamily(), nullptr, nullptr));
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
 }
 
 TEST_F(CorruptionTest, VerifyWholeTableChecksum) {
@@ -1100,7 +1100,7 @@ TEST_F(CorruptionTest, VerifyWholeTableChecksum) {
   ASSERT_OK(DestroyDB(dbname_, options));
   options.create_if_missing = true;
   options.file_checksum_gen_factory =
-      ROCKSDB_NAMESPACE::GetFileChecksumGenCrc32cFactory();
+      rocksdb::GetFileChecksumGenCrc32cFactory();
   Reopen(&options);
 
   Build(10, 5);
@@ -1659,7 +1659,7 @@ TEST_P(CrashDuringRecoveryWithCorruptionTest, CrashDuringRecoveryWithFlush) {
   }
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

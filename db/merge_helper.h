@@ -19,7 +19,7 @@
 #include "rocksdb/wide_columns.h"
 #include "util/stop_watch.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class Comparator;
 class Iterator;
@@ -221,4 +221,4 @@ class MergeOutputIterator {
   std::vector<Slice>::const_reverse_iterator it_values_;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

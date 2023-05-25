@@ -42,7 +42,7 @@
 //
 // Write IO code path :
 //
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class WriteableCacheFile;
 struct BlockInfo;
@@ -287,5 +287,5 @@ class ThreadedWriter : public Writer {
   std::vector<port::Thread> threads_;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 

@@ -19,7 +19,7 @@
 #include "test_util/sync_point.h"
 #include "util/mutexlock.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 DeleteScheduler::DeleteScheduler(SystemClock* clock, FileSystem* fs,
                                  int64_t rate_bytes_per_sec, Logger* info_log,
@@ -405,5 +405,5 @@ void DeleteScheduler::MaybeCreateBackgroundThread() {
   }
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 

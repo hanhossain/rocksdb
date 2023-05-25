@@ -21,7 +21,7 @@
 #include "test_util/testharness.h"
 #include "util/random.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // TODO(yhchiang): the rate will not be accurate when we run test in parallel.
 class RateLimiterTest : public testing::Test {
@@ -364,7 +364,7 @@ TEST_F(RateLimiterTest, LimitChangeTest) {
   // starvation test when limit changes to a smaller value
   int64_t refill_period = 1000 * 1000;
   auto* env = Env::Default();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
   struct Arg {
     Arg(int32_t _request_size, Env::IOPriority _pri,
         std::shared_ptr<RateLimiter> _limiter)
@@ -391,7 +391,7 @@ TEST_F(RateLimiterTest, LimitChangeTest) {
       // After "GenericRateLimiter::Request:1" the mutex is held until the bytes
       // are refilled. This test could be improved to change the limit when lock
       // is released in `TimedWait()`.
-      ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
+      rocksdb::SyncPoint::GetInstance()->LoadDependency(
           {{"GenericRateLimiter::Request",
             "RateLimiterTest::LimitChangeTest:changeLimitStart"},
            {"RateLimiterTest::LimitChangeTest:changeLimitEnd",
@@ -413,7 +413,7 @@ TEST_F(RateLimiterTest, LimitChangeTest) {
               target / 1024, new_limit / 1024, refill_period / 1000);
     }
   }
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
 }
 
 TEST_F(RateLimiterTest, AutoTuneIncreaseWhenFull) {
@@ -432,12 +432,12 @@ TEST_F(RateLimiterTest, AutoTuneIncreaseWhenFull) {
   // Rate limiter uses `CondVar::TimedWait()`, which does not have access to the
   // `Env` to advance its time according to the fake wait duration. The
   // workaround is to install a callback that advance the `Env`'s mock time.
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "GenericRateLimiter::Request:PostTimedWait", [&](void* arg) {
         int64_t time_waited_us = *static_cast<int64_t*>(arg);
         special_env.SleepForMicroseconds(static_cast<int>(time_waited_us));
       });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   // verify rate limit increases after a sequence of periods where rate limiter
   // is always drained
@@ -452,8 +452,8 @@ TEST_F(RateLimiterTest, AutoTuneIncreaseWhenFull) {
   int64_t new_bytes_per_sec = rate_limiter->GetSingleBurstBytes();
   ASSERT_GT(new_bytes_per_sec, orig_bytes_per_sec);
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearCallBack(
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->ClearCallBack(
       "GenericRateLimiter::Request:PostTimedWait");
 
   // decreases after a sequence of periods where rate limiter is not drained
@@ -467,7 +467,7 @@ TEST_F(RateLimiterTest, AutoTuneIncreaseWhenFull) {
   ASSERT_LT(new_bytes_per_sec, orig_bytes_per_sec);
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

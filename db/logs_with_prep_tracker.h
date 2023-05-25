@@ -12,9 +12,8 @@
 #include <unordered_map>
 #include <vector>
 
-#include "rocksdb/rocksdb_namespace.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // This class is used to track the log files with outstanding prepare entries.
 class LogsWithPrepTracker {
@@ -59,4 +58,4 @@ class LogsWithPrepTracker {
   std::unordered_map<uint64_t, uint64_t> prepared_section_completed_;
   std::mutex prepared_section_completed_mutex_;
 };
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

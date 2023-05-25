@@ -12,9 +12,8 @@
 #include <vector>
 
 #include "port/lang.h"
-#include "rocksdb/rocksdb_namespace.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // A vector that leverages pre-allocated stack-based array to achieve better
 // performance for array with small amount of items.
@@ -390,4 +389,4 @@ autovector<T, kSize>& autovector<T, kSize>::operator=(
   return *this;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

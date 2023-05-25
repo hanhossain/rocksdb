@@ -16,7 +16,7 @@
 #include "util/crc32c.h"
 #include "utilities/cache_dump_load_impl.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // Set the dump filter with a list of DBs. Block cache may be shared by multipe
 // DBs and we may only want to dump out the blocks belonging to certain DB(s).
@@ -366,4 +366,4 @@ IOStatus CacheDumpedLoaderImpl::ReadCacheBlock(std::string* data,
   return io_s;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

@@ -31,7 +31,7 @@
 #include "utilities/transactions/pessimistic_transaction_db.h"
 #include "utilities/transactions/write_unprepared_txn_db.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // Return true if the ith bit is set in combination represented by comb
 bool IsInCombination(size_t i, size_t comb) { return comb & (size_t(1) << i); }
@@ -575,4 +575,4 @@ class TimestampedSnapshotWithTsSanityCheck
   std::vector<ColumnFamilyHandle*> handles_{};
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

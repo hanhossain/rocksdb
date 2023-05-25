@@ -35,7 +35,7 @@
 // and marked as kDeprecated in order to be able to read old
 // OPTIONS files.
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 static Status ParseCompressionOptions(const std::string& value,
                                       const std::string& name,
@@ -1174,4 +1174,4 @@ Status GetStringFromMutableCFOptions(const ConfigOptions& config_options,
   return OptionTypeInfo::SerializeType(
       config_options, cf_mutable_options_type_info, &mutable_opts, opt_string);
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

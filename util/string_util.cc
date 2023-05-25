@@ -35,7 +35,7 @@
 #define ROCKSDB_MAYBE_UNUSED
 #endif
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 const std::string kNullptrString = "nullptr";
 
@@ -499,4 +499,4 @@ std::string errnoStr(int err) {
   return result;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

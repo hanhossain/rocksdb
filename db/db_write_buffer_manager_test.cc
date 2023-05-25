@@ -10,7 +10,7 @@
 #include "db/db_test_util.h"
 #include "db/write_thread.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class DBWriteBufferManagerTest : public DBTestBase,
                                  public testing::WithParamInterface<bool> {
@@ -105,17 +105,17 @@ TEST_P(DBWriteBufferManagerTest, SharedWriteBufferAcrossCFs2) {
   InstrumentedCondVar cv(&mutex);
   std::atomic<int> thread_num(0);
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
+  rocksdb::SyncPoint::GetInstance()->LoadDependency(
       {{"DBWriteBufferManagerTest::SharedWriteBufferAcrossCFs:0",
         "DBImpl::BackgroundCallFlush:start"}});
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "WBMStallInterface::BlockDB", [&](void*) {
         InstrumentedMutexLock lock(&mutex);
         wait_count_db++;
         cv.SignalAll();
       });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "WriteThread::WriteStall::Wait", [&](void* arg) {
         InstrumentedMutexLock lock(&mutex);
         WriteThread::Writer* w = reinterpret_cast<WriteThread::Writer*>(arg);
@@ -126,7 +126,7 @@ TEST_P(DBWriteBufferManagerTest, SharedWriteBufferAcrossCFs2) {
               "DBWriteBufferManagerTest::SharedWriteBufferAcrossCFs:0");
         }
       });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   bool s = true;
 
@@ -174,8 +174,8 @@ TEST_P(DBWriteBufferManagerTest, SharedWriteBufferAcrossCFs2) {
   // Number of Writer threads blocked.
   ASSERT_EQ(w_set.size(), num_writers);
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
 }
 
 // Test multiple DBs get blocked when WriteBufferManager limit exceeds and flush
@@ -226,11 +226,11 @@ TEST_P(DBWriteBufferManagerTest, SharedWriteBufferLimitAcrossDB) {
   InstrumentedMutex mutex;
   InstrumentedCondVar cv(&mutex);
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
+  rocksdb::SyncPoint::GetInstance()->LoadDependency(
       {{"DBWriteBufferManagerTest::SharedWriteBufferAcrossCFs:0",
         "DBImpl::BackgroundCallFlush:start"}});
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "WBMStallInterface::BlockDB", [&](void*) {
         {
           InstrumentedMutexLock lock(&mutex);
@@ -243,7 +243,7 @@ TEST_P(DBWriteBufferManagerTest, SharedWriteBufferLimitAcrossDB) {
           }
         }
       });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   bool s = true;
 
@@ -291,8 +291,8 @@ TEST_P(DBWriteBufferManagerTest, SharedWriteBufferLimitAcrossDB) {
     delete dbs[i];
   }
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
 }
 
 // Test multiple threads writing across multiple DBs and multiple columns get
@@ -347,11 +347,11 @@ TEST_P(DBWriteBufferManagerTest, SharedWriteBufferLimitAcrossDB1) {
   std::vector<port::Thread> writer_threads;
   std::atomic<int> thread_num(0);
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
+  rocksdb::SyncPoint::GetInstance()->LoadDependency(
       {{"DBWriteBufferManagerTest::SharedWriteBufferAcrossCFs:0",
         "DBImpl::BackgroundCallFlush:start"}});
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "WBMStallInterface::BlockDB", [&](void*) {
         {
           InstrumentedMutexLock lock(&mutex);
@@ -365,7 +365,7 @@ TEST_P(DBWriteBufferManagerTest, SharedWriteBufferLimitAcrossDB1) {
           }
         }
       });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "WriteThread::WriteStall::Wait", [&](void* arg) {
         WriteThread::Writer* w = reinterpret_cast<WriteThread::Writer*>(arg);
         {
@@ -379,7 +379,7 @@ TEST_P(DBWriteBufferManagerTest, SharedWriteBufferLimitAcrossDB1) {
           }
         }
       });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   bool s1 = true, s2 = true;
   // Write to multiple columns of db_.
@@ -443,8 +443,8 @@ TEST_P(DBWriteBufferManagerTest, SharedWriteBufferLimitAcrossDB1) {
     delete dbs[i];
   }
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
 }
 
 // Test multiple threads writing across multiple columns of db_ by passing
@@ -493,11 +493,11 @@ TEST_P(DBWriteBufferManagerTest, MixedSlowDownOptionsSingleDB) {
   std::atomic<int> thread_num(0);
   std::atomic<int> w_no_slowdown(0);
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
+  rocksdb::SyncPoint::GetInstance()->LoadDependency(
       {{"DBWriteBufferManagerTest::SharedWriteBufferAcrossCFs:0",
         "DBImpl::BackgroundCallFlush:start"}});
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "WBMStallInterface::BlockDB", [&](void*) {
         {
           InstrumentedMutexLock lock(&mutex);
@@ -506,7 +506,7 @@ TEST_P(DBWriteBufferManagerTest, MixedSlowDownOptionsSingleDB) {
         }
       });
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "WriteThread::WriteStall::Wait", [&](void* arg) {
         {
           InstrumentedMutexLock lock(&mutex);
@@ -521,7 +521,7 @@ TEST_P(DBWriteBufferManagerTest, MixedSlowDownOptionsSingleDB) {
           }
         }
       });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   bool s1 = true, s2 = true;
 
@@ -595,8 +595,8 @@ TEST_P(DBWriteBufferManagerTest, MixedSlowDownOptionsSingleDB) {
   // Number of Writer threads with WriteOptions.no_slowdown = true.
   ASSERT_EQ(w_no_slowdown.load(std::memory_order_relaxed), num_writers / 2);
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
 }
 
 // Test multiple threads writing across multiple columns of db_ and different
@@ -652,11 +652,11 @@ TEST_P(DBWriteBufferManagerTest, MixedSlowDownOptionsMultipleDB) {
   std::atomic<int> thread_num(0);
   std::atomic<int> w_no_slowdown(0);
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
+  rocksdb::SyncPoint::GetInstance()->LoadDependency(
       {{"DBWriteBufferManagerTest::SharedWriteBufferAcrossCFs:0",
         "DBImpl::BackgroundCallFlush:start"}});
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "WBMStallInterface::BlockDB", [&](void*) {
         InstrumentedMutexLock lock(&mutex);
         wait_count_db++;
@@ -671,7 +671,7 @@ TEST_P(DBWriteBufferManagerTest, MixedSlowDownOptionsMultipleDB) {
         }
       });
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
+  rocksdb::SyncPoint::GetInstance()->SetCallBack(
       "WriteThread::WriteStall::Wait", [&](void* arg) {
         WriteThread::Writer* w = reinterpret_cast<WriteThread::Writer*>(arg);
         InstrumentedMutexLock lock(&mutex);
@@ -685,7 +685,7 @@ TEST_P(DBWriteBufferManagerTest, MixedSlowDownOptionsMultipleDB) {
               "DBWriteBufferManagerTest::SharedWriteBufferAcrossCFs:0");
         }
       });
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   bool s1 = true, s2 = true;
   std::function<void(DB*)> write_slow_down = [&](DB* db) {
@@ -775,8 +775,8 @@ TEST_P(DBWriteBufferManagerTest, MixedSlowDownOptionsMultipleDB) {
     delete dbs[i];
   }
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
 }
 
 
@@ -873,11 +873,11 @@ TEST_F(DBWriteBufferManagerTest, RuntimeChangeableAllowStall) {
   ASSERT_TRUE(s.IsIncomplete());
   ASSERT_TRUE(s.ToString().find("Write stall") != std::string::npos);
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
+  rocksdb::SyncPoint::GetInstance()->LoadDependency(
       {{"WBMStallInterface::BlockDB",
         "DBWriteBufferManagerTest::RuntimeChangeableThreadSafeParameters::"
         "ChangeParameter"}});
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   // Test `SetAllowStall()`
   port::Thread thread1([&] { ASSERT_OK(Put(Key(0), DummyString(kBigValue))); });
@@ -894,8 +894,8 @@ TEST_F(DBWriteBufferManagerTest, RuntimeChangeableAllowStall) {
   thread1.join();
   thread2.join();
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
 
   // Test 2: test setting `allow_stall` from false to true
   //
@@ -916,7 +916,7 @@ TEST_F(DBWriteBufferManagerTest, RuntimeChangeableAllowStall) {
 INSTANTIATE_TEST_CASE_P(DBWriteBufferManagerTest, DBWriteBufferManagerTest,
                         testing::Bool());
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

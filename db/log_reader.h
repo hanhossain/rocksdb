@@ -20,7 +20,7 @@
 #include "util/compression.h"
 #include "util/xxhash.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 class Logger;
 
 namespace log {
@@ -222,4 +222,4 @@ class FragmentBufferedReader : public Reader {
 };
 
 }  // namespace log
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

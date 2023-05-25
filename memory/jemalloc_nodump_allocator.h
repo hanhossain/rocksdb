@@ -23,7 +23,7 @@
 #endif  // (JEMALLOC_VERSION_MAJOR >= 5) && MADV_DONTDUMP
 #endif  // ROCKSDB_JEMALLOC && ROCKSDB_PLATFORM_POSIX
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // Allocation requests are randomly sharded across
 // `JemallocAllocatorOptions::num_arenas` arenas to reduce contention on per-
@@ -96,4 +96,4 @@ class JemallocNodumpAllocator : public BaseMemoryAllocator {
 
   bool init_ = false;
 };
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

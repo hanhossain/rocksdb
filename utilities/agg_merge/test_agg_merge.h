@@ -14,7 +14,7 @@
 #include "rocksdb/utilities/agg_merge.h"
 #include "utilities/cassandra/cassandra_options.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 class SumAggregator : public Aggregator {
  public:
   ~SumAggregator() override {}
@@ -44,4 +44,4 @@ class EncodeHelper {
   static std::string EncodeFuncAndList(const Slice& function_name,
                                        const std::vector<Slice>& list);
 };
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

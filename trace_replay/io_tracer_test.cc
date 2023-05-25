@@ -13,7 +13,7 @@
 #include "test_util/testharness.h"
 #include "test_util/testutil.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 namespace {
 const std::string kDummyFile = "/dummy/file";
@@ -24,7 +24,7 @@ class IOTracerTest : public testing::Test {
  public:
   IOTracerTest() {
     test_path_ = test::PerThreadDBPath("io_tracer_test");
-    env_ = ROCKSDB_NAMESPACE::Env::Default();
+    env_ = rocksdb::Env::Default();
     clock_ = env_->GetSystemClock().get();
     EXPECT_OK(env_->CreateDir(test_path_));
     trace_file_path_ = test_path_ + "/io_trace";
@@ -344,7 +344,7 @@ TEST_F(IOTracerTest, AtomicMultipleWrites) {
     ASSERT_NOK(reader.ReadIOOp(&record));
   }
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

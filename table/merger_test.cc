@@ -12,7 +12,7 @@
 #include "util/random.h"
 #include "util/vector_iterator.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class MergerTest : public testing::Test {
  public:
@@ -173,7 +173,7 @@ TEST_F(MergerTest, SeekToLastTest) {
   }
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

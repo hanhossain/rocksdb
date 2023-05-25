@@ -10,7 +10,7 @@
 
 #include "rocksdb/merge_operator.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 class Logger;
 class Slice;
 
@@ -32,4 +32,4 @@ class MaxOperator : public MergeOperator {
                          Logger* /*logger*/) const override;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

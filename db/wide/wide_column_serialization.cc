@@ -13,7 +13,7 @@
 #include "util/autovector.h"
 #include "util/coding.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 Status WideColumnSerialization::SerializeImpl(const Slice* value_of_default,
                                               const WideColumns& columns,
@@ -179,4 +179,4 @@ Status WideColumnSerialization::GetValueOfDefaultColumn(Slice& input,
   return Status::OK();
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

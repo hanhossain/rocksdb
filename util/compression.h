@@ -56,7 +56,7 @@
 #if ZSTD_VERSION_NUMBER >= 10400
 #define ZSTD_STREAMING
 #endif  // ZSTD_VERSION_NUMBER >= 10400
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 // Need this for the context allocation override
 // On windows we need to do this explicitly
 #if (ZSTD_VERSION_NUMBER >= 500)
@@ -127,11 +127,11 @@ class ZSTDUncompressCachedData {
   int64_t cache_idx_ = -1;  // -1 means this instance owns the context
 };
 #endif  // (ZSTD_VERSION_NUMBER >= 500)
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 #endif  // ZSTD
 
 #if !(defined ZSTD) || !(ZSTD_VERSION_NUMBER >= 500)
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 class ZSTDUncompressCachedData {
   void* padding;  // unused
  public:
@@ -150,14 +150,14 @@ class ZSTDUncompressCachedData {
  private:
   void ignore_padding__() { padding = nullptr; }
 };
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 #endif
 
 #if defined(XPRESS)
 #include "port/xpress.h"
 #endif
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // Holds dictionary and related data, like ZSTD's digested compression
 // dictionary.
@@ -1792,4 +1792,4 @@ class ZSTDStreamingUncompress final : public StreamingUncompress {
 #endif
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

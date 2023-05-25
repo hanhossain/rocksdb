@@ -12,7 +12,7 @@
 #include "options/cf_options.h"
 #include "rocksdb/advanced_options.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class SstFileDumper {
  public:
@@ -95,5 +95,5 @@ class SstFileDumper {
   std::unique_ptr<TableProperties> table_properties_;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 

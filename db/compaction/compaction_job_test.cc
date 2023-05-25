@@ -34,7 +34,7 @@
 #include "util/string_util.h"
 #include "utilities/merge_operators.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 namespace {
 
@@ -2434,7 +2434,7 @@ TEST_F(CompactionJobIOPriorityTest, GetRateLimiterPriority) {
                 Env::IO_LOW, Env::IO_LOW);
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

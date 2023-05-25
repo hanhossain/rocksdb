@@ -25,7 +25,7 @@
 #include "rocksdb/wal_filter.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 static std::unordered_map<std::string, rs::options::WALRecoveryMode>
     wal_recovery_mode_string_map = {
         {"kTolerateCorruptedTailRecords",
@@ -1076,4 +1076,4 @@ Status GetStringFromMutableDBOptions(const ConfigOptions& config_options,
   return OptionTypeInfo::SerializeType(
       config_options, db_mutable_options_type_info, &mutable_opts, opt_string);
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

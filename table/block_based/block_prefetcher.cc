@@ -11,7 +11,7 @@
 #include "rocksdb/file_system.h"
 #include "table/block_based/block_based_table_reader.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 void BlockPrefetcher::PrefetchIfNeeded(
     const BlockBasedTable::Rep* rep, const BlockHandle& handle,
     const size_t readahead_size, bool is_for_compaction,
@@ -117,4 +117,4 @@ void BlockPrefetcher::PrefetchIfNeeded(
   // max_auto_readahead_size.
   readahead_size_ = std::min(max_auto_readahead_size, readahead_size_ * 2);
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

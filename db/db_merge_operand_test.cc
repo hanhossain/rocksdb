@@ -14,7 +14,7 @@
 #include "utilities/merge_operators/sortlist.h"
 #include "utilities/merge_operators/string_append/stringappend2.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 namespace {
 class LimitedStringAppendMergeOp : public StringAppendTESTOperator {
@@ -92,12 +92,12 @@ TEST_F(DBMergeOperandTest, FlushedMergeOperandReadAfterFreeBug) {
 
   ASSERT_OK(Merge("key", "value"));
 
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
+  rocksdb::SyncPoint::GetInstance()->LoadDependency(
       {{"DBImpl::GetImpl:PostMemTableGet:0",
         "DBMergeOperandTest::FlushedMergeOperandReadAfterFreeBug:PreFlush"},
        {"DBMergeOperandTest::FlushedMergeOperandReadAfterFreeBug:PostFlush",
         "DBImpl::GetImpl:PostMemTableGet:1"}});
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   auto flush_thread = port::Thread([&]() {
     TEST_SYNC_POINT(
@@ -478,7 +478,7 @@ TEST_F(DBMergeOperandTest, GetMergeOperandsBaseDeletionInImmMem) {
   }
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

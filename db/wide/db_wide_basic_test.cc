@@ -11,7 +11,7 @@
 #include "test_util/testutil.h"
 #include "utilities/merge_operators.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class DBWideBasicTest : public DBTestBase {
  protected:
@@ -1031,7 +1031,7 @@ TEST_F(DBWideBasicTest, PutEntitySerializationError) {
   ASSERT_OK(db_->Write(WriteOptions(), &batch));
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

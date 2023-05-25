@@ -17,7 +17,7 @@
 #include "rocksdb/transaction_log.h"
 #include "rocksdb/types.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class LogFileImpl : public LogFile {
  public:
@@ -125,4 +125,4 @@ class TransactionLogIteratorImpl : public TransactionLogIterator {
   void UpdateCurrentWriteBatch(const Slice& record);
   Status OpenLogReader(const LogFile* file);
 };
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

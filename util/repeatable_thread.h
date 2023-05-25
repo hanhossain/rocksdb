@@ -13,7 +13,7 @@
 #include "rocksdb/system_clock.h"
 #include "util/mutexlock.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // Simple wrapper around port::Thread that supports calling a callback every
 // X seconds. If you pass in 0, then it will call your callback repeatedly
@@ -146,4 +146,4 @@ class RepeatableThread {
   port::Thread thread_;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

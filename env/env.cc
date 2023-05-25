@@ -27,7 +27,7 @@
 #include "rocksdb/utilities/options_type.h"
 #include "util/autovector.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 namespace {
 static int RegisterBuiltinEnvs(ObjectLibrary& library,
                                const std::string& /*arg*/) {
@@ -1230,4 +1230,4 @@ Status SystemClock::CreateFromString(const ConfigOptions& config_options,
     return LoadSharedObject<SystemClock>(config_options, value, result);
   }
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

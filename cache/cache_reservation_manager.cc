@@ -19,7 +19,7 @@
 #include "table/block_based/reader_common.h"
 #include "util/coding.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 template <CacheEntryRole R>
 CacheReservationManagerImpl<R>::CacheReservationHandle::CacheReservationHandle(
@@ -181,4 +181,4 @@ template class CacheReservationManagerImpl<CacheEntryRole::kMisc>;
 template class CacheReservationManagerImpl<CacheEntryRole::kWriteBuffer>;
 template class CacheReservationManagerImpl<CacheEntryRole::kFileMetadata>;
 template class CacheReservationManagerImpl<CacheEntryRole::kBlobCache>;
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

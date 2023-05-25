@@ -24,7 +24,7 @@
 #include "util/random.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 std::shared_ptr<EncryptionProvider> EncryptionProvider::NewCTRProvider(
     const std::shared_ptr<BlockCipher>& cipher) {
   return std::make_shared<CTREncryptionProvider>(cipher);
@@ -1343,4 +1343,4 @@ Status EncryptionProvider::CreateFromString(
 }
 
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

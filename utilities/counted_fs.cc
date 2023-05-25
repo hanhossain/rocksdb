@@ -10,7 +10,7 @@
 #include "rocksdb/file_system.h"
 #include "rocksdb/utilities/options_type.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 namespace {
 class CountedSequentialFile : public FSSequentialFileOwnerWrapper {
  private:
@@ -376,4 +376,4 @@ IOStatus CountedFileSystem::NewDirectory(const std::string& name,
   return s;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

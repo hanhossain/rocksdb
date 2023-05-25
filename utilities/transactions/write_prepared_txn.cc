@@ -19,7 +19,7 @@
 #include "utilities/transactions/pessimistic_transaction.h"
 #include "utilities/transactions/write_prepared_txn_db.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 struct WriteOptions;
 
@@ -512,4 +512,4 @@ Status WritePreparedTxn::RebuildFromWriteBatch(WriteBatch* src_batch) {
   return ret;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

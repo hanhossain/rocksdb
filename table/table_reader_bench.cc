@@ -32,7 +32,7 @@ int main() {
 using GFLAGS_NAMESPACE::ParseCommandLineFlags;
 using GFLAGS_NAMESPACE::SetUsageMessage;
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 namespace {
 // Make a key that i determines the first 4 characters and j determines the
@@ -75,7 +75,7 @@ void TableReaderBenchmark(Options& opts, EnvOptions& env_options,
                           int num_keys2, int num_iter, int /*prefix_len*/,
                           bool if_query_empty_keys, bool for_iterator,
                           bool through_db, bool measured_by_nanosecond) {
-  ROCKSDB_NAMESPACE::InternalKeyComparator ikc(opts.comparator);
+  rocksdb::InternalKeyComparator ikc(opts.comparator);
 
   std::string file_name =
       test::PerThreadDBPath("rocksdb_table_reader_benchmark");
@@ -260,7 +260,7 @@ void TableReaderBenchmark(Options& opts, EnvOptions& env_options,
   }
 }
 }  // namespace
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 DEFINE_bool(query_empty, false,
             "query non-existing keys instead of existing ones.");
@@ -285,37 +285,37 @@ int main(int argc, char** argv) {
                   " [OPTIONS]...");
   ParseCommandLineFlags(&argc, &argv, true);
 
-  std::shared_ptr<ROCKSDB_NAMESPACE::TableFactory> tf;
-  ROCKSDB_NAMESPACE::Options options;
+  std::shared_ptr<rocksdb::TableFactory> tf;
+  rocksdb::Options options;
   if (FLAGS_prefix_len < 16) {
     options.prefix_extractor.reset(
-        ROCKSDB_NAMESPACE::NewFixedPrefixTransform(FLAGS_prefix_len));
+        rocksdb::NewFixedPrefixTransform(FLAGS_prefix_len));
   }
-  ROCKSDB_NAMESPACE::ReadOptions ro;
-  ROCKSDB_NAMESPACE::EnvOptions env_options;
+  rocksdb::ReadOptions ro;
+  rocksdb::EnvOptions env_options;
   options.create_if_missing = true;
-  options.compression = ROCKSDB_NAMESPACE::CompressionType::kNoCompression;
+  options.compression = rocksdb::CompressionType::kNoCompression;
 
   if (FLAGS_table_factory == "cuckoo_hash") {
     options.allow_mmap_reads = FLAGS_mmap_read;
     env_options.use_mmap_reads = FLAGS_mmap_read;
-    ROCKSDB_NAMESPACE::CuckooTableOptions table_options;
+    rocksdb::CuckooTableOptions table_options;
     table_options.hash_table_ratio = 0.75;
-    tf.reset(ROCKSDB_NAMESPACE::NewCuckooTableFactory(table_options));
+    tf.reset(rocksdb::NewCuckooTableFactory(table_options));
   } else if (FLAGS_table_factory == "plain_table") {
     options.allow_mmap_reads = FLAGS_mmap_read;
     env_options.use_mmap_reads = FLAGS_mmap_read;
 
-    ROCKSDB_NAMESPACE::PlainTableOptions plain_table_options;
+    rocksdb::PlainTableOptions plain_table_options;
     plain_table_options.user_key_len = 16;
     plain_table_options.bloom_bits_per_key = (FLAGS_prefix_len == 16) ? 0 : 8;
     plain_table_options.hash_table_ratio = 0.75;
 
-    tf.reset(new ROCKSDB_NAMESPACE::PlainTableFactory(plain_table_options));
+    tf.reset(new rocksdb::PlainTableFactory(plain_table_options));
     options.prefix_extractor.reset(
-        ROCKSDB_NAMESPACE::NewFixedPrefixTransform(FLAGS_prefix_len));
+        rocksdb::NewFixedPrefixTransform(FLAGS_prefix_len));
   } else if (FLAGS_table_factory == "block_based") {
-    tf.reset(new ROCKSDB_NAMESPACE::BlockBasedTableFactory());
+    tf.reset(new rocksdb::BlockBasedTableFactory());
   } else {
     fprintf(stderr, "Invalid table type %s\n", FLAGS_table_factory.c_str());
   }
@@ -325,7 +325,7 @@ int main(int argc, char** argv) {
     bool measured_by_nanosecond = FLAGS_time_unit == "nanosecond";
 
     options.table_factory = tf;
-    ROCKSDB_NAMESPACE::TableReaderBenchmark(
+    rocksdb::TableReaderBenchmark(
         options, env_options, ro, FLAGS_num_keys1, FLAGS_num_keys2, FLAGS_iter,
         FLAGS_prefix_len, FLAGS_query_empty, FLAGS_iterator, FLAGS_through_db,
         measured_by_nanosecond);

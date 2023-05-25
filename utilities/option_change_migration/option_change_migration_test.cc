@@ -14,7 +14,7 @@
 #include "db/db_test_util.h"
 #include "util/random.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class DBOptionChangeMigrationTests
     : public DBTestBase,
@@ -538,7 +538,7 @@ TEST_F(DBOptionChangeMigrationTest, CompactedSrcToUniversal) {
   }
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

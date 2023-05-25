@@ -11,9 +11,8 @@
 #include <cstdint>
 #include <vector>
 
-#include "rocksdb/rocksdb_namespace.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 namespace detail {
 int CountTrailingZeroBitsForSmallEnumSet(uint64_t);
@@ -183,4 +182,4 @@ class SmallEnumSet {
   StateT state_;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

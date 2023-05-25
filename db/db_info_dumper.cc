@@ -15,7 +15,7 @@
 #include "file/filename.h"
 #include "rocksdb/env.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 void DumpDBFileSummary(const ImmutableDBOptions& options,
                        const std::string& dbname,
@@ -144,4 +144,4 @@ void DumpDBFileSummary(const ImmutableDBOptions& options,
   Header(options.info_log, "Write Ahead Log file in %s: %s\n", wal_dir.c_str(),
          wal_info.c_str());
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

@@ -9,10 +9,9 @@
 
 #include "cache/typed_cache.h"
 #include "db/blob/blob_file_reader.h"
-#include "rocksdb/rocksdb_namespace.h"
 #include "util/mutexlock.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class Cache;
 struct ImmutableOptions;
@@ -53,4 +52,4 @@ class BlobFileCache {
   static constexpr size_t kNumberOfMutexStripes = 1 << 7;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

@@ -7,9 +7,8 @@
 
 #include <functional>
 
-#include "rocksdb/rocksdb_namespace.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // Defers the execution of the provided function until the Defer
 // object goes out of scope.
@@ -79,4 +78,4 @@ class SaveAndRestore {
   T saved_;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

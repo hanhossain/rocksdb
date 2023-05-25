@@ -12,7 +12,7 @@
 #include "rocksdb/env.h"
 #include "util/autovector.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class Logger;
 
@@ -54,4 +54,4 @@ extern void LogToBuffer(LogBuffer* log_buffer, size_t max_log_size,
 // Same as previous function, but with default max log size.
 extern void LogToBuffer(LogBuffer* log_buffer, const char* format, ...);
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

@@ -15,7 +15,7 @@
 #include "rocksdb/configurable.h"
 #include "util/cast_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 DBImplSecondary::DBImplSecondary(const DBOptions& db_options,
                                  const std::string& dbname,
@@ -961,4 +961,4 @@ Status DB::OpenAndCompact(
 }
 
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

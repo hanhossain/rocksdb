@@ -20,7 +20,7 @@
 #include "rocksdb/rate_limiter.h"
 #include "util/aligned_buffer.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 class Statistics;
 class HistogramImpl;
 class SystemClock;
@@ -207,4 +207,4 @@ class RandomAccessFileReader {
 
   void ReadAsyncCallback(const FSReadRequest& req, void* cb_arg);
 };
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

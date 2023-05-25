@@ -7,7 +7,7 @@
 
 #include "test_util/testharness.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 TEST(IOStatsContextTest, ToString) {
   get_iostats_context()->Reset();
@@ -22,7 +22,7 @@ TEST(IOStatsContextTest, ToString) {
   ASSERT_NE(std::string::npos, zero_excluded.find("= 12345"));
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

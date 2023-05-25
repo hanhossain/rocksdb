@@ -10,13 +10,13 @@
 #include "util/stop_watch.h"
 #include "utilities/blob_db/blob_db_impl.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 class Statistics;
 class SystemClock;
 
 namespace blob_db {
 
-using ROCKSDB_NAMESPACE::ManagedSnapshot;
+using rocksdb::ManagedSnapshot;
 
 class BlobDBIterator : public Iterator {
  public:
@@ -145,4 +145,4 @@ class BlobDBIterator : public Iterator {
   PinnableSlice value_;
 };
 }  // namespace blob_db
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

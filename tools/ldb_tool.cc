@@ -8,7 +8,7 @@
 #include "rocksdb/utilities/ldb_cmd.h"
 #include "tools/ldb_cmd_impl.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 LDBOptions::LDBOptions() {}
 
@@ -178,5 +178,5 @@ void LDBTool::Run(int argc, char** argv, Options options,
                                                 ldb_options, column_families);
   exit(error_code);
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 

@@ -17,7 +17,7 @@
 #include "table/table_builder.h"
 #include "table/table_reader.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 struct SstFileReader::Rep {
   Options options;
@@ -98,4 +98,4 @@ Status SstFileReader::VerifyChecksum(const ReadOptions& read_options) {
                                             TableReaderCaller::kSSTFileReader);
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

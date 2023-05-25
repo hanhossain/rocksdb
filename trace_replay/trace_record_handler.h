@@ -15,7 +15,7 @@
 #include "rocksdb/system_clock.h"
 #include "rocksdb/trace_record.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // Handler to execute TraceRecord.
 class TraceExecutionHandler : public TraceRecord::Handler {
@@ -43,4 +43,4 @@ class TraceExecutionHandler : public TraceRecord::Handler {
 
 // To do: Handler for trace_analyzer.
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

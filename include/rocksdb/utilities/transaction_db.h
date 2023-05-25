@@ -18,7 +18,7 @@
 //
 // See transaction.h and examples/transaction_example.cc
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class TransactionDBMutexFactory;
 
@@ -502,5 +502,5 @@ class TransactionDB : public StackableDB {
   void operator=(const TransactionDB&) = delete;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 

@@ -33,7 +33,7 @@
 #include "util/cast_util.h"
 #include "util/file_checksum_helper.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 Status Checkpoint::Create(DB* db, Checkpoint** checkpoint_ptr) {
   *checkpoint_ptr = new CheckpointImpl(db);
@@ -311,7 +311,7 @@ Status CheckpointImpl::ExportColumnFamily(
   s = db_->GetEnv()->CreateDir(tmp_export_dir);
 
   if (s.ok()) {
-    s = db_->Flush(ROCKSDB_NAMESPACE::FlushOptions(), handle);
+    s = db_->Flush(rocksdb::FlushOptions(), handle);
   }
 
   ColumnFamilyMetaData db_metadata;
@@ -466,5 +466,5 @@ Status CheckpointImpl::ExportFilesInMetaData(
 
   return s;
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 

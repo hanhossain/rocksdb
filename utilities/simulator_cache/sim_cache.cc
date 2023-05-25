@@ -15,7 +15,7 @@
 #include "rocksdb/file_system.h"
 #include "util/mutexlock.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 namespace {
 
@@ -369,4 +369,4 @@ std::shared_ptr<SimCache> NewSimCache(std::shared_ptr<Cache> sim_cache,
   return std::make_shared<SimCacheImpl>(sim_cache, cache);
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

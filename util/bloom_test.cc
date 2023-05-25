@@ -37,7 +37,7 @@ using GFLAGS_NAMESPACE::ParseCommandLineFlags;
 // See also filter_bench.
 DEFINE_int32(bits_per_key, 10, "");
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 namespace {
 const std::string kLegacyBloom = test::LegacyBloomFilterPolicy::kClassName();
@@ -1162,7 +1162,7 @@ TEST(RibbonTest, RibbonTestLevelThreshold) {
   }
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

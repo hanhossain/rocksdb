@@ -19,7 +19,7 @@
 #include "rocksdb/data_structure.h"
 #include "rocksdb/memory_allocator.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class Cache;  // defined in advanced_cache.h
 struct ConfigOptions;
@@ -391,4 +391,4 @@ extern std::shared_ptr<Cache> NewClockCache(
     CacheMetadataChargePolicy metadata_charge_policy =
         kDefaultCacheMetadataChargePolicy);
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

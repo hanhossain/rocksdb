@@ -12,7 +12,7 @@
 #undef HAVE_UINT128_EXTENSION
 #endif
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // Unsigned128 is a 128 bit value supporting (at least) bitwise operators,
 // shifts, and comparisons. __uint128_t is not always available.
@@ -313,4 +313,4 @@ inline Unsigned128 DecodeFixedGeneric(const char* dst) {
   return DecodeFixed128(dst);
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

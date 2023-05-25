@@ -62,7 +62,7 @@
 #include "rocksdb/merge_operator.h"
 #include "rocksdb/slice.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 namespace cassandra {
 
 // Identify the type of the column.
@@ -180,4 +180,4 @@ class RowValue {
 };
 
 }  // namespace cassandra
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

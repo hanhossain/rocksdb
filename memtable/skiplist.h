@@ -40,7 +40,7 @@
 #include "port/port.h"
 #include "util/random.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 template <typename Key, class Comparator>
 class SkipList {
@@ -495,4 +495,4 @@ bool SkipList<Key, Comparator>::Contains(const Key& key) const {
   }
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

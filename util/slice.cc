@@ -19,7 +19,7 @@
 #include "rocksdb/utilities/options_type.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 namespace {
 
@@ -364,4 +364,4 @@ PinnableSlice& PinnableSlice::operator=(PinnableSlice&& other) {
   return *this;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

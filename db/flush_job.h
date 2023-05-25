@@ -44,7 +44,7 @@
 #include "util/stop_watch.h"
 #include "util/thread_local.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class DBImpl;
 class MemTable;
@@ -197,4 +197,4 @@ class FlushJob {
   SeqnoToTimeMapping seqno_to_time_mapping_;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

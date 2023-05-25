@@ -34,7 +34,7 @@
 #include "util/string_util.h"
 #include "util/user_comparator_wrapper.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 DBIter::DBIter(Env* _env, const ReadOptions& read_options,
                const ImmutableOptions& ioptions,
@@ -1705,4 +1705,4 @@ Iterator* NewDBIterator(Env* env, const ReadOptions& read_options,
   return db_iter;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

@@ -13,7 +13,7 @@
 #include "test_util/testharness.h"
 #include "test_util/testutil.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 namespace {
 const uint64_t kBlockSize = 1024;
@@ -30,7 +30,7 @@ class BlockCacheTracerTest : public testing::Test {
  public:
   BlockCacheTracerTest() {
     test_path_ = test::PerThreadDBPath("block_cache_tracer_test");
-    env_ = ROCKSDB_NAMESPACE::Env::Default();
+    env_ = rocksdb::Env::Default();
     clock_ = env_->GetSystemClock().get();
     EXPECT_OK(env_->CreateDir(test_path_));
     trace_file_path_ = test_path_ + "/block_cache_trace";
@@ -412,7 +412,7 @@ TEST_F(BlockCacheTracerTest, HumanReadableTrace) {
   }
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

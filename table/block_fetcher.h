@@ -14,7 +14,7 @@
 #include "table/format.h"
 #include "table/persistent_cache_options.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // Retrieves a single block of a given file. Utilizes the prefetch buffer and/or
 // persistent cache provided (if any) to try to avoid reading from the file
@@ -139,4 +139,4 @@ class BlockFetcher {
   void InsertUncompressedBlockToPersistentCacheIfNeeded();
   void ProcessTrailerIfPresent();
 };
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

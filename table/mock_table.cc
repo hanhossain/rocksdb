@@ -13,7 +13,7 @@
 #include "table/get_context.h"
 #include "util/coding.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 namespace mock {
 
 KVVector MakeMockFile(std::initializer_list<KVPair> l) { return KVVector(l); }
@@ -343,4 +343,4 @@ void MockTableFactory::AssertLatestFiles(
 }
 
 }  // namespace mock
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

@@ -12,7 +12,7 @@
 #include "util/coding.h"
 #include "util/random.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 namespace crc32c {
 
 class CRC {};
@@ -171,7 +171,7 @@ TEST(CRC, Crc32cCombineBigSizeTest) {
 }
 
 }  // namespace crc32c
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 // copied from folly
 const uint64_t FNV_64_HASH_START = 14695981039346656037ULL;
@@ -194,14 +194,14 @@ int main(int argc, char** argv) {
   // Populate a buffer with a deterministic pattern
   // on which to compute checksums
 
-  const uint8_t* src = (uint8_t*)ROCKSDB_NAMESPACE::crc32c::buffer;
-  uint64_t* dst = (uint64_t*)ROCKSDB_NAMESPACE::crc32c::buffer;
+  const uint8_t* src = (uint8_t*)rocksdb::crc32c::buffer;
+  uint64_t* dst = (uint64_t*)rocksdb::crc32c::buffer;
   const uint64_t* end =
-      (const uint64_t*)(ROCKSDB_NAMESPACE::crc32c::buffer +
-                        ROCKSDB_NAMESPACE::crc32c::BUFFER_SIZE);
+      (const uint64_t*)(rocksdb::crc32c::buffer +
+                        rocksdb::crc32c::BUFFER_SIZE);
   *dst++ = 0;
   while (dst < end) {
-    ROCKSDB_NAMESPACE::EncodeFixed64(
+    rocksdb::EncodeFixed64(
         reinterpret_cast<char*>(dst),
         fnv64_buf((const char*)src, sizeof(uint64_t)));
     dst++;

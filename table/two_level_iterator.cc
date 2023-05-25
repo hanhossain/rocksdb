@@ -16,7 +16,7 @@
 #include "table/block_based/block.h"
 #include "table/format.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 namespace {
 
@@ -217,4 +217,4 @@ InternalIteratorBase<IndexValue>* NewTwoLevelIterator(
     InternalIteratorBase<IndexValue>* first_level_iter) {
   return new TwoLevelIndexIterator(state, first_level_iter);
 }
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

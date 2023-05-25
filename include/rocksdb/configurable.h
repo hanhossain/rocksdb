@@ -14,10 +14,9 @@
 #include <unordered_set>
 #include <vector>
 
-#include "rocksdb/rocksdb_namespace.h"
 #include "rocksdb/status.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 class Logger;
 class ObjectRegistry;
 class OptionTypeInfo;
@@ -387,4 +386,4 @@ class Configurable {
   // Configurable option via
   std::vector<RegisteredOptions> options_;
 };
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

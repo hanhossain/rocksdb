@@ -20,7 +20,7 @@
 #include "util/random.h"
 #include "utilities/table_properties_collectors/compact_on_deletion_collector.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 TEST(CompactOnDeletionCollector, DeletionRatio) {
   TablePropertiesCollectorFactory::Context context;
@@ -228,7 +228,7 @@ TEST(CompactOnDeletionCollector, SlidingWindow) {
   }
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

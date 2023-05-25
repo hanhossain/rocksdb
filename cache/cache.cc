@@ -15,7 +15,7 @@
 #include "rocksdb/utilities/options_type.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 const Cache::CacheItemHelper kNoopCacheItemHelper{};
 
 static std::unordered_map<std::string, OptionTypeInfo>
@@ -155,4 +155,4 @@ void Cache::SetEvictionCallback(EvictionCallback&& fn) {
   eviction_callback_ = std::move(fn);
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

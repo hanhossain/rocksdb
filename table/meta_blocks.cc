@@ -24,7 +24,7 @@
 #include "test_util/sync_point.h"
 #include "util/coding.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 const std::string kPropertiesBlockName = "rocksdb.properties";
 // Old property block name for backward compatibility
@@ -558,4 +558,4 @@ Status ReadMetaBlock(RandomAccessFileReader* file,
       .ReadBlockContents();
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

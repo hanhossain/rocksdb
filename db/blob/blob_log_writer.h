@@ -14,7 +14,7 @@
 #include "rocksdb/status.h"
 #include "rocksdb/types.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class WritableFileWriter;
 class SystemClock;
@@ -80,4 +80,4 @@ class BlobLogWriter {
   ElemType last_elem_type_;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

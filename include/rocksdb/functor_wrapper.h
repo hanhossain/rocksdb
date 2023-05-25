@@ -9,9 +9,8 @@
 #include <memory>
 #include <utility>
 
-#include "rocksdb/rocksdb_namespace.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 namespace detail {
 template <std::size_t...>
@@ -53,4 +52,4 @@ class FunctorWrapper {
   std::function<void(Args...)> functor_;
   std::tuple<Args...> args_;
 };
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

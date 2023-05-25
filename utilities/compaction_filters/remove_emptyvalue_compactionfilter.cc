@@ -10,7 +10,7 @@
 
 #include "rocksdb/slice.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 bool RemoveEmptyValueCompactionFilter::Filter(int /*level*/,
                                               const Slice& /*key*/,
@@ -21,4 +21,4 @@ bool RemoveEmptyValueCompactionFilter::Filter(int /*level*/,
   return existing_value.empty();
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

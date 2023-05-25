@@ -30,7 +30,7 @@
 #include "test_util/testharness.h"
 #include "test_util/testutil.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // In this test we only want to Log some simple log message with
 // no format. LogMessage() provides such a simple interface and
@@ -459,7 +459,7 @@ TEST_F(AutoRollLoggerTest, LogFlushWhileRolling) {
   AutoRollLogger* auto_roll_logger =
       dynamic_cast<AutoRollLogger*>(logger.get());
   ASSERT_TRUE(auto_roll_logger);
-  ROCKSDB_NAMESPACE::port::Thread flush_thread;
+  rocksdb::port::Thread flush_thread;
 
   // Notes:
   // (1) Need to pin the old logger before beginning the roll, as rolling grabs
@@ -469,12 +469,12 @@ TEST_F(AutoRollLoggerTest, LogFlushWhileRolling) {
   //     is completed and reference to pinned logger is released.
   // (3) EnvLogger::Flush() happens in both threads but its SyncPoints only
   //     are enabled in flush_thread (the one pinning the old logger).
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependencyAndMarkers(
+  rocksdb::SyncPoint::GetInstance()->LoadDependencyAndMarkers(
       {{"AutoRollLogger::Flush:PinnedLogger",
         "AutoRollLoggerTest::LogFlushWhileRolling:PreRollAndPostThreadInit"}},
       {{"AutoRollLogger::Flush:PinnedLogger", "EnvLogger::Flush:Begin1"},
        {"AutoRollLogger::Flush:PinnedLogger", "EnvLogger::Flush:Begin2"}});
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
+  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
 
   flush_thread = port::Thread([&]() { auto_roll_logger->Flush(); });
   TEST_SYNC_POINT(
@@ -482,7 +482,7 @@ TEST_F(AutoRollLoggerTest, LogFlushWhileRolling) {
   RollLogFileBySizeTest(auto_roll_logger, options.max_log_file_size,
                         kSampleMessage + ":LogFlushWhileRolling");
   flush_thread.join();
-  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
 }
 
 #endif  // OS_WIN
@@ -648,8 +648,8 @@ TEST_F(AutoRollLoggerTest, LogHeaderTest) {
 }
 
 TEST_F(AutoRollLoggerTest, LogFileExistence) {
-  ROCKSDB_NAMESPACE::DB* db;
-  ROCKSDB_NAMESPACE::Options options;
+  rocksdb::DB* db;
+  rocksdb::Options options;
 #ifdef OS_WIN
   // Replace all slashes in the path so windows CompSpec does not
   // become confused
@@ -663,7 +663,7 @@ TEST_F(AutoRollLoggerTest, LogFileExistence) {
   ASSERT_EQ(system(deleteCmd.c_str()), 0);
   options.max_log_file_size = 100 * 1024 * 1024;
   options.create_if_missing = true;
-  ASSERT_OK(ROCKSDB_NAMESPACE::DB::Open(options, kTestDir, &db));
+  ASSERT_OK(rocksdb::DB::Open(options, kTestDir, &db));
   ASSERT_OK(default_env->FileExists(kLogFile));
   delete db;
 }
@@ -721,7 +721,7 @@ TEST_F(AutoRollLoggerTest, RenameError) {
   }
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

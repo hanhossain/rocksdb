@@ -22,7 +22,7 @@
 #include "rocksdb/write_batch.h"
 #include "rocksdb/write_batch_base.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class ColumnFamilyHandle;
 class Comparator;
@@ -303,5 +303,5 @@ class WriteBatchWithIndex : public WriteBatchBase {
   std::unique_ptr<Rep> rep;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 

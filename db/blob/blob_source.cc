@@ -18,7 +18,7 @@
 #include "table/get_context.h"
 #include "table/multiget_context.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 BlobSource::BlobSource(const ImmutableOptions* immutable_options,
                        const std::string& db_id,
@@ -456,4 +456,4 @@ bool BlobSource::TEST_BlobInCache(uint64_t file_number, uint64_t file_size,
   return false;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

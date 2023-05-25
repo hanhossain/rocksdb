@@ -21,7 +21,6 @@
 #include "logging/logging.h"
 #include "port/lang.h"
 #include "rocksdb/convenience.h"
-#include "rocksdb/rocksdb_namespace.h"
 #include "rocksdb/slice.h"
 #include "rocksdb/utilities/object_registry.h"
 #include "table/block_based/block_based_table_reader.h"
@@ -35,7 +34,7 @@
 #include "util/ribbon_impl.h"
 #include "util/string_util.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 namespace {
 
@@ -570,7 +569,7 @@ struct Standard128RibbonRehasherTypesAndSettings {
   static constexpr bool kHomogeneous = false;
   static constexpr bool kFirstCoeffAlwaysOne = true;
   static constexpr bool kUseSmash = false;
-  using CoeffRow = ROCKSDB_NAMESPACE::Unsigned128;
+  using CoeffRow = rocksdb::Unsigned128;
   using Hash = uint64_t;
   using Seed = uint32_t;
   // Changing these doesn't necessarily change underlying data,
@@ -1963,4 +1962,4 @@ const std::vector<std::string>& BloomLikeFilterPolicy::GetAllFixedImpls() {
   return impls;
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

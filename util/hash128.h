@@ -11,7 +11,7 @@
 #include "rocksdb/slice.h"
 #include "util/math128.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 // Stable/persistent 128-bit hash for non-cryptographic applications.
 Unsigned128 Hash128(const char* data, size_t n, uint64_t seed);
@@ -23,4 +23,4 @@ inline Unsigned128 GetSliceHash128(const Slice& key) {
   return Hash128(key.data(), key.size());
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

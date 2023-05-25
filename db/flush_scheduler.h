@@ -12,7 +12,7 @@
 
 #include "util/autovector.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class ColumnFamilyData;
 
@@ -52,4 +52,4 @@ class FlushScheduler {
 #endif  // NDEBUG
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

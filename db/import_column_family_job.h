@@ -18,7 +18,7 @@
 #include "rocksdb/sst_file_writer.h"
 #include "util/autovector.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 struct EnvOptions;
 class SystemClock;
 
@@ -79,4 +79,4 @@ class ImportColumnFamilyJob {
   const std::shared_ptr<IOTracer> io_tracer_;
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

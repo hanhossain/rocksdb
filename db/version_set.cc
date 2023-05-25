@@ -87,7 +87,7 @@
 #undef WITH_COROUTINES
 // clang-format on
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 namespace {
 
@@ -2434,7 +2434,7 @@ void Version::Get(const ReadOptions& read_options, const LookupKey& k,
         ROCKS_LOG_ERROR(info_log_, "Encounter unexpected blob index.");
         *status = Status::NotSupported(
             "Encounter unexpected blob index. Please open DB with "
-            "ROCKSDB_NAMESPACE::blob_db::BlobDB instead.");
+            "rocksdb::blob_db::BlobDB instead.");
         return;
       case GetContext::kMergeOperatorFailed:
         *status = Status::Corruption(Status::SubCode::kMergeOperatorFailed);
@@ -7187,4 +7187,4 @@ std::vector<VersionEdit>& ReactiveVersionSet::replay_buffer() {
   return manifest_tailer_->GetReadBuffer().replay_buffer();
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

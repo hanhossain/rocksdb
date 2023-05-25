@@ -9,7 +9,7 @@
 #include "port/port.h"
 #include "test_util/testharness.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 void CreateFile(Env* env, const std::string& path) {
   std::unique_ptr<WritableFile> f;
@@ -33,7 +33,7 @@ TEST(TestUtil, DestroyDirRecursively) {
   ASSERT_TRUE(s.IsNotFound());
 }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

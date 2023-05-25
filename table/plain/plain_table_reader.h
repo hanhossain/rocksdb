@@ -24,7 +24,7 @@
 #include "table/plain/plain_table_index.h"
 #include "table/table_reader.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 class Block;
 struct BlockContents;
@@ -240,4 +240,4 @@ class PlainTableReader : public TableReader {
   explicit PlainTableReader(const TableReader&) = delete;
   void operator=(const TableReader&) = delete;
 };
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

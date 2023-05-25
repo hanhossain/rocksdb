@@ -20,7 +20,7 @@
 #include "util/math.h"
 #include "util/single_thread_executor.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 class GetContext;
 class PinnableWideColumns;
 
@@ -402,4 +402,4 @@ class MultiGetContext {
   Range GetMultiGetRange() { return Range(this, num_keys_); }
 };
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

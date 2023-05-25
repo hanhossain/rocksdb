@@ -17,7 +17,7 @@
 #include "rocksdb/file_system.h"
 #include "rocksdb/options.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 namespace blob_db {
 
 class BlobDBImpl;
@@ -241,4 +241,4 @@ class BlobFile {
   }
 };
 }  // namespace blob_db
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb

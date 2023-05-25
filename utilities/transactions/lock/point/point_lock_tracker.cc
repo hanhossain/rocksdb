@@ -6,7 +6,7 @@
 
 #include "utilities/transactions/lock/point/point_lock_tracker.h"
 
-namespace ROCKSDB_NAMESPACE {
+namespace rocksdb {
 
 namespace {
 
@@ -251,5 +251,5 @@ LockTracker::KeyIterator* PointLockTracker::GetKeyIterator(
 
 void PointLockTracker::Clear() { tracked_keys_.clear(); }
 
-}  // namespace ROCKSDB_NAMESPACE
+}  // namespace rocksdb
 
