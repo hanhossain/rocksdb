@@ -14,12 +14,12 @@
 #include <string>
 #include <utility>
 
+#include "rocksdb-rs-cxx/db/dbformat.h"
+#include "rocksdb-rs-cxx/lib.h"
 #include "rocksdb/comparator.h"
 #include "rocksdb/slice.h"
 #include "rocksdb/slice_transform.h"
 #include "rocksdb/types.h"
-#include "rocksdb-rs-cxx/types.h"
-#include "rocksdb-rs-cxx/db/dbformat.h"
 #include "util/coding.h"
 #include "util/user_comparator_wrapper.h"
 

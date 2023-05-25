@@ -27,7 +27,7 @@
 #include <string>
 #include <vector>
 
-#include "rocksdb-rs-cxx/types.h"
+#include "rocksdb-rs-cxx/lib.h"
 #include "rocksdb/advanced_options.h"
 #include "rocksdb/customizable.h"
 #include "rocksdb/status.h"

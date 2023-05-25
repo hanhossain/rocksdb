@@ -10,7 +10,7 @@
 #include <memory>
 #include <string>
 
-#include "rocksdb-rs-cxx/types.h"
+#include "rocksdb-rs-cxx/lib.h"
 #include "rocksdb/customizable.h"
 #include "rocksdb/status.h"
 #include "rocksdb/types.h"
