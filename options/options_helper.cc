@@ -333,8 +333,8 @@ std::map<rs::advanced_options::CompactionPri, std::string> OptionsHelper::compac
 
 std::map<CompactionStopStyle, std::string>
     OptionsHelper::compaction_stop_style_to_string = {
-        {kCompactionStopStyleSimilarSize, "kCompactionStopStyleSimilarSize"},
-        {kCompactionStopStyleTotalSize, "kCompactionStopStyleTotalSize"}};
+        {CompactionStopStyle::kCompactionStopStyleSimilarSize, "kCompactionStopStyleSimilarSize"},
+        {CompactionStopStyle::kCompactionStopStyleTotalSize, "kCompactionStopStyleTotalSize"}};
 
 std::map<rs::advanced_options::Temperature, std::string> OptionsHelper::temperature_to_string = {
     {rs::advanced_options::Temperature::Unknown, "kUnknown"},
@@ -797,8 +797,8 @@ std::unordered_map<std::string, rs::advanced_options::CompactionPri>
 
 std::unordered_map<std::string, CompactionStopStyle>
     OptionsHelper::compaction_stop_style_string_map = {
-        {"kCompactionStopStyleSimilarSize", kCompactionStopStyleSimilarSize},
-        {"kCompactionStopStyleTotalSize", kCompactionStopStyleTotalSize}};
+        {"kCompactionStopStyleSimilarSize", CompactionStopStyle::kCompactionStopStyleSimilarSize},
+        {"kCompactionStopStyleTotalSize", CompactionStopStyle::kCompactionStopStyleTotalSize}};
 
 std::unordered_map<std::string, rs::advanced_options::Temperature>
     OptionsHelper::temperature_string_map = {

@@ -353,7 +353,7 @@ void ColumnFamilyOptions::Dump(Logger* log) const {
     if (it_compaction_stop_style == compaction_stop_style_to_string.end()) {
       assert(false);
       str_compaction_stop_style =
-          "unknown_" + std::to_string(compaction_options_universal.stop_style);
+          "unknown_" + std::to_string((int)compaction_options_universal.stop_style);
     } else {
       str_compaction_stop_style = it_compaction_stop_style->second;
     }

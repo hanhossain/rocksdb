@@ -623,15 +623,15 @@ Compaction* UniversalCompactionBuilder::PickCompactionToReduceSortedRuns(
       // Pick files if the total/last candidate file size (increased by the
       // specified ratio) is still larger than the next candidate file.
       // candidate_size is the total size of files picked so far with the
-      // default kCompactionStopStyleTotalSize; with
-      // kCompactionStopStyleSimilarSize, it's simply the size of the last
+      // default CompactionStopStyle::kCompactionStopStyleTotalSize; with
+      // CompactionStopStyle::kCompactionStopStyleSimilarSize, it's simply the size of the last
       // picked file.
       double sz = candidate_size * (100.0 + ratio) / 100.0;
       if (sz < static_cast<double>(succeeding_sr->size)) {
         break;
       }
       if (mutable_cf_options_.compaction_options_universal.stop_style ==
-          kCompactionStopStyleSimilarSize) {
+          CompactionStopStyle::kCompactionStopStyleSimilarSize) {
         // Similar-size stopping rule: also check the last picked file isn't
         // far larger than the next candidate file.
         sz = (succeeding_sr->size * (100.0 + ratio)) / 100.0;
@@ -643,7 +643,7 @@ Compaction* UniversalCompactionBuilder::PickCompactionToReduceSortedRuns(
           break;
         }
         candidate_size = succeeding_sr->compensated_file_size;
-      } else {  // default kCompactionStopStyleTotalSize
+      } else {  // default CompactionStopStyle::kCompactionStopStyleTotalSize
         candidate_size += succeeding_sr->compensated_file_size;
       }
       candidate_count++;
