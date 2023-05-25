@@ -74,7 +74,7 @@ struct OptionsHelper {
   static const std::string kDBOptionsName /*= "DBOptions" */;
   static std::map<rs::advanced_options::CompactionStyle, std::string> compaction_style_to_string;
   static std::map<rs::advanced_options::CompactionPri, std::string> compaction_pri_to_string;
-  static std::map<CompactionStopStyle, std::string>
+  static std::map<rs::universal_compaction::CompactionStopStyle, std::string>
       compaction_stop_style_to_string;
   static std::map<rs::advanced_options::Temperature, std::string> temperature_to_string;
   static std::unordered_map<std::string, ChecksumType> checksum_type_string_map;
@@ -82,7 +82,7 @@ struct OptionsHelper {
       compression_type_string_map;
   static std::unordered_map<std::string, rs::advanced_options::PrepopulateBlobCache>
       prepopulate_blob_cache_string_map;
-  static std::unordered_map<std::string, CompactionStopStyle>
+  static std::unordered_map<std::string, rs::universal_compaction::CompactionStopStyle>
       compaction_stop_style_string_map;
   static std::unordered_map<std::string, EncodingType> encoding_type_string_map;
   static std::unordered_map<std::string, rs::advanced_options::CompactionStyle>

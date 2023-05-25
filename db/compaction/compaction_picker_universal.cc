@@ -631,7 +631,7 @@ Compaction* UniversalCompactionBuilder::PickCompactionToReduceSortedRuns(
         break;
       }
       if (mutable_cf_options_.compaction_options_universal.stop_style ==
-          CompactionStopStyle::kCompactionStopStyleSimilarSize) {
+          rs::universal_compaction::CompactionStopStyle::kCompactionStopStyleSimilarSize) {
         // Similar-size stopping rule: also check the last picked file isn't
         // far larger than the next candidate file.
         sz = (succeeding_sr->size * (100.0 + ratio)) / 100.0;

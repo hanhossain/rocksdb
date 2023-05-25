@@ -486,6 +486,16 @@ mod ffi {
         wal_size_for_flush: u64,
     }
 
+    /// Algorithm used to make a compaction request stop picking new files
+    /// into a single compaction run
+    #[namespace = "rs::universal_compaction"]
+    enum CompactionStopStyle {
+        /// pick files of similar size
+        kCompactionStopStyleSimilarSize,
+        /// total size of picked files > next file
+        kCompactionStopStyleTotalSize,
+    }
+
     #[namespace = "rs::advanced_options"]
     extern "Rust" {
         fn new_compaction_options_fifo() -> CompactionOptionsFIFO;

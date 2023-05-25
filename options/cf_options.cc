@@ -1108,7 +1108,7 @@ void MutableCFOptions::Dump(Logger* log) const {
                  "compaction_options_universal.compression_size_percent : %d",
                  compaction_options_universal.compression_size_percent);
   ROCKS_LOG_INFO(log, "compaction_options_universal.stop_style : %d",
-                 compaction_options_universal.stop_style);
+                 (int)compaction_options_universal.stop_style);
   ROCKS_LOG_INFO(
       log, "compaction_options_universal.allow_trivial_move : %d",
       static_cast<int>(compaction_options_universal.allow_trivial_move));
