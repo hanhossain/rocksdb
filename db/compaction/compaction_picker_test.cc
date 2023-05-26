@@ -60,7 +60,6 @@ class CompactionPickerTestBase : public testing::Test {
         cf_name_("dummy"),
         log_buffer_(InfoLogLevel::INFO_LEVEL, &logger_),
         file_num_(1),
-        fifo_options_(rs::advanced_options::CompactionOptionsFIFO_new()),
         vstorage_(nullptr) {
     mutable_cf_options_.ttl = 0;
     mutable_cf_options_.periodic_compaction_seconds = 0;

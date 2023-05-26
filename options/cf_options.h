@@ -289,7 +289,7 @@ struct MutableCFOptions {
   uint64_t periodic_compaction_seconds;
   std::vector<int> max_bytes_for_level_multiplier_additional;
   rs::advanced_options::CompactionOptionsFIFO compaction_options_fifo;
-  rs::universal_compaction::CompactionOptionsUniversal compaction_options_universal;
+  CompactionOptionsUniversal compaction_options_universal;
 
   // Blob file related options
   bool enable_blob_files;
