@@ -331,10 +331,10 @@ std::map<rs::advanced_options::CompactionPri, std::string> OptionsHelper::compac
     {rs::advanced_options::CompactionPri::MinOverlappingRatio, "kMinOverlappingRatio"},
     {rs::advanced_options::CompactionPri::RoundRobin, "kRoundRobin"}};
 
-std::map<rs::universal_compaction::CompactionStopStyle, std::string>
+std::map<CompactionStopStyle, std::string>
     OptionsHelper::compaction_stop_style_to_string = {
-        {rs::universal_compaction::CompactionStopStyle::kCompactionStopStyleSimilarSize, "kCompactionStopStyleSimilarSize"},
-        {rs::universal_compaction::CompactionStopStyle::kCompactionStopStyleTotalSize, "kCompactionStopStyleTotalSize"}};
+        {CompactionStopStyle::kCompactionStopStyleSimilarSize, "kCompactionStopStyleSimilarSize"},
+        {CompactionStopStyle::kCompactionStopStyleTotalSize, "kCompactionStopStyleTotalSize"}};
 
 std::map<rs::advanced_options::Temperature, std::string> OptionsHelper::temperature_to_string = {
     {rs::advanced_options::Temperature::Unknown, "kUnknown"},
@@ -450,9 +450,9 @@ static bool ParseOptionHelper(void* opt_address, const rs::options_type::OptionT
       return ParseEnum<EncodingType>(encoding_type_string_map, value,
                                      static_cast<EncodingType*>(opt_address));
     case rs::options_type::OptionType::CompactionStopStyle:
-      return ParseEnum<rs::universal_compaction::CompactionStopStyle>(
+      return ParseEnum<CompactionStopStyle>(
           compaction_stop_style_string_map, value,
-          static_cast<rs::universal_compaction::CompactionStopStyle*>(opt_address));
+          static_cast<CompactionStopStyle*>(opt_address));
     case rs::options_type::OptionType::EncodedString: {
       std::string* output_addr = static_cast<std::string*>(opt_address);
       (Slice(value)).DecodeHex(output_addr);
@@ -541,9 +541,9 @@ bool SerializeSingleOptionHelper(const void* opt_address,
           encoding_type_string_map,
           *static_cast<const EncodingType*>(opt_address), value);
     case rs::options_type::OptionType::CompactionStopStyle:
-      return SerializeEnum<rs::universal_compaction::CompactionStopStyle>(
+      return SerializeEnum<CompactionStopStyle>(
           compaction_stop_style_string_map,
-          *static_cast<const rs::universal_compaction::CompactionStopStyle*>(opt_address), value);
+          *static_cast<const CompactionStopStyle*>(opt_address), value);
     case rs::options_type::OptionType::EncodedString: {
       const auto* ptr = static_cast<const std::string*>(opt_address);
       *value = (Slice(*ptr)).ToString(true);
@@ -795,10 +795,10 @@ std::unordered_map<std::string, rs::advanced_options::CompactionPri>
         {"kMinOverlappingRatio", rs::advanced_options::CompactionPri::MinOverlappingRatio},
         {"kRoundRobin", rs::advanced_options::CompactionPri::RoundRobin}};
 
-std::unordered_map<std::string, rs::universal_compaction::CompactionStopStyle>
+std::unordered_map<std::string, CompactionStopStyle>
     OptionsHelper::compaction_stop_style_string_map = {
-        {"kCompactionStopStyleSimilarSize", rs::universal_compaction::CompactionStopStyle::kCompactionStopStyleSimilarSize},
-        {"kCompactionStopStyleTotalSize", rs::universal_compaction::CompactionStopStyle::kCompactionStopStyleTotalSize}};
+        {"kCompactionStopStyleSimilarSize", CompactionStopStyle::kCompactionStopStyleSimilarSize},
+        {"kCompactionStopStyleTotalSize", CompactionStopStyle::kCompactionStopStyleTotalSize}};
 
 std::unordered_map<std::string, rs::advanced_options::Temperature>
     OptionsHelper::temperature_string_map = {
@@ -1171,7 +1171,7 @@ static bool AreOptionsEqual(rs::options_type::OptionType type, const void* this_
     case rs::options_type::OptionType::CompactionStyle:
       return IsOptionEqual<rs::advanced_options::CompactionStyle>(this_offset, that_offset);
     case rs::options_type::OptionType::CompactionStopStyle:
-      return IsOptionEqual<rs::universal_compaction::CompactionStopStyle>(this_offset, that_offset);
+      return IsOptionEqual<CompactionStopStyle>(this_offset, that_offset);
     case rs::options_type::OptionType::CompactionPri:
       return IsOptionEqual<rs::advanced_options::CompactionPri>(this_offset, that_offset);
     case rs::options_type::OptionType::CompressionType:

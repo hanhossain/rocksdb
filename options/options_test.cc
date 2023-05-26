@@ -4624,7 +4624,7 @@ TEST_F(OptionTypeInfoTest, TestBuiltinEnum) {
     ASSERT_EQ(e1, iter.second);
   }
   for (auto iter : OptionsHelper::compaction_stop_style_string_map) {
-    rs::universal_compaction::CompactionStopStyle e1, e2;
+    CompactionStopStyle e1, e2;
     TestParseAndCompareOption(
         config_options, OptionTypeInfo(0, rs::options_type::OptionType::CompactionStopStyle),
         "CompactionStopStyle", iter.first, &e1, &e2);
