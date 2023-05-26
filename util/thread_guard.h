@@ -6,8 +6,9 @@
 #pragma once
 
 #include "port/port.h"
+#include "rocksdb/rocksdb_namespace.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // Resource management object for threads that joins the thread upon
 // destruction. Has unique ownership of the thread object, so copying it is not
@@ -37,4 +38,4 @@ class ThreadGuard {
   port::Thread thread_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -8,7 +8,7 @@
 #include "monitoring/iostats_context_imp.h"
 #include "rocksdb/env.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 #ifdef NIOSTATS_CONTEXT
 // Should not be used because the counters are not thread-safe.
@@ -75,4 +75,4 @@ std::string IOStatsContext::ToString(bool exclude_zero_counters) const {
 #endif  //! NIOSTATS_CONTEXT
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

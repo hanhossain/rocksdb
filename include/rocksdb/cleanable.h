@@ -8,8 +8,9 @@
 
 #pragma once
 
+#include "rocksdb/rocksdb_namespace.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class Cleanable {
  public:
@@ -124,4 +125,4 @@ class SharedCleanablePtr {
   Impl* ptr_ = nullptr;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

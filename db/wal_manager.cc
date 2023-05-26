@@ -32,7 +32,7 @@
 #include "util/mutexlock.h"
 #include "util/string_util.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 
 Status WalManager::DeleteFile(const std::string& fname, uint64_t number) {
@@ -524,4 +524,4 @@ Status WalManager::ReadFirstLine(const std::string& fname,
   return status;
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -26,7 +26,7 @@
 #include "test_util/testutil.h"
 #include "util/random.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class BlockBasedTableReaderBaseTest : public testing::Test {
  protected:
@@ -552,7 +552,7 @@ INSTANTIATE_TEST_CASE_P(
             BlockBasedTableOptions::IndexType::kTwoLevelIndexSearch),
         ::testing::Values(true)));
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

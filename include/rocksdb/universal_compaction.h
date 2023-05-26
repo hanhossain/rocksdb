@@ -9,8 +9,9 @@
 #include <cstdint>
 #include <vector>
 
+#include "rocksdb/rocksdb_namespace.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 //
 // Algorithm used to make a compaction request stop picking new files
@@ -92,4 +93,4 @@ class CompactionOptionsUniversal {
         incremental(false) {}
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

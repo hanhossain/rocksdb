@@ -15,7 +15,7 @@
 #include "rocksdb/utilities/optimistic_transaction_db.h"
 #include "utilities/transactions/optimistic_transaction.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 Transaction* OptimisticTransactionDBImpl::BeginTransaction(
     const WriteOptions& write_options,
@@ -106,4 +106,4 @@ void OptimisticTransactionDBImpl::ReinitializeTransaction(
   txn_impl->Reinitialize(this, write_options, txn_options);
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

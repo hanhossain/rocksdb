@@ -16,7 +16,7 @@
 // These classes issue the lowest level of operations of PlainTable.
 // Actual data format of the key is documented in comments of class
 // PlainTableFactory.
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class WritableFile;
 struct ParsedInternalKey;
@@ -195,5 +195,5 @@ class PlainTableKeyDecoder {
                            uint32_t* bytes_read);
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 

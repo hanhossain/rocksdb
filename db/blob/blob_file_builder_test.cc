@@ -27,7 +27,7 @@
 #include "util/compression.h"
 #include "utilities/fault_injection_env.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class TestFileNumberGenerator {
  public:
@@ -671,7 +671,7 @@ TEST_P(BlobFileBuilderIOErrorTest, IOError) {
   ASSERT_TRUE(blob_file_additions.empty());
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

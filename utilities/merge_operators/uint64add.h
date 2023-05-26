@@ -11,7 +11,7 @@
 #include "rocksdb/merge_operator.h"
 #include "utilities/merge_operators.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 class Logger;
 class Slice;
 
@@ -32,4 +32,4 @@ class UInt64AddOperator : public AssociativeMergeOperator {
   uint64_t DecodeInteger(const Slice& value, Logger* logger) const;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

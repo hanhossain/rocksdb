@@ -9,7 +9,7 @@
 #include "rocksdb/listener.h"
 #include "rocksdb/utilities/customizable_util.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 Status EventListener::CreateFromString(const ConfigOptions& config_options,
                                        const std::string& id,
                                        std::shared_ptr<EventListener>* result) {
@@ -320,4 +320,4 @@ void EventHelpers::LogAndNotifyBlobFileDeletion(
   info.status.PermitUncheckedError();
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

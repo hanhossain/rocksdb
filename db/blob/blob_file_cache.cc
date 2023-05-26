@@ -16,7 +16,7 @@
 #include "trace_replay/io_tracer.h"
 #include "util/hash.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 BlobFileCache::BlobFileCache(Cache* cache,
                              const ImmutableOptions* immutable_options,
@@ -98,4 +98,4 @@ Status BlobFileCache::GetBlobFileReader(
   return Status::OK();
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -11,7 +11,7 @@
 #include "rocksdb/merge_operator.h"
 #include "rocksdb/slice.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 // The feature is still in development so the encoding format is subject
 // to change.
 //
@@ -135,4 +135,4 @@ extern const std::string kUnnamedFuncName;
 // Special error function name reserved for merging or aggregation error.
 extern const std::string kErrorFuncName;
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -17,7 +17,7 @@
 // Data structures used for compaction_job and compaction_service_job which has
 // the list of sub_compact_states and the aggregated information for the
 // compaction.
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // Maintains state for the entire compaction
 class CompactionState {
@@ -39,4 +39,4 @@ class CompactionState {
   Slice LargestUserKey();
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

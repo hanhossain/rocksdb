@@ -24,7 +24,7 @@
 #include "util/autovector.h"
 #include "util/stop_watch.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 #define DEFAULT_DECREMENT 8 * 1024
 
@@ -464,4 +464,4 @@ class FilePrefetchBuffer {
 
   FilePrefetchBufferUsage usage_;
 };
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

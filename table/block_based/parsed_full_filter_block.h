@@ -10,7 +10,7 @@
 #include "table/block_based/block_type.h"
 #include "table/format.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class FilterBitsReader;
 class FilterPolicy;
@@ -44,4 +44,4 @@ class ParsedFullFilterBlock {
   std::unique_ptr<FilterBitsReader> filter_bits_reader_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

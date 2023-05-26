@@ -13,7 +13,7 @@
 #include "table/internal_iterator.h"
 #include "table/iterator_wrapper.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 Status Iterator::GetProperty(std::string prop_name, std::string* prop) {
   if (prop == nullptr) {
@@ -127,4 +127,4 @@ template InternalIteratorBase<IndexValue>* NewEmptyInternalIterator(
     Arena* arena);
 template InternalIteratorBase<Slice>* NewEmptyInternalIterator(Arena* arena);
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

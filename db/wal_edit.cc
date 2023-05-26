@@ -9,7 +9,7 @@
 #include "rocksdb/status.h"
 #include "util/coding.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 void WalAddition::EncodeTo(std::string* dst) const {
   PutVarint64(dst, number_);
@@ -208,4 +208,4 @@ Status WalSet::CheckWals(
   return s;
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

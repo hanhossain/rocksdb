@@ -28,7 +28,7 @@
 #include "rocksdb/utilities/options_type.h"
 #include "util/string_util.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 ConfigOptions::ConfigOptions()
     : registry(ObjectRegistry::NewInstance())
 {
@@ -1421,4 +1421,4 @@ const OptionTypeInfo* OptionTypeInfo::Find(
   return nullptr;
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

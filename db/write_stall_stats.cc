@@ -5,7 +5,7 @@
 
 #include "db/write_stall_stats.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 const std::string& InvalidWriteStallHyphenString() {
   static const std::string kInvalidWriteStallHyphenString = "invalid";
   return kInvalidWriteStallHyphenString;
@@ -176,4 +176,4 @@ std::string WriteStallStatsMapKeys::CauseConditionCount(
 
   return cause_condition_count_name;
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

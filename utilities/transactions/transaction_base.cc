@@ -18,7 +18,7 @@
 #include "util/string_util.h"
 #include "utilities/transactions/lock/lock_tracker.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 Status Transaction::CommitAndTryCreateSnapshot(
     std::shared_ptr<TransactionNotifier> notifier, TxnTimestamp ts,
@@ -754,4 +754,4 @@ Status TransactionBaseImpl::RebuildFromWriteBatch(WriteBatch* src_batch) {
 WriteBatch* TransactionBaseImpl::GetCommitTimeWriteBatch() {
   return &commit_time_batch_;
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

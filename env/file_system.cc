@@ -20,7 +20,7 @@
 #include "utilities/counted_fs.h"
 #include "utilities/env_timed.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 FileSystem::FileSystem() {}
 
@@ -274,4 +274,4 @@ DirFsyncOptions::DirFsyncOptions(FsyncReason fsync_reason) {
   assert(fsync_reason != kFileRenamed);
   reason = fsync_reason;
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

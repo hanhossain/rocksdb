@@ -13,7 +13,7 @@
 #include <string>
 #include <thread>
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 namespace test {
 
 #ifdef OS_WIN
@@ -104,4 +104,4 @@ bool TestRegex::Matches(const std::string& str) const {
 }
 
 }  // namespace test
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

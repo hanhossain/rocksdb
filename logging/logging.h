@@ -26,10 +26,10 @@ inline const char* RocksLogShorterFileName(const char* file) {
 
 // Don't inclide file/line info in HEADER level
 #define ROCKS_LOG_HEADER(LGR, FMT, ...) \
-  rocksdb::Log(InfoLogLevel::HEADER_LEVEL, LGR, FMT, ##__VA_ARGS__)
+  ROCKSDB_NAMESPACE::Log(InfoLogLevel::HEADER_LEVEL, LGR, FMT, ##__VA_ARGS__)
 
 #define ROCKS_LOG_AT_LEVEL(LGR, LVL, FMT, ...)                           \
-  rocksdb::Log((LVL), (LGR), ROCKS_LOG_PREPEND_FILE_LINE(FMT), \
+  ROCKSDB_NAMESPACE::Log((LVL), (LGR), ROCKS_LOG_PREPEND_FILE_LINE(FMT), \
                          RocksLogShorterFileName(__FILE__), ##__VA_ARGS__)
 
 #define ROCKS_LOG_DEBUG(LGR, FMT, ...) \
@@ -48,12 +48,12 @@ inline const char* RocksLogShorterFileName(const char* file) {
   ROCKS_LOG_AT_LEVEL((LGR), InfoLogLevel::FATAL_LEVEL, FMT, ##__VA_ARGS__)
 
 #define ROCKS_LOG_BUFFER(LOG_BUF, FMT, ...)                                 \
-  rocksdb::LogToBuffer(LOG_BUF, ROCKS_LOG_PREPEND_FILE_LINE(FMT), \
+  ROCKSDB_NAMESPACE::LogToBuffer(LOG_BUF, ROCKS_LOG_PREPEND_FILE_LINE(FMT), \
                                  RocksLogShorterFileName(__FILE__),         \
                                  ##__VA_ARGS__)
 
 #define ROCKS_LOG_BUFFER_MAX_SZ(LOG_BUF, MAX_LOG_SIZE, FMT, ...) \
-  rocksdb::LogToBuffer(                                \
+  ROCKSDB_NAMESPACE::LogToBuffer(                                \
       LOG_BUF, MAX_LOG_SIZE, ROCKS_LOG_PREPEND_FILE_LINE(FMT),   \
       RocksLogShorterFileName(__FILE__), ##__VA_ARGS__)
 

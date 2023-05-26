@@ -9,8 +9,9 @@
 #include <string>
 
 #include "rocksdb/customizable.h"
+#include "rocksdb/rocksdb_namespace.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class WriteBatch;
 struct ConfigOptions;
@@ -107,4 +108,4 @@ class WalFilter : public Customizable {
   virtual const char* Name() const override = 0;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

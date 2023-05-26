@@ -11,7 +11,7 @@
 #include "table/block_based/block_based_table_reader.h"
 #include "table/block_based/reader_common.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 // Encapsulates common functionality for the various index reader
 // implementations. Provides access to the index block regardless of whether
 // it is owned by the reader or stored in the cache, or whether it is pinned
@@ -82,4 +82,4 @@ class BlockBasedTable::IndexReaderCommon : public BlockBasedTable::IndexReader {
   CachableEntry<Block> index_block_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

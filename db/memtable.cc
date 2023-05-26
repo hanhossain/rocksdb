@@ -43,7 +43,7 @@
 #include "util/coding.h"
 #include "util/mutexlock.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 ImmutableMemTableOptions::ImmutableMemTableOptions(
     const ImmutableOptions& ioptions,
@@ -154,7 +154,7 @@ size_t MemTable::ApproximateMemoryUsage() {
   autovector<size_t> usages = {
       arena_.ApproximateMemoryUsage(), table_->ApproximateMemoryUsage(),
       range_del_table_->ApproximateMemoryUsage(),
-      rocksdb::ApproximateMemoryUsage(insert_hints_)};
+      ROCKSDB_NAMESPACE::ApproximateMemoryUsage(insert_hints_)};
   size_t total_usage = 0;
   for (size_t usage : usages) {
     // If usage + total_usage >= kMaxSizet, return kMaxSizet.
@@ -984,7 +984,7 @@ static bool SaveValue(void* arg, const char* entry) {
           ROCKS_LOG_ERROR(s->logger, "Encountered unexpected blob index.");
           *(s->status) = Status::NotSupported(
               "Encountered unexpected blob index. Please open DB with "
-              "rocksdb::blob_db::BlobDB.");
+              "ROCKSDB_NAMESPACE::blob_db::BlobDB.");
           *(s->found_final_value) = true;
           return false;
         }
@@ -1672,4 +1672,4 @@ uint64_t MemTable::GetMinLogContainingPrepSection() {
   return min_prep_log_referenced_.load();
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

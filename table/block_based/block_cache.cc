@@ -5,7 +5,7 @@
 
 #include "table/block_based/block_cache.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 void BlockCreateContext::Create(std::unique_ptr<Block_kData>* parsed_out,
                                 BlockContents&& block) {
@@ -103,4 +103,4 @@ const Cache::CacheItemHelper* GetCacheItemHelper(
   }
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

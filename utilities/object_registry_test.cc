@@ -10,7 +10,7 @@
 #include "rocksdb/customizable.h"
 #include "test_util/testharness.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class ObjRegistryTest : public testing::Test {
  public:
@@ -852,7 +852,7 @@ TEST_F(PatternEntryTest, TestTwoNamesAndPattern) {
   ASSERT_TRUE(entry.Matches("BBB::2"));
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

@@ -17,7 +17,7 @@
 
 #include "rocksdb/thread_status.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 #ifdef ROCKSDB_USING_THREAD_STATUS
 
@@ -110,4 +110,4 @@ struct OperationInfo {};
 struct StateInfo {};
 
 #endif  // ROCKSDB_USING_THREAD_STATUS
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

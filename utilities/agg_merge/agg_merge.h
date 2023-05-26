@@ -14,7 +14,7 @@
 #include "rocksdb/utilities/agg_merge.h"
 #include "utilities/cassandra/cassandra_options.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 class AggMergeOperator : public MergeOperator {
  public:
   explicit AggMergeOperator();
@@ -46,4 +46,4 @@ class AggMergeOperator : public MergeOperator {
 
 extern std::string EncodeAggFuncAndPayloadNoCheck(const Slice& function_name,
                                                   const Slice& value);
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

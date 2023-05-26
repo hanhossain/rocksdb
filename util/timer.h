@@ -18,7 +18,7 @@
 #include "test_util/sync_point.h"
 #include "util/mutexlock.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // A Timer class to handle repeated work.
 //
@@ -337,4 +337,4 @@ class Timer {
   std::unordered_map<std::string, std::unique_ptr<FunctionInfo>> map_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

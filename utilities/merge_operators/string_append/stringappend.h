@@ -8,7 +8,7 @@
 #include "rocksdb/merge_operator.h"
 #include "rocksdb/slice.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class StringAppendOperator : public AssociativeMergeOperator {
  public:
@@ -29,4 +29,4 @@ class StringAppendOperator : public AssociativeMergeOperator {
   std::string delim_;  // The delimiter is inserted between elements
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

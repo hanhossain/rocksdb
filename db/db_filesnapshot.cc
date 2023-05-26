@@ -26,7 +26,7 @@
 #include "util/file_checksum_helper.h"
 #include "util/mutexlock.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 Status DBImpl::FlushForGetLiveFiles() {
   mutex_.AssertHeld();
@@ -433,4 +433,4 @@ Status DBImpl::GetLiveFilesStorageInfo(
   return s;
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

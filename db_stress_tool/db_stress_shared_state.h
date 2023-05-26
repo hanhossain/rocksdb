@@ -37,7 +37,7 @@ DECLARE_int32(open_read_fault_one_in);
 
 DECLARE_int32(injest_error_severity);
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 class StressTest;
 
 // State shared by all concurrent executions of the same benchmark.
@@ -423,5 +423,5 @@ struct ThreadState {
   ThreadState(uint32_t index, SharedState* _shared)
       : tid(index), rand(1000 + index + _shared->GetSeed()), shared(_shared) {}
 };
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 #endif  // GFLAGS

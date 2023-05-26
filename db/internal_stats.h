@@ -20,7 +20,7 @@
 #include "rocksdb/system_clock.h"
 #include "util/hash_containers.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 template <class Stats>
 class CacheEntryStatsCollector;
@@ -871,4 +871,4 @@ class InternalStats {
 };
 
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

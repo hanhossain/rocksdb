@@ -15,7 +15,7 @@
 #include "util/coding.h"
 #include "utilities/merge_operators.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // A 'model' merge operator that XORs two (same sized) array of bytes.
 // Implemented as an AssociativeMergeOperator for simplicity and example.
@@ -37,4 +37,4 @@ class BytesXOROperator : public AssociativeMergeOperator {
            std::string* new_value) const;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

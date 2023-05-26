@@ -34,7 +34,7 @@ DEFINE_int32(nthread_write, 1, "insert %");
 DEFINE_int32(nthread_read, 1, "lookup %");
 DEFINE_int32(nthread_erase, 1, "erase %");
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 //
 // HashTableImpl interface
@@ -271,7 +271,7 @@ class GranularLockImpl : public HashTableImpl<size_t, string> {
   HashTable<Node, Hash, Equal> impl_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 //
 // main
@@ -286,8 +286,8 @@ int main(int argc, char** argv) {
   //
   printf("Micro benchmarking std::unordered_map \n");
   {
-    rocksdb::SimpleImpl impl;
-    rocksdb::HashTableBenchmark _(
+    ROCKSDB_NAMESPACE::SimpleImpl impl;
+    ROCKSDB_NAMESPACE::HashTableBenchmark _(
         &impl, FLAGS_nsec, FLAGS_nthread_write, FLAGS_nthread_read,
         FLAGS_nthread_erase);
   }
@@ -296,8 +296,8 @@ int main(int argc, char** argv) {
   //
   printf("Micro benchmarking scalable hash map \n");
   {
-    rocksdb::GranularLockImpl impl;
-    rocksdb::HashTableBenchmark _(
+    ROCKSDB_NAMESPACE::GranularLockImpl impl;
+    ROCKSDB_NAMESPACE::HashTableBenchmark _(
         &impl, FLAGS_nsec, FLAGS_nthread_write, FLAGS_nthread_read,
         FLAGS_nthread_erase);
   }

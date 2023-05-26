@@ -35,7 +35,7 @@
 #undef max
 #endif
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class Cache;
 class CompactionFilter;
@@ -1990,4 +1990,4 @@ struct OpenAndCompactOptions {
   std::atomic<bool>* canceled = nullptr;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

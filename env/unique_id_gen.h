@@ -15,8 +15,9 @@
 #include <atomic>
 #include <cstdint>
 
+#include "rocksdb/rocksdb_namespace.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // Generates a new 128-bit identifier that is universally unique
 // (with high probability) for each call. The result is split into
@@ -67,4 +68,4 @@ class SemiStructuredUniqueIdGen {
   int64_t saved_process_id_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

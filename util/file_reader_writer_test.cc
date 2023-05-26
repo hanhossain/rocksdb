@@ -21,7 +21,7 @@
 #include "util/random.h"
 #include "utilities/fault_injection_fs.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class WritableFileWriterTest : public testing::Test {};
 
@@ -1049,7 +1049,7 @@ TEST_F(WritableFileWriterIOPriorityTest, BasicOp) {
   s = writer->Close();
   ASSERT_OK(s);
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

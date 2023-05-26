@@ -11,7 +11,7 @@
 #include "logging/logging.h"
 #include "port/lang.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // Maps to help decide the severity of an error based on the
 // BackgroundErrorReason, Code, SubCode and whether db_options.paranoid_checks
@@ -789,4 +789,4 @@ void ErrorHandler::EndAutoRecovery() {
   return;
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

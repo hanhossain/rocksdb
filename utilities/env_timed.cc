@@ -10,7 +10,7 @@
 #include "rocksdb/file_system.h"
 #include "rocksdb/status.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 TimedFileSystem::TimedFileSystem(const std::shared_ptr<FileSystem>& base)
     : FileSystemWrapper(base) {}
@@ -178,4 +178,4 @@ Env* NewTimedEnv(Env* base_env) {
 }
 
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

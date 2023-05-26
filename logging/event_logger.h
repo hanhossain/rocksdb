@@ -13,7 +13,7 @@
 #include "logging/log_buffer.h"
 #include "rocksdb/env.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class JSONWriter {
  public:
@@ -199,4 +199,4 @@ class EventLogger {
   Logger* logger_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

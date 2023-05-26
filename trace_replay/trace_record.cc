@@ -14,7 +14,7 @@
 #include "rocksdb/trace_record_result.h"
 #include "trace_replay/trace_record_handler.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // TraceRecord
 TraceRecord::TraceRecord(uint64_t timestamp) : timestamp_(timestamp) {}
@@ -203,4 +203,4 @@ Status MultiGetQueryTraceRecord::Accept(
   return handler->Handle(*this, result);
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

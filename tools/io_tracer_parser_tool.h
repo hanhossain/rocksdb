@@ -10,7 +10,7 @@
 #include "rocksdb/env.h"
 #include "rocksdb/status.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 struct IOTraceHeader;
 struct IOTraceRecord;
@@ -35,4 +35,4 @@ class IOTraceRecordParser {
 
 int io_tracer_parser(int argc, char** argv);
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

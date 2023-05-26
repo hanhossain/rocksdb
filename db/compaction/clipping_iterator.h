@@ -10,7 +10,7 @@
 #include "rocksdb/comparator.h"
 #include "table/internal_iterator.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // An internal iterator that wraps another one and ensures that any keys
 // returned are strictly within a range [start, end). If the underlying
@@ -278,4 +278,4 @@ class ClippingIterator : public InternalIterator {
   bool valid_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

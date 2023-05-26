@@ -15,7 +15,7 @@
 #include "port/port.h"
 #include "rocksdb/status.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class Env;
 class FileSystem;
@@ -143,5 +143,5 @@ class DeleteScheduler {
   std::shared_ptr<Statistics> stats_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 

@@ -17,7 +17,7 @@
 #include "file/sequence_file_reader.h"
 #include "rocksdb/utilities/customizable_util.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 void FileChecksumListImpl::reset() { checksum_map_.clear(); }
 
@@ -167,4 +167,4 @@ Status FileChecksumGenFactory::CreateFromString(
     return s;
   }
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

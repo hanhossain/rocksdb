@@ -23,7 +23,7 @@
 #include "util/cast_util.h"
 #include "util/concurrent_task_limiter_impl.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 bool DBImpl::EnoughRoomForCompaction(
     ColumnFamilyData* cfd, const std::vector<CompactionInputFiles>& inputs,
@@ -3969,4 +3969,4 @@ Status DBImpl::WaitForCompact(bool wait_unscheduled) {
   return error_handler_.GetBGError();
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

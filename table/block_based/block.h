@@ -29,7 +29,7 @@
 #include "test_util/sync_point.h"
 #include "util/random.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 struct BlockContents;
 class Comparator;
@@ -40,7 +40,7 @@ class IndexBlockIter;
 class MetaBlockIter;
 class BlockPrefixIndex;
 
-// BlockReadAmpBitmap is a bitmap that map the rocksdb::Block data
+// BlockReadAmpBitmap is a bitmap that map the ROCKSDB_NAMESPACE::Block data
 // bytes to a bitmap with ratio bytes_per_bit. Whenever we access a range of
 // bytes in the Block we update the bitmap and increment
 // READ_AMP_ESTIMATE_USEFUL_BYTES.
@@ -918,4 +918,4 @@ class IndexBlockIter final : public BlockIter<IndexValue> {
   inline void DecodeCurrentValue(bool is_shared);
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

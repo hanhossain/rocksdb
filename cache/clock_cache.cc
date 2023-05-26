@@ -23,7 +23,7 @@
 #include "util/math.h"
 #include "util/random.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 namespace clock_cache {
 
@@ -1476,4 +1476,4 @@ std::shared_ptr<Cache> HyperClockCacheOptions::MakeSharedCache() const {
   return cache;
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

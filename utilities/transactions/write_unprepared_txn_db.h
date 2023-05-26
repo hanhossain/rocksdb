@@ -8,7 +8,7 @@
 #include "utilities/transactions/write_prepared_txn_db.h"
 #include "utilities/transactions/write_unprepared_txn.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class WriteUnpreparedTxn;
 
@@ -103,4 +103,4 @@ class WriteUnpreparedCommitEntryPreReleaseCallback : public PreReleaseCallback {
   bool publish_seq_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

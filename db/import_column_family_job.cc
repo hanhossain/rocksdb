@@ -24,7 +24,7 @@
 #include "table/unique_id_impl.h"
 #include "util/stop_watch.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 Status ImportColumnFamilyJob::Prepare(uint64_t next_file_number,
                                       SuperVersion* sv) {
@@ -351,4 +351,4 @@ Status ImportColumnFamilyJob::GetIngestedFileInfo(
 
   return status;
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

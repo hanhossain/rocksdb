@@ -41,7 +41,7 @@
 #include "rocksdb/thread_status.h"
 #include "util/thread_operation.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class ColumnFamilyHandle;
 
@@ -223,4 +223,4 @@ class ThreadStatusUpdater {
 #endif  // ROCKSDB_USING_THREAD_STATUS
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

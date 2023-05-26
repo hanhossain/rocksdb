@@ -13,7 +13,7 @@
 #include "rocksdb/options.h"
 #include "util/compression.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // ImmutableCFOptions is a data struct used by RocksDB internal. It contains a
 // subset of Options that should not be changed during the entire lifetime
@@ -344,4 +344,4 @@ Status GetMutableOptionsFromStrings(
     const std::unordered_map<std::string, std::string>& options_map,
     Logger* info_log, MutableCFOptions* new_options);
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

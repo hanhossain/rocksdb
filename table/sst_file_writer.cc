@@ -16,7 +16,7 @@
 #include "table/sst_file_writer_collectors.h"
 #include "test_util/sync_point.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 const std::string ExternalSstFilePropertyNames::kVersion =
     "rocksdb.external_sst_file.version";
@@ -433,4 +433,4 @@ Status SstFileWriter::Finish(ExternalSstFileInfo* file_info) {
 
 uint64_t SstFileWriter::FileSize() { return rep_->file_info.file_size; }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

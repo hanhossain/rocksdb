@@ -8,7 +8,7 @@
 #ifdef ROCKSDB_LIB_IO_POSIX
 #include "env/io_posix.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 #ifdef OS_LINUX
 class LogicalBlockSizeCacheTest : public testing::Test {};
@@ -131,7 +131,7 @@ TEST_F(LogicalBlockSizeCacheTest, Ref) {
 }
 #endif
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 #endif
 
 int main(int argc, char** argv) {

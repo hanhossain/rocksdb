@@ -10,7 +10,7 @@
 #include "table/block_based/index_reader_common.h"
 #include "util/hash_containers.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 // Index that allows binary search lookup in a two-level index structure.
 class PartitionIndexReader : public BlockBasedTable::IndexReaderCommon {
  public:
@@ -52,4 +52,4 @@ class PartitionIndexReader : public BlockBasedTable::IndexReaderCommon {
   // all partitions to be saved here.
   UnorderedMap<uint64_t, CachableEntry<Block>> partition_map_;
 };
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

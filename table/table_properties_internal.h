@@ -7,8 +7,8 @@
 
 #include "rocksdb/table_properties.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 #ifndef NDEBUG
 void TEST_SetRandomTableProperties(TableProperties* props);
 #endif
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

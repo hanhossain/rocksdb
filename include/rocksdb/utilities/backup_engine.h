@@ -22,7 +22,7 @@
 #include "rocksdb/options.h"
 #include "rocksdb/status.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 class BackupEngineReadOnlyBase;
 class BackupEngine;
 
@@ -686,4 +686,4 @@ class BackupEngineReadOnly : public BackupEngineReadOnlyBase {
   }
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -11,8 +11,8 @@
 #ifdef GFLAGS
 #pragma once
 #include "db_stress_tool/db_stress_test_base.h"
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 extern void ThreadBody(void* /*thread_state*/);
 extern bool RunStressTest(SharedState*);
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 #endif  // GFLAGS

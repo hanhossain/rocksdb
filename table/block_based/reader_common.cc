@@ -15,7 +15,7 @@
 #include "util/crc32c.h"
 #include "util/string_util.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 void ForceReleaseCachedEntry(void* arg, void* h) {
   Cache* cache = reinterpret_cast<Cache*>(arg);
   Cache::Handle* handle = reinterpret_cast<Cache::Handle*>(h);
@@ -49,4 +49,4 @@ Status VerifyBlockChecksum(ChecksumType type, const char* data,
         std::to_string(offset) + " size " + std::to_string(block_size));
   }
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

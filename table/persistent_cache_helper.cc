@@ -8,7 +8,7 @@
 #include "table/block_based/block_based_table_reader.h"
 #include "table/format.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 const PersistentCacheOptions PersistentCacheOptions::kEmpty;
 
@@ -108,4 +108,4 @@ Status PersistentCacheHelper::LookupUncompressed(
   return Status::OK();
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

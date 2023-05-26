@@ -7,8 +7,9 @@
 
 #include <cstdint>
 
+#include "rocksdb/rocksdb_namespace.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // Represents the types of blocks used in the block based table format.
 // See https://github.com/facebook/rocksdb/wiki/Rocksdb-BlockBasedTable-Format
@@ -30,4 +31,4 @@ enum class BlockType : uint8_t {
   kInvalid
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -11,7 +11,7 @@
 
 #include "rocksdb/concurrent_task_limiter.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 ConcurrentTaskLimiterImpl::ConcurrentTaskLimiterImpl(
     const std::string& name, int32_t max_outstanding_task)
@@ -61,4 +61,4 @@ TaskLimiterToken::~TaskLimiterToken() {
   assert(limiter_->outstanding_tasks_ >= 0);
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

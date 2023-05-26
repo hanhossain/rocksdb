@@ -10,7 +10,7 @@
 #include "env/composite_env_wrapper.h"
 #include "test_util/mock_time_env.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class PeriodicTaskSchedulerTest : public DBTestBase {
  public:
@@ -219,7 +219,7 @@ TEST_F(PeriodicTaskSchedulerTest, MultiEnv) {
   Close();
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

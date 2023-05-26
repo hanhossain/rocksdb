@@ -17,7 +17,7 @@
 #include "util/compression.h"
 #include "util/mutexlock.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class CompressedSecondaryCacheResultHandle : public SecondaryCacheResultHandle {
  public:
@@ -129,4 +129,4 @@ class CompressedSecondaryCache : public SecondaryCache {
   mutable port::Mutex capacity_mutex_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

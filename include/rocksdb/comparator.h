@@ -11,8 +11,9 @@
 #include <string>
 
 #include "rocksdb/customizable.h"
+#include "rocksdb/rocksdb_namespace.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class Slice;
 
@@ -160,4 +161,4 @@ extern const Comparator* BytewiseComparator();
 // ordering.
 extern const Comparator* ReverseBytewiseComparator();
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

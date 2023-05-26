@@ -9,8 +9,9 @@
 
 #include <string>
 
+#include "rocksdb/rocksdb_namespace.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 struct CompactionJobStats {
   CompactionJobStats() { Reset(); }
   void Reset();
@@ -105,4 +106,4 @@ struct CompactionJobStats {
 
   // TODO: Add output_to_penultimate_level output information
 };
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

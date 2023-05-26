@@ -9,7 +9,7 @@
 #if defined(WITHOUT_COROUTINES) || \
     (defined(USE_COROUTINES) && defined(WITH_COROUTINES))
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // Lookup a batch of keys in a single SST file
 DEFINE_SYNC_AND_ASYNC(Status, Version::MultiGetFromSST)
@@ -155,7 +155,7 @@ DEFINE_SYNC_AND_ASYNC(Status, Version::MultiGetFromSST)
         ROCKS_LOG_ERROR(info_log_, "Encounter unexpected blob index.");
         *status = Status::NotSupported(
             "Encounter unexpected blob index. Please open DB with "
-            "rocksdb::blob_db::BlobDB instead.");
+            "ROCKSDB_NAMESPACE::blob_db::BlobDB instead.");
         file_range.MarkKeyDone(iter);
         continue;
       case GetContext::kMergeOperatorFailed:
@@ -168,5 +168,5 @@ DEFINE_SYNC_AND_ASYNC(Status, Version::MultiGetFromSST)
   RecordInHistogram(db_statistics_, SST_BATCH_SIZE, batch_size);
   CO_RETURN s;
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 #endif

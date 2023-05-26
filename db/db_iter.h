@@ -21,7 +21,7 @@
 #include "table/iterator_wrapper.h"
 #include "util/autovector.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 class Version;
 
 // This file declares the factory functions of DBIter, in its original form
@@ -408,4 +408,4 @@ extern Iterator* NewDBIterator(
     DBImpl* db_impl = nullptr, ColumnFamilyData* cfd = nullptr,
     bool expose_blob_index = false);
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

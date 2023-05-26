@@ -11,7 +11,7 @@
 #include "table/block_based/cachable_entry.h"
 #include "table/block_based/filter_block.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class BlockBasedTable;
 class FilePrefetchBuffer;
@@ -73,4 +73,4 @@ class FilterBlockReaderCommon : public FilterBlockReader {
   bool full_length_enabled_ = false;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

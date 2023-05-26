@@ -47,7 +47,7 @@
 #include "util/mutexlock.h"
 #include "util/stop_watch.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 const char* GetFlushReasonString(FlushReason flush_reason) {
   switch (flush_reason) {
@@ -1093,4 +1093,4 @@ std::unique_ptr<FlushJobInfo> FlushJob::GetFlushJobInfo() const {
   return info;
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

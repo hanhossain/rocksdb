@@ -13,7 +13,7 @@
 #include "memory/arena.h"
 #include "rocksdb/write_buffer_manager.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 AllocTracker::AllocTracker(WriteBufferManager* write_buffer_manager)
     : write_buffer_manager_(write_buffer_manager),
@@ -60,4 +60,4 @@ void AllocTracker::FreeMem() {
     freed_ = true;
   }
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

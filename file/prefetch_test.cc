@@ -18,7 +18,7 @@ static bool enable_io_uring = true;
 extern "C" bool RocksDbIOUringEnable() { return enable_io_uring; }
 }  // namespace
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class MockFS;
 
@@ -1653,7 +1653,7 @@ void RunIOTracerParserTool(std::string trace_file) {
     argv[argc++] = arg_buffer + cursor;
     cursor += static_cast<int>(arg.size()) + 1;
   }
-  ASSERT_EQ(0, rocksdb::io_tracer_parser(argc, argv));
+  ASSERT_EQ(0, ROCKSDB_NAMESPACE::io_tracer_parser(argc, argv));
 }
 #endif  // GFLAGS
 }  // namespace
@@ -2277,7 +2277,7 @@ TEST_F(FilePrefetchBufferTest, NoSyncWithAsyncIO) {
   ASSERT_EQ(result, async_result);
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

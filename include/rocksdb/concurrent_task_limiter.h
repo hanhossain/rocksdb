@@ -13,8 +13,9 @@
 
 #include <string>
 
+#include "rocksdb/rocksdb_namespace.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // This is NOT an extensible interface but a public interface for result of
 // NewConcurrentTaskLimiter. Any derived classes must be RocksDB internal.
@@ -47,4 +48,4 @@ class ConcurrentTaskLimiter {
 extern ConcurrentTaskLimiter* NewConcurrentTaskLimiter(const std::string& name,
                                                        int32_t limit);
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

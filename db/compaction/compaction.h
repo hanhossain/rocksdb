@@ -14,7 +14,7 @@
 #include "rocksdb/sst_partitioner.h"
 #include "util/autovector.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 // The file contains class Compaction, as well as some helper functions
 // and data structures used by the class.
 
@@ -562,4 +562,4 @@ struct PerKeyPlacementContext {
 // Return sum of sizes of all files in `files`.
 extern uint64_t TotalFileSize(const std::vector<FileMetaData*>& files);
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

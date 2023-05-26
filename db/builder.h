@@ -25,7 +25,7 @@
 #include "rocksdb/types.h"
 #include "table/scoped_arena_iterator.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 struct FileMetaData;
 
@@ -75,4 +75,4 @@ extern Status BuildTable(
     uint64_t* memtable_payload_bytes = nullptr,
     uint64_t* memtable_garbage_bytes = nullptr);
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

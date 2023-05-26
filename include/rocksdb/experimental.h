@@ -8,7 +8,7 @@
 #include "rocksdb/db.h"
 #include "rocksdb/status.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 namespace experimental {
 
 // Supported only for Leveled compaction
@@ -53,4 +53,4 @@ Status UpdateManifestForFilesState(
     const UpdateManifestForFilesStateOptions& opts = {});
 
 }  // namespace experimental
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

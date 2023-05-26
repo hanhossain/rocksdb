@@ -9,7 +9,7 @@
 #include "monitoring/thread_status_util.h"
 #include "rocksdb/system_clock.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 #ifndef NDEBUG
 // the delay for debugging purpose.
@@ -43,4 +43,4 @@ Env::IOActivity ThreadStatusUtil::TEST_GetExpectedIOActivity(
 
 #endif  // !NDEBUG
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

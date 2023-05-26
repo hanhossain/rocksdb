@@ -10,7 +10,7 @@
 
 #include "rocksdb/options.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 class SystemClock;
 
 struct ImmutableDBOptions {
@@ -149,4 +149,4 @@ Status GetMutableDBOptionsFromStrings(
 bool MutableDBOptionsAreEqual(const MutableDBOptions& this_options,
                               const MutableDBOptions& that_options);
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

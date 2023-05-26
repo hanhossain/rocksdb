@@ -12,7 +12,7 @@
 
 #define MAX_HEADER_SIZE(a, b, c) (a > b ? (a > c ? a : c) : (b > c ? b : c))
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class RandomAccessFileReader;
 class Env;
@@ -78,6 +78,6 @@ class BlobLogSequentialReader {
   uint64_t next_byte_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 #undef MAX_HEADER_SIZE

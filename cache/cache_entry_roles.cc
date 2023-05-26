@@ -9,7 +9,7 @@
 
 #include "port/lang.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 std::array<std::string, kNumCacheEntryRoles> kCacheEntryRoleToCamelString{{
     "DataBlock",
@@ -101,4 +101,4 @@ std::string BlockCacheEntryStatsMapKeys::UsedPercent(CacheEntryRole role) {
   return GetPrefixedCacheEntryRoleName(kPrefix, role);
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

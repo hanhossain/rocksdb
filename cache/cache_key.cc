@@ -13,7 +13,7 @@
 #include "util/hash.h"
 #include "util/math.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // Value space plan for CacheKey:
 //
@@ -361,4 +361,4 @@ UniqueId64x2 OffsetableCacheKey::ToInternalUniqueId() {
   return rv;
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

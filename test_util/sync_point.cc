@@ -12,7 +12,7 @@
 std::vector<std::string> rocksdb_kill_exclude_prefixes;
 
 #ifndef NDEBUG
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 SyncPoint* SyncPoint::GetInstance() {
   static SyncPoint sync_point;
@@ -54,29 +54,29 @@ void SyncPoint::Process(const Slice& point, void* cb_arg) {
   impl_->Process(point, cb_arg);
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 #endif  // NDEBUG
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 void SetupSyncPointsToMockDirectIO() {
 #if !defined(NDEBUG) && !defined(OS_MACOSX) && !defined(OS_WIN) && \
     !defined(OS_SOLARIS) && !defined(OS_AIX) && !defined(OS_OPENBSD)
-  rocksdb::SyncPoint::GetInstance()->SetCallBack(
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
       "NewWritableFile:O_DIRECT", [&](void* arg) {
         int* val = static_cast<int*>(arg);
         *val &= ~O_DIRECT;
       });
-  rocksdb::SyncPoint::GetInstance()->SetCallBack(
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
       "NewRandomAccessFile:O_DIRECT", [&](void* arg) {
         int* val = static_cast<int*>(arg);
         *val &= ~O_DIRECT;
       });
-  rocksdb::SyncPoint::GetInstance()->SetCallBack(
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
       "NewSequentialFile:O_DIRECT", [&](void* arg) {
         int* val = static_cast<int*>(arg);
         *val &= ~O_DIRECT;
       });
-  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
 #endif
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

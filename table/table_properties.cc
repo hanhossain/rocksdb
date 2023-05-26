@@ -15,7 +15,7 @@
 #include "util/random.h"
 #include "util/string_util.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 const uint32_t TablePropertiesCollectorFactory::Context::kUnknownColumnFamily =
     std::numeric_limits<int32_t>::max();
@@ -96,7 +96,7 @@ std::string TableProperties::ToString(const std::string& prop_delim,
 
   AppendProperty(result, "column family ID",
                  column_family_id ==
-                         rocksdb::TablePropertiesCollectorFactory::
+                         ROCKSDB_NAMESPACE::TablePropertiesCollectorFactory::
                              Context::kUnknownColumnFamily
                      ? std::string("N/A")
                      : std::to_string(column_family_id),
@@ -346,4 +346,4 @@ void TEST_SetRandomTableProperties(TableProperties* props) {
 }
 #endif
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

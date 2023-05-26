@@ -5,7 +5,7 @@
 //  (found in the LICENSE.Apache file in the root directory).
 #include "table/compaction_merging_iterator.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 class CompactionMergingIterator : public InternalIterator {
  public:
   CompactionMergingIterator(
@@ -367,4 +367,4 @@ InternalIterator* NewCompactionMergingIterator(
     }
   }
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

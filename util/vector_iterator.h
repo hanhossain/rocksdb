@@ -11,7 +11,7 @@
 #include "rocksdb/slice.h"
 #include "table/internal_iterator.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // Iterator over a vector of keys/values
 class VectorIterator : public InternalIterator {
@@ -115,4 +115,4 @@ class VectorIterator : public InternalIterator {
   std::vector<size_t> indices_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

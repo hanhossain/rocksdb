@@ -8,7 +8,7 @@
 #include "db/db_test_util.h"
 #include "test_util/sync_point.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class DBBlobCompactionTest : public DBTestBase {
  public:
@@ -888,7 +888,7 @@ TEST_F(DBBlobCompactionTest, CompactionDoNotFillCache) {
   Close();
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

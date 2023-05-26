@@ -16,7 +16,7 @@
 #include "rocksdb/filter_policy.h"
 #include "rocksdb/table.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // A class that takes a bunch of keys, then generates filter
 class FilterBitsBuilder {
@@ -337,4 +337,4 @@ class Standard128RibbonFilterPolicy : public BloomLikeFilterPolicy {
 
 }  // namespace test
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

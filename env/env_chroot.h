@@ -12,7 +12,7 @@
 #include "env/fs_remap.h"
 #include "rocksdb/file_system.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 class ChrootFileSystem : public RemapFileSystem {
  public:
   ChrootFileSystem(const std::shared_ptr<FileSystem>& base,
@@ -50,6 +50,6 @@ Env* NewChrootEnv(Env* base_env, const std::string& chroot_dir);
 std::shared_ptr<FileSystem> NewChrootFileSystem(
     const std::shared_ptr<FileSystem>& base, const std::string& chroot_dir);
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 #endif  // !defined(OS_WIN)

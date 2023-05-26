@@ -4,10 +4,11 @@
 //  (found in the LICENSE.Apache file in the root directory).
 #pragma once
 
+#include "rocksdb/rocksdb_namespace.h"
 #include "rocksdb/status.h"
 #include "rocksdb/types.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 int cache_bench_tool(int argc, char** argv);
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

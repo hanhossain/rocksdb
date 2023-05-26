@@ -9,7 +9,7 @@
 
 #include "db/version_edit.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 // We boost files that are closer to TTL limit. This boosting could be
 // through FileMetaData.compensated_file_size but this compensated size
 // is widely used as something similar to file size so dramatically boost
@@ -89,4 +89,4 @@ class FileTtlBooster {
   uint64_t boost_age_start_;
   uint64_t boost_step_;
 };
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -14,7 +14,7 @@
 #include "rocksdb/utilities/debug.h"
 #include "test_util/mock_time_env.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 
 class TieredCompactionTest : public DBTestBase,
@@ -2139,7 +2139,7 @@ TEST_F(PrecludeLastLevelTest, RangeDelsCauseFileEndpointsToOverlap) {
 }
 
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

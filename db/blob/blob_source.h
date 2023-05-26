@@ -14,10 +14,11 @@
 #include "db/blob/blob_file_cache.h"
 #include "db/blob/blob_read_request.h"
 #include "rocksdb/cache.h"
+#include "rocksdb/rocksdb_namespace.h"
 #include "table/block_based/cachable_entry.h"
 #include "util/autovector.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 struct ImmutableOptions;
 class Status;
@@ -157,4 +158,4 @@ class BlobSource {
   const rs::advanced_options::CacheTier lowest_used_cache_tier_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -18,7 +18,7 @@
 #include "test_util/sync_point.h"
 #include "util/string_util.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 const uint64_t kRangeTombstoneSentinel =
     PackSequenceAndType(kMaxSequenceNumber, ValueType::kTypeRangeDeletion);
@@ -849,4 +849,4 @@ int Compaction::EvaluatePenultimateLevel(
   return penultimate_level;
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

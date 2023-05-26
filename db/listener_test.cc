@@ -34,7 +34,7 @@
 #include "utilities/merge_operators.h"
 
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class EventListenerTest : public DBTestBase {
  public:
@@ -52,26 +52,26 @@ class EventListenerTest : public DBTestBase {
 };
 
 struct TestPropertiesCollector
-    : public rocksdb::TablePropertiesCollector {
-  rocksdb::Status AddUserKey(
-      const rocksdb::Slice& /*key*/,
-      const rocksdb::Slice& /*value*/,
+    : public ROCKSDB_NAMESPACE::TablePropertiesCollector {
+  ROCKSDB_NAMESPACE::Status AddUserKey(
+      const ROCKSDB_NAMESPACE::Slice& /*key*/,
+      const ROCKSDB_NAMESPACE::Slice& /*value*/,
       rs::types::EntryType /*type*/,
-      rocksdb::SequenceNumber /*seq*/,
+      ROCKSDB_NAMESPACE::SequenceNumber /*seq*/,
       uint64_t /*file_size*/) override {
     return Status::OK();
   }
-  rocksdb::Status Finish(
-      rocksdb::UserCollectedProperties* properties) override {
+  ROCKSDB_NAMESPACE::Status Finish(
+      ROCKSDB_NAMESPACE::UserCollectedProperties* properties) override {
     properties->insert({"0", "1"});
     return Status::OK();
   }
 
   const char* Name() const override { return "TestTablePropertiesCollector"; }
 
-  rocksdb::UserCollectedProperties GetReadableProperties()
+  ROCKSDB_NAMESPACE::UserCollectedProperties GetReadableProperties()
       const override {
-    rocksdb::UserCollectedProperties ret;
+    ROCKSDB_NAMESPACE::UserCollectedProperties ret;
     ret["2"] = "3";
     return ret;
   }
@@ -381,10 +381,10 @@ TEST_F(EventListenerTest, MultiCF) {
     ASSERT_OK(Put(6, "alyosha", std::string(90000, 'a')));
     ASSERT_OK(Put(7, "popovich", std::string(90000, 'p')));
 
-    rocksdb::SyncPoint::GetInstance()->EnableProcessing();
+    ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
 
     for (int i = 1; i < 8; ++i) {
-      rocksdb::SyncPoint::GetInstance()->LoadDependency(
+      ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
           {{"DBImpl::NotifyOnFlushCompleted::PostAllOnFlushCompleted",
             "EventListenerTest.MultiCF:PreVerifyListener"}});
       ASSERT_OK(Flush(i));
@@ -400,7 +400,7 @@ TEST_F(EventListenerTest, MultiCF) {
       }
     }
 
-    rocksdb::SyncPoint::GetInstance()->DisableProcessing();
+    ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
     Close();
   }
 }
@@ -991,10 +991,10 @@ TEST_F(EventListenerTest, BackgroundErrorListenerFailedFlushTest) {
 
   // the usual TEST_WaitForFlushMemTable() doesn't work for failed flushes, so
   // forge a custom one for the failed flush case.
-  rocksdb::SyncPoint::GetInstance()->LoadDependency(
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
       {{"DBImpl::BGWorkFlush:done",
         "EventListenerTest:BackgroundErrorListenerFailedFlushTest:1"}});
-  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
 
   env_->drop_writes_.store(true, std::memory_order_release);
   env_->SetMockSleep();
@@ -1588,7 +1588,7 @@ TEST_F(EventListenerTest, BlobDBFileTest) {
   blob_event_listener->CheckCounters();
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 
 int main(int argc, char** argv) {

@@ -8,7 +8,7 @@
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 #include "table/block_based/block_based_table_iterator.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 void BlockBasedTableIterator::SeekToFirst() { SeekImpl(nullptr, false); }
 
@@ -456,4 +456,4 @@ void BlockBasedTableIterator::CheckDataBlockWithinUpperBound() {
                                    : BlockUpperBound::kUpperBoundInCurBlock;
   }
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -22,7 +22,7 @@
 #include "test_util/sync_point.h"
 #include "util/aligned_buffer.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 class Statistics;
 class SystemClock;
 
@@ -317,4 +317,4 @@ class WritableFileWriter {
   IOStatus RangeSync(uint64_t offset, uint64_t nbytes);
   IOStatus SyncInternal(bool use_fsync);
 };
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -12,7 +12,7 @@
 
 #include "rocksdb/sst_partitioner.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 void SubcompactionState::AggregateCompactionStats(
     InternalStats::CompactionStatsFull& compaction_stats) const {
   compaction_stats.stats.Add(compaction_outputs_.stats_);
@@ -103,4 +103,4 @@ Status SubcompactionState::AddToOutput(
   return Current().AddToOutput(iter, open_file_func, close_file_func);
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

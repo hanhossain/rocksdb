@@ -9,7 +9,7 @@
 #include "util/coding.h"
 #include "util/crc32c.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 void BlobLogHeader::EncodeTo(std::string* dst) {
   assert(dst != nullptr);
@@ -140,4 +140,4 @@ Status BlobLogRecord::CheckBlobCRC() const {
   return Status::OK();
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

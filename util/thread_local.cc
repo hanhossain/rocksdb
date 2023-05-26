@@ -14,7 +14,7 @@
 #include "port/likely.h"
 #include "util/mutexlock.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 struct Entry {
   Entry() : ptr(nullptr) {}
@@ -518,4 +518,4 @@ void ThreadLocalPtr::Fold(FoldFunc func, void* res) {
   Instance()->Fold(id_, func, res);
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -11,7 +11,7 @@
 #include "test_util/testharness.h"
 #include "test_util/testutil.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 TEST(WalSet, AddDeleteReset) {
   WalSet wals;
@@ -203,7 +203,7 @@ TEST_F(WalSetTest, CheckWalsWithShrinkedSize) {
       << s.ToString();
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

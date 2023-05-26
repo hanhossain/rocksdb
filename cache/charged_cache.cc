@@ -7,7 +7,7 @@
 
 #include "cache/cache_reservation_manager.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 ChargedCache::ChargedCache(std::shared_ptr<Cache> cache,
                            std::shared_ptr<Cache> block_cache)
@@ -106,4 +106,4 @@ void ChargedCache::SetCapacity(size_t capacity) {
       .PermitUncheckedError();
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

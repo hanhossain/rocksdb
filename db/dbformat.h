@@ -22,7 +22,7 @@
 #include "util/coding.h"
 #include "util/user_comparator_wrapper.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // The file declares data structures and functions that deal with internal
 // keys.
@@ -827,4 +827,4 @@ struct ParsedInternalKeyComparator {
   const InternalKeyComparator* cmp;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

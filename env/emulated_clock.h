@@ -14,7 +14,7 @@
 #include "rocksdb/status.h"
 #include "rocksdb/system_clock.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 // A SystemClock that can "mock" sleep and counts its operations.
 class EmulatedSystemClock : public SystemClockWrapper {
  private:
@@ -111,4 +111,4 @@ class EmulatedSystemClock : public SystemClockWrapper {
     sleep_counter_.store(0);
   }
 };
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

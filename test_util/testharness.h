@@ -60,7 +60,7 @@
 
 #include "rocksdb/env.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 namespace test {
 
 // Return the directory to use for temporary storage.
@@ -79,10 +79,10 @@ int RandomSeed();
 ::testing::AssertionResult AssertStatus(const char* s_expr, const Status& s);
 
 #define ASSERT_OK(s) \
-  ASSERT_PRED_FORMAT1(rocksdb::test::AssertStatus, s)
+  ASSERT_PRED_FORMAT1(ROCKSDB_NAMESPACE::test::AssertStatus, s)
 #define ASSERT_NOK(s) ASSERT_FALSE((s).ok())
 #define EXPECT_OK(s) \
-  EXPECT_PRED_FORMAT1(rocksdb::test::AssertStatus, s)
+  EXPECT_PRED_FORMAT1(ROCKSDB_NAMESPACE::test::AssertStatus, s)
 #define EXPECT_NOK(s) EXPECT_FALSE((s).ok())
 
 // Useful for testing
@@ -112,12 +112,12 @@ class TestRegex {
                                               const TestRegex& pattern);
 
 #define ASSERT_MATCHES_REGEX(str, pattern) \
-  ASSERT_PRED_FORMAT2(rocksdb::test::AssertMatchesRegex, str, pattern)
+  ASSERT_PRED_FORMAT2(ROCKSDB_NAMESPACE::test::AssertMatchesRegex, str, pattern)
 #define EXPECT_MATCHES_REGEX(str, pattern) \
-  EXPECT_PRED_FORMAT2(rocksdb::test::AssertMatchesRegex, str, pattern)
+  EXPECT_PRED_FORMAT2(ROCKSDB_NAMESPACE::test::AssertMatchesRegex, str, pattern)
 
 }  // namespace test
 
 using test::TestRegex;
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

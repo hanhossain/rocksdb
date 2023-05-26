@@ -27,7 +27,7 @@
 #include "utilities/transactions/transaction_base.h"
 #include "utilities/transactions/transaction_util.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class PessimisticTransactionDB;
 
@@ -307,5 +307,5 @@ class WriteCommittedTxn : public PessimisticTransaction {
   std::unordered_set<uint32_t> cfs_with_ts_tracked_when_indexing_disabled_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 

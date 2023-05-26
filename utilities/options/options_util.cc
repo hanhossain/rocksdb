@@ -12,7 +12,7 @@
 #include "rocksdb/options.h"
 #include "table/block_based/block_based_table_factory.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 Status LoadOptionsFromFile(const ConfigOptions& config_options,
                            const std::string& file_name, DBOptions* db_options,
                            std::vector<ColumnFamilyDescriptor>* cf_descs,
@@ -114,4 +114,4 @@ Status CheckOptionsCompatibility(
       dbpath + "/" + options_file_name, fs.get());
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

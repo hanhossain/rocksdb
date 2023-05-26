@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "rocksdb/rocksdb_namespace.h"
 
 // This file declares a wrapper around the efficient folly DistributedMutex
 // that falls back on a standard mutex when not available. See
@@ -18,7 +19,7 @@
 
 #include <folly/synchronization/DistributedMutex.h>
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class DMutex : public folly::DistributedMutex {
  public:
@@ -31,7 +32,7 @@ class DMutex : public folly::DistributedMutex {
 };
 using DMutexLock = std::lock_guard<folly::DistributedMutex>;
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 #else
 
@@ -39,11 +40,11 @@ using DMutexLock = std::lock_guard<folly::DistributedMutex>;
 
 #include "port/port.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 using DMutex = port::Mutex;
 using DMutexLock = std::lock_guard<DMutex>;
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 #endif

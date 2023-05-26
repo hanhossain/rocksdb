@@ -7,7 +7,7 @@
 #include "rocksdb/utilities/options_type.h"
 #include "util/string_util.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 namespace {
 // The CompositeEnvWrapper class provides an interface that is compatible
 // with the old monolithic Env API, and an implementation that wraps around
@@ -531,4 +531,4 @@ std::string EnvWrapper::SerializeOptions(const ConfigOptions& config_options,
   }
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

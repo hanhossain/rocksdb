@@ -18,7 +18,7 @@
 
 #define STORAGE_DECL static thread_local
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 Random* Random::GetTLSInstance() {
   STORAGE_DECL Random* tls_instance;
@@ -60,4 +60,4 @@ std::string Random::RandomBinaryString(int len) {
   return ret;
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

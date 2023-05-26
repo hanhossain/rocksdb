@@ -10,7 +10,7 @@
 #include "rocksdb/listener.h"
 #include "rocksdb/status.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class DBImpl;
 
@@ -121,4 +121,4 @@ class ErrorHandler {
   void CheckAndSetRecoveryAndBGError(const Status& bg_err);
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

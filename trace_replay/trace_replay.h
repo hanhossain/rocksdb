@@ -12,11 +12,12 @@
 #include <utility>
 
 #include "rocksdb/options.h"
+#include "rocksdb/rocksdb_namespace.h"
 #include "rocksdb/status.h"
 #include "rocksdb/trace_record.h"
 #include "rocksdb/utilities/replayer.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // This file contains Tracer and Replayer classes that enable capturing and
 // replaying RocksDB traces.
@@ -179,4 +180,4 @@ class Tracer {
   uint64_t trace_request_count_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -13,8 +13,9 @@
 #include <cstdint>
 #include <type_traits>
 
+#include "rocksdb/rocksdb_namespace.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // Fast implementation of floor(log2(v)). Undefined for 0 or negative
 // numbers (in case of signed type).
@@ -290,4 +291,4 @@ inline T DownwardInvolution(T v) {
   return static_cast<T>(r);
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

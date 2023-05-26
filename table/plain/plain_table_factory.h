@@ -12,7 +12,7 @@
 
 #include "rocksdb/table.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 struct EnvOptions;
 
@@ -177,4 +177,4 @@ class PlainTableFactory : public TableFactory {
   PlainTableOptions table_options_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

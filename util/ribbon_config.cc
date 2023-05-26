@@ -5,7 +5,7 @@
 
 #include "util/ribbon_config.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 namespace ribbon {
 
@@ -503,4 +503,4 @@ template struct BandingConfigHelper1MaybeSupported<kOneIn1000, 64U, /*sm*/ true,
 
 }  // namespace ribbon
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

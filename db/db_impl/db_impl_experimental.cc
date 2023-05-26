@@ -18,7 +18,7 @@
 #include "rocksdb/status.h"
 #include "util/cast_util.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 Status DBImpl::SuggestCompactRange(ColumnFamilyHandle* column_family,
                                    const Slice* begin, const Slice* end) {
@@ -156,4 +156,4 @@ Status DBImpl::PromoteL0(ColumnFamilyHandle* column_family, int target_level) {
   return status;
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

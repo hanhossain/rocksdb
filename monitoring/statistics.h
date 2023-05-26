@@ -27,7 +27,7 @@
 #define TOSTRING(x) STRINGIFY(x)
 #endif
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 enum TickersInternal : uint32_t {
   INTERNAL_TICKER_ENUM_START = TICKER_ENUM_MAX,
@@ -141,4 +141,4 @@ inline void SetTickerCount(Statistics* statistics, uint32_t ticker_type,
   }
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

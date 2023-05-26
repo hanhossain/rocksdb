@@ -9,7 +9,7 @@
 
 #include "db/db_test_util.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 static int cfilter_count = 0;
 static int cfilter_skips = 0;
@@ -1020,7 +1020,7 @@ TEST_F(DBTestCompactionFilter, DropKeyWithSingleDelete) {
   }
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

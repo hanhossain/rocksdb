@@ -8,7 +8,7 @@
 
 #include "rocksdb/file_system.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // A FileSystem wrapper that only allows read-only operation.
 //
@@ -101,5 +101,5 @@ class ReadOnlyFileSystem : public FileSystemWrapper {
   }
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 

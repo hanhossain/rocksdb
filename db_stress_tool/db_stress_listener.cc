@@ -11,7 +11,7 @@
 #include "rocksdb/file_system.h"
 #include "util/coding_lean.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 #ifdef GFLAGS
 
@@ -186,4 +186,4 @@ void DbStressListener::VerifyTableFileUniqueId(
 
 #endif  // GFLAGS
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

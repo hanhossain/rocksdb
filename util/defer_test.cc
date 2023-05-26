@@ -8,7 +8,7 @@
 #include "port/port.h"
 #include "test_util/testharness.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class DeferTest {};
 
@@ -41,7 +41,7 @@ TEST(SaveAndRestoreTest, BlockScope) {
   ASSERT_EQ(v, 1);
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

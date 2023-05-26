@@ -139,35 +139,35 @@ void _always_assert_fail(int line, const char *file, const char *expr) {
 #define PREDICT_FP_RATE
 #endif
 
-using rocksdb::Arena;
-using rocksdb::BlockContents;
-using rocksdb::BloomFilterPolicy;
-using rocksdb::BloomHash;
-using rocksdb::BloomLikeFilterPolicy;
-using rocksdb::BuiltinFilterBitsBuilder;
-using rocksdb::CachableEntry;
-using rocksdb::Cache;
-using rocksdb::CacheEntryRole;
-using rocksdb::CacheEntryRoleOptions;
-using rocksdb::EncodeFixed32;
-using rocksdb::Env;
-using rocksdb::FastRange32;
-using rocksdb::FilterBitsReader;
-using rocksdb::FilterBuildingContext;
-using rocksdb::FilterPolicy;
-using rocksdb::FullFilterBlockReader;
-using rocksdb::GetSliceHash;
-using rocksdb::GetSliceHash64;
-using rocksdb::Lower32of64;
-using rocksdb::LRUCacheOptions;
-using rocksdb::ParsedFullFilterBlock;
-using rocksdb::PlainTableBloomV1;
-using rocksdb::Random32;
-using rocksdb::Slice;
-using rocksdb::static_cast_with_check;
-using rocksdb::Status;
-using rocksdb::StderrLogger;
-using rocksdb::mock::MockBlockBasedTableTester;
+using ROCKSDB_NAMESPACE::Arena;
+using ROCKSDB_NAMESPACE::BlockContents;
+using ROCKSDB_NAMESPACE::BloomFilterPolicy;
+using ROCKSDB_NAMESPACE::BloomHash;
+using ROCKSDB_NAMESPACE::BloomLikeFilterPolicy;
+using ROCKSDB_NAMESPACE::BuiltinFilterBitsBuilder;
+using ROCKSDB_NAMESPACE::CachableEntry;
+using ROCKSDB_NAMESPACE::Cache;
+using ROCKSDB_NAMESPACE::CacheEntryRole;
+using ROCKSDB_NAMESPACE::CacheEntryRoleOptions;
+using ROCKSDB_NAMESPACE::EncodeFixed32;
+using ROCKSDB_NAMESPACE::Env;
+using ROCKSDB_NAMESPACE::FastRange32;
+using ROCKSDB_NAMESPACE::FilterBitsReader;
+using ROCKSDB_NAMESPACE::FilterBuildingContext;
+using ROCKSDB_NAMESPACE::FilterPolicy;
+using ROCKSDB_NAMESPACE::FullFilterBlockReader;
+using ROCKSDB_NAMESPACE::GetSliceHash;
+using ROCKSDB_NAMESPACE::GetSliceHash64;
+using ROCKSDB_NAMESPACE::Lower32of64;
+using ROCKSDB_NAMESPACE::LRUCacheOptions;
+using ROCKSDB_NAMESPACE::ParsedFullFilterBlock;
+using ROCKSDB_NAMESPACE::PlainTableBloomV1;
+using ROCKSDB_NAMESPACE::Random32;
+using ROCKSDB_NAMESPACE::Slice;
+using ROCKSDB_NAMESPACE::static_cast_with_check;
+using ROCKSDB_NAMESPACE::Status;
+using ROCKSDB_NAMESPACE::StderrLogger;
+using ROCKSDB_NAMESPACE::mock::MockBlockBasedTableTester;
 
 struct KeyMaker {
   KeyMaker(size_t avg_size)
@@ -410,8 +410,8 @@ void FilterBench::Go() {
     max_mem = static_cast<size_t>(1024 * 1024 * working_mem_size_mb);
   }
 
-  rocksdb::StopWatchNano timer(
-      rocksdb::SystemClock::Default().get(), true);
+  ROCKSDB_NAMESPACE::StopWatchNano timer(
+      ROCKSDB_NAMESPACE::SystemClock::Default().get(), true);
 
   infos_.clear();
   while ((working_mem_size_mb == 0 || total_size < max_mem) &&
@@ -658,8 +658,8 @@ double FilterBench::RandomQueryTest(uint32_t inside_threshold, bool dry_run,
     batch_slice_ptrs[i] = &batch_slices[i];
   }
 
-  rocksdb::StopWatchNano timer(
-      rocksdb::SystemClock::Default().get(), true);
+  ROCKSDB_NAMESPACE::StopWatchNano timer(
+      ROCKSDB_NAMESPACE::SystemClock::Default().get(), true);
 
   for (uint64_t q = 0; q < max_queries; q += batch_size) {
     bool inside_this_time = random_.Next() <= inside_threshold;
@@ -727,7 +727,7 @@ double FilterBench::RandomQueryTest(uint32_t inside_threshold, bool dry_run,
                 batch_slices[i],
                 /*no_io=*/false, /*const_ikey_ptr=*/nullptr,
                 /*get_context=*/nullptr,
-                /*lookup_context=*/nullptr, rocksdb::ReadOptions());
+                /*lookup_context=*/nullptr, ROCKSDB_NAMESPACE::ReadOptions());
           }
         } else {
           if (dry_run) {

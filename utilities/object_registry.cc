@@ -13,7 +13,7 @@
 #include "rocksdb/env.h"
 #include "util/string_util.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 namespace {
 bool MatchesInteger(const std::string &target, size_t start, size_t pos) {
   // If it is numeric, everything up to the match must be a number
@@ -378,4 +378,4 @@ int ObjectRegistry::RegisterPlugin(const std::string &name,
   }
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

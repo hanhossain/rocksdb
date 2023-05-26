@@ -12,7 +12,7 @@
 #include "rocksdb/memtablerep.h"
 #include "rocksdb/slice_transform.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class DBMemTableTest : public DBTestBase {
  public:
@@ -234,7 +234,7 @@ TEST_F(DBMemTableTest, ConcurrentMergeWrite) {
   value.clear();
 
   // Write Merge concurrently
-  rocksdb::port::Thread write_thread1([&]() {
+  ROCKSDB_NAMESPACE::port::Thread write_thread1([&]() {
     MemTablePostProcessInfo post_process_info1;
     std::string v1;
     for (int seq = 1; seq < num_ops / 2; seq++) {
@@ -244,7 +244,7 @@ TEST_F(DBMemTableTest, ConcurrentMergeWrite) {
       v1.clear();
     }
   });
-  rocksdb::port::Thread write_thread2([&]() {
+  ROCKSDB_NAMESPACE::port::Thread write_thread2([&]() {
     MemTablePostProcessInfo post_process_info2;
     std::string v2;
     for (int seq = num_ops / 2; seq < num_ops; seq++) {
@@ -334,7 +334,7 @@ TEST_F(DBMemTableTest, ColumnFamilyId) {
   }
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

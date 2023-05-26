@@ -14,7 +14,7 @@
 #include "util/compression.h"
 #include "util/string_util.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 CompressedSecondaryCache::CompressedSecondaryCache(
     const CompressedSecondaryCacheOptions& opts)
@@ -301,4 +301,4 @@ CompressedSecondaryCacheOptions::MakeSharedSecondaryCache() const {
   return std::make_shared<CompressedSecondaryCache>(*this);
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -13,7 +13,7 @@
 #include "test_util/testharness.h"
 #include "util/coding.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class BlobFileGarbageTest : public testing::Test {
  public:
@@ -165,7 +165,7 @@ TEST_F(BlobFileGarbageTest, ForwardIncompatibleCustomField) {
   SyncPoint::GetInstance()->ClearAllCallBacks();
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

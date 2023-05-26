@@ -7,8 +7,8 @@
 #include "port/port.h"
 #include "rocksdb/perf_level.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 extern thread_local PerfLevel perf_level;
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

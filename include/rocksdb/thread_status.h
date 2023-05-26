@@ -20,12 +20,13 @@
 #include <utility>
 #include <vector>
 
+#include "rocksdb/rocksdb_namespace.h"
 
 #if !defined(NROCKSDB_THREAD_STATUS)
 #define ROCKSDB_USING_THREAD_STATUS
 #endif
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // TODO(yhchiang): remove this function once c++14 is available
 //                 as std::max will be able to cover this.
@@ -37,7 +38,7 @@ struct constexpr_max {
 
 // A structure that describes the current status of a thread.
 // The status of active threads can be fetched using
-// rocksdb::GetThreadList().
+// ROCKSDB_NAMESPACE::GetThreadList().
 struct ThreadStatus {
   // The type of a thread.
   enum ThreadType : int {
@@ -186,4 +187,4 @@ struct ThreadStatus {
   static const std::string& GetStateName(StateType state_type);
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -14,7 +14,7 @@
 #include "util/crc32c.h"
 #include "utilities/cache_dump_load_impl.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 IOStatus NewToFileCacheDumpWriter(const std::shared_ptr<FileSystem>& fs,
                                   const FileOptions& file_opts,
@@ -64,4 +64,4 @@ Status NewDefaultCacheDumpedLoader(
   return Status::OK();
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

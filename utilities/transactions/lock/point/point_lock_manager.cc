@@ -20,7 +20,7 @@
 #include "utilities/transactions/pessimistic_transaction_db.h"
 #include "utilities/transactions/transaction_db_mutex_impl.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 struct LockInfo {
   bool exclusive;
@@ -716,4 +716,4 @@ void PointLockManager::UnLock(PessimisticTransaction* /* txn */,
   // no-op
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

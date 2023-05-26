@@ -8,8 +8,8 @@
 
 #include "options/db_options.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 void DumpDBFileSummary(const ImmutableDBOptions& options,
                        const std::string& dbname,
                        const std::string& session_id = "");
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

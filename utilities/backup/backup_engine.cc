@@ -54,7 +54,7 @@
 #include "utilities/backup/backup_engine_impl.h"
 #include "utilities/checkpoint/checkpoint_impl.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 namespace {
 using ShareFilesNaming = BackupEngineOptions::ShareFilesNaming;
@@ -3351,5 +3351,5 @@ void TEST_SetDefaultRateLimitersClock(
   impl->TEST_SetDefaultRateLimitersClock(backup_rate_limiter_clock,
                                          restore_rate_limiter_clock);
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 

@@ -19,7 +19,7 @@
 #include "util/hash.h"
 #include "util/string_util.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class TestFilterBitsBuilder : public FilterBitsBuilder {
  public:
@@ -314,7 +314,7 @@ TEST_F(FullFilterBlockTest, SingleChunk) {
                                   /*lookup_context=*/nullptr, ReadOptions()));
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

@@ -7,7 +7,7 @@
 
 #include "test_util/sync_point.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // TODO: this is a workaround for the different behavior on different platform
 // for timedwait timeout. Ideally timedwait API should be moved to env.
@@ -35,4 +35,4 @@ void MockSystemClock::InstallTimedWaitFixCallback() {
 #endif  // !NDEBUG
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

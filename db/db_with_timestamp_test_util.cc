@@ -9,7 +9,7 @@
 
 #include "db/db_with_timestamp_test_util.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 std::string DBBasicTestWithTimestampBase::Key1(uint64_t k) {
   std::string ret;
   PutFixed64(&ret, k);
@@ -93,4 +93,4 @@ void DBBasicTestWithTimestampBase::CheckIterEntry(
   }
   ASSERT_EQ(expected_ts, it->timestamp());
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -12,7 +12,7 @@
 #include "rocksdb/env.h"
 #include "rocksdb/options.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 struct ConfigOptions;
 class OptionTypeInfo;
@@ -146,4 +146,4 @@ class RocksDBOptionsParser {
 };
 
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

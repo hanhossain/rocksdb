@@ -17,7 +17,7 @@
 #include "util/random.h"
 #include "utilities/merge_operators.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class KeyGenerator {
  public:
@@ -1578,6 +1578,6 @@ BENCHMARK(RandomAccessFileReaderRead)
     ->Arg(1)
     ->ArgName("enable_statistics");
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 BENCHMARK_MAIN();

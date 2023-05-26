@@ -22,7 +22,7 @@
 
 DECLARE_int32(compact_files_one_in);
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // Verify across process executions that all seen IDs are unique
 class UniqueIdVerifier {
@@ -265,5 +265,5 @@ class DbStressListener : public EventListener {
   std::atomic<int> num_pending_file_creations_;
   UniqueIdVerifier unique_ids_;
 };
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 #endif  // GFLAGS

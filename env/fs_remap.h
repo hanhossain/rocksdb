@@ -10,7 +10,7 @@
 
 #include "rocksdb/file_system.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // An abstract FileSystem wrapper that creates a view of an existing
 // FileSystem by remapping names in some way.
@@ -133,5 +133,5 @@ class RemapFileSystem : public FileSystemWrapper {
                            IODebugContext* dbg) override;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 

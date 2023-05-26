@@ -33,7 +33,7 @@ void RegisterCustomObjects(int argc, char** argv);
 void RegisterCustomObjects(int argc, char** argv);
 #endif  // !ROCKSDB_UNITTESTS_WITH_CUSTOM_OBJECTS_FROM_STATIC_LIBS
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 class FileSystem;
 class MemTableRepFactory;
 class ObjectLibrary;
@@ -445,8 +445,8 @@ class FilterNumber : public CompactionFilter {
 
   std::string last_merge_operand_key() { return last_merge_operand_key_; }
 
-  bool Filter(int /*level*/, const rocksdb::Slice& /*key*/,
-              const rocksdb::Slice& value, std::string* /*new_value*/,
+  bool Filter(int /*level*/, const ROCKSDB_NAMESPACE::Slice& /*key*/,
+              const ROCKSDB_NAMESPACE::Slice& value, std::string* /*new_value*/,
               bool* /*value_changed*/) const override {
     if (value.size() == sizeof(uint64_t)) {
       return num_ == DecodeFixed64(value.data());
@@ -455,8 +455,8 @@ class FilterNumber : public CompactionFilter {
   }
 
   bool FilterMergeOperand(
-      int /*level*/, const rocksdb::Slice& key,
-      const rocksdb::Slice& value) const override {
+      int /*level*/, const ROCKSDB_NAMESPACE::Slice& key,
+      const ROCKSDB_NAMESPACE::Slice& value) const override {
     last_merge_operand_key_ = key.ToString();
     if (value.size() == sizeof(uint64_t)) {
       return num_ == DecodeFixed64(value.data());
@@ -857,4 +857,4 @@ int RegisterTestObjects(ObjectLibrary& library, const std::string& /*arg*/);
 // Register the testutil classes with the default ObjectRegistry/Library
 void RegisterTestLibrary(const std::string& arg = "");
 }  // namespace test
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

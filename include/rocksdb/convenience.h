@@ -14,7 +14,7 @@
 #include "rocksdb/status.h"
 #include "rocksdb/table.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 class Env;
 class Logger;
 class ObjectRegistry;
@@ -448,4 +448,4 @@ Status VerifySstFileChecksum(const Options& options,
                              const std::string& file_path,
                              const SequenceNumber& largest_seqno = 0);
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

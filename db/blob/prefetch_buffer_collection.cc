@@ -5,7 +5,7 @@
 
 #include "db/blob/prefetch_buffer_collection.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 FilePrefetchBuffer* PrefetchBufferCollection::GetOrCreatePrefetchBuffer(
     uint64_t file_number) {
@@ -18,4 +18,4 @@ FilePrefetchBuffer* PrefetchBufferCollection::GetOrCreatePrefetchBuffer(
   return prefetch_buffer.get();
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

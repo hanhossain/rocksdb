@@ -13,7 +13,7 @@
 #include "port/port.h"
 #include "test_util/testharness.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class FileNameTest : public testing::Test {};
 
@@ -232,7 +232,7 @@ TEST_F(FileNameTest, NormalizePath) {
   ASSERT_EQ(expected, NormalizePath(given));
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

@@ -26,7 +26,7 @@
 #include "table/table_builder.h"
 #include "util/compression.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class BlockBuilder;
 class BlockHandle;
@@ -202,4 +202,4 @@ Slice CompressBlock(const Slice& uncompressed_data, const CompressionInfo& info,
                     std::string* sampled_output_fast,
                     std::string* sampled_output_slow);
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

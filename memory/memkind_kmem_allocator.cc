@@ -10,7 +10,7 @@
 
 #include "memory/memkind_kmem_allocator.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 Status MemkindKmemAllocator::PrepareOptions(const ConfigOptions& options) {
   std::string message;
   if (!IsSupported(&message)) {
@@ -41,4 +41,4 @@ size_t MemkindKmemAllocator::UsableSize(void* p,
 #endif  // ROCKSDB_MALLOC_USABLE_SIZE
 #endif  // MEMKIND
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -16,7 +16,7 @@
 #include "test_util/testutil.h"
 #include "util/vector_iterator.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // A vector iterator which does its own bounds checking. This is for testing the
 // optimizations in the clipping iterator where we bypass the bounds checking if
@@ -250,7 +250,7 @@ INSTANTIATE_TEST_CASE_P(
         ::testing::Range(static_cast<size_t>(0), static_cast<size_t>(5)),
         ::testing::Range(static_cast<size_t>(0), static_cast<size_t>(6))));
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

@@ -8,7 +8,7 @@
 
 #include "rocksdb/system_clock.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // `timer_mutex` is a global mutex serves 3 purposes currently:
 // (1) to ensure calls to `Start()` and `Shutdown()` are serialized, as
@@ -107,5 +107,5 @@ void PeriodicTaskScheduler::TEST_OverrideTimer(SystemClock* clock) {
 }
 #endif  // NDEBUG
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 

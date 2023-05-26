@@ -21,7 +21,7 @@
 #include "rocksdb/iterator.h"
 #include "util/autovector.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class Arena;
 class Version;
@@ -124,4 +124,4 @@ extern ArenaWrappedDBIter* NewArenaWrappedDbIterator(
     uint64_t version_number, ReadCallback* read_callback,
     DBImpl* db_impl = nullptr, ColumnFamilyData* cfd = nullptr,
     bool expose_blob_index = false, bool allow_refresh = true);
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

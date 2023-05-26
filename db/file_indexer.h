@@ -17,7 +17,7 @@
 #include "port/port.h"
 #include "util/autovector.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class Comparator;
 struct FileMetaData;
@@ -137,4 +137,4 @@ class FileIndexer {
   int32_t* level_rb_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

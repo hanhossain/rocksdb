@@ -11,7 +11,7 @@
 #include "db/blob/blob_log_format.h"
 #include "rocksdb/slice.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 uint64_t SharedBlobFileMetaData::GetBlobFileSize() const {
   return BlobLogHeader::kSize + total_blob_bytes_ + BlobLogFooter::kSize;
 }
@@ -59,4 +59,4 @@ std::ostream& operator<<(std::ostream& os, const BlobFileMetaData& meta) {
   return os;
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

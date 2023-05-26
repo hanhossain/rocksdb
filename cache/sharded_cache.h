@@ -19,7 +19,7 @@
 #include "util/hash.h"
 #include "util/mutexlock.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // Optional base class for classes implementing the CacheShard concept
 class CacheShardBase {
@@ -303,4 +303,4 @@ class ShardedCache : public ShardedCacheBase {
 int GetDefaultCacheShardBits(size_t capacity,
                              size_t min_shard_size = 512U * 1024U);
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -12,7 +12,7 @@
 #include "rocksdb/merge_operator.h"
 #include "rocksdb/slice.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class SortList : public MergeOperator {
  public:
@@ -39,4 +39,4 @@ class SortList : public MergeOperator {
   std::vector<int> Merge(std::vector<int>& left, std::vector<int>& right) const;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

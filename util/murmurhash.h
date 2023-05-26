@@ -34,10 +34,10 @@ using murmur_t = unsigned int;
 #endif
 
 // Allow slice to be hashable by murmur hash.
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 struct murmur_hash {
   size_t operator()(const Slice& slice) const {
     return MurmurHash(slice.data(), static_cast<int>(slice.size()), 0);
   }
 };
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

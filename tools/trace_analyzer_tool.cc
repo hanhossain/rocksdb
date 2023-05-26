@@ -165,7 +165,7 @@ DEFINE_double(sample_ratio, 1.0,
               "If the trace size is extremely huge or user want to sample "
               "the trace when analyzing, sample ratio can be set (0, 1.0]");
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 const size_t kShadowValueSize = 10;
 
@@ -273,8 +273,8 @@ TraceAnalyzer::TraceAnalyzer(std::string& trace_path, std::string& output_path,
       trace_name_(trace_path),
       output_path_(output_path),
       analyzer_opts_(_analyzer_opts) {
-  rocksdb::EnvOptions env_options;
-  env_ = rocksdb::Env::Default();
+  ROCKSDB_NAMESPACE::EnvOptions env_options;
+  env_ = ROCKSDB_NAMESPACE::Env::Default();
   offset_ = 0;
   total_requests_ = 0;
   total_access_keys_ = 0;
@@ -685,7 +685,7 @@ Status TraceAnalyzer::MakeStatisticKeyStatsOrPrefix(TraceStats& stats) {
     if (FLAGS_output_prefix_cut > 0 && stats.a_prefix_cut_f) {
       if (record.first.compare(0, FLAGS_output_prefix_cut, prefix) != 0) {
         std::string prefix_out =
-            rocksdb::LDBCommand::StringToHex(prefix);
+            ROCKSDB_NAMESPACE::LDBCommand::StringToHex(prefix);
         if (prefix_count == 0) {
           prefix_ave_access = 0.0;
         } else {
@@ -902,7 +902,7 @@ Status TraceAnalyzer::MakeStatisticQPS() {
               stat.second.a_qps_prefix_stats.end()) {
             for (auto& qps_prefix : stat.second.a_qps_prefix_stats[qps_time]) {
               std::string qps_prefix_out =
-                  rocksdb::LDBCommand::StringToHex(qps_prefix.first);
+                  ROCKSDB_NAMESPACE::LDBCommand::StringToHex(qps_prefix.first);
               ret = snprintf(buffer_, sizeof(buffer_),
                              "The prefix: %s Access count: %u\n",
                              qps_prefix_out.c_str(), qps_prefix.second);
@@ -1056,7 +1056,7 @@ Status TraceAnalyzer::ReProcessing() {
         for (cfs_[cf_id].w_count = 0; lf_reader.ReadLine(
                  &get_key, Env::IO_TOTAL /* rate_limiter_priority */);
              ++cfs_[cf_id].w_count) {
-          input_key = rocksdb::LDBCommand::HexToString(get_key);
+          input_key = ROCKSDB_NAMESPACE::LDBCommand::HexToString(get_key);
           for (int type = 0; type < kTaTypeNum; type++) {
             if (!ta_[type].enabled) {
               continue;
@@ -1085,7 +1085,7 @@ Status TraceAnalyzer::ReProcessing() {
                   0) {
                 prefix[type] = input_key.substr(0, FLAGS_output_prefix_cut);
                 std::string prefix_out =
-                    rocksdb::LDBCommand::StringToHex(prefix[type]);
+                    ROCKSDB_NAMESPACE::LDBCommand::StringToHex(prefix[type]);
                 ret = snprintf(buffer_, sizeof(buffer_), "%" PRIu64 " %s\n",
                                cfs_[cf_id].w_count, prefix_out.c_str());
                 if (ret < 0) {
@@ -1427,7 +1427,7 @@ Status TraceAnalyzer::OpenStatsOutputFiles(const std::string& type,
 Status TraceAnalyzer::CreateOutputFile(
     const std::string& type, const std::string& cf_name,
     const std::string& ending,
-    std::unique_ptr<rocksdb::WritableFile>* f_ptr) {
+    std::unique_ptr<ROCKSDB_NAMESPACE::WritableFile>* f_ptr) {
   std::string path;
   path = output_path_ + "/" + FLAGS_output_prefix + "-" + type + "-" + cf_name +
          "-" + ending;
@@ -1746,7 +1746,7 @@ void TraceAnalyzer::PrintStatistics() {
         printf("The Top %d keys that are accessed:\n",
                FLAGS_print_top_k_access);
         while (!stat.top_k_queue.empty()) {
-          std::string hex_key = rocksdb::LDBCommand::StringToHex(
+          std::string hex_key = ROCKSDB_NAMESPACE::LDBCommand::StringToHex(
               stat.top_k_queue.top().second);
           printf("Access_count: %" PRIu64 " %s\n", stat.top_k_queue.top().first,
                  hex_key.c_str());
@@ -1849,7 +1849,7 @@ Status TraceAnalyzer::WriteTraceSequence(const uint32_t& type,
                                          const size_t value_size,
                                          const uint64_t ts) {
   std::string hex_key =
-      rocksdb::LDBCommand::StringToHex(key.ToString());
+      ROCKSDB_NAMESPACE::LDBCommand::StringToHex(key.ToString());
   int ret;
   ret = snprintf(buffer_, sizeof(buffer_), "%u %u %zu %" PRIu64 "\n", type,
                  cf_id, value_size, ts);
@@ -1884,7 +1884,7 @@ int trace_analyzer_tool(int argc, char** argv) {
     exit(1);
   }
 
-  rocksdb::Status s = analyzer->PrepareProcessing();
+  ROCKSDB_NAMESPACE::Status s = analyzer->PrepareProcessing();
   if (!s.ok()) {
     fprintf(stderr, "%s\n", s.getState());
     fprintf(stderr, "Cannot initiate the trace reader\n");
@@ -1924,6 +1924,6 @@ int trace_analyzer_tool(int argc, char** argv) {
   return 0;
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 #endif  // Endif of Gflag

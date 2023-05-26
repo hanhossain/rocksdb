@@ -26,7 +26,7 @@
 #include "util/compression.h"
 #include "util/random.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 namespace {
 
@@ -1602,7 +1602,7 @@ TEST_F(BlobSourceCacheReservationTest, IncreaseCacheReservation) {
   }
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

@@ -7,7 +7,7 @@
 
 #include "db/version_set.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // Instead of opening a `DB` to perform certain manifest updates, this
 // uses the underlying `VersionSet` API to read and modify the MANIFEST. This
@@ -69,4 +69,4 @@ class OfflineManifestWriter {
   }
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

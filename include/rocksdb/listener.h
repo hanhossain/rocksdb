@@ -21,7 +21,7 @@
 #include "rocksdb/table_properties.h"
 #include "rocksdb/types.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 using TablePropertiesCollection =
     std::unordered_map<std::string, std::shared_ptr<const TableProperties>>;
@@ -836,4 +836,4 @@ class EventListener : public Customizable {
   ~EventListener() override {}
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

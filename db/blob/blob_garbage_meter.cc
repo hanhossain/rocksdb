@@ -9,7 +9,7 @@
 #include "db/blob/blob_log_format.h"
 #include "db/dbformat.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 Status BlobGarbageMeter::ProcessInFlow(const Slice& key, const Slice& value) {
   uint64_t blob_file_number = kInvalidBlobFileNumber;
@@ -97,4 +97,4 @@ Status BlobGarbageMeter::Parse(const Slice& key, const Slice& value,
   return Status::OK();
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

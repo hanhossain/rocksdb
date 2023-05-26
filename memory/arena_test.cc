@@ -16,7 +16,7 @@
 #include "test_util/testharness.h"
 #include "util/random.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 namespace {
 const size_t kHugePageSize = 2 * 1024 * 1024;
@@ -286,7 +286,7 @@ TEST_F(ArenaTest, UnmappedAllocation) {
   }
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

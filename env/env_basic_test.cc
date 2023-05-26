@@ -16,7 +16,7 @@
 #include "rocksdb/env_encryption.h"
 #include "test_util/testharness.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 namespace {
 using CreateEnvFunc = Env*();
 
@@ -389,7 +389,7 @@ TEST_P(EnvMoreTestWithParam, GetChildrenIgnoresDotAndDotDot) {
   ASSERT_EQ(result.at(0), "test_file");
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

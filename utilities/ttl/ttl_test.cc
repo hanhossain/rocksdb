@@ -20,7 +20,7 @@
 #include <unistd.h>
 #endif
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 namespace {
 
@@ -902,7 +902,7 @@ TEST_F(TtlOptionsTest, LoadTtlMergeOperator) {
   ASSERT_OK(MergeOperator::CreateFromString(config_options_, opts_str, &copy));
   ASSERT_TRUE(mo->AreEquivalent(config_options_, copy.get(), &mismatch));
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 // A black-box test for the ttl wrapper around rocksdb
 int main(int argc, char** argv) {

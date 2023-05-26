@@ -11,7 +11,7 @@
 
 #include "db/arena_wrapped_db_iter.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 // MergingIterator uses a min/max heap to combine data from point iterators.
 // Range tombstones can be added and keys covered by range tombstones will be
 // skipped.
@@ -1722,4 +1722,4 @@ InternalIterator* MergeIteratorBuilder::Finish(ArenaWrappedDBIter* db_iter) {
   return ret;
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

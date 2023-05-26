@@ -20,7 +20,7 @@
 #include "utilities/fault_injection_env.h"
 #include "utilities/fault_injection_fs.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // Test variations of WriteImpl.
 class DBWriteTest : public DBTestBase, public testing::WithParamInterface<int> {
@@ -93,9 +93,9 @@ TEST_P(DBWriteTest, WriteStallRemoveNoSlowdownWrite) {
   ASSERT_OK(Flush());
   ASSERT_OK(Put("foo" + std::to_string(thread_num.fetch_add(1)), "bar"));
 
-  rocksdb::SyncPoint::GetInstance()->SetCallBack(
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
       "WriteThread::JoinBatchGroup:Start", unblock_main_thread_func);
-  rocksdb::SyncPoint::GetInstance()->LoadDependency(
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
       {{"DBWriteTest::WriteStallRemoveNoSlowdownWrite:1",
         "DBImpl::BackgroundCallFlush:start"},
        {"DBWriteTest::WriteStallRemoveNoSlowdownWrite:2",
@@ -104,7 +104,7 @@ TEST_P(DBWriteTest, WriteStallRemoveNoSlowdownWrite) {
        // implemented by a write group leader
        {"DBWriteTest::WriteStallRemoveNoSlowdownWrite:3",
         "BackgroundCallCompaction:0"}});
-  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
 
   // Schedule creation of 4th L0 file without waiting. This will seal the
   // memtable and then wait for a sync point before writing the file. We need
@@ -165,8 +165,8 @@ TEST_P(DBWriteTest, WriteStallRemoveNoSlowdownWrite) {
     t.join();
   }
 
-  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
-  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
 }
 
 TEST_P(DBWriteTest, WriteThreadHangOnWriteStall) {
@@ -213,9 +213,9 @@ TEST_P(DBWriteTest, WriteThreadHangOnWriteStall) {
   ASSERT_OK(Flush());
   ASSERT_OK(Put("foo" + std::to_string(thread_num.fetch_add(1)), "bar"));
 
-  rocksdb::SyncPoint::GetInstance()->SetCallBack(
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
       "WriteThread::JoinBatchGroup:Start", unblock_main_thread_func);
-  rocksdb::SyncPoint::GetInstance()->LoadDependency(
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->LoadDependency(
       {{"DBWriteTest::WriteThreadHangOnWriteStall:1",
         "DBImpl::BackgroundCallFlush:start"},
        {"DBWriteTest::WriteThreadHangOnWriteStall:2",
@@ -224,7 +224,7 @@ TEST_P(DBWriteTest, WriteThreadHangOnWriteStall) {
        // implemented by a write group leader
        {"DBWriteTest::WriteThreadHangOnWriteStall:3",
         "BackgroundCallCompaction:0"}});
-  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
 
   // Schedule creation of 4th L0 file without waiting. This will seal the
   // memtable and then wait for a sync point before writing the file. We need
@@ -264,8 +264,8 @@ TEST_P(DBWriteTest, WriteThreadHangOnWriteStall) {
   for (auto& t : threads) {
     t.join();
   }
-  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
-  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
 }
 
 TEST_P(DBWriteTest, IOErrorOnWALWritePropagateToWriteThreadFollower) {
@@ -377,7 +377,7 @@ TEST_F(DBWriteTestUnparameterized, PipelinedWriteRace) {
     write_one_doc();
   };
 
-  rocksdb::SyncPoint::GetInstance()->SetCallBack(
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
       "WriteThread::JoinBatchGroup:Wait", [&](void* arg) {
         if (second_write_starting.load()) {
           second_write_in_progress = true;
@@ -401,7 +401,7 @@ TEST_F(DBWriteTestUnparameterized, PipelinedWriteRace) {
         }
       });
 
-  rocksdb::SyncPoint::GetInstance()->SetCallBack(
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
       "WriteThread::ExitAsBatchGroupLeader:Start", [&](void* arg) {
         auto* wg = reinterpret_cast<WriteThread::WriteGroup*>(arg);
         if (wg->leader == leader && !finished_WAL_write) {
@@ -412,7 +412,7 @@ TEST_F(DBWriteTestUnparameterized, PipelinedWriteRace) {
         }
       });
 
-  rocksdb::SyncPoint::GetInstance()->SetCallBack(
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
       "WriteThread::ExitAsBatchGroupLeader:AfterCompleteWriters",
       [&](void* arg) {
         auto* wg = reinterpret_cast<WriteThread::WriteGroup*>(arg);
@@ -423,7 +423,7 @@ TEST_F(DBWriteTestUnparameterized, PipelinedWriteRace) {
         }
       });
 
-  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
 
   // start leader + one follower
   threads.emplace_back(write_one_doc);
@@ -447,8 +447,8 @@ TEST_F(DBWriteTestUnparameterized, PipelinedWriteRace) {
   for (auto& t : threads) {
     t.join();
   }
-  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
-  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
 }
 
 TEST_P(DBWriteTest, ManualWalFlushInEffect) {
@@ -483,7 +483,7 @@ TEST_P(DBWriteTest, UnflushedPutRaceWithTrackedWalSync) {
   SyncPoint::GetInstance()->SetCallBack(
       "DBImpl::SyncWAL:Begin",
       [this](void* /* arg */) { ASSERT_OK(Put("key2", "val2")); });
-  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
 
   ASSERT_OK(db_->FlushWAL(true /* sync */));
 
@@ -520,12 +520,12 @@ TEST_P(DBWriteTest, InactiveWalFullySyncedBeforeUntracked) {
         ASSERT_OK(Put("key2", "val2"));
         ASSERT_OK(dbfull()->TEST_SwitchMemtable());
       });
-  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
 
   ASSERT_OK(db_->FlushWAL(true /* sync */));
 
-  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
-  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
 
   ASSERT_OK(Put("key3", "val3"));
 
@@ -741,7 +741,7 @@ TEST_P(DBWriteTest, LockWALConcurrentRecursive) {
 
 TEST_P(DBWriteTest, ConcurrentlyDisabledWAL) {
   Options options = GetOptions();
-  options.statistics = rocksdb::CreateDBStatistics();
+  options.statistics = ROCKSDB_NAMESPACE::CreateDBStatistics();
   options.statistics->set_stats_level(StatsLevel::kAll);
   Reopen(options);
   std::string wal_key_prefix = "WAL_KEY_";
@@ -755,9 +755,9 @@ TEST_P(DBWriteTest, ConcurrentlyDisabledWAL) {
     threads[t] = std::thread([t, wal_key_prefix, wal_value, no_wal_key_prefix,
                               no_wal_value, this] {
       for (int i = 0; i < 10; i++) {
-        rocksdb::WriteOptions write_option_disable;
+        ROCKSDB_NAMESPACE::WriteOptions write_option_disable;
         write_option_disable.disableWAL = true;
-        rocksdb::WriteOptions write_option_default;
+        ROCKSDB_NAMESPACE::WriteOptions write_option_default;
         std::string no_wal_key =
             no_wal_key_prefix + std::to_string(t) + "_" + std::to_string(i);
         ASSERT_OK(this->Put(no_wal_key, no_wal_value, write_option_disable));
@@ -773,7 +773,7 @@ TEST_P(DBWriteTest, ConcurrentlyDisabledWAL) {
     t.join();
   }
   uint64_t bytes_num = options.statistics->getTickerCount(
-      rocksdb::Tickers::WAL_FILE_BYTES);
+      ROCKSDB_NAMESPACE::Tickers::WAL_FILE_BYTES);
   // written WAL size should less than 100KB (even included HEADER & FOOTER
   // overhead)
   ASSERT_LE(bytes_num, 1024 * 100);
@@ -784,7 +784,7 @@ INSTANTIATE_TEST_CASE_P(DBWriteTestInstance, DBWriteTest,
                                         DBTestBase::OptionConfig::kConcurrentWALWrites,
                                         DBTestBase::OptionConfig::kPipelinedWrite));
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

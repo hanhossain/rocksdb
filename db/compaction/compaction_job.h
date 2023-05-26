@@ -46,7 +46,7 @@
 #include "util/stop_watch.h"
 #include "util/thread_local.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class Arena;
 class CompactionState;
@@ -501,4 +501,4 @@ class CompactionServiceCompactionJob : private CompactionJob {
   CompactionServiceResult* compaction_result_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

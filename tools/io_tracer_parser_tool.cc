@@ -21,7 +21,7 @@ using GFLAGS_NAMESPACE::ParseCommandLineFlags;
 
 DEFINE_string(io_trace_file, "", "The IO trace file path.");
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 IOTraceRecordParser::IOTraceRecordParser(const std::string& input_file)
     : input_file_(input_file) {}
@@ -138,5 +138,5 @@ int io_tracer_parser(int argc, char** argv) {
   return io_tracer_parser.ReadIOTraceRecords();
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 #endif  // GFLAGS

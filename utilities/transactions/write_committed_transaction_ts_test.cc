@@ -11,7 +11,7 @@
 #include "test_util/testutil.h"
 #include "utilities/transactions/transaction_test.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 INSTANTIATE_TEST_CASE_P(
     DBAsBaseDB, WriteCommittedTxnWithTsTest,
@@ -568,7 +568,7 @@ TEST_P(WriteCommittedTxnWithTsTest, CheckKeysForConflicts) {
   SyncPoint::GetInstance()->ClearAllCallBacks();
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

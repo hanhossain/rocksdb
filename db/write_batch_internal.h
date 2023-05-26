@@ -22,7 +22,7 @@
 #include "util/autovector.h"
 #include "util/cast_util.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class MemTable;
 class FlushScheduler;
@@ -398,4 +398,4 @@ class TimestampUpdater : public WriteBatch::Handler {
   size_t idx_ = 0;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

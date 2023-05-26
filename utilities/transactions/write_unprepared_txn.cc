@@ -11,7 +11,7 @@
 #include "utilities/transactions/write_unprepared_txn_db.h"
 #include "utilities/write_batch_with_index/write_batch_with_index_internal.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 bool WriteUnpreparedTxnReadCallback::IsVisibleFullCheck(SequenceNumber seq) {
   // Since unprep_seqs maps prep_seq => prepare_batch_cnt, to check if seq is
@@ -1053,4 +1053,4 @@ WriteUnpreparedTxn::GetUnpreparedSequenceNumbers() {
   return unprep_seqs_;
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

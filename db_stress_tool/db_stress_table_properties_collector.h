@@ -11,7 +11,7 @@
 
 DECLARE_int32(mark_for_compaction_one_file_in);
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // A `DbStressTablePropertiesCollector` ignores what keys/values were added to
 // the table, adds no properties to the table, and decides at random whether the
@@ -62,4 +62,4 @@ class DbStressTablePropertiesCollectorFactory
   }
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

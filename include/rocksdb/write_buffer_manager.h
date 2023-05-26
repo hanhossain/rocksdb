@@ -20,7 +20,7 @@
 
 #include "rocksdb/cache.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 class CacheReservationManager;
 
 // Interface to block and signal DB instances, intended for RocksDB
@@ -180,4 +180,4 @@ class WriteBufferManager final {
   void ReserveMemWithCache(size_t mem);
   void FreeMemWithCache(size_t mem);
 };
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

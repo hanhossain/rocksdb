@@ -16,7 +16,7 @@
 #include "rocksdb/metadata.h"
 #include "rocksdb/slice_transform.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 struct ImmutableCFOptions;
 class TableCache;
@@ -90,4 +90,4 @@ class NewestFirstBySeqNo {
     return lhs->fd.GetNumber() > rhs->fd.GetNumber();
   }
 };
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -20,7 +20,7 @@
 #include "options/cf_options.h"
 #include "rocksdb/compaction_filter.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class BlobFileBuilder;
 class BlobFetcher;
@@ -527,4 +527,4 @@ inline bool CompactionIterator::DefinitelyNotInSnapshot(
                     SnapshotCheckerResult::kNotInSnapshot)));
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -9,7 +9,7 @@
 #include <iostream>
 #include <string>
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class DBEncryptionTest : public DBTestBase {
  public:
@@ -116,7 +116,7 @@ TEST_F(DBEncryptionTest, ReadEmptyFile) {
 }
 
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

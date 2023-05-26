@@ -10,7 +10,7 @@
 #include "utilities/merge_operators.h"
 #include "utilities/merge_operators/max_operator.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 bool MaxOperator::FullMergeV2(const MergeOperationInput& merge_in,
                               MergeOperationOutput* merge_out) const {
@@ -61,4 +61,4 @@ bool MaxOperator::PartialMergeMulti(const Slice& /*key*/,
 std::shared_ptr<MergeOperator> MergeOperators::CreateMaxOperator() {
   return std::make_shared<MaxOperator>();
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

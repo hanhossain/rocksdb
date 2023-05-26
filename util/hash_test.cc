@@ -20,23 +20,23 @@
 #include "util/math.h"
 #include "util/math128.h"
 
-using rocksdb::BijectiveHash2x64;
-using rocksdb::BijectiveUnhash2x64;
-using rocksdb::DecodeFixed64;
-using rocksdb::EncodeFixed32;
-using rocksdb::EndianSwapValue;
-using rocksdb::GetSliceHash64;
-using rocksdb::Hash;
-using rocksdb::Hash128;
-using rocksdb::Hash2x64;
-using rocksdb::Hash64;
-using rocksdb::Lower32of64;
-using rocksdb::Lower64of128;
-using rocksdb::ReverseBits;
-using rocksdb::Slice;
-using rocksdb::Unsigned128;
-using rocksdb::Upper32of64;
-using rocksdb::Upper64of128;
+using ROCKSDB_NAMESPACE::BijectiveHash2x64;
+using ROCKSDB_NAMESPACE::BijectiveUnhash2x64;
+using ROCKSDB_NAMESPACE::DecodeFixed64;
+using ROCKSDB_NAMESPACE::EncodeFixed32;
+using ROCKSDB_NAMESPACE::EndianSwapValue;
+using ROCKSDB_NAMESPACE::GetSliceHash64;
+using ROCKSDB_NAMESPACE::Hash;
+using ROCKSDB_NAMESPACE::Hash128;
+using ROCKSDB_NAMESPACE::Hash2x64;
+using ROCKSDB_NAMESPACE::Hash64;
+using ROCKSDB_NAMESPACE::Lower32of64;
+using ROCKSDB_NAMESPACE::Lower64of128;
+using ROCKSDB_NAMESPACE::ReverseBits;
+using ROCKSDB_NAMESPACE::Slice;
+using ROCKSDB_NAMESPACE::Unsigned128;
+using ROCKSDB_NAMESPACE::Upper32of64;
+using ROCKSDB_NAMESPACE::Upper64of128;
 
 // The hash algorithm is part of the file format, for example for the Bloom
 // filters. Test that the hash values are stable for a set of random strings of
@@ -439,7 +439,7 @@ TEST(HashTest, Hash128ValueSchema) {
 }
 
 TEST(FastRange32Test, Values) {
-  using rocksdb::FastRange32;
+  using ROCKSDB_NAMESPACE::FastRange32;
   // Zero range
   EXPECT_EQ(FastRange32(0, 0), 0U);
   EXPECT_EQ(FastRange32(123, 0), 0U);
@@ -477,7 +477,7 @@ TEST(FastRange32Test, Values) {
 }
 
 TEST(FastRange64Test, Values) {
-  using rocksdb::FastRange64;
+  using ROCKSDB_NAMESPACE::FastRange64;
   // Zero range
   EXPECT_EQ(FastRange64(0, 0), 0U);
   EXPECT_EQ(FastRange64(123, 0), 0U);
@@ -534,7 +534,7 @@ TEST(FastRange64Test, Values) {
 }
 
 TEST(FastRangeGenericTest, Values) {
-  using rocksdb::FastRangeGeneric;
+  using ROCKSDB_NAMESPACE::FastRangeGeneric;
   // Generic (including big and small)
   // Note that FastRangeGeneric is also tested indirectly above via
   // FastRange32 and FastRange64.
@@ -554,29 +554,29 @@ TEST(FastRangeGenericTest, Values) {
 
 // for inspection of disassembly
 uint32_t FastRange32(uint32_t hash, uint32_t range) {
-  return rocksdb::FastRange32(hash, range);
+  return ROCKSDB_NAMESPACE::FastRange32(hash, range);
 }
 
 // for inspection of disassembly
 size_t FastRange64(uint64_t hash, size_t range) {
-  return rocksdb::FastRange64(hash, range);
+  return ROCKSDB_NAMESPACE::FastRange64(hash, range);
 }
 
 // Tests for math.h / math128.h (not worth a separate test binary)
-using rocksdb::BitParity;
-using rocksdb::BitsSetToOne;
-using rocksdb::ConstexprFloorLog2;
-using rocksdb::CountTrailingZeroBits;
-using rocksdb::DecodeFixed128;
-using rocksdb::DecodeFixedGeneric;
-using rocksdb::DownwardInvolution;
-using rocksdb::EncodeFixed128;
-using rocksdb::EncodeFixedGeneric;
-using rocksdb::FloorLog2;
-using rocksdb::Lower64of128;
-using rocksdb::Multiply64to128;
-using rocksdb::Unsigned128;
-using rocksdb::Upper64of128;
+using ROCKSDB_NAMESPACE::BitParity;
+using ROCKSDB_NAMESPACE::BitsSetToOne;
+using ROCKSDB_NAMESPACE::ConstexprFloorLog2;
+using ROCKSDB_NAMESPACE::CountTrailingZeroBits;
+using ROCKSDB_NAMESPACE::DecodeFixed128;
+using ROCKSDB_NAMESPACE::DecodeFixedGeneric;
+using ROCKSDB_NAMESPACE::DownwardInvolution;
+using ROCKSDB_NAMESPACE::EncodeFixed128;
+using ROCKSDB_NAMESPACE::EncodeFixedGeneric;
+using ROCKSDB_NAMESPACE::FloorLog2;
+using ROCKSDB_NAMESPACE::Lower64of128;
+using ROCKSDB_NAMESPACE::Multiply64to128;
+using ROCKSDB_NAMESPACE::Unsigned128;
+using ROCKSDB_NAMESPACE::Upper64of128;
 
 int blah(int x) { return DownwardInvolution(x); }
 
@@ -845,7 +845,7 @@ TEST(MathTest, CodingGeneric) {
 
 int main(int argc, char **argv) {
   fprintf(stderr, "NPHash64 id: %x\n",
-          static_cast<int>(rocksdb::GetSliceNPHash64("RocksDB")));
+          static_cast<int>(ROCKSDB_NAMESPACE::GetSliceNPHash64("RocksDB")));
     ::testing::InitGoogleTest(&argc, argv);
 
   return RUN_ALL_TESTS();

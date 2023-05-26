@@ -8,7 +8,7 @@
 #include <atomic>
 #include "rocksdb/memory_allocator.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 // A memory allocator using new/delete
 class DefaultMemoryAllocator : public MemoryAllocator {
  public:
@@ -100,4 +100,4 @@ class CountedMemoryAllocator : public MemoryAllocatorWrapper {
   std::atomic<uint64_t> allocations_;
   std::atomic<uint64_t> deallocations_;
 };
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

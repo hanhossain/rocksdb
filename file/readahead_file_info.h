@@ -8,8 +8,9 @@
 #include <cstddef>
 #include <cstdint>
 
+#include "rocksdb/rocksdb_namespace.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // struct ReadaheadFileInfo contains readahead information that is passed from
 // one file to another file per level during iterations. This information helps
@@ -29,4 +30,4 @@ struct ReadaheadFileInfo {
   ReadaheadInfo index_block_readahead_info;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

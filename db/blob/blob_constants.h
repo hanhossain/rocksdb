@@ -7,8 +7,10 @@
 
 #include <cstdint>
 
-namespace rocksdb {
+#include "rocksdb/rocksdb_namespace.h"
+
+namespace ROCKSDB_NAMESPACE {
 
 constexpr uint64_t kInvalidBlobFileNumber = 0;
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

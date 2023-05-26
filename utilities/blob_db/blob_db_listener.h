@@ -12,7 +12,7 @@
 #include "util/mutexlock.h"
 #include "utilities/blob_db/blob_db_impl.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 namespace blob_db {
 
 class BlobDBListener : public EventListener {
@@ -66,4 +66,4 @@ class BlobDBListenerGC : public BlobDBListener {
 };
 
 }  // namespace blob_db
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

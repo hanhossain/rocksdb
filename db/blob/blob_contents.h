@@ -9,10 +9,11 @@
 
 #include "memory/memory_allocator.h"
 #include "rocksdb/advanced_cache.h"
+#include "rocksdb/rocksdb_namespace.h"
 #include "rocksdb/slice.h"
 #include "rocksdb/status.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // A class representing a single uncompressed value read from a blob file.
 class BlobContents {
@@ -55,4 +56,4 @@ class BlobContentsCreator : public Cache::CreateContext {
   }
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

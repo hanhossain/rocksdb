@@ -28,7 +28,7 @@
 #include "trace_replay/io_tracer.h"
 #include "util/compression.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 BlobFileBuilder::BlobFileBuilder(
     VersionSet* versions, FileSystem* fs,
@@ -423,4 +423,4 @@ Status BlobFileBuilder::PutBlobIntoCacheIfNeeded(const Slice& blob,
   return s;
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

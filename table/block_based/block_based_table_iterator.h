@@ -12,7 +12,7 @@
 #include "table/block_based/block_prefetcher.h"
 #include "table/block_based/reader_common.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 // Iterates over the contents of BlockBasedTable.
 class BlockBasedTableIterator : public InternalIteratorBase<Slice> {
   // compaction_readahead_size: its value will only be used if for_compaction =
@@ -277,4 +277,4 @@ class BlockBasedTableIterator : public InternalIteratorBase<Slice> {
     return true;
   }
 };
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

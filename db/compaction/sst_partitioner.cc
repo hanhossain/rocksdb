@@ -12,7 +12,7 @@
 #include "rocksdb/utilities/object_registry.h"
 #include "rocksdb/utilities/options_type.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 static std::unordered_map<std::string, OptionTypeInfo>
     sst_fixed_prefix_type_info = {
         {"length",
@@ -80,4 +80,4 @@ Status SstPartitionerFactory::CreateFromString(
   });
   return LoadSharedObject<SstPartitionerFactory>(options, value, result);
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

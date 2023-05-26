@@ -9,7 +9,7 @@
 
 #include "utilities/transactions/lock/range/range_tree/range_tree_lock_manager.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 RangeLockList *RangeTreeLockTracker::getOrCreateList() {
   if (range_list_) return range_list_.get();
@@ -150,5 +150,5 @@ void RangeLockList::ReplaceLocks(const toku::locktree *lt,
   }
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 #endif  // OS_WIN

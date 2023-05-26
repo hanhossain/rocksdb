@@ -11,7 +11,7 @@
 #include "rocksdb/options.h"
 #include "rocksdb/utilities/customizable_util.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 Status WalFilter::CreateFromString(const ConfigOptions& config_options,
                                    const std::string& value,
                                    WalFilter** filter) {
@@ -19,4 +19,4 @@ Status WalFilter::CreateFromString(const ConfigOptions& config_options,
   return s;
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

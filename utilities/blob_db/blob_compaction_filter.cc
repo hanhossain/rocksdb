@@ -13,7 +13,7 @@
 #include "rocksdb/system_clock.h"
 #include "test_util/sync_point.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 namespace blob_db {
 
 BlobIndexCompactionFilterBase::~BlobIndexCompactionFilterBase() {
@@ -485,4 +485,4 @@ BlobIndexCompactionFilterFactoryGC::CreateCompactionFilter(
 }
 
 }  // namespace blob_db
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

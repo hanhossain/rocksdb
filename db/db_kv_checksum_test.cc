@@ -5,8 +5,9 @@
 
 #include "db/blob/blob_index.h"
 #include "db/db_test_util.h"
+#include "rocksdb/rocksdb_namespace.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 enum class WriteBatchOpType {
   kPut = 0,
@@ -875,7 +876,7 @@ TEST_P(DbMemtableKVChecksumTest, FlushWithCorruptAfterMemtableInsert) {
   Destroy(options);
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

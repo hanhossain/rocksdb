@@ -27,12 +27,12 @@
 #include "rocksdb/convenience.h"
 #include "utilities/fault_injection_fs.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 namespace {
-static std::shared_ptr<rocksdb::Env> env_guard;
-static std::shared_ptr<rocksdb::Env> env_wrapper_guard;
-static std::shared_ptr<rocksdb::Env> legacy_env_wrapper_guard;
-static std::shared_ptr<rocksdb::CompositeEnvWrapper>
+static std::shared_ptr<ROCKSDB_NAMESPACE::Env> env_guard;
+static std::shared_ptr<ROCKSDB_NAMESPACE::Env> env_wrapper_guard;
+static std::shared_ptr<ROCKSDB_NAMESPACE::Env> legacy_env_wrapper_guard;
+static std::shared_ptr<ROCKSDB_NAMESPACE::CompositeEnvWrapper>
     dbsl_env_wrapper_guard;
 static std::shared_ptr<CompositeEnvWrapper> fault_env_guard;
 }  // namespace
@@ -54,9 +54,9 @@ int db_stress_tool(int argc, char** argv) {
   }
 #endif
   if (FLAGS_statistics) {
-    dbstats = rocksdb::CreateDBStatistics();
+    dbstats = ROCKSDB_NAMESPACE::CreateDBStatistics();
     if (FLAGS_test_secondary) {
-      dbstats_secondaries = rocksdb::CreateDBStatistics();
+      dbstats_secondaries = ROCKSDB_NAMESPACE::CreateDBStatistics();
     }
   }
   compression_type_e = StringToCompressionType(FLAGS_compression_type.c_str());
@@ -118,9 +118,9 @@ int db_stress_tool(int argc, char** argv) {
   // The number of background threads should be at least as much the
   // max number of concurrent compactions.
   db_stress_env->SetBackgroundThreads(FLAGS_max_background_compactions,
-                                      rocksdb::Env::Priority::LOW);
+                                      ROCKSDB_NAMESPACE::Env::Priority::LOW);
   db_stress_env->SetBackgroundThreads(FLAGS_num_bottom_pri_threads,
-                                      rocksdb::Env::Priority::BOTTOM);
+                                      ROCKSDB_NAMESPACE::Env::Priority::BOTTOM);
   if (FLAGS_prefixpercent > 0 && FLAGS_prefix_size < 0) {
     fprintf(stderr,
             "Error: prefixpercent is non-zero while prefix_size is "
@@ -346,8 +346,8 @@ int db_stress_tool(int argc, char** argv) {
     key_gen_ctx.weights.emplace_back(key_gen_ctx.window -
                                      keys_per_level * (levels - 1));
   }
-  std::unique_ptr<rocksdb::SharedState> shared;
-  std::unique_ptr<rocksdb::StressTest> stress;
+  std::unique_ptr<ROCKSDB_NAMESPACE::SharedState> shared;
+  std::unique_ptr<ROCKSDB_NAMESPACE::StressTest> stress;
   if (FLAGS_test_cf_consistency) {
     stress.reset(CreateCfConsistencyStressTest());
   } else if (FLAGS_test_batches_snapshots) {
@@ -367,5 +367,5 @@ int db_stress_tool(int argc, char** argv) {
   }
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 #endif  // GFLAGS

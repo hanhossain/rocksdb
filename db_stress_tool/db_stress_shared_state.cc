@@ -11,7 +11,7 @@
 #ifdef GFLAGS
 #include "db_stress_tool/db_stress_shared_state.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 thread_local bool SharedState::ignore_read_error;
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 #endif  // GFLAGS

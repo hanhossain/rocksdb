@@ -9,7 +9,7 @@
 #include "db/version_util.h"
 #include "logging/logging.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 namespace experimental {
 
 
@@ -141,4 +141,4 @@ Status UpdateManifestForFilesState(
 }
 
 }  // namespace experimental
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

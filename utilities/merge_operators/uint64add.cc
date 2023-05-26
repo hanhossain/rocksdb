@@ -14,7 +14,7 @@
 #include "util/coding.h"
 #include "utilities/merge_operators.h"
 
-namespace rocksdb {  // anonymous namespace
+namespace ROCKSDB_NAMESPACE {  // anonymous namespace
 
 bool UInt64AddOperator::Merge(const Slice& /*key*/, const Slice* existing_value,
                               const Slice& value, std::string* new_value,
@@ -53,4 +53,4 @@ std::shared_ptr<MergeOperator> MergeOperators::CreateUInt64AddOperator() {
   return std::make_shared<UInt64AddOperator>();
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

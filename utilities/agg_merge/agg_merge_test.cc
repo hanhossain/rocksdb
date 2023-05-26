@@ -15,7 +15,7 @@
 #include "utilities/agg_merge/agg_merge.h"
 #include "utilities/agg_merge/test_agg_merge.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class AggMergeTest : public DBTestBase {
  public:
@@ -126,7 +126,7 @@ TEST_F(AggMergeTest, TestUsingMergeOperator) {
   ASSERT_EQ(v, decoded_list[0]);
   ASSERT_EQ(v1, decoded_list[1]);
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

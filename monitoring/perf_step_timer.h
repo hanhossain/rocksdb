@@ -8,7 +8,7 @@
 #include "monitoring/statistics.h"
 #include "rocksdb/system_clock.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class PerfStepTimer {
  public:
@@ -74,4 +74,4 @@ class PerfStepTimer {
   Statistics* statistics_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

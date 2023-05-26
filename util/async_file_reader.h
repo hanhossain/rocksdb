@@ -14,7 +14,7 @@
 #include "util/autovector.h"
 #include "util/stop_watch.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 class SingleThreadExecutor;
 
 // AsyncFileReader implements the Awaitable concept, which allows calling
@@ -140,5 +140,5 @@ class AsyncFileReader {
   FileSystem* fs_;
   Statistics* stats_;
 };
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 #endif  // USE_COROUTINES

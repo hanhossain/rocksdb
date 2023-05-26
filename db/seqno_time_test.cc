@@ -12,7 +12,7 @@
 #include "test_util/mock_time_env.h"
 
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class SeqnoTimeTest : public DBTestBase {
  public:
@@ -983,7 +983,7 @@ TEST_F(SeqnoTimeTest, EncodeDecodePerferNewTime) {
   ASSERT_EQ(expected, seqs);
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 
 int main(int argc, char** argv) {

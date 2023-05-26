@@ -5,7 +5,7 @@
 
 #include "cache/cache_helpers.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 void ReleaseCacheHandleCleanup(void* arg1, void* arg2) {
   Cache* const cache = static_cast<Cache*>(arg1);
@@ -37,4 +37,4 @@ Status WarmInCache(Cache* cache, const Slice& key, const Slice& saved,
   return st;
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

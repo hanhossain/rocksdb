@@ -12,7 +12,7 @@
 
 #include "rocksdb/perf_level.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 /*
  * NOTE:
@@ -309,4 +309,4 @@ struct PerfContext : public PerfContextBase {
 // This function never returns nullptr.
 PerfContext* get_perf_context();
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

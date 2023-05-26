@@ -20,7 +20,7 @@
 #include "port/mmap.h"
 #include "rocksdb/env.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class Arena : public Allocator {
  public:
@@ -132,4 +132,4 @@ inline char* Arena::Allocate(size_t bytes) {
   return AllocateFallback(bytes, false /* unaligned */);
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

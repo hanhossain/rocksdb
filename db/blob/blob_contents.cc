@@ -11,7 +11,7 @@
 #include "cache/cache_helpers.h"
 #include "port/malloc.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 size_t BlobContents::ApproximateMemoryUsage() const {
   size_t usage = 0;
@@ -39,4 +39,4 @@ size_t BlobContents::ApproximateMemoryUsage() const {
   return usage;
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

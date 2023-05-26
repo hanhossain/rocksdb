@@ -10,7 +10,7 @@
 #include "monitoring/statistics.h"
 #include "rocksdb/persistent_cache.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // PersistentCacheOptions
 //
@@ -31,4 +31,4 @@ struct PersistentCacheOptions {
   static const PersistentCacheOptions kEmpty;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

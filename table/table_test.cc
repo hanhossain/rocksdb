@@ -75,7 +75,7 @@
 #include "utilities/memory_allocators.h"
 #include "utilities/merge_operators.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 extern const uint64_t kLegacyBlockBasedTableMagicNumber;
 extern const uint64_t kLegacyPlainTableMagicNumber;
@@ -356,7 +356,7 @@ class TableConstructor : public Constructor {
         largest_seqno_(largest_seqno),
         convert_to_internal_key_(convert_to_internal_key),
         level_(level) {
-    env_ = rocksdb::Env::Default();
+    env_ = ROCKSDB_NAMESPACE::Env::Default();
   }
   ~TableConstructor() override { Reset(); }
 
@@ -1125,7 +1125,7 @@ class BlockBasedTableTest
       virtual public ::testing::WithParamInterface<uint32_t> {
  public:
   BlockBasedTableTest() : format_(GetParam()) {
-    env_ = rocksdb::Env::Default();
+    env_ = ROCKSDB_NAMESPACE::Env::Default();
   }
 
   BlockBasedTableOptions GetBlockBasedTableOptions() {
@@ -4635,26 +4635,26 @@ class PrefixTest : public testing::Test {
 
 namespace {
 // A simple PrefixExtractor that only works for test PrefixAndWholeKeyTest
-class TestPrefixExtractor : public rocksdb::SliceTransform {
+class TestPrefixExtractor : public ROCKSDB_NAMESPACE::SliceTransform {
  public:
   ~TestPrefixExtractor() override{};
   const char* Name() const override { return "TestPrefixExtractor"; }
 
-  rocksdb::Slice Transform(
-      const rocksdb::Slice& src) const override {
+  ROCKSDB_NAMESPACE::Slice Transform(
+      const ROCKSDB_NAMESPACE::Slice& src) const override {
     assert(IsValid(src));
-    return rocksdb::Slice(src.data(), 3);
+    return ROCKSDB_NAMESPACE::Slice(src.data(), 3);
   }
 
-  bool InDomain(const rocksdb::Slice& src) const override {
+  bool InDomain(const ROCKSDB_NAMESPACE::Slice& src) const override {
     return IsValid(src);
   }
 
-  bool InRange(const rocksdb::Slice& /*dst*/) const override {
+  bool InRange(const ROCKSDB_NAMESPACE::Slice& /*dst*/) const override {
     return true;
   }
 
-  bool IsValid(const rocksdb::Slice& src) const {
+  bool IsValid(const ROCKSDB_NAMESPACE::Slice& src) const {
     if (src.size() != 4) {
       return false;
     }
@@ -4676,30 +4676,30 @@ class TestPrefixExtractor : public rocksdb::SliceTransform {
 }  // namespace
 
 TEST_F(PrefixTest, PrefixAndWholeKeyTest) {
-  rocksdb::Options options;
+  ROCKSDB_NAMESPACE::Options options;
   options.compaction_style = rs::advanced_options::CompactionStyle::Universal;
   options.num_levels = 20;
   options.create_if_missing = true;
   options.optimize_filters_for_hits = false;
   options.target_file_size_base = 268435456;
   options.prefix_extractor = std::make_shared<TestPrefixExtractor>();
-  rocksdb::BlockBasedTableOptions bbto;
-  bbto.filter_policy.reset(rocksdb::NewBloomFilterPolicy(10));
+  ROCKSDB_NAMESPACE::BlockBasedTableOptions bbto;
+  bbto.filter_policy.reset(ROCKSDB_NAMESPACE::NewBloomFilterPolicy(10));
   bbto.block_size = 262144;
   bbto.whole_key_filtering = true;
 
   const std::string kDBPath = test::PerThreadDBPath("table_prefix_test");
   options.table_factory.reset(NewBlockBasedTableFactory(bbto));
   ASSERT_OK(DestroyDB(kDBPath, options));
-  rocksdb::DB* db;
-  ASSERT_OK(rocksdb::DB::Open(options, kDBPath, &db));
+  ROCKSDB_NAMESPACE::DB* db;
+  ASSERT_OK(ROCKSDB_NAMESPACE::DB::Open(options, kDBPath, &db));
 
   // Create a bunch of keys with 10 filters.
   for (int i = 0; i < 10; i++) {
     std::string prefix = "[" + std::to_string(i) + "]";
     for (int j = 0; j < 10; j++) {
       std::string key = prefix + std::to_string(j);
-      ASSERT_OK(db->Put(rocksdb::WriteOptions(), key, "1"));
+      ASSERT_OK(db->Put(ROCKSDB_NAMESPACE::WriteOptions(), key, "1"));
     }
   }
 
@@ -5301,7 +5301,7 @@ TEST_P(BlockBasedTableTest, SeekMetaBlocks) {
 }
 
 TEST_P(BlockBasedTableTest, BadOptions) {
-  rocksdb::Options options;
+  ROCKSDB_NAMESPACE::Options options;
   options.compression = kNoCompression;
   BlockBasedTableOptions bbto = GetBlockBasedTableOptions();
   bbto.block_size = 4000;
@@ -5311,13 +5311,13 @@ TEST_P(BlockBasedTableTest, BadOptions) {
       test::PerThreadDBPath("block_based_table_bad_options_test");
   options.table_factory.reset(NewBlockBasedTableFactory(bbto));
   ASSERT_OK(DestroyDB(kDBPath, options));
-  rocksdb::DB* db;
-  ASSERT_NOK(rocksdb::DB::Open(options, kDBPath, &db));
+  ROCKSDB_NAMESPACE::DB* db;
+  ASSERT_NOK(ROCKSDB_NAMESPACE::DB::Open(options, kDBPath, &db));
 
   bbto.block_size = 4096;
   options.compression = kSnappyCompression;
   options.table_factory.reset(NewBlockBasedTableFactory(bbto));
-  ASSERT_NOK(rocksdb::DB::Open(options, kDBPath, &db));
+  ASSERT_NOK(ROCKSDB_NAMESPACE::DB::Open(options, kDBPath, &db));
 }
 
 TEST_F(BBTTailPrefetchTest, TestTailPrefetchStats) {
@@ -5872,7 +5872,7 @@ TEST_F(CacheUsageOptionsOverridesTest, SanitizeAndValidateOptions) {
               std::string::npos);
   Destroy(options);
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

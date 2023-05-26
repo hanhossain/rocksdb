@@ -45,7 +45,7 @@
 #define ROCKSDB_PRINTF_FORMAT_ATTR(format_param, dots_param)
 #endif
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class DynamicLibrary;
 class FileLock;
@@ -1334,13 +1334,13 @@ extern Status ReadFileToString(Env* env, const std::string& fname,
 // Typical usage is to inherit your wrapper from *Wrapper, e.g.:
 //
 // class MySequentialFileWrapper : public
-// rocksdb::SequentialFileWrapper {
+// ROCKSDB_NAMESPACE::SequentialFileWrapper {
 //  public:
-//   MySequentialFileWrapper(rocksdb::SequentialFile* target):
-//     rocksdb::SequentialFileWrapper(target) {}
+//   MySequentialFileWrapper(ROCKSDB_NAMESPACE::SequentialFile* target):
+//     ROCKSDB_NAMESPACE::SequentialFileWrapper(target) {}
 //   Status Read(size_t n, Slice* result, char* scratch) override {
 //     cout << "Doing a read of size " << n << "!" << endl;
-//     return rocksdb::SequentialFileWrapper::Read(n, result,
+//     return ROCKSDB_NAMESPACE::SequentialFileWrapper::Read(n, result,
 //     scratch);
 //   }
 //   // All other methods are forwarded to target_ automatically.
@@ -1879,4 +1879,4 @@ Status NewEnvLogger(const std::string& fname, Env* env,
 // FileSystem.
 std::unique_ptr<Env> NewCompositeEnv(const std::shared_ptr<FileSystem>& fs);
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

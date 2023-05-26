@@ -15,7 +15,7 @@
 #include "rocksdb/utilities/ldb_cmd.h"
 #include "table/sst_file_dumper.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 static const std::vector<std::pair<CompressionType, const char*>>
     kCompressions = {
@@ -185,13 +185,13 @@ int SSTDumpTool::Run(int argc, char const* const* argv, Options options) {
   int32_t compress_level_from = CompressionOptions::kDefaultCompressionLevel;
   int32_t compress_level_to = CompressionOptions::kDefaultCompressionLevel;
   uint32_t compression_max_dict_bytes =
-      rocksdb::CompressionOptions().max_dict_bytes;
+      ROCKSDB_NAMESPACE::CompressionOptions().max_dict_bytes;
   uint32_t compression_zstd_max_train_bytes =
-      rocksdb::CompressionOptions().zstd_max_train_bytes;
+      ROCKSDB_NAMESPACE::CompressionOptions().zstd_max_train_bytes;
   uint64_t compression_max_dict_buffer_bytes =
-      rocksdb::CompressionOptions().max_dict_buffer_bytes;
+      ROCKSDB_NAMESPACE::CompressionOptions().max_dict_buffer_bytes;
   bool compression_use_zstd_finalize_dict =
-      !rocksdb::CompressionOptions().use_zstd_dict_trainer;
+      !ROCKSDB_NAMESPACE::CompressionOptions().use_zstd_dict_trainer;
 
   int64_t tmp_val;
 
@@ -256,14 +256,14 @@ int SSTDumpTool::Run(int argc, char const* const* argv, Options options) {
     } else if (strncmp(argv[i], "--parse_internal_key=", 21) == 0) {
       std::string in_key(argv[i] + 21);
       try {
-        in_key = rocksdb::LDBCommand::HexToString(in_key);
+        in_key = ROCKSDB_NAMESPACE::LDBCommand::HexToString(in_key);
       } catch (...) {
         std::cerr << "ERROR: Invalid key input '" << in_key
                   << "' Use 0x{hex representation of internal rocksdb key}"
                   << std::endl;
         return -1;
       }
-      Slice sl_key = rocksdb::Slice(in_key);
+      Slice sl_key = ROCKSDB_NAMESPACE::Slice(in_key);
       ParsedInternalKey ikey;
       int retc = 0;
       Status pik_status =
@@ -349,10 +349,10 @@ int SSTDumpTool::Run(int argc, char const* const* argv, Options options) {
 
   if (input_key_hex) {
     if (has_from || use_from_as_prefix) {
-      from_key = rocksdb::LDBCommand::HexToString(from_key);
+      from_key = ROCKSDB_NAMESPACE::LDBCommand::HexToString(from_key);
     }
     if (has_to) {
-      to_key = rocksdb::LDBCommand::HexToString(to_key);
+      to_key = ROCKSDB_NAMESPACE::LDBCommand::HexToString(to_key);
     }
   }
 
@@ -362,7 +362,7 @@ int SSTDumpTool::Run(int argc, char const* const* argv, Options options) {
     exit(1);
   }
 
-  std::shared_ptr<rocksdb::Env> env_guard;
+  std::shared_ptr<ROCKSDB_NAMESPACE::Env> env_guard;
 
   // If caller of SSTDumpTool::Run(...) does not specify a different env other
   // than Env::Default(), then try to load custom env based on env_uri/fs_uri.
@@ -381,8 +381,8 @@ int SSTDumpTool::Run(int argc, char const* const* argv, Options options) {
   }
 
   std::vector<std::string> filenames;
-  rocksdb::Env* env = options.env;
-  rocksdb::Status st = env->GetChildren(dir_or_file, &filenames);
+  ROCKSDB_NAMESPACE::Env* env = options.env;
+  ROCKSDB_NAMESPACE::Status st = env->GetChildren(dir_or_file, &filenames);
   bool dir = true;
   if (!st.ok() || filenames.empty()) {
     // dir_or_file does not exist or does not contain children
@@ -419,7 +419,7 @@ int SSTDumpTool::Run(int argc, char const* const* argv, Options options) {
       filename = std::string(dir_or_file) + "/" + filename;
     }
 
-    rocksdb::SstFileDumper dumper(
+    ROCKSDB_NAMESPACE::SstFileDumper dumper(
         options, filename, rs::advanced_options::Temperature::Unknown, readahead_size,
         verify_checksum, output_hex, decode_blob_index);
     // Not a valid SST
@@ -435,8 +435,8 @@ int SSTDumpTool::Run(int argc, char const* const* argv, Options options) {
         // from_key and to_key are only used for "check", "scan", or ""
         if (command == "check" || command == "scan" || command == "") {
           fprintf(stdout, "from [%s] to [%s]\n",
-                  rocksdb::Slice(from_key).ToString(true).c_str(),
-                  rocksdb::Slice(to_key).ToString(true).c_str());
+                  ROCKSDB_NAMESPACE::Slice(from_key).ToString(true).c_str(),
+                  ROCKSDB_NAMESPACE::Slice(to_key).ToString(true).c_str());
         }
       }
     }
@@ -496,9 +496,9 @@ int SSTDumpTool::Run(int argc, char const* const* argv, Options options) {
     }
 
     if (show_properties || show_summary) {
-      const rocksdb::TableProperties* table_properties;
+      const ROCKSDB_NAMESPACE::TableProperties* table_properties;
 
-      std::shared_ptr<const rocksdb::TableProperties>
+      std::shared_ptr<const ROCKSDB_NAMESPACE::TableProperties>
           table_properties_from_reader;
       st = dumper.ReadTableProperties(&table_properties_from_reader);
       if (!st.ok()) {
@@ -578,5 +578,5 @@ int SSTDumpTool::Run(int argc, char const* const* argv, Options options) {
     return 0;
   }
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 

@@ -13,7 +13,7 @@
 #include "test_util/testharness.h"
 #include "util/random.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class HistogramTest : public testing::Test {};
 
@@ -245,7 +245,7 @@ TEST_F(HistogramTest, LostUpdateStandardDeviation) {
   ASSERT_GE(histogram.StandardDeviation(), 0.0);
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

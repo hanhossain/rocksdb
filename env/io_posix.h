@@ -43,7 +43,7 @@
 #define POSIX_MADV_DONTNEED 4   /* [MC1] don't need these pages */
 #endif
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 std::string IOErrorMsg(const std::string& context,
                        const std::string& file_name);
 // file_name can be left empty if it is not unkown.
@@ -520,4 +520,4 @@ class PosixDirectory : public FSDirectory {
   const std::string directory_name_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -45,7 +45,7 @@
 #include "rocksdb/customizable.h"
 #include "rocksdb/slice.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class Arena;
 class Allocator;
@@ -64,7 +64,7 @@ class MemTableRep {
   // concatenated with values.
   class KeyComparator {
    public:
-    using DecodedType = rocksdb::Slice;
+    using DecodedType = ROCKSDB_NAMESPACE::Slice;
 
     virtual DecodedType decode_key(const char* key) const {
       // The format of key is frozen and can be treated as a part of the API
@@ -418,4 +418,4 @@ extern MemTableRepFactory* NewHashLinkListRepFactory(
     bool if_log_bucket_dist_when_flash = true,
     uint32_t threshold_use_skiplist = 256);
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

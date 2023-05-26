@@ -16,7 +16,7 @@
 #include "rocksdb/utilities/options_type.h"
 #include "util/string_util.h"  // errnoStr
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 namespace {
 static std::unordered_map<std::string, OptionTypeInfo> chroot_fs_type_info = {
     {"chroot_dir", {0, rs::options_type::OptionType::String}}};
@@ -143,6 +143,6 @@ Env* NewChrootEnv(Env* base_env, const std::string& chroot_dir) {
   }
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 #endif  //  !defined(OS_WIN)

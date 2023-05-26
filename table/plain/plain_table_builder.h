@@ -20,7 +20,7 @@
 #include "table/plain/plain_table_key_coding.h"
 #include "table/table_builder.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class BlockBuilder;
 class BlockHandle;
@@ -148,5 +148,5 @@ class PlainTableBuilder : public TableBuilder {
   bool IsTotalOrderMode() const { return (prefix_extractor_ == nullptr); }
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 

@@ -24,7 +24,7 @@
 #include "utilities/transactions/pessimistic_transaction.h"
 #include "utilities/transactions/write_prepared_txn.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class PessimisticTransactionDB : public TransactionDB {
  public:
@@ -313,4 +313,4 @@ class SnapshotCreationCallback : public PostMemTableCallback {
   Status snapshot_creation_status_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

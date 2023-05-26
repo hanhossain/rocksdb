@@ -11,8 +11,9 @@
 #include <string>
 
 #include "db/blob/blob_constants.h"
+#include "rocksdb/rocksdb_namespace.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class JSONWriter;
 class Slice;
@@ -63,4 +64,4 @@ std::ostream& operator<<(std::ostream& os,
 JSONWriter& operator<<(JSONWriter& jw,
                        const BlobFileAddition& blob_file_addition);
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -34,7 +34,7 @@
 #include "table/table_reader.h"
 #include "util/string_util.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class VersionBuilder::Rep {
   class NewestFirstByEpochNumber {
@@ -1423,4 +1423,4 @@ BaseReferencedVersionBuilder::~BaseReferencedVersionBuilder() {
   version_->Unref();
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

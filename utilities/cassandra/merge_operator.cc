@@ -15,7 +15,7 @@
 #include "utilities/cassandra/format.h"
 #include "utilities/merge_operators.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 namespace cassandra {
 static std::unordered_map<std::string, OptionTypeInfo>
     merge_operator_options_info = {
@@ -77,4 +77,4 @@ bool CassandraValueMergeOperator::PartialMergeMulti(
 
 }  // namespace cassandra
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

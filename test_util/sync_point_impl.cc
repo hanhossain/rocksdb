@@ -6,7 +6,7 @@
 #include "test_util/sync_point_impl.h"
 
 #ifndef NDEBUG
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 KillPoint* KillPoint::GetInstance() {
   static KillPoint kp;
   return &kp;
@@ -148,5 +148,5 @@ void SyncPoint::Data::Process(const Slice& point, void* cb_arg) {
   cleared_points_.insert(point_string);
   cv_.notify_all();
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 #endif

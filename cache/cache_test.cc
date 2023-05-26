@@ -27,7 +27,7 @@
 // Those tests were adapted to use 16-byte keys. We kept the original ones.
 // TODO: Remove the original tests if they ever become unused.
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 namespace {
 
@@ -959,7 +959,7 @@ INSTANTIATE_TEST_CASE_P(CacheTestInstance, CacheTest,
 INSTANTIATE_TEST_CASE_P(CacheTestInstance, LRUCacheTest,
                         testing::Values(secondary_cache_test_util::kLRU));
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

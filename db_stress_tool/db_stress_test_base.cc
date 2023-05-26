@@ -30,7 +30,7 @@
 #include "utilities/fault_injection_fs.h"
 #include "utilities/fault_injection_secondary_cache.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 namespace {
 
@@ -1994,7 +1994,7 @@ void StressTest::TestGetProperty(ThreadState* thread) const {
     }
   }
 
-  rocksdb::ColumnFamilyMetaData cf_meta_data;
+  ROCKSDB_NAMESPACE::ColumnFamilyMetaData cf_meta_data;
   db_->GetColumnFamilyMetaData(&cf_meta_data);
   int level_size = static_cast<int>(cf_meta_data.levels.size());
   for (int level = 0; level < level_size; level++) {
@@ -2019,7 +2019,7 @@ void StressTest::TestGetProperty(ThreadState* thread) const {
 
 void StressTest::TestCompactFiles(ThreadState* thread,
                                   ColumnFamilyHandle* column_family) {
-  rocksdb::ColumnFamilyMetaData cf_meta_data;
+  ROCKSDB_NAMESPACE::ColumnFamilyMetaData cf_meta_data;
   db_->GetColumnFamilyMetaData(column_family, &cf_meta_data);
 
   if (cf_meta_data.levels.empty()) {
@@ -3290,5 +3290,5 @@ void InitializeOptionsGeneral(
       std::make_shared<DbStressTablePropertiesCollectorFactory>());
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 #endif  // GFLAGS

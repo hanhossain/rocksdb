@@ -11,7 +11,7 @@
 #include "rocksdb/advanced_cache.h"
 #include "rocksdb/table.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 // Release the cached entry and decrement its ref count.
 extern void ForceReleaseCachedEntry(void* arg, void* h);
 
@@ -28,4 +28,4 @@ extern Status VerifyBlockChecksum(ChecksumType type, const char* data,
                                   size_t block_size,
                                   const std::string& file_name,
                                   uint64_t offset);
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

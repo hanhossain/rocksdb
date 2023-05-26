@@ -21,7 +21,7 @@
 #include "util/random.h"
 #include "util/rate_limiter.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 const std::array<Histograms, std::size_t(Env::IOActivity::kUnknown)>
     kReadHistograms{{
         FILE_READ_FLUSH_MICROS,
@@ -595,4 +595,4 @@ void RandomAccessFileReader::ReadAsyncCallback(const FSReadRequest& req,
   RecordIOStats(stats_, file_temperature_, is_last_level_, req.result.size());
   delete read_async_info;
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

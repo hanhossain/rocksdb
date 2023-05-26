@@ -12,7 +12,7 @@
 
 #include "util/autovector.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class ColumnFamilyData;
 
@@ -43,4 +43,4 @@ class TrimHistoryScheduler {
   std::mutex checking_mutex_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

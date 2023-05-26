@@ -11,7 +11,7 @@
 #include "db_stress_tool/db_stress_common.h"
 #include "file/file_util.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 class CfConsistencyStressTest : public StressTest {
  public:
   CfConsistencyStressTest() : batch_id_(0) {}
@@ -888,5 +888,5 @@ StressTest* CreateCfConsistencyStressTest() {
   return new CfConsistencyStressTest();
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 #endif  // GFLAGS

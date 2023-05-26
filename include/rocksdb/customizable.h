@@ -11,7 +11,7 @@
 #include "rocksdb/configurable.h"
 #include "rocksdb/status.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 /**
  * Customizable a base class used by the rocksdb that describes a
  * standard way of configuring and creating objects.  Customizable objects
@@ -226,4 +226,4 @@ class Customizable : public Configurable {
                                const std::string& prefix) const override;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

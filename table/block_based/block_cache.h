@@ -17,7 +17,7 @@
 #include "table/block_based/parsed_full_filter_block.h"
 #include "table/format.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // Metaprogramming wrappers for Block, to give each type a single role when
 // used with FullTypedCacheInterface.
@@ -137,4 +137,4 @@ template <typename TUse, typename TBlocklike>
 using WithBlocklikeCheck = std::enable_if_t<
     TBlocklike::kCacheEntryRole == CacheEntryRole::kMisc || true, TUse>;
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

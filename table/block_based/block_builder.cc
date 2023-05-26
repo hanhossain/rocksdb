@@ -42,7 +42,7 @@
 #include "table/block_based/data_block_footer.h"
 #include "util/coding.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 BlockBuilder::BlockBuilder(
     int block_restart_interval, bool use_delta_encoding,
@@ -231,4 +231,4 @@ inline void BlockBuilder::AddWithLastKeyImpl(const Slice& key,
   estimate_ += buffer_.size() - buffer_size;
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

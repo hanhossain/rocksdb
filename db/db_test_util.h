@@ -52,7 +52,7 @@
 // In case defined by Windows headers
 #undef small
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 class MockEnv;
 
 namespace anon {
@@ -1333,4 +1333,4 @@ class DBTestBase : public testing::Test {
 // unique ids.
 void VerifySstUniqueIds(const TablePropertiesCollection& props);
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

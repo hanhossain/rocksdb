@@ -15,7 +15,7 @@
 #include "rocksdb/status.h"
 #include "rocksdb/types.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 constexpr uint32_t kMagicNumber = 2395959;  // 0x00248f37
 constexpr uint32_t kVersion1 = 1;
@@ -161,4 +161,4 @@ inline bool IsValidBlobOffset(uint64_t value_offset, uint64_t key_size,
   return true;
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

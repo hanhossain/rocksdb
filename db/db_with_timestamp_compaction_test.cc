@@ -11,7 +11,7 @@
 #include "db/db_test_util.h"
 #include "test_util/testutil.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 namespace {
 std::string Key1(uint64_t key) {
@@ -343,7 +343,7 @@ TEST_F(TimestampCompatibleCompactionTest, EmptyCompactionOutput) {
   ASSERT_OK(db_->CompactRange(cro, nullptr, nullptr));
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

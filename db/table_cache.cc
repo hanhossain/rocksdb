@@ -44,7 +44,7 @@
 #undef WITH_COROUTINES
 // clang-format on
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 namespace {
 
@@ -707,4 +707,4 @@ uint64_t TableCache::ApproximateSize(
 
   return result;
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

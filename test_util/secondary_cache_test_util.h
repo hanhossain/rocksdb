@@ -11,7 +11,7 @@
 
 #include "rocksdb/advanced_cache.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 namespace secondary_cache_test_util {
 
 struct TestCreateContext : public Cache::CreateContext {
@@ -114,4 +114,4 @@ inline auto GetTestingCacheTypes() {
 }
 
 }  // namespace secondary_cache_test_util
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

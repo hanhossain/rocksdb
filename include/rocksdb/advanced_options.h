@@ -16,7 +16,7 @@
 #include "rocksdb/memtablerep.h"
 #include "rocksdb/universal_compaction.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class Slice;
 class SliceTransform;
@@ -1059,4 +1059,4 @@ struct AdvancedColumnFamilyOptions {
   // ---------------- OPTIONS NOT SUPPORTED ANYMORE ----------------
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

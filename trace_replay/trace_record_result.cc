@@ -5,7 +5,7 @@
 
 #include "rocksdb/trace_record_result.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // TraceRecordResult
 TraceRecordResult::TraceRecordResult(TraceType trace_type)
@@ -143,4 +143,4 @@ Status IteratorTraceExecutionResult::Accept(Handler* handler) {
   return handler->Handle(*this);
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

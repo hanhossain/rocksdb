@@ -7,7 +7,7 @@
 #include "db/db_test_util.h"
 #include "table/unique_id_impl.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class MyTestCompactionService : public CompactionService {
  public:
@@ -943,7 +943,7 @@ TEST_F(CompactionServiceTest, TablePropertiesCollector) {
   ASSERT_TRUE(has_user_property);
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

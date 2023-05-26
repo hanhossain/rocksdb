@@ -15,7 +15,7 @@
 #include "rocksdb/utilities/options_type.h"
 #include "utilities/merge_operators.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 namespace {
 static std::unordered_map<std::string, OptionTypeInfo>
     stringappend_merge_type_info = {
@@ -73,4 +73,4 @@ std::shared_ptr<MergeOperator> MergeOperators::CreateStringAppendOperator(
   return std::make_shared<StringAppendOperator>(delim);
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -35,7 +35,7 @@
 #include "rocksdb/status.h"
 #include "rocksdb/write_batch_base.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class Slice;
 class ColumnFamilyHandle;
@@ -491,4 +491,4 @@ class WriteBatch : public WriteBatchBase {
   std::string rep_;  // See comment in write_batch.cc for the format of rep_
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

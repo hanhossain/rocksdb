@@ -23,7 +23,7 @@
 
 using std::string;
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class RangeLockingTest : public ::testing::Test {
  public:
@@ -116,18 +116,18 @@ TEST_F(RangeLockingTest, MyRocksLikeUpdate) {
 
   bool try_range_lock_called = false;
 
-  rocksdb::SyncPoint::GetInstance()->SetCallBack(
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
       "RangeTreeLockManager::TryRangeLock:enter",
       [&](void* /*arg*/) { try_range_lock_called = true; });
-  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
 
   // For performance reasons, the following must NOT call lock_mgr->TryLock():
   // We verify that by checking the value of try_range_lock_called.
   ASSERT_OK(txn0->Put(cf, Slice("b"), Slice("value"),
                       /*assume_tracked=*/true));
 
-  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
-  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
   ASSERT_FALSE(try_range_lock_called);
 
   txn0->Rollback();
@@ -376,12 +376,12 @@ TEST_F(RangeLockingTest, LockWaiteeAccess) {
   ASSERT_OK(txn0->GetRangeLock(cf, Endpoint("a"), Endpoint("c")));
 
   std::atomic<bool> reached(false);
-  rocksdb::SyncPoint::GetInstance()->SetCallBack(
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
       "RangeTreeLockManager::TryRangeLock:EnterWaitingTxn", [&](void* /*arg*/) {
         reached.store(true);
         std::this_thread::sleep_for(std::chrono::milliseconds(2000));
       });
-  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
 
   port::Thread t([&]() {
     // Attempt to get a conflicting lock
@@ -393,8 +393,8 @@ TEST_F(RangeLockingTest, LockWaiteeAccess) {
   while (!reached.load()) {
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
-  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
-  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
 
   // Release locks and free the transaction
   txn0->Rollback();
@@ -428,7 +428,7 @@ void PointLockManagerTestExternalSetup(PointLockManagerTest* self) {
 INSTANTIATE_TEST_CASE_P(RangeLockManager, AnyLockManagerTest,
                         ::testing::Values(PointLockManagerTestExternalSetup));
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

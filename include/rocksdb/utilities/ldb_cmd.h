@@ -25,7 +25,7 @@
 #include "rocksdb/utilities/db_ttl.h"
 #include "rocksdb/utilities/ldb_cmd_execute_result.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class LDBCommand {
  public:
@@ -312,5 +312,5 @@ class LDBCommandRunner {
       const std::vector<ColumnFamilyDescriptor>* column_families);
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 

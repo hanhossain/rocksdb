@@ -10,7 +10,7 @@
 #include "db/db_with_timestamp_test_util.h"
 #include "test_util/testutil.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 class DBReadOnlyTestWithTimestamp : public DBBasicTestWithTimestampBase {
  public:
   DBReadOnlyTestWithTimestamp()
@@ -946,7 +946,7 @@ TEST_F(DBReadOnlyTestWithTimestamp,
 
   Close();
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

@@ -7,7 +7,7 @@
 
 #include "rocksdb/secondary_cache.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class CacheWithSecondaryAdapter : public CacheWrapper {
  public:
@@ -49,4 +49,4 @@ class CacheWithSecondaryAdapter : public CacheWrapper {
   std::shared_ptr<SecondaryCache> secondary_cache_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

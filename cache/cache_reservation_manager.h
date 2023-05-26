@@ -23,7 +23,7 @@
 #include "rocksdb/status.h"
 #include "util/coding.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 // CacheReservationManager is an interface for reserving cache space for the
 // memory used
 class CacheReservationManager {
@@ -314,4 +314,4 @@ class ConcurrentCacheReservationManager
   std::mutex cache_res_mgr_mu_;
   std::shared_ptr<CacheReservationManager> cache_res_mgr_;
 };
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

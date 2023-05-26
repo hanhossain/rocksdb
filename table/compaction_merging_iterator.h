@@ -11,7 +11,7 @@
 #include "rocksdb/types.h"
 #include "table/merging_iterator.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 /*
  * This is a simplified version of MergingIterator and is specifically used for
@@ -41,4 +41,4 @@ InternalIterator* NewCompactionMergingIterator(
     std::vector<std::pair<TruncatedRangeDelIterator*,
                           TruncatedRangeDelIterator***>>& range_tombstone_iters,
     Arena* arena = nullptr);
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

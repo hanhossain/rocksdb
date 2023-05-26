@@ -52,7 +52,7 @@
 //               |
 //               V
 //              null
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // Persistent Cache Config
 //
@@ -336,5 +336,5 @@ class PersistentTieredCache : public PersistentCacheTier {
   std::list<Tier> tiers_;  // list of tiers top-down
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 

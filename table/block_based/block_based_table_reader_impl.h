@@ -19,7 +19,7 @@
 // it's called by other files (e.g. block_based_iterator.h) and
 // are templates.
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 namespace {
 using IterPlaceholderCacheInterface =
     PlaceholderCacheInterface<CacheEntryRole::kMisc>;
@@ -200,4 +200,4 @@ TBlockIter* BlockBasedTable::NewDataBlockIterator(const ReadOptions& ro,
   block.TransferTo(iter);
   return iter;
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

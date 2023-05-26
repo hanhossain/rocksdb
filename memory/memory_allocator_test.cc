@@ -16,7 +16,7 @@
 #include "test_util/testharness.h"
 #include "utilities/memory_allocators.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // TODO: the tests do not work in LITE mode due to relying on
 // `CreateFromString()` to create non-default memory allocators.
@@ -227,7 +227,7 @@ INSTANTIATE_TEST_CASE_P(
 #endif  // ROCKSDB_JEMALLOC
 
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

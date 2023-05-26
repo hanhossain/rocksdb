@@ -7,12 +7,13 @@
 
 #include <string>
 
+#include "rocksdb/rocksdb_namespace.h"
 
 #ifdef FAILED
 #undef FAILED
 #endif
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class LDBCommandExecuteResult {
  public:
@@ -71,4 +72,4 @@ class LDBCommandExecuteResult {
   bool operator!=(const LDBCommandExecuteResult&);
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

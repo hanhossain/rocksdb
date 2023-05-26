@@ -14,7 +14,7 @@
 #include "rocksdb/options.h"
 #include "rocksdb/types.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // Basic identifiers and metadata for a file in a DB. This only includes
 // information considered relevant for taking backups, checkpoints, or other
@@ -255,4 +255,4 @@ struct ExportImportFilesMetaData {
   std::string db_comparator_name;       // Used to safety check at import.
   std::vector<LiveFileMetaData> files;  // Vector of file metadata.
 };
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

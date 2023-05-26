@@ -10,8 +10,9 @@
 
 #include "rocksdb/file_system.h"
 #include "rocksdb/io_status.h"
+#include "rocksdb/rocksdb_namespace.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 class Logger;
 
 struct OpCounter {
@@ -154,4 +155,4 @@ class CountedFileSystem : public FileSystemWrapper {
   std::string PrintCounters() const { return counters_.PrintCounters(); }
   void ResetCounters() { counters_.Reset(); }
 };
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

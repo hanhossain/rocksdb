@@ -22,7 +22,7 @@
 #include "util/coding.h"
 #include "utilities/merge_operators.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 static std::unordered_map<std::string, std::unique_ptr<Aggregator>> func_map;
 const std::string kUnnamedFuncName = "";
 const std::string kErrorFuncName = "kErrorFuncName";
@@ -235,4 +235,4 @@ std::shared_ptr<MergeOperator> GetAggMergeOperator() {
   assert(instance);
   return instance;
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

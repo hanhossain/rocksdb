@@ -19,7 +19,7 @@
 #include "utilities/merge_operators/string_append/stringappend2.h"
 #include "utilities/merge_operators/uint64add.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 static int RegisterBuiltinMergeOperators(ObjectLibrary& library,
                                          const std::string& /*arg*/) {
   size_t num_types;
@@ -112,4 +112,4 @@ std::shared_ptr<MergeOperator> MergeOperators::CreateFromStringId(
   }
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -24,7 +24,7 @@
 #include "rocksdb/utilities/customizable_util.h"
 #include "rocksdb/utilities/object_registry.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 namespace {
 class BytewiseComparatorImpl : public Comparator {
@@ -380,4 +380,4 @@ Status Comparator::CreateFromString(const ConfigOptions& config_options,
   }
   return status;
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

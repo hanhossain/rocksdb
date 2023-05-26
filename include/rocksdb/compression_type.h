@@ -5,8 +5,9 @@
 
 #pragma once
 
+#include "rocksdb/rocksdb_namespace.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // DB contents are stored in a set of blocks, each of which holds a
 // sequence of key,value pairs.  Each block may be compressed before
@@ -36,4 +37,4 @@ enum CompressionType : unsigned char {
   kDisableCompressionOption = 0xff,
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

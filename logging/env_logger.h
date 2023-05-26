@@ -26,7 +26,7 @@
 #include "test_util/sync_point.h"
 #include "util/mutexlock.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class EnvLogger : public Logger {
  public:
@@ -192,4 +192,4 @@ class EnvLogger : public Logger {
   std::atomic<bool> flush_pending_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

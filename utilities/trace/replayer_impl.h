@@ -20,7 +20,7 @@
 #include "rocksdb/utilities/replayer.h"
 #include "trace_replay/trace_replay.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class ReplayerImpl : public Replayer {
  public:
@@ -81,4 +81,4 @@ struct ReplayerWorkerArg {
   std::function<void(Status, std::unique_ptr<TraceRecordResult>&&)> result_cb;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

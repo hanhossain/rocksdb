@@ -20,7 +20,7 @@
 #define ROCKSDB_DEPRECATED_FUNC __declspec(deprecated)
 #endif
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class Comparator;
 
@@ -185,5 +185,5 @@ class SstFileWriter {
   struct Rep;
   std::unique_ptr<Rep> rep_;
 };
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 

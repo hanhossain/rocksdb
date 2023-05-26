@@ -7,7 +7,7 @@
 
 #include "db/version_set.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 Status BlobFetcher::FetchBlob(const Slice& user_key,
                               const Slice& blob_index_slice,
@@ -31,4 +31,4 @@ Status BlobFetcher::FetchBlob(const Slice& user_key,
                            blob_value, bytes_read);
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -11,8 +11,9 @@
 #include <unordered_map>
 
 #include "file/file_prefetch_buffer.h"
+#include "rocksdb/rocksdb_namespace.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // A class that owns a collection of FilePrefetchBuffers using the file number
 // as key. Used for implementing compaction readahead for blob files. Designed
@@ -34,4 +35,4 @@ class PrefetchBufferCollection {
       prefetch_buffers_;  // maps file number to prefetch buffer
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

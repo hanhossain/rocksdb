@@ -13,7 +13,7 @@
 #include "test_util/testutil.h"
 #include "util/random.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class ImportColumnFamilyTest : public DBTestBase {
  public:
@@ -737,7 +737,7 @@ TEST_F(ImportColumnFamilyTest, ImportColumnFamilyNegativeTest) {
   }
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

@@ -75,7 +75,7 @@
 
 extern "C" bool RocksDbIOUringEnable() __attribute__((__weak__));
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 namespace {
 
@@ -1279,6 +1279,6 @@ static FactoryFunc<FileSystem> posix_filesystem_reg =
           return f->get();
         });
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 #endif

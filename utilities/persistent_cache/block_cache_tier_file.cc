@@ -18,7 +18,7 @@
 #include "rocksdb/system_clock.h"
 #include "util/crc32c.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 //
 // File creation factories
@@ -604,5 +604,5 @@ void ThreadedWriter::DispatchIO(const IO& io) {
   }
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 

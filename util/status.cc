@@ -17,7 +17,7 @@
 
 #include "port/port.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 std::unique_ptr<const char[]> Status::CopyState(const char* s) {
   const size_t cch = std::strlen(s) + 1;  // +1 for the null terminator
@@ -159,4 +159,4 @@ std::string Status::ToString() const {
   return result;
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

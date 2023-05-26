@@ -8,9 +8,9 @@
 #include "rocksdb/iostats_context.h"
 
 #if !defined(NIOSTATS_CONTEXT)
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 extern thread_local IOStatsContext iostats_context;
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 // increment a specific counter by the specified value
 #define IOSTATS_ADD(metric, value)        \

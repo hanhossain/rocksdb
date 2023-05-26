@@ -25,7 +25,7 @@
 #include "table/unique_id_impl.h"
 #include "trace_replay/block_cache_tracer.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class Slice;
 class Status;
@@ -219,4 +219,4 @@ class TableBuilder {
       uint64_t /*oldest_ancestor_time*/){};
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

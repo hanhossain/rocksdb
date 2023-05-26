@@ -13,7 +13,7 @@
 #include "util/coding.h"
 #include "utilities/agg_merge/agg_merge.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 std::string EncodeHelper::EncodeFuncAndInt(const Slice& function_name,
                                            int64_t value) {
@@ -101,4 +101,4 @@ bool Last3Aggregator::Aggregate(const std::vector<Slice>& item_list,
   result = EncodeHelper::EncodeList(last3);
   return true;
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

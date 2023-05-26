@@ -12,7 +12,7 @@
 #include "rocksdb/rate_limiter.h"
 #include "tools/simulated_hybrid_file_system.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 const int64_t kUsPerSec = 1000000;
 const int64_t kDummyBytesPerUs = 1024;
@@ -239,5 +239,5 @@ IOStatus SimulatedWritableFile::Sync(const IOOptions& options,
   }
   return target()->Sync(options, dbg);
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 

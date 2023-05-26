@@ -20,7 +20,7 @@
 #include "table/format.h"
 #include "util/kv_map.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class BlockBuilder;
 class BlockHandle;
@@ -169,4 +169,4 @@ Status ReadMetaBlock(RandomAccessFileReader* file,
                      BlockContents* contents,
                      MemoryAllocator* memory_allocator = nullptr);
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

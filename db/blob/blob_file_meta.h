@@ -11,8 +11,9 @@
 #include <string>
 #include <unordered_set>
 
+#include "rocksdb/rocksdb_namespace.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // SharedBlobFileMetaData represents the immutable part of blob files' metadata,
 // like the blob file number, total number and size of blobs, or checksum
@@ -166,4 +167,4 @@ class BlobFileMetaData {
 
 std::ostream& operator<<(std::ostream& os, const BlobFileMetaData& meta);
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

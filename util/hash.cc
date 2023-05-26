@@ -18,7 +18,7 @@
 #include "util/xxhash.h"
 #include "util/xxph3.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 uint64_t (*kGetSliceNPHash64UnseededFnPtr)(const Slice&) = &GetSliceHash64;
 
@@ -198,4 +198,4 @@ void BijectiveUnhash2x64(uint64_t in_high64, uint64_t in_low64,
                          uint64_t* out_high64, uint64_t* out_low64) {
   BijectiveUnhash2x64(in_high64, in_low64, /*seed*/ 0, out_high64, out_low64);
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

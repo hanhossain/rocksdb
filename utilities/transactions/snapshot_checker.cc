@@ -9,7 +9,7 @@
 #include "port/lang.h"
 #include "utilities/transactions/write_prepared_txn_db.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 
 WritePreparedSnapshotChecker::WritePreparedSnapshotChecker(
@@ -34,4 +34,4 @@ DisableGCSnapshotChecker* DisableGCSnapshotChecker::Instance() {
   STATIC_AVOID_DESTRUCTION(DisableGCSnapshotChecker, instance);
   return &instance;
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

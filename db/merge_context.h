@@ -11,7 +11,7 @@
 
 #include "rocksdb/slice.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 const std::vector<Slice> empty_operand_list;
 
@@ -144,4 +144,4 @@ class MergeContext {
   mutable bool operands_reversed_ = true;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

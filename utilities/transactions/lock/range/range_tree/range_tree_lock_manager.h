@@ -16,7 +16,7 @@
 #include "utilities/transactions/lock/range/range_tree/lib/locktree/locktree.h"
 #include "utilities/transactions/lock/range/range_tree/range_tree_lock_tracker.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 typedef DeadlockInfoBufferTempl<RangeDeadlockPath> RangeDeadlockInfoBuffer;
 
@@ -131,5 +131,5 @@ class RangeTreeLockManager : public RangeLockManagerBase,
 void serialize_endpoint(const Endpoint& endp, std::string* buf);
 void wait_callback_for_locktree(void* cdata, toku::lock_wait_infos* infos);
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 #endif  // OS_WIN

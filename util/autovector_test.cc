@@ -18,7 +18,7 @@
 using std::cout;
 using std::endl;
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class AutoVectorTest : public testing::Test {};
 const unsigned long kSize = 8;
@@ -315,7 +315,7 @@ TEST_F(AutoVectorTest, PerfBench) {
   }
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

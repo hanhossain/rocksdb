@@ -10,7 +10,7 @@
 
 #include "table/block_based/index_reader_common.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 // Index that leverages an internal hash table to quicken the lookup for a given
 // key.
 class HashIndexReader : public BlockBasedTable::IndexReaderCommon {
@@ -46,4 +46,4 @@ class HashIndexReader : public BlockBasedTable::IndexReaderCommon {
 
   std::unique_ptr<BlockPrefixIndex> prefix_index_;
 };
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -17,10 +17,11 @@
 #include "rocksdb/db.h"
 #include "rocksdb/env.h"
 #include "rocksdb/file_system.h"
+#include "rocksdb/rocksdb_namespace.h"
 #include "rocksdb/types.h"
 #include "util/string_util.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // An `ExpectedState` provides read/write access to expected values for every
 // key.
@@ -281,6 +282,6 @@ class AnonExpectedStateManager : public ExpectedStateManager {
   Status Open() override;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 #endif  // GFLAGS

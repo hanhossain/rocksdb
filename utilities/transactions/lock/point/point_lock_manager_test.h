@@ -13,7 +13,7 @@
 #include "utilities/transactions/pessimistic_transaction_db.h"
 #include "utilities/transactions/transaction_db_mutex_impl.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class MockColumnFamilyHandle : public ColumnFamilyHandle {
  public:
@@ -192,17 +192,17 @@ TEST_P(AnyLockManagerTest, LockConflict) {
 port::Thread BlockUntilWaitingTxn(const char* sync_point_name,
                                   std::function<void()> f) {
   std::atomic<bool> reached(false);
-  rocksdb::SyncPoint::GetInstance()->SetCallBack(
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
       sync_point_name, [&](void* /*arg*/) { reached.store(true); });
-  rocksdb::SyncPoint::GetInstance()->EnableProcessing();
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
 
   port::Thread t(f);
 
   while (!reached.load()) {
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
-  rocksdb::SyncPoint::GetInstance()->DisableProcessing();
-  rocksdb::SyncPoint::GetInstance()->ClearAllCallBacks();
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();
+  ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->ClearAllCallBacks();
 
   return t;
 }
@@ -320,4 +320,4 @@ TEST_P(AnyLockManagerTest, GetWaitingTxns_MultipleTxns) {
   delete txn3;
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

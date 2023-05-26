@@ -14,7 +14,7 @@
 #include "rocksdb/secondary_cache.h"
 #include "rocksdb/table.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // The classes and functions in this header file is used for dumping out the
 // blocks in a block cache, storing or transfering the blocks to another
@@ -137,4 +137,4 @@ Status NewDefaultCacheDumpedLoader(
     std::unique_ptr<CacheDumpReader>&& reader,
     std::unique_ptr<CacheDumpedLoader>* cache_dump_loader);
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

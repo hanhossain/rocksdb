@@ -7,7 +7,7 @@
 
 #include <functional>
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 bool BlockCacheTierMetadata::Insert(BlockCacheFile* file) {
   return cache_file_index_.Insert(file);
@@ -80,5 +80,5 @@ void BlockCacheTierMetadata::RemoveAllKeys(BlockCacheFile* f) {
   f->block_infos().clear();
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 

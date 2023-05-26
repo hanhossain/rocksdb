@@ -17,7 +17,7 @@
 
 #include "port/port.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // Helper class that locks a mutex on construction and unlocks the mutex when
 // the destructor of the MutexLock object is invoked.
@@ -178,4 +178,4 @@ class Striped {
   std::function<uint64_t(const P &)> hash_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

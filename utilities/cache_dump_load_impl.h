@@ -17,7 +17,7 @@
 #include "table/block_based/reader_common.h"
 #include "util/hash_containers.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // the read buffer size of for the default CacheDumpReader
 const unsigned int kDumpReaderBufferSize = 1024;  // 1KB
@@ -353,4 +353,4 @@ class CacheDumperHelper {
   }
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

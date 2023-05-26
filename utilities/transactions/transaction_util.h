@@ -17,7 +17,7 @@
 #include "rocksdb/types.h"
 #include "utilities/transactions/lock/lock_tracker.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class DBImpl;
 struct SuperVersion;
@@ -79,5 +79,5 @@ class TransactionUtil {
                          SequenceNumber min_uncommitted = kMaxSequenceNumber);
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 

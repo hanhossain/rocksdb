@@ -17,7 +17,7 @@
 #include "rocksdb/utilities/options_type.h"
 #include "util/coding.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 static std::unordered_map<std::string, OptionTypeInfo> ttl_merge_op_type_info =
     {{"user_operator",
       OptionTypeInfo::AsCustomSharedPtr<MergeOperator>(
@@ -614,4 +614,4 @@ void DBWithTTLImpl::SetTtl(ColumnFamilyHandle* h, int32_t ttl) {
   filter->SetTtl(ttl);
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -13,7 +13,7 @@
 
 #include "util/hash.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 MemMapping::~MemMapping() {
 #ifdef OS_WIN
@@ -95,4 +95,4 @@ MemMapping MemMapping::AllocateLazyZeroed(size_t length) {
   return AllocateAnonymous(length, /*huge*/ false);
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

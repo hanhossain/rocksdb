@@ -10,7 +10,7 @@
 #include "monitoring/statistics.h"
 #include "util/stop_watch.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 BlobLogSequentialReader::BlobLogSequentialReader(
     std::unique_ptr<RandomAccessFileReader>&& file_reader, SystemClock* clock,
@@ -131,4 +131,4 @@ Status BlobLogSequentialReader::ReadFooter(BlobLogFooter* footer) {
   return footer->DecodeFrom(buffer_);
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

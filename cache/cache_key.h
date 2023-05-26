@@ -7,10 +7,11 @@
 
 #include <cstdint>
 
+#include "rocksdb/rocksdb_namespace.h"
 #include "rocksdb/slice.h"
 #include "table/unique_id_impl.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class Cache;
 
@@ -139,4 +140,4 @@ class OffsetableCacheKey : private CacheKey {
   }
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

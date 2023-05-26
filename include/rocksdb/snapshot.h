@@ -7,7 +7,7 @@
 
 #include "rocksdb/types.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class DB;
 
@@ -50,4 +50,4 @@ class ManagedSnapshot {
   const Snapshot* snapshot_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

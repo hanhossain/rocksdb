@@ -8,7 +8,7 @@
 #include "util/cast_util.h"
 #include "utilities/transactions/transaction_test.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 INSTANTIATE_TEST_CASE_P(
     Unsupported, TimestampedSnapshotWithTsSanityCheck,
     ::testing::Values(
@@ -448,7 +448,7 @@ TEST_P(TransactionTest, MultipleTimestampedSnapshots) {
   db = nullptr;
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

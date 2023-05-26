@@ -7,6 +7,6 @@
 #include "rocksdb/sst_dump_tool.h"
 
 int main(int argc, char** argv) {
-  rocksdb::SSTDumpTool tool;
+  ROCKSDB_NAMESPACE::SSTDumpTool tool;
   return tool.Run(argc, argv);
 }

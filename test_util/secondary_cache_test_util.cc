@@ -7,7 +7,7 @@
 
 #include <array>
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 namespace secondary_cache_test_util {
 
@@ -93,4 +93,4 @@ const Cache::CacheItemHelper* WithCacheType::GetHelperFail(CacheEntryRole r) {
 
 }  // namespace secondary_cache_test_util
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

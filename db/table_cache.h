@@ -27,7 +27,7 @@
 #include "trace_replay/block_cache_tracer.h"
 #include "util/coro_utils.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class Env;
 class Arena;
@@ -280,4 +280,4 @@ class TableCache {
   std::string db_session_id_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

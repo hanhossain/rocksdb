@@ -37,7 +37,7 @@
 // implementation is not concurrent at this point though.
 //
 // The eviction algorithm is LRU
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class VolatileCacheTier : public PersistentCacheTier {
  public:
@@ -135,5 +135,5 @@ class VolatileCacheTier : public PersistentCacheTier {
   Statistics stats_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 

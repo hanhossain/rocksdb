@@ -9,8 +9,9 @@
 #include <cstdint>
 #include <string>
 
+#include "rocksdb/rocksdb_namespace.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 class ObjectLibrary;
 namespace cassandra {
 struct CassandraOptions {
@@ -37,4 +38,4 @@ extern "C" {
 int RegisterCassandraObjects(ObjectLibrary& library, const std::string& arg);
 }  // extern "C"
 }  // namespace cassandra
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -30,7 +30,7 @@
 
 #include "util/string_util.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // We want to give users opportunity to default all the mutexes to adaptive if
 // not specified otherwise. This enables a quick way to conduct various
@@ -295,6 +295,6 @@ bool GenerateRfcUuid(std::string* output) {
 }
 
 }  // namespace port
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 #endif

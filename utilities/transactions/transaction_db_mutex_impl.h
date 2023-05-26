@@ -7,7 +7,7 @@
 
 #include "rocksdb/utilities/transaction_db_mutex.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class TransactionDBMutex;
 class TransactionDBCondVar;
@@ -20,5 +20,5 @@ class TransactionDBMutexFactoryImpl : public TransactionDBMutexFactory {
   std::shared_ptr<TransactionDBCondVar> AllocateCondVar() override;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 

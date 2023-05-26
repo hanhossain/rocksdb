@@ -7,7 +7,7 @@
 
 #include "rocksdb/utilities/backup_engine.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 struct TEST_BackupMetaSchemaOptions {
   std::string version = "2";
@@ -31,4 +31,4 @@ void TEST_SetDefaultRateLimitersClock(
     BackupEngine* engine,
     const std::shared_ptr<SystemClock>& backup_rate_limiter_clock = nullptr,
     const std::shared_ptr<SystemClock>& restore_rate_limiter_clock = nullptr);
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

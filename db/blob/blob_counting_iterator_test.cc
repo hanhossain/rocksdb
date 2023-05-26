@@ -16,7 +16,7 @@
 #include "test_util/testutil.h"
 #include "util/vector_iterator.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 void CheckInFlow(const BlobGarbageMeter& blob_garbage_meter,
                  uint64_t blob_file_number, uint64_t count, uint64_t bytes) {
@@ -318,7 +318,7 @@ TEST(BlobCountingIteratorTest, CorruptBlobIndex) {
   ASSERT_NOK(blob_counter.status());
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

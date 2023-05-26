@@ -13,7 +13,7 @@
 #include "port/port.h"
 #include "rocksdb/sst_file_manager.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 class ErrorHandler;
 class FileSystem;
 class SystemClock;
@@ -189,5 +189,5 @@ class SstFileManagerImpl : public SstFileManager {
   std::shared_ptr<Statistics> stats_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 

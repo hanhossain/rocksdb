@@ -19,7 +19,7 @@
 #include "rocksdb/utilities/options_type.h"
 #include "util/hash.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 namespace {
 
 using Key = const char*;
@@ -921,4 +921,4 @@ MemTableRepFactory* NewHashLinkListRepFactory(
       bucket_entries_logging_threshold, if_log_bucket_dist_when_flash);
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

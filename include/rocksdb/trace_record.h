@@ -9,10 +9,11 @@
 #include <string>
 #include <vector>
 
+#include "rocksdb/rocksdb_namespace.h"
 #include "rocksdb/slice.h"
 #include "rocksdb/status.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class ColumnFamilyHandle;
 class DB;
@@ -244,4 +245,4 @@ class MultiGetQueryTraceRecord : public QueryTraceRecord {
   std::vector<PinnableSlice> keys_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

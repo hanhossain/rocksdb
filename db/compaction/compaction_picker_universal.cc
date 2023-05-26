@@ -24,7 +24,7 @@
 #include "util/random.h"
 #include "util/string_util.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 namespace {
 // A helper class that form universal compactions. The class is used by
 // UniversalCompactionPicker::PickCompaction().
@@ -1448,5 +1448,5 @@ uint64_t UniversalCompactionBuilder::GetMaxOverlappingBytes() const {
     return mutable_cf_options_.target_file_size_base / 2 * 3;
   }
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 

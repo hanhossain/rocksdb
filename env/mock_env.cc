@@ -24,7 +24,7 @@
 #include "util/rate_limiter.h"
 #include "util/string_util.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 namespace {
 int64_t MaybeCurrentTime(const std::shared_ptr<SystemClock>& clock) {
   int64_t time = 1337346000;  // arbitrary fallback default
@@ -1055,4 +1055,4 @@ Status MockEnv::CorruptBuffer(const std::string& fname) {
 Env* NewMemEnv(Env* base_env) { return MockEnv::Create(base_env); }
 
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

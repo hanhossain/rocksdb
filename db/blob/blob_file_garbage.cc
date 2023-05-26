@@ -14,7 +14,7 @@
 #include "test_util/sync_point.h"
 #include "util/coding.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // Tags for custom fields. Note that these get persisted in the manifest,
 // so existing tags should not be modified.
@@ -131,4 +131,4 @@ JSONWriter& operator<<(JSONWriter& jw,
   return jw;
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

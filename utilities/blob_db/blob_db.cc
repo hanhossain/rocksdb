@@ -11,7 +11,7 @@
 #include "logging/logging.h"
 #include "utilities/blob_db/blob_db_impl.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 namespace blob_db {
 
 Status BlobDB::Open(const Options& options, const BlobDBOptions& bdb_options,
@@ -109,4 +109,4 @@ void BlobDBOptions::Dump(Logger* log) const {
 }
 
 }  // namespace blob_db
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -10,7 +10,7 @@
 
 #include "rocksdb/file_system.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // A FileSystem simulates hybrid file system by ingesting latency and limit
 // IOPs.
@@ -120,5 +120,5 @@ class SimulatedWritableFile : public FSWritableFileWrapper {
 
   void SimulateIOWait(int64_t num_requests) const;
 };
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 

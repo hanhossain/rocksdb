@@ -11,7 +11,7 @@
 #include "table/block_based/cachable_entry.h"
 #include "table/format.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class BlockBasedTable;
 struct BlockCacheLookupContext;
@@ -58,4 +58,4 @@ class UncompressionDictReader {
   CachableEntry<UncompressionDict> uncompression_dict_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

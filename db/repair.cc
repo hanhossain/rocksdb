@@ -85,7 +85,7 @@
 #include "table/unique_id_impl.h"
 #include "util/string_util.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 namespace {
 
@@ -825,4 +825,4 @@ Status RepairDB(const std::string& dbname, const Options& options) {
   return status;
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

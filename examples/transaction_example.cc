@@ -10,15 +10,15 @@
 #include "rocksdb/utilities/transaction.h"
 #include "rocksdb/utilities/transaction_db.h"
 
-using rocksdb::Options;
-using rocksdb::ReadOptions;
-using rocksdb::Snapshot;
-using rocksdb::Status;
-using rocksdb::Transaction;
-using rocksdb::TransactionDB;
-using rocksdb::TransactionDBOptions;
-using rocksdb::TransactionOptions;
-using rocksdb::WriteOptions;
+using ROCKSDB_NAMESPACE::Options;
+using ROCKSDB_NAMESPACE::ReadOptions;
+using ROCKSDB_NAMESPACE::Snapshot;
+using ROCKSDB_NAMESPACE::Status;
+using ROCKSDB_NAMESPACE::Transaction;
+using ROCKSDB_NAMESPACE::TransactionDB;
+using ROCKSDB_NAMESPACE::TransactionDBOptions;
+using ROCKSDB_NAMESPACE::TransactionOptions;
+using ROCKSDB_NAMESPACE::WriteOptions;
 
 #if defined(OS_WIN)
 std::string kDBPath = "C:\\Windows\\TEMP\\rocksdb_transaction_example";
@@ -190,7 +190,7 @@ int main() {
 
   // Cleanup
   delete txn_db;
-  rocksdb::DestroyDB(kDBPath, options);
+  ROCKSDB_NAMESPACE::DestroyDB(kDBPath, options);
   return 0;
 }
 

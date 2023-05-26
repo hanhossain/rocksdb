@@ -11,7 +11,7 @@
 #include "rocksdb/system_clock.h"
 #include "test_util/testharness.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 namespace {
 class TimeSetClock : public SystemClockWrapper {
  public:
@@ -239,7 +239,7 @@ TEST_F(WriteControllerTest, CreditAccumulation) {
   ASSERT_EQ(10 SECS, controller.GetDelay(clock_.get(), 10 MB));
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

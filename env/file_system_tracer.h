@@ -9,7 +9,7 @@
 #include "rocksdb/system_clock.h"
 #include "trace_replay/io_tracer.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // FileSystemTracingWrapper is a wrapper class above FileSystem that forwards
 // the call to the underlying storage system. It then invokes IOTracer to record
@@ -458,4 +458,4 @@ class FSRandomRWFilePtr {
   FSRandomRWFileTracingWrapper fs_tracer_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

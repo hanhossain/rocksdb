@@ -15,7 +15,7 @@
 #include "rocksdb/trace_reader_writer.h"
 #include "trace_replay/trace_replay.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 class Env;
 class SystemClock;
 
@@ -149,14 +149,14 @@ class BlockCacheHumanReadableTraceWriter {
   ~BlockCacheHumanReadableTraceWriter();
 
   Status NewWritableFile(const std::string& human_readable_trace_file_path,
-                         rocksdb::Env* env);
+                         ROCKSDB_NAMESPACE::Env* env);
 
   Status WriteHumanReadableTraceRecord(const BlockCacheTraceRecord& access,
                                        uint64_t block_id, uint64_t get_key_id);
 
  private:
   char trace_record_buffer_[1024 * 1024];
-  std::unique_ptr<rocksdb::WritableFile>
+  std::unique_ptr<ROCKSDB_NAMESPACE::WritableFile>
       human_readable_trace_file_writer_;
 };
 
@@ -236,4 +236,4 @@ class BlockCacheTracer {
   std::atomic<uint64_t> get_id_counter_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

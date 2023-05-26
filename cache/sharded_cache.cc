@@ -17,7 +17,7 @@
 #include "util/math.h"
 #include "util/mutexlock.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 ShardedCacheBase::ShardedCacheBase(const ShardedCacheOptions& opts)
     : Cache(opts.memory_allocator),
@@ -95,4 +95,4 @@ int ShardedCacheBase::GetNumShardBits() const {
 
 uint32_t ShardedCacheBase::GetNumShards() const { return shard_mask_ + 1; }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

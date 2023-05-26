@@ -11,7 +11,7 @@
 #include "table/block_fetcher.h"
 #include "table/meta_blocks.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 Status HashIndexReader::Create(const BlockBasedTable* table,
                                const ReadOptions& ro,
                                FilePrefetchBuffer* prefetch_buffer,
@@ -144,4 +144,4 @@ InternalIteratorBase<IndexValue>* HashIndexReader::NewIterator(
 
   return it;
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

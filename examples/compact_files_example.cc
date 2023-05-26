@@ -13,15 +13,15 @@
 #include "rocksdb/env.h"
 #include "rocksdb/options.h"
 
-using rocksdb::ColumnFamilyMetaData;
-using rocksdb::CompactionOptions;
-using rocksdb::DB;
-using rocksdb::EventListener;
-using rocksdb::FlushJobInfo;
-using rocksdb::Options;
-using rocksdb::ReadOptions;
-using rocksdb::Status;
-using rocksdb::WriteOptions;
+using ROCKSDB_NAMESPACE::ColumnFamilyMetaData;
+using ROCKSDB_NAMESPACE::CompactionOptions;
+using ROCKSDB_NAMESPACE::DB;
+using ROCKSDB_NAMESPACE::EventListener;
+using ROCKSDB_NAMESPACE::FlushJobInfo;
+using ROCKSDB_NAMESPACE::Options;
+using ROCKSDB_NAMESPACE::ReadOptions;
+using ROCKSDB_NAMESPACE::Status;
+using ROCKSDB_NAMESPACE::WriteOptions;
 
 #if defined(OS_WIN)
 std::string kDBPath = "C:\\Windows\\TEMP\\rocksdb_compact_files_example";
@@ -151,7 +151,7 @@ int main() {
   options.listeners.emplace_back(new FullCompactor(options));
 
   DB* db = nullptr;
-  rocksdb::DestroyDB(kDBPath, options);
+  ROCKSDB_NAMESPACE::DestroyDB(kDBPath, options);
   Status s = DB::Open(options, kDBPath, &db);
   assert(s.ok());
   assert(db);

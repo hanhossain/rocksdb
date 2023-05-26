@@ -11,7 +11,7 @@
 
 #include "rocksdb/env.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 // Prints logs to stderr for faster debugging
 class StderrLogger : public Logger {
@@ -28,4 +28,4 @@ class StderrLogger : public Logger {
   virtual void Logv(const char* format, va_list ap) override;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

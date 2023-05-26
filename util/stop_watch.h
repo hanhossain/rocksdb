@@ -7,7 +7,7 @@
 #include "monitoring/statistics.h"
 #include "rocksdb/system_clock.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 // Auto-scoped.
 // When statistics is not nullptr, records the measured time into any enabled
 // histograms supplied to the constructor. A histogram argument may be omitted
@@ -133,4 +133,4 @@ class StopWatchNano {
   uint64_t start_;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

@@ -11,16 +11,16 @@
 #include "rocksdb/options.h"
 #include "rocksdb/utilities/backup_engine.h"
 
-using rocksdb::BackupEngine;
-using rocksdb::BackupEngineOptions;
-using rocksdb::BackupEngineReadOnly;
-using rocksdb::BackupInfo;
-using rocksdb::DB;
-using rocksdb::Env;
-using rocksdb::Options;
-using rocksdb::ReadOptions;
-using rocksdb::Status;
-using rocksdb::WriteOptions;
+using ROCKSDB_NAMESPACE::BackupEngine;
+using ROCKSDB_NAMESPACE::BackupEngineOptions;
+using ROCKSDB_NAMESPACE::BackupEngineReadOnly;
+using ROCKSDB_NAMESPACE::BackupInfo;
+using ROCKSDB_NAMESPACE::DB;
+using ROCKSDB_NAMESPACE::Env;
+using ROCKSDB_NAMESPACE::Options;
+using ROCKSDB_NAMESPACE::ReadOptions;
+using ROCKSDB_NAMESPACE::Status;
+using ROCKSDB_NAMESPACE::WriteOptions;
 
 #if defined(OS_WIN)
 std::string kDBPath = "C:\\Windows\\TEMP\\rocksdb_example";

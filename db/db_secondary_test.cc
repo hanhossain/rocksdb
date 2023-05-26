@@ -15,7 +15,7 @@
 #include "test_util/testutil.h"
 #include "utilities/fault_injection_env.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class DBSecondaryTestBase : public DBBasicTestWithTimestampBase {
  public:
@@ -1681,7 +1681,7 @@ TEST_F(DBSecondaryTestWithTimestamp, Iterators) {
   Close();
 }
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

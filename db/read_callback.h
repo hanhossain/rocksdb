@@ -8,7 +8,7 @@
 #include "db/dbformat.h"
 #include "rocksdb/types.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 class ReadCallback {
  public:
@@ -51,4 +51,4 @@ class ReadCallback {
   const SequenceNumber min_uncommitted_ = kMinUnCommittedSeq;
 };
 
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE

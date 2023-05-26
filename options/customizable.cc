@@ -14,7 +14,7 @@
 #include "rocksdb/utilities/options_type.h"
 #include "util/string_util.h"
 
-namespace rocksdb {
+namespace ROCKSDB_NAMESPACE {
 
 std::string Customizable::GetOptionName(const std::string& long_name) const {
   const std::string& name = Name();
@@ -130,4 +130,4 @@ Status Customizable::ConfigureNewObject(
   }
   return status;
 }
-}  // namespace rocksdb
+}  // namespace ROCKSDB_NAMESPACE
