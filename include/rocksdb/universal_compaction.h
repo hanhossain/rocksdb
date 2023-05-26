@@ -16,7 +16,7 @@ namespace rocksdb {
 // Algorithm used to make a compaction request stop picking new files
 // into a single compaction run
 //
-enum class CompactionStopStyle {
+enum CompactionStopStyle {
   kCompactionStopStyleSimilarSize,  // pick files of similar size
   kCompactionStopStyleTotalSize     // total size of picked files > next file
 };
@@ -65,7 +65,7 @@ class CompactionOptionsUniversal {
   int compression_size_percent;
 
   // The algorithm used to stop picking files into a single compaction run
-  // Default: CompactionStopStyle::kCompactionStopStyleTotalSize
+  // Default: kCompactionStopStyleTotalSize
   CompactionStopStyle stop_style;
 
   // Option to optimize the universal multi level compaction by enabling
@@ -87,7 +87,7 @@ class CompactionOptionsUniversal {
         max_merge_width(UINT_MAX),
         max_size_amplification_percent(200),
         compression_size_percent(-1),
-        stop_style(CompactionStopStyle::kCompactionStopStyleTotalSize),
+        stop_style(kCompactionStopStyleTotalSize),
         allow_trivial_move(false),
         incremental(false) {}
 };

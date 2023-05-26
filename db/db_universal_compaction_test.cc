@@ -949,7 +949,7 @@ TEST_P(DBTestUniversalCompaction, UniversalCompactionStopStyleSimilarSize) {
   options.level0_file_num_compaction_trigger = 4;
   options.compaction_options_universal.size_ratio = 10;
   options.compaction_options_universal.stop_style =
-      CompactionStopStyle::kCompactionStopStyleSimilarSize;
+      kCompactionStopStyleSimilarSize;
   options.num_levels = num_levels_;
   DestroyAndReopen(options);
 

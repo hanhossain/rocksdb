@@ -5542,7 +5542,7 @@ TEST_F(DBTest, DynamicUniversalCompactionOptions) {
                 .compaction_options_universal.compression_size_percent,
             -1);
   ASSERT_EQ(dbfull()->GetOptions().compaction_options_universal.stop_style,
-            CompactionStopStyle::kCompactionStopStyleTotalSize);
+            kCompactionStopStyleTotalSize);
   ASSERT_EQ(
       dbfull()->GetOptions().compaction_options_universal.allow_trivial_move,
       false);
@@ -5563,7 +5563,7 @@ TEST_F(DBTest, DynamicUniversalCompactionOptions) {
                 .compaction_options_universal.compression_size_percent,
             -1);
   ASSERT_EQ(dbfull()->GetOptions().compaction_options_universal.stop_style,
-            CompactionStopStyle::kCompactionStopStyleTotalSize);
+            kCompactionStopStyleTotalSize);
   ASSERT_EQ(
       dbfull()->GetOptions().compaction_options_universal.allow_trivial_move,
       false);
@@ -5584,7 +5584,7 @@ TEST_F(DBTest, DynamicUniversalCompactionOptions) {
                 .compaction_options_universal.compression_size_percent,
             -1);
   ASSERT_EQ(dbfull()->GetOptions().compaction_options_universal.stop_style,
-            CompactionStopStyle::kCompactionStopStyleTotalSize);
+            kCompactionStopStyleTotalSize);
   ASSERT_EQ(
       dbfull()->GetOptions().compaction_options_universal.allow_trivial_move,
       false);
