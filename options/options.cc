@@ -35,8 +35,7 @@
 
 namespace rocksdb {
 
-AdvancedColumnFamilyOptions::AdvancedColumnFamilyOptions()
-    : compaction_options_fifo(rs::advanced_options::CompactionOptionsFIFO_new()) {
+AdvancedColumnFamilyOptions::AdvancedColumnFamilyOptions() {
   assert(memtable_factory.get() != nullptr);
 }
 

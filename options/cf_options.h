@@ -204,7 +204,7 @@ struct MutableCFOptions {
         max_bytes_for_level_multiplier(0),
         ttl(0),
         periodic_compaction_seconds(0),
-        compaction_options_fifo(rs::advanced_options::CompactionOptionsFIFO_new()),
+        compaction_options_fifo(),
         enable_blob_files(false),
         min_blob_size(0),
         blob_file_size(0),
