@@ -9,7 +9,7 @@ edition = "2021"
 crate-type = ["staticlib"]
 
 [build-dependencies]
-cxx-build = "1.0.94"
+cxx-build = "1.0.95"
 
 [dependencies]
-cxx = "1.0.94"
+cxx = "1.0.95"
