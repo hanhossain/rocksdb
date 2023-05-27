@@ -934,17 +934,16 @@ set(ROCKSDB_LIB ${ROCKSDB_STATIC_LIB})
 # Tests are excluded from Release builds
 CMAKE_DEPENDENT_OPTION(WITH_TESTS "build with tests" ON
   "CMAKE_BUILD_TYPE STREQUAL Debug" OFF)
-option(WITH_BENCHMARK_TOOLS "build with benchmarks" ON)
 option(WITH_CORE_TOOLS "build with ldb and sst_dump" ON)
 option(WITH_TOOLS "build with tools" ON)
 
-if(WITH_TESTS OR WITH_BENCHMARK_TOOLS OR WITH_TOOLS)
+if(WITH_TESTS OR WITH_TOOLS)
   include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/third-party/gtest-1.8.1/fused-src)
 endif()
 
 option(WITH_ALL_TESTS "Build all test, rather than a small subset" ON)
 
-if(WITH_TESTS OR WITH_BENCHMARK_TOOLS)
+if(WITH_TESTS)
   add_subdirectory(third-party/gtest-1.8.1/fused-src/gtest)
   add_library(testharness STATIC
   test_util/mock_time_env.cc
@@ -1194,46 +1193,6 @@ if(WITH_TESTS)
   endforeach(sourcefile ${TESTS})
 endif()
 
-if(WITH_BENCHMARK_TOOLS)
-  add_executable(db_bench${ARTIFACT_SUFFIX}
-    tools/simulated_hybrid_file_system.cc
-    tools/db_bench.cc
-    tools/db_bench_tool.cc)
-  target_link_libraries(db_bench${ARTIFACT_SUFFIX}
-    ${ROCKSDB_LIB} ${THIRDPARTY_LIBS})
-
-  add_executable(cache_bench${ARTIFACT_SUFFIX}
-    cache/cache_bench.cc
-    cache/cache_bench_tool.cc)
-  target_link_libraries(cache_bench${ARTIFACT_SUFFIX}
-    ${ROCKSDB_LIB} ${GFLAGS_LIB} ${FOLLY_LIBS})
-
-  add_executable(memtablerep_bench${ARTIFACT_SUFFIX}
-    memtable/memtablerep_bench.cc)
-  target_link_libraries(memtablerep_bench${ARTIFACT_SUFFIX}
-    ${ROCKSDB_LIB} ${GFLAGS_LIB} ${FOLLY_LIBS})
-
-  add_executable(range_del_aggregator_bench${ARTIFACT_SUFFIX}
-    db/range_del_aggregator_bench.cc)
-  target_link_libraries(range_del_aggregator_bench${ARTIFACT_SUFFIX}
-    ${ROCKSDB_LIB} ${GFLAGS_LIB} ${FOLLY_LIBS})
-
-  add_executable(table_reader_bench${ARTIFACT_SUFFIX}
-    table/table_reader_bench.cc)
-  target_link_libraries(table_reader_bench${ARTIFACT_SUFFIX}
-    ${ROCKSDB_LIB} testharness ${GFLAGS_LIB} ${FOLLY_LIBS})
-
-  add_executable(filter_bench${ARTIFACT_SUFFIX}
-    util/filter_bench.cc)
-  target_link_libraries(filter_bench${ARTIFACT_SUFFIX}
-    ${ROCKSDB_LIB} ${GFLAGS_LIB} ${FOLLY_LIBS})
-
-  add_executable(hash_table_bench${ARTIFACT_SUFFIX}
-    utilities/persistent_cache/hash_table_bench.cc)
-  target_link_libraries(hash_table_bench${ARTIFACT_SUFFIX}
-    ${ROCKSDB_LIB} ${GFLAGS_LIB} ${FOLLY_LIBS})
-endif()
-
 option(WITH_TRACE_TOOLS "build with trace tools" ON)
 if(WITH_TRACE_TOOLS)
   add_executable(block_cache_trace_analyzer${ARTIFACT_SUFFIX}
@@ -1263,9 +1222,4 @@ endif()
 option(WITH_EXAMPLES "build with examples" OFF)
 if(WITH_EXAMPLES)
   add_subdirectory(examples)
-endif()
-
-option(WITH_BENCHMARK "build benchmark tests" OFF)
-if(WITH_BENCHMARK)
-  add_subdirectory(${PROJECT_SOURCE_DIR}/microbench/)
 endif()
