@@ -32,7 +32,7 @@ class FileChecksumGenCrc32c : public FileChecksumGenerator {
   void Finalize() override {
     assert(checksum_str_.empty());
     // Store as big endian raw bytes
-    PutFixed32(&checksum_str_, EndianSwapValue(checksum_));
+    PutFixed32(&checksum_str_, rs::math::EndianSwapValue(checksum_));
   }
 
   std::string GetChecksum() const override {

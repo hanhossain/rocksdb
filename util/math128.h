@@ -214,16 +214,14 @@ inline int BitParity(Unsigned128 v) {
   return rs::math::BitParity(Lower64of128(v) ^ Upper64of128(v));
 }
 
-template <>
 inline Unsigned128 EndianSwapValue(Unsigned128 v) {
-  return (Unsigned128{EndianSwapValue(Lower64of128(v))} << 64) |
-         EndianSwapValue(Upper64of128(v));
+  return (Unsigned128{rs::math::EndianSwapValue(Lower64of128(v))} << 64) |
+         rs::math::EndianSwapValue(Upper64of128(v));
 }
 
-template <>
 inline Unsigned128 ReverseBits(Unsigned128 v) {
-  return (Unsigned128{ReverseBits(Lower64of128(v))} << 64) |
-         ReverseBits(Upper64of128(v));
+  return (Unsigned128{rs::math::ReverseBits(Lower64of128(v))} << 64) |
+         rs::math::ReverseBits(Upper64of128(v));
 }
 
 template <>

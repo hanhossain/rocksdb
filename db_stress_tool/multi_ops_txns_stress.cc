@@ -259,7 +259,7 @@ Status MultiOpsTxnsStressTest::Record::DecodePrimaryIndexEntry(
 
   [[maybe_unused]] bool res = GetFixed32(&primary_index_key, &index_id);
   assert(res);
-  index_id = EndianSwapValue(index_id);
+  index_id = rs::math::EndianSwapValue(index_id);
 
   if (index_id != kPrimaryIndexId) {
     std::ostringstream oss;
@@ -269,7 +269,7 @@ Status MultiOpsTxnsStressTest::Record::DecodePrimaryIndexEntry(
 
   res = GetFixed32(&primary_index_key, &a_);
   assert(res);
-  a_ = EndianSwapValue(a_);
+  a_ = rs::math::EndianSwapValue(a_);
   assert(primary_index_key.empty());
 
   if (primary_index_value.size() != 8) {
@@ -292,7 +292,7 @@ Status MultiOpsTxnsStressTest::Record::DecodeSecondaryIndexEntry(
 
   [[maybe_unused]] bool res = GetFixed32(&secondary_index_key, &index_id);
   assert(res);
-  index_id = EndianSwapValue(index_id);
+  index_id = rs::math::EndianSwapValue(index_id);
 
   if (index_id != kSecondaryIndexId) {
     std::ostringstream oss;
@@ -303,12 +303,12 @@ Status MultiOpsTxnsStressTest::Record::DecodeSecondaryIndexEntry(
   assert(secondary_index_key.size() == 8);
   res = GetFixed32(&secondary_index_key, &c_);
   assert(res);
-  c_ = EndianSwapValue(c_);
+  c_ = rs::math::EndianSwapValue(c_);
 
   assert(secondary_index_key.size() == 4);
   res = GetFixed32(&secondary_index_key, &a_);
   assert(res);
-  a_ = EndianSwapValue(a_);
+  a_ = rs::math::EndianSwapValue(a_);
   assert(secondary_index_key.empty());
 
   if (secondary_index_value.size() != 4) {
@@ -548,7 +548,7 @@ void MultiOpsTxnsStressTest::PrepareTxnDbOptions(
         uint32_t index_id = 0;
         [[maybe_unused]] bool res = GetFixed32(&ks, &index_id);
         assert(res);
-        index_id = EndianSwapValue(index_id);
+        index_id = rs::math::EndianSwapValue(index_id);
         assert(index_id <= Record::kSecondaryIndexId);
         return index_id == Record::kSecondaryIndexId;
       };

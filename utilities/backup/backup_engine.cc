@@ -64,14 +64,14 @@ constexpr BackupID kLatestBackupIDMarker = static_cast<BackupID>(-2);
 inline uint32_t ChecksumHexToInt32(const std::string& checksum_hex) {
   std::string checksum_str;
   Slice(checksum_hex).DecodeHex(&checksum_str);
-  return EndianSwapValue(DecodeFixed32(checksum_str.c_str()));
+  return rs::math::EndianSwapValue(DecodeFixed32(checksum_str.c_str()));
 }
 inline std::string ChecksumStrToHex(const std::string& checksum_str) {
   return Slice(checksum_str).ToString(true);
 }
 inline std::string ChecksumInt32ToHex(const uint32_t& checksum_value) {
   std::string checksum_str;
-  PutFixed32(&checksum_str, EndianSwapValue(checksum_value));
+  PutFixed32(&checksum_str, rs::math::EndianSwapValue(checksum_value));
   return ChecksumStrToHex(checksum_str);
 }
 

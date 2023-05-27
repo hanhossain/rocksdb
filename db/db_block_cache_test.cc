@@ -1528,7 +1528,7 @@ class CacheKeyTest : public testing::Test {
   CacheKey GetBaseCacheKey() {
     CacheKey rv = GetOffsetableCacheKey(0, /*min file_number*/ 1).WithOffset(0);
     // Correct for file_number_ == 1
-    *reinterpret_cast<uint64_t*>(&rv) ^= ReverseBits(uint64_t{1});
+    *reinterpret_cast<uint64_t*>(&rv) ^= rs::math::ReverseBits(uint64_t{1});
     return rv;
   }
   CacheKey GetCacheKey(uint64_t session_counter, uint64_t file_number,
@@ -1653,7 +1653,7 @@ struct CacheKeyDecoder {
     if (offset_bits + session_counter_bits <= 64) {
       // fully recoverable from offset_etc64
       decoded_session_counter =
-          ReverseBits((offset_etc64 ^ base_offset_etc64)) &
+          rs::math::ReverseBits((offset_etc64 ^ base_offset_etc64)) &
           session_counter_mask;
     } else if (file_number_bits + session_counter_bits <= 64) {
       // fully recoverable from file_num_etc64
@@ -1664,7 +1664,7 @@ struct CacheKeyDecoder {
       // Piece1 will contain some correct prefix of the bottom bits of
       // session counter.
       uint64_t piece1 =
-          ReverseBits((offset_etc64 ^ base_offset_etc64) & ~offset_mask);
+          rs::math::ReverseBits((offset_etc64 ^ base_offset_etc64) & ~offset_mask);
       int piece1_bits = 64 - offset_bits;
       // Piece2 will contain involuded bits that we can combine with piece1
       // to infer rest of session counter
@@ -1731,9 +1731,9 @@ struct CacheKeyDecoder {
     }
 
     decoded_offset =
-        offset_etc64 ^ base_offset_etc64 ^ ReverseBits(decoded_session_counter);
+        offset_etc64 ^ base_offset_etc64 ^ rs::math::ReverseBits(decoded_session_counter);
 
-    decoded_file_num = ReverseBits(file_num_etc64 ^ base_file_num_etc64 ^
+    decoded_file_num = rs::math::ReverseBits(file_num_etc64 ^ base_file_num_etc64 ^
                                    DownwardInvolution(decoded_session_counter));
   }
 };

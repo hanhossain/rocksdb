@@ -157,7 +157,7 @@ void BijectiveHash2x64(uint64_t in_high64, uint64_t in_low64, uint64_t seed,
   lo += 0x3c0000000000000U;  // (len - 1) << 54
   in_high64 ^= bitfliph;
   hi += in_high64 + (Lower32of64(in_high64) * uint64_t{0x85EBCA76});
-  lo ^= EndianSwapValue(hi);
+  lo ^= rs::math::EndianSwapValue(hi);
   tmp128 = Multiply64to128(lo, 0xC2B2AE3D27D4EB4FU);
   lo = Lower64of128(tmp128);
   hi = Upper64of128(tmp128) + (hi * 0xC2B2AE3D27D4EB4FU);
@@ -175,7 +175,7 @@ void BijectiveUnhash2x64(uint64_t in_high64, uint64_t in_low64, uint64_t seed,
   lo *= 0xba79078168d4baf;  // inverse of 0xC2B2AE3D27D4EB4FU
   hi -= Upper64of128(Multiply64to128(lo, 0xC2B2AE3D27D4EB4FU));
   hi *= 0xba79078168d4baf;  // inverse of 0xC2B2AE3D27D4EB4FU
-  lo ^= EndianSwapValue(hi);
+  lo ^= rs::math::EndianSwapValue(hi);
   lo -= 0x3c0000000000000U;
   lo *= 0x887493432badb37U;  // inverse of 0x9E3779B185EBCA87U
   hi -= Upper64of128(Multiply64to128(lo, 0x9E3779B185EBCA87U));

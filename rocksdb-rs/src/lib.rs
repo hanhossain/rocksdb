@@ -601,5 +601,54 @@ mod ffi {
 
         #[cxx_name = "BitParity"]
         fn parity_u64(v: u64) -> i32;
+
+        #[cxx_name = "EndianSwapValue"]
+        fn swap_bytes_i8(v: i8) -> i8;
+
+        #[cxx_name = "EndianSwapValue"]
+        fn swap_bytes_i16(v: i16) -> i16;
+
+        #[cxx_name = "EndianSwapValue"]
+        fn swap_bytes_i32(v: i32) -> i32;
+
+        #[cxx_name = "EndianSwapValue"]
+        fn swap_bytes_i64(v: i64) -> i64;
+
+        #[cxx_name = "EndianSwapValue"]
+        fn swap_bytes_u8(v: u8) -> u8;
+
+        #[cxx_name = "EndianSwapValue"]
+        fn swap_bytes_u16(v: u16) -> u16;
+
+        #[cxx_name = "EndianSwapValue"]
+        fn swap_bytes_u32(v: u32) -> u32;
+
+        #[cxx_name = "EndianSwapValue"]
+        fn swap_bytes_u64(v: u64) -> u64;
+
+        ///
+        #[cxx_name = "ReverseBits"]
+        fn reverse_bits_i8(v: i8) -> i8;
+
+        #[cxx_name = "ReverseBits"]
+        fn reverse_bits_i16(v: i16) -> i16;
+
+        #[cxx_name = "ReverseBits"]
+        fn reverse_bits_i32(v: i32) -> i32;
+
+        #[cxx_name = "ReverseBits"]
+        fn reverse_bits_i64(v: i64) -> i64;
+
+        #[cxx_name = "ReverseBits"]
+        fn reverse_bits_u8(v: u8) -> u8;
+
+        #[cxx_name = "ReverseBits"]
+        fn reverse_bits_u16(v: u16) -> u16;
+
+        #[cxx_name = "ReverseBits"]
+        fn reverse_bits_u32(v: u32) -> u32;
+
+        #[cxx_name = "ReverseBits"]
+        fn reverse_bits_u64(v: u64) -> u64;
     }
 }

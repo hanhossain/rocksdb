@@ -18,6 +18,14 @@ macro_rules! gen_math {
             pub fn [<parity_$id>](v: $id) -> i32 {
                 (v.count_ones() % 2) as i32
             }
+
+            pub fn [<swap_bytes_$id>](v: $id) -> $id {
+                v.swap_bytes()
+            }
+
+            pub fn [<reverse_bits_$id>](v: $id) -> $id {
+                v.reverse_bits()
+            }
         }
     };
 }

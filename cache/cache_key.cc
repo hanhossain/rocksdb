@@ -330,8 +330,8 @@ OffsetableCacheKey OffsetableCacheKey::FromInternalUniqueId(UniqueIdPtr id) {
   // make this function invertible under various assumptions.
   OffsetableCacheKey rv;
   rv.file_num_etc64_ =
-      DownwardInvolution(session_lower) ^ ReverseBits(file_num_etc);
-  rv.offset_etc64_ = ReverseBits(session_lower);
+      DownwardInvolution(session_lower) ^ rs::math::ReverseBits(file_num_etc);
+  rv.offset_etc64_ = rs::math::ReverseBits(session_lower);
 
   // Because of these transformations and needing to allow arbitrary
   // offset (thus, second 64 bits of cache key might be 0), we need to
@@ -356,8 +356,8 @@ UniqueId64x2 OffsetableCacheKey::ToInternalUniqueId() {
     std::swap(a, b);
   }
   UniqueId64x2 rv;
-  rv[0] = ReverseBits(b);
-  rv[1] = ReverseBits(a ^ DownwardInvolution(rv[0]));
+  rv[0] = rs::math::ReverseBits(b);
+  rv[1] = rs::math::ReverseBits(a ^ DownwardInvolution(rv[0]));
   return rv;
 }
 
