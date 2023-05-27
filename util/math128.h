@@ -198,12 +198,11 @@ inline int FloorLog2(Unsigned128 v) {
   }
 }
 
-template <>
 inline int CountTrailingZeroBits(Unsigned128 v) {
   if (Lower64of128(v) != 0) {
-    return CountTrailingZeroBits(Lower64of128(v));
+    return rs::math::CountTrailingZeroBits(Lower64of128(v));
   } else {
-    return CountTrailingZeroBits(Upper64of128(v)) + 64;
+    return rs::math::CountTrailingZeroBits(Upper64of128(v)) + 64;
   }
 }
 

@@ -1265,7 +1265,7 @@ static uint32_t Crc32AppendZeroes(
 
   while (len_bits) {
     // Advance directly to next bit set.
-    auto r = CountTrailingZeroBits(len_bits);
+    auto r = rs::math::CountTrailingZeroBits((uint64_t)len_bits);
     len_bits >>= r;
     powers += r;
 

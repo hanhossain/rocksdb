@@ -11,7 +11,7 @@ namespace ROCKSDB_NAMESPACE {
 namespace detail {
 
 int CountTrailingZeroBitsForSmallEnumSet(uint64_t v) {
-  return CountTrailingZeroBits(v);
+  return rs::math::CountTrailingZeroBits(v);
 }
 
 }  // namespace detail

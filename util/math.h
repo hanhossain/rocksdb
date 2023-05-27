@@ -15,21 +15,6 @@
 
 namespace ROCKSDB_NAMESPACE {
 
-// Number of low-order zero bits before the first 1 bit. Undefined for 0.
-template <typename T>
-inline int CountTrailingZeroBits(T v) {
-  static_assert(std::is_integral<T>::value, "non-integral type");
-  assert(v != 0);
-  static_assert(sizeof(T) <= sizeof(unsigned long long), "type too big");
-  if (sizeof(T) <= sizeof(unsigned int)) {
-    return __builtin_ctz(static_cast<unsigned int>(v));
-  } else if (sizeof(T) <= sizeof(unsigned long)) {
-    return __builtin_ctzl(static_cast<unsigned long>(v));
-  } else {
-    return __builtin_ctzll(static_cast<unsigned long long>(v));
-  }
-}
-
 // Number of bits set to 1. Also known as "population count".
 template <typename T>
 inline int BitsSetToOne(T v) {
