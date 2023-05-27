@@ -13,3 +13,4 @@ cxx-build = "1.0.95"
 
 [dependencies]
 cxx = "1.0.95"
+paste = "1.0.12"
