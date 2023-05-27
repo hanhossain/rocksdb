@@ -5,12 +5,7 @@ pub mod options;
 use crate::advanced_options::{
     new_compaction_options_fifo, new_configurable_compaction_options_fifo,
 };
-use crate::math::{
-    floor_log2_i16, floor_log2_i32, floor_log2_i64, floor_log2_i8, floor_log2_u16, floor_log2_u32,
-    floor_log2_u64, floor_log2_u8, trailing_zeros_i16, trailing_zeros_i32, trailing_zeros_i64,
-    trailing_zeros_i8, trailing_zeros_u16, trailing_zeros_u32, trailing_zeros_u64,
-    trailing_zeros_u8,
-};
+use crate::math::*;
 use crate::options::new_live_files_storage_info_options;
 
 #[cxx::bridge]
@@ -558,5 +553,29 @@ mod ffi {
 
         #[cxx_name = "CountTrailingZeroBits"]
         fn trailing_zeros_u64(v: u64) -> i32;
+
+        #[cxx_name = "BitsSetToOne"]
+        fn count_ones_i8(v: i8) -> i32;
+
+        #[cxx_name = "BitsSetToOne"]
+        fn count_ones_i16(v: i16) -> i32;
+
+        #[cxx_name = "BitsSetToOne"]
+        fn count_ones_i32(v: i32) -> i32;
+
+        #[cxx_name = "BitsSetToOne"]
+        fn count_ones_i64(v: i64) -> i32;
+
+        #[cxx_name = "BitsSetToOne"]
+        fn count_ones_u8(v: u8) -> i32;
+
+        #[cxx_name = "BitsSetToOne"]
+        fn count_ones_u16(v: u16) -> i32;
+
+        #[cxx_name = "BitsSetToOne"]
+        fn count_ones_u32(v: u32) -> i32;
+
+        #[cxx_name = "BitsSetToOne"]
+        fn count_ones_u64(v: u64) -> i32;
     }
 }

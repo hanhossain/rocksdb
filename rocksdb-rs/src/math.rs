@@ -10,6 +10,10 @@ macro_rules! gen_math {
             pub fn [<trailing_zeros_$id>](v: $id) -> i32 {
                 v.trailing_zeros() as i32
             }
+
+            pub fn [<count_ones_$id>](v: $id) -> i32 {
+                v.count_ones() as i32
+            }
         }
     };
 }

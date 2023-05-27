@@ -90,7 +90,7 @@ int GetDefaultCacheShardBits(size_t capacity, size_t min_shard_size) {
 }
 
 int ShardedCacheBase::GetNumShardBits() const {
-  return BitsSetToOne(shard_mask_);
+  return rs::math::BitsSetToOne(shard_mask_);
 }
 
 uint32_t ShardedCacheBase::GetNumShards() const { return shard_mask_ + 1; }

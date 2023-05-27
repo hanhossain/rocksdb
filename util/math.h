@@ -15,26 +15,6 @@
 
 namespace ROCKSDB_NAMESPACE {
 
-// Number of bits set to 1. Also known as "population count".
-template <typename T>
-inline int BitsSetToOne(T v) {
-  static_assert(std::is_integral<T>::value, "non-integral type");
-  static_assert(sizeof(T) <= sizeof(unsigned long long), "type too big");
-  if (sizeof(T) < sizeof(unsigned int)) {
-    // This bit mask is to avoid a compiler warning on unused path
-    constexpr auto mm = 8 * sizeof(unsigned int) - 1;
-    // This bit mask is to neutralize sign extension on small signed types
-    constexpr unsigned int m = (1U << ((8 * sizeof(T)) & mm)) - 1;
-    return __builtin_popcount(static_cast<unsigned int>(v) & m);
-  } else if (sizeof(T) == sizeof(unsigned int)) {
-    return __builtin_popcount(static_cast<unsigned int>(v));
-  } else if (sizeof(T) <= sizeof(unsigned long)) {
-    return __builtin_popcountl(static_cast<unsigned long>(v));
-  } else {
-    return __builtin_popcountll(static_cast<unsigned long long>(v));
-  }
-}
-
 template <typename T>
 inline int BitParity(T v) {
   static_assert(std::is_integral<T>::value, "non-integral type");

@@ -297,7 +297,7 @@ class MultiGetContext {
       return ctx_->value_mask_ & (Mask{1} << iter.index_);
     }
 
-    uint64_t KeysLeft() const { return BitsSetToOne(RemainingMask()); }
+    uint64_t KeysLeft() const { return rs::math::BitsSetToOne(RemainingMask()); }
 
     void AddSkipsFrom(const Range& other) {
       assert(ctx_ == other.ctx_);

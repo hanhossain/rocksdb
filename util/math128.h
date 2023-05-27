@@ -206,9 +206,8 @@ inline int CountTrailingZeroBits(Unsigned128 v) {
   }
 }
 
-template <>
 inline int BitsSetToOne(Unsigned128 v) {
-  return BitsSetToOne(Lower64of128(v)) + BitsSetToOne(Upper64of128(v));
+  return rs::math::BitsSetToOne(Lower64of128(v)) + rs::math::BitsSetToOne(Upper64of128(v));
 }
 
 template <>
