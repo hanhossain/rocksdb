@@ -65,8 +65,7 @@ class PlainTableBloomV1 {
 
   char* data_;
 
-  static constexpr int LOG2_CACHE_LINE_SIZE =
-      ConstexprFloorLog2(CACHE_LINE_SIZE);
+  static constexpr int LOG2_CACHE_LINE_SIZE = 6; // floor(log2(64))
 };
 
 #if defined(_MSC_VER)

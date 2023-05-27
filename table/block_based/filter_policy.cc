@@ -1202,7 +1202,7 @@ inline void LegacyBloomBitsBuilder::AddHash(uint32_t h, char* data,
   assert(num_lines > 0 && total_bits > 0);
 
   LegacyBloomImpl::AddHash(h, num_lines, num_probes_, data,
-                           ConstexprFloorLog2(CACHE_LINE_SIZE));
+                           rs::math::FloorLog2(CACHE_LINE_SIZE));
 }
 
 class LegacyBloomBitsReader : public BuiltinFilterBitsReader {
@@ -1608,7 +1608,7 @@ BuiltinFilterBitsReader* BuiltinFilterPolicy::GetBuiltinFilterBitsReader(
 
   if (num_lines * CACHE_LINE_SIZE == len) {
     // Common case
-    log2_cache_line_size = ConstexprFloorLog2(CACHE_LINE_SIZE);
+    log2_cache_line_size = rs::math::FloorLog2(CACHE_LINE_SIZE);
   } else if (num_lines == 0 || len % num_lines != 0) {
     // Invalid (no solution to num_lines * x == len)
     // Treat as zero probes (always FP) for now.
