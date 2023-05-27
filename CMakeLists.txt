@@ -849,37 +849,6 @@ list(APPEND SOURCES
   utilities/transactions/lock/range/range_tree/lib/util/dbt.cc
   utilities/transactions/lock/range/range_tree/lib/util/memarena.cc)
 
-message(STATUS "ROCKSDB_PLUGINS: ${ROCKSDB_PLUGINS}")
-if ( ROCKSDB_PLUGINS )
-  string(REPLACE " " ";" PLUGINS ${ROCKSDB_PLUGINS})
-  foreach (plugin ${PLUGINS})
-    add_subdirectory("plugin/${plugin}")
-    foreach (src ${${plugin}_SOURCES})
-      list(APPEND SOURCES plugin/${plugin}/${src})
-      set_source_files_properties(
-        plugin/${plugin}/${src}
-        PROPERTIES COMPILE_FLAGS "${${plugin}_COMPILE_FLAGS}")
-    endforeach()
-    foreach (test ${${plugin}_TESTS})
-      list(APPEND PLUGIN_TESTS plugin/${plugin}/${test})
-      set_source_files_properties(
-        plugin/${plugin}/${test}
-        PROPERTIES COMPILE_FLAGS "${${plugin}_COMPILE_FLAGS}")
-    endforeach()
-    foreach (path ${${plugin}_INCLUDE_PATHS})
-      include_directories(${path})
-    endforeach()
-    foreach (lib ${${plugin}_LIBS})
-      list(APPEND THIRDPARTY_LIBS ${lib})
-    endforeach()
-    foreach (link_path ${${plugin}_LINK_PATHS})
-      link_directories(AFTER ${link_path})
-    endforeach()
-    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${${plugin}_CMAKE_SHARED_LINKER_FLAGS}")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${${plugin}_CMAKE_EXE_LINKER_FLAGS}")
-  endforeach()
-endif()
-
 if(HAVE_SSE42)
   set_source_files_properties(
     util/crc32c.cc
@@ -922,42 +891,6 @@ set(ROCKSDB_STATIC_LIB rocksdb${ARTIFACT_SUFFIX})
 
 
 set(SYSTEM_LIBS ${CMAKE_THREAD_LIBS_INIT})
-
-set(ROCKSDB_PLUGIN_EXTERNS "")
-set(ROCKSDB_PLUGIN_BUILTINS "")
-message(STATUS "ROCKSDB PLUGINS TO BUILD ${ROCKSDB_PLUGINS}")
-foreach(PLUGIN IN LISTS PLUGINS)
-  set(PLUGIN_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/plugin/${PLUGIN}/")
-  message(STATUS "PLUGIN ${PLUGIN} including rocksb plugin ${PLUGIN_ROOT}")
-  set(PLUGINMKFILE "${PLUGIN_ROOT}${PLUGIN}.mk")
-  if (NOT EXISTS ${PLUGINMKFILE})
-    message(FATAL_ERROR "PLUGIN ${PLUGIN} Missing plugin makefile: ${PLUGINMKFILE}")
-  endif()
-  file(READ ${PLUGINMKFILE} PLUGINMK)
-
-  string(REGEX MATCH "SOURCES = ([^\n]*)" FOO ${PLUGINMK})
-  set(MK_SOURCES ${CMAKE_MATCH_1})
-  separate_arguments(MK_SOURCES)
-  foreach(MK_FILE IN LISTS MK_SOURCES)
-    list(APPEND SOURCES "${PLUGIN_ROOT}${MK_FILE}")
-    message(STATUS "PLUGIN ${PLUGIN} Appending ${PLUGIN_ROOT}${MK_FILE} to SOURCES")
-  endforeach()
-
-  string(REGEX MATCH "_FUNC = ([^\n]*)" FOO ${PLUGINMK})
-  if (NOT ${CMAKE_MATCH_1} STREQUAL "")
-    string(APPEND ROCKSDB_PLUGIN_BUILTINS "{\"${PLUGIN}\", " ${CMAKE_MATCH_1} "},")
-    string(APPEND ROCKSDB_PLUGIN_EXTERNS "int " ${CMAKE_MATCH_1} "(ROCKSDB_NAMESPACE::ObjectLibrary&, const std::string&); ")
-  endif()
-
-  string(REGEX MATCH "_LIBS = ([^\n]*)" FOO ${PLUGINMK})
-  separate_arguments(CMAKE_MATCH_1)
-  foreach(MK_LIB IN LISTS CMAKE_MATCH_1)
-    list(APPEND THIRDPARTY_LIBS "${MK_LIB}")
-  endforeach()
-  message(STATUS "PLUGIN ${PLUGIN} THIRDPARTY_LIBS=${THIRDPARTY_LIBS}")
-
-  #TODO: We need to set any compile/link-time flags and add any link libraries
-endforeach()
 
 string(TIMESTAMP TS "%Y-%m-%d %H:%M:%S" UTC)
 set(BUILD_DATE "${TS}" CACHE STRING "the time we first built rocksdb")
@@ -1222,7 +1155,6 @@ if(WITH_TESTS)
         utilities/ttl/ttl_test.cc
         utilities/util_merge_operators_test.cc
         utilities/write_batch_with_index/write_batch_with_index_test.cc
-	${PLUGIN_TESTS}
     )
   endif()
 
