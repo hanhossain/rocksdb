@@ -1102,7 +1102,7 @@ int HyperClockTable::CalcHashBits(
   uint64_t num_slots =
       static_cast<uint64_t>(capacity / average_slot_charge + 0.999999);
 
-  int hash_bits = FloorLog2((num_slots << 1) - 1);
+  int hash_bits = rs::math::FloorLog2((num_slots << 1) - 1);
   if (metadata_charge_policy == kFullChargeCacheMetadata) {
     // For very small estimated value sizes, it's possible to overshoot
     while (hash_bits > 0 &&

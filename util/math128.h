@@ -190,12 +190,11 @@ inline Unsigned128 Multiply64to128(uint64_t a, uint64_t b) {
 #endif
 }
 
-template <>
 inline int FloorLog2(Unsigned128 v) {
   if (Upper64of128(v) == 0) {
-    return FloorLog2(Lower64of128(v));
+    return rs::math::FloorLog2(Lower64of128(v));
   } else {
-    return FloorLog2(Upper64of128(v)) + 64;
+    return rs::math::FloorLog2(Upper64of128(v)) + 64;
   }
 }
 

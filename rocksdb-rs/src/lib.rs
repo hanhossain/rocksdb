@@ -1,8 +1,13 @@
 pub mod advanced_options;
+pub mod math;
 pub mod options;
 
 use crate::advanced_options::{
     new_compaction_options_fifo, new_configurable_compaction_options_fifo,
+};
+use crate::math::{
+    floor_log2_i16, floor_log2_i32, floor_log2_i64, floor_log2_i8, floor_log2_u16, floor_log2_u32,
+    floor_log2_u64, floor_log2_u8,
 };
 use crate::options::new_live_files_storage_info_options;
 
@@ -499,6 +504,33 @@ mod ffi {
     #[namespace = "rs::options"]
     extern "Rust" {
         #[cxx_name = "LiveFilesStorageInfoOptions_new"]
-        pub fn new_live_files_storage_info_options() -> LiveFilesStorageInfoOptions;
+        fn new_live_files_storage_info_options() -> LiveFilesStorageInfoOptions;
+    }
+
+    #[namespace = "rs::math"]
+    extern "Rust" {
+        #[cxx_name = "FloorLog2"]
+        fn floor_log2_i8(v: i8) -> i32;
+
+        #[cxx_name = "FloorLog2"]
+        fn floor_log2_i16(v: i16) -> i32;
+
+        #[cxx_name = "FloorLog2"]
+        fn floor_log2_i32(v: i32) -> i32;
+
+        #[cxx_name = "FloorLog2"]
+        fn floor_log2_i64(v: i64) -> i32;
+
+        #[cxx_name = "FloorLog2"]
+        fn floor_log2_u8(v: u8) -> i32;
+
+        #[cxx_name = "FloorLog2"]
+        fn floor_log2_u16(v: u16) -> i32;
+
+        #[cxx_name = "FloorLog2"]
+        fn floor_log2_u32(v: u32) -> i32;
+
+        #[cxx_name = "FloorLog2"]
+        fn floor_log2_u64(v: u64) -> i32;
     }
 }
