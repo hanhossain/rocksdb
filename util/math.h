@@ -15,20 +15,6 @@
 
 namespace ROCKSDB_NAMESPACE {
 
-template <typename T>
-inline int BitParity(T v) {
-  static_assert(std::is_integral<T>::value, "non-integral type");
-  static_assert(sizeof(T) <= sizeof(unsigned long long), "type too big");
-  if (sizeof(T) <= sizeof(unsigned int)) {
-    // On any sane systen, potential sign extension here won't change parity
-    return __builtin_parity(static_cast<unsigned int>(v));
-  } else if (sizeof(T) <= sizeof(unsigned long)) {
-    return __builtin_parityl(static_cast<unsigned long>(v));
-  } else {
-    return __builtin_parityll(static_cast<unsigned long long>(v));
-  }
-}
-
 // Swaps between big and little endian. Can be used in combination with the
 // little-endian encoding/decoding functions in coding_lean.h and coding.h to
 // encode/decode big endian.

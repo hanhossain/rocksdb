@@ -210,9 +210,8 @@ inline int BitsSetToOne(Unsigned128 v) {
   return rs::math::BitsSetToOne(Lower64of128(v)) + rs::math::BitsSetToOne(Upper64of128(v));
 }
 
-template <>
 inline int BitParity(Unsigned128 v) {
-  return BitParity(Lower64of128(v) ^ Upper64of128(v));
+  return rs::math::BitParity(Lower64of128(v) ^ Upper64of128(v));
 }
 
 template <>

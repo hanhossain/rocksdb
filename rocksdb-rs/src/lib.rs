@@ -577,5 +577,29 @@ mod ffi {
 
         #[cxx_name = "BitsSetToOne"]
         fn count_ones_u64(v: u64) -> i32;
+
+        #[cxx_name = "BitParity"]
+        fn parity_i8(v: i8) -> i32;
+
+        #[cxx_name = "BitParity"]
+        fn parity_i16(v: i16) -> i32;
+
+        #[cxx_name = "BitParity"]
+        fn parity_i32(v: i32) -> i32;
+
+        #[cxx_name = "BitParity"]
+        fn parity_i64(v: i64) -> i32;
+
+        #[cxx_name = "BitParity"]
+        fn parity_u8(v: u8) -> i32;
+
+        #[cxx_name = "BitParity"]
+        fn parity_u16(v: u16) -> i32;
+
+        #[cxx_name = "BitParity"]
+        fn parity_u32(v: u32) -> i32;
+
+        #[cxx_name = "BitParity"]
+        fn parity_u64(v: u64) -> i32;
     }
 }

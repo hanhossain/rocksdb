@@ -14,6 +14,10 @@ macro_rules! gen_math {
             pub fn [<count_ones_$id>](v: $id) -> i32 {
                 v.count_ones() as i32
             }
+
+            pub fn [<parity_$id>](v: $id) -> i32 {
+                (v.count_ones() % 2) as i32
+            }
         }
     };
 }
