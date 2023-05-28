@@ -949,7 +949,7 @@ if(WITH_TESTS)
   test_util/mock_time_env.cc
   test_util/secondary_cache_test_util.cc
   test_util/testharness.cc)
-  target_link_libraries(testharness gtest)
+  target_link_libraries(testharness gtest rocksdb-rs-cxx)
 endif()
 
 if(WITH_TESTS)

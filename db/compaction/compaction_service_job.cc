@@ -649,7 +649,7 @@ struct StatusSerializationAdapter {
   Status GetStatus() const {
     return Status{static_cast<Status::Code>(code),
                   static_cast<Status::SubCode>(subcode),
-                  static_cast<Status::Severity>(severity), message};
+                  static_cast<rs::status::Severity>(severity), message};
   }
 };
 }  // namespace

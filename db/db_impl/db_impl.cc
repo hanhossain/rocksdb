@@ -341,7 +341,7 @@ Status DBImpl::ResumeImpl(DBRecoverContext context) {
 
   if (s.ok()) {
     Status bg_error = error_handler_.GetBGError();
-    if (bg_error.severity() > Status::Severity::kHardError) {
+    if (bg_error.severity() > rs::status::Severity::kHardError) {
       ROCKS_LOG_INFO(
           immutable_db_options_.info_log,
           "DB resume requested but failed due to Fatal/Unrecoverable error");

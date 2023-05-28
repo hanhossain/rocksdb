@@ -48,7 +48,7 @@ class ErrorHandler {
 
   void EnableAutoRecovery() { auto_recovery_ = true; }
 
-  Status::Severity GetErrorSeverity(BackgroundErrorReason reason,
+  rs::status::Severity GetErrorSeverity(BackgroundErrorReason reason,
                                     Status::Code code, Status::SubCode subcode);
 
   const Status& SetBGError(const Status& bg_err, BackgroundErrorReason reason);
@@ -65,7 +65,7 @@ class ErrorHandler {
     assert(db_mutex_);
     db_mutex_->AssertHeld();
     return !bg_error_.ok() &&
-           (bg_error_.severity() >= Status::Severity::kHardError ||
+           (bg_error_.severity() >= rs::status::Severity::kHardError ||
             !auto_recovery_ || soft_error_no_bg_work_);
   }
 

@@ -48,7 +48,7 @@ static const char* msgs[static_cast<int>(Status::SubCode::kMaxSubCode)] = {
 };
 
 Status::Status(Code _code, SubCode _subcode, const Slice& msg,
-               const Slice& msg2, Severity sev)
+               const Slice& msg2, rs::status::Severity sev)
     : code_(_code),
       subcode_(_subcode),
       sev_(sev),

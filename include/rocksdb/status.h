@@ -24,6 +24,7 @@
 #include <memory>
 #include <string>
 
+#include "rocksdb-rs-cxx/lib.h"
 #include "rocksdb/slice.h"
 
 namespace ROCKSDB_NAMESPACE {
@@ -34,7 +35,7 @@ class Status {
   Status()
       : code_(Status::Code::kOk),
         subcode_(Status::SubCode::kNone),
-        sev_(Status::Severity::kNoError),
+        sev_(rs::status::Severity::kNoError),
         retryable_(false),
         data_loss_(false),
         scope_(0),
@@ -117,24 +118,15 @@ class Status {
     return subcode_;
   }
 
-  enum class Severity : unsigned char {
-    kNoError = 0,
-    kSoftError = 1,
-    kHardError = 2,
-    kFatalError = 3,
-    kUnrecoverableError = 4,
-    kMaxSeverity
-  };
+  Status(const Status& s, rs::status::Severity sev);
 
-  Status(const Status& s, Severity sev);
-
-  Status(Code _code, SubCode _subcode, Severity _sev, const Slice& msg)
+  Status(Code _code, SubCode _subcode, rs::status::Severity _sev, const Slice& msg)
       : Status(_code, _subcode, msg, "", _sev) {}
 
   static Status CopyAppendMessage(const Status& s, const Slice& delim,
                                   const Slice& msg);
 
-  Severity severity() const {
+  rs::status::Severity severity() const {
     MarkChecked();
     return sev_;
   }
@@ -451,7 +443,7 @@ class Status {
  protected:
   Code code_;
   SubCode subcode_;
-  Severity sev_;
+  rs::status::Severity sev_;
   bool retryable_;
   bool data_loss_;
   unsigned char scope_;
@@ -465,7 +457,7 @@ class Status {
   explicit Status(Code _code, SubCode _subcode = Status::SubCode::kNone)
       : code_(_code),
         subcode_(_subcode),
-        sev_(Status::Severity::kNoError),
+        sev_(rs::status::Severity::kNoError),
         retryable_(false),
         data_loss_(false),
         scope_(0) {}
@@ -474,13 +466,13 @@ class Status {
                   unsigned char scope)
       : code_(_code),
         subcode_(_subcode),
-        sev_(Status::Severity::kNoError),
+        sev_(rs::status::Severity::kNoError),
         retryable_(retryable),
         data_loss_(data_loss),
         scope_(scope) {}
 
   Status(Code _code, SubCode _subcode, const Slice& msg, const Slice& msg2,
-         Severity sev = Status::Severity::kNoError);
+         rs::status::Severity sev = rs::status::Severity::kNoError);
   Status(Code _code, const Slice& msg, const Slice& msg2)
       : Status(_code, Status::SubCode::kNone, msg, msg2) {}
 
@@ -503,7 +495,7 @@ inline Status::Status(const Status& s)
   s.MarkChecked();
   state_ = (s.state_ == nullptr) ? nullptr : CopyState(s.state_.get());
 }
-inline Status::Status(const Status& s, Severity sev)
+inline Status::Status(const Status& s, rs::status::Severity sev)
     : code_(s.code_),
       subcode_(s.subcode_),
       sev_(sev),
@@ -542,7 +534,7 @@ inline Status& Status::operator=(Status&& s) noexcept {
     subcode_ = std::move(s.subcode_);
     s.subcode_ = Status::SubCode::kNone;
     sev_ = std::move(s.sev_);
-    s.sev_ = Status::Severity::kNoError;
+    s.sev_ = rs::status::Severity::kNoError;
     retryable_ = std::move(s.retryable_);
     s.retryable_ = false;
     data_loss_ = std::move(s.data_loss_);

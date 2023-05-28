@@ -488,6 +488,16 @@ mod ffi {
         wal_size_for_flush: u64,
     }
 
+    #[namespace = "rs::status"]
+    enum Severity {
+        kNoError = 0,
+        kSoftError = 1,
+        kHardError = 2,
+        kFatalError = 3,
+        kUnrecoverableError = 4,
+        kMaxSeverity,
+    }
+
     #[namespace = "rs::advanced_options"]
     extern "Rust" {
         fn new_compaction_options_fifo() -> CompactionOptionsFIFO;
