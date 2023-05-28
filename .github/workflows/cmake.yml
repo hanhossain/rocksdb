@@ -95,3 +95,28 @@ jobs:
       # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest -C ${{env.BUILD_TYPE}}
+
+  buildAndTestRust:
+    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+    # You can convert this to a matrix build if you need cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: macos-latest
+
+    steps:
+      - name: Check disk space (before cleaning)
+        run: df -h
+
+      - name: Free disk space
+        run: |
+          sudo docker rmi $(docker image ls -aq) || true
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+
+      - name: Check disk space (after cleaning)
+        run: df -h
+
+      - uses: actions/checkout@v3
+
+      - name: Test
+        working-directory: ${{github.workspace}}/rocksdb-rs
+        run: cargo test
