@@ -177,14 +177,8 @@ class Status {
   }
 
   static Status TimedOut(rs::status::SubCode msg = rs::status::SubCode::kNone) { return Status(rs::status::Code::kTimedOut, msg); }
-  static Status TimedOut(const Slice& msg, const Slice& msg2 = Slice()) {
-    return Status(rs::status::Code::kTimedOut, msg, msg2);
-  }
 
   static Status Expired(rs::status::SubCode msg = rs::status::SubCode::kNone) { return Status(rs::status::Code::kExpired, msg); }
-  static Status Expired(const Slice& msg, const Slice& msg2 = Slice()) {
-    return Status(rs::status::Code::kExpired, msg, msg2);
-  }
 
   static Status TryAgain(rs::status::SubCode msg = rs::status::SubCode::kNone) { return Status(rs::status::Code::kTryAgain, msg); }
   static Status TryAgain(const Slice& msg, const Slice& msg2 = Slice()) {
@@ -193,10 +187,6 @@ class Status {
 
   static Status CompactionTooLarge(rs::status::SubCode msg = rs::status::SubCode::kNone) {
     return Status(rs::status::Code::kCompactionTooLarge, msg);
-  }
-  static Status CompactionTooLarge(const Slice& msg,
-                                   const Slice& msg2 = Slice()) {
-    return Status(rs::status::Code::kCompactionTooLarge, msg, msg2);
   }
 
   static Status ColumnFamilyDropped(rs::status::SubCode msg = rs::status::SubCode::kNone) {
@@ -218,21 +208,16 @@ class Status {
     return Status(rs::status::Code::kAborted, rs::status::SubCode::kMemoryLimit, msg, msg2);
   }
 
-  static Status SpaceLimit() { return Status(rs::status::Code::kIOError, rs::status::SubCode::kSpaceLimit); }
   static Status SpaceLimit(const Slice& msg, const Slice& msg2 = Slice()) {
     return Status(rs::status::Code::kIOError, rs::status::SubCode::kSpaceLimit, msg, msg2);
   }
 
-  static Status PathNotFound() { return Status(rs::status::Code::kIOError, rs::status::SubCode::kPathNotFound); }
   static Status PathNotFound(const Slice& msg, const Slice& msg2 = Slice()) {
     return Status(rs::status::Code::kIOError, rs::status::SubCode::kPathNotFound, msg, msg2);
   }
 
   static Status TxnNotPrepared() {
     return Status(rs::status::Code::kInvalidArgument, rs::status::SubCode::kTxnNotPrepared);
-  }
-  static Status TxnNotPrepared(const Slice& msg, const Slice& msg2 = Slice()) {
-    return Status(rs::status::Code::kInvalidArgument, rs::status::SubCode::kTxnNotPrepared, msg, msg2);
   }
 
   // Returns true iff the status indicates success.
@@ -304,11 +289,6 @@ class Status {
   bool IsAborted() const {
     MarkChecked();
     return code() == rs::status::Code::kAborted;
-  }
-
-  bool IsLockLimit() const {
-    MarkChecked();
-    return code() == rs::status::Code::kAborted && subcode() == rs::status::SubCode::kLockLimit;
   }
 
   // Returns true iff the status indicates that a resource is Busy and
@@ -489,17 +469,17 @@ inline Status& Status::operator=(Status&& s) noexcept {
   if (this != &s) {
     s.MarkChecked();
     MustCheck();
-    code_ = std::move(s.code_);
+    code_ = s.code_;
     s.code_ = rs::status::Code::kOk;
-    subcode_ = std::move(s.subcode_);
+    subcode_ = s.subcode_;
     s.subcode_ = rs::status::SubCode::kNone;
-    sev_ = std::move(s.sev_);
+    sev_ = s.sev_;
     s.sev_ = rs::status::Severity::kNoError;
-    retryable_ = std::move(s.retryable_);
+    retryable_ = s.retryable_;
     s.retryable_ = false;
-    data_loss_ = std::move(s.data_loss_);
+    data_loss_ = s.data_loss_;
     s.data_loss_ = false;
-    scope_ = std::move(s.scope_);
+    scope_ = s.scope_;
     s.scope_ = 0;
     state_ = std::move(s.state_);
   }
