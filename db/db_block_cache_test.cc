@@ -28,7 +28,6 @@
 #include "util/compression.h"
 #include "util/defer.h"
 #include "util/hash.h"
-#include "util/math.h"
 #include "util/random.h"
 #include "utilities/fault_injection_fs.h"
 
@@ -1657,7 +1656,7 @@ struct CacheKeyDecoder {
           session_counter_mask;
     } else if (file_number_bits + session_counter_bits <= 64) {
       // fully recoverable from file_num_etc64
-      decoded_session_counter = DownwardInvolution(
+      decoded_session_counter = rs::math::DownwardInvolution(
           (file_num_etc64 ^ base_file_num_etc64) & session_counter_mask);
     } else {
       // Need to combine parts from each word.
@@ -1675,7 +1674,7 @@ struct CacheKeyDecoder {
 
       // Cancel out the part of piece2 that we can infer from piece1
       // (DownwardInvolution distributes over xor)
-      piece2 ^= DownwardInvolution(piece1) & piece2_mask;
+      piece2 ^= rs::math::DownwardInvolution(piece1) & piece2_mask;
 
       // Now we need to solve for the unknown original bits in higher
       // positions than piece1 provides. We use Gaussian elimination
@@ -1687,7 +1686,7 @@ struct CacheKeyDecoder {
       // column.
       std::array<uint64_t, 64> aug_rows{};
       for (int i = 0; i < piece2_bits; ++i) {  // over columns
-        uint64_t col_i = DownwardInvolution(uint64_t{1} << piece1_bits << i);
+        uint64_t col_i = rs::math::DownwardInvolution(uint64_t{1} << piece1_bits << i);
         ASSERT_NE(col_i & 1U, 0);
         for (int j = 0; j < piece2_bits; ++j) {  // over rows
           aug_rows[j] |= (col_i & 1U) << i;
@@ -1734,7 +1733,7 @@ struct CacheKeyDecoder {
         offset_etc64 ^ base_offset_etc64 ^ rs::math::ReverseBits(decoded_session_counter);
 
     decoded_file_num = rs::math::ReverseBits(file_num_etc64 ^ base_file_num_etc64 ^
-                                   DownwardInvolution(decoded_session_counter));
+                                             rs::math::DownwardInvolution(decoded_session_counter));
   }
 };
 }  // anonymous namespace

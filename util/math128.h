@@ -5,8 +5,8 @@
 
 #pragma once
 
+#include "rocksdb-rs-cxx/lib.h"
 #include "util/coding_lean.h"
-#include "util/math.h"
 
 #ifdef TEST_UINT128_COMPAT
 #undef HAVE_UINT128_EXTENSION
@@ -224,10 +224,9 @@ inline Unsigned128 ReverseBits(Unsigned128 v) {
          rs::math::ReverseBits(Upper64of128(v));
 }
 
-template <>
 inline Unsigned128 DownwardInvolution(Unsigned128 v) {
-  return (Unsigned128{DownwardInvolution(Upper64of128(v))} << 64) |
-         DownwardInvolution(Upper64of128(v) ^ Lower64of128(v));
+  return (Unsigned128{rs::math::DownwardInvolution(Upper64of128(v))} << 64) |
+         rs::math::DownwardInvolution(Upper64of128(v) ^ Lower64of128(v));
 }
 
 template <typename T>

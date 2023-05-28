@@ -13,8 +13,8 @@
 #include <cstdint>
 #include <memory>
 
+#include "rocksdb-rs-cxx/lib.h"
 #include "util/hash.h"
-#include "util/math.h"
 #include "util/mutexlock.h"
 
 namespace ROCKSDB_NAMESPACE {

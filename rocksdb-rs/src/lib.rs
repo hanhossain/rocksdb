@@ -626,7 +626,6 @@ mod ffi {
         #[cxx_name = "EndianSwapValue"]
         fn swap_bytes_u64(v: u64) -> u64;
 
-        ///
         #[cxx_name = "ReverseBits"]
         fn reverse_bits_i8(v: i8) -> i8;
 
@@ -650,5 +649,29 @@ mod ffi {
 
         #[cxx_name = "ReverseBits"]
         fn reverse_bits_u64(v: u64) -> u64;
+
+        #[cxx_name = "DownwardInvolution"]
+        fn downward_involution_i8(v: i8) -> i8;
+
+        #[cxx_name = "DownwardInvolution"]
+        fn downward_involution_i16(v: i16) -> i16;
+
+        #[cxx_name = "DownwardInvolution"]
+        fn downward_involution_i32(v: i32) -> i32;
+
+        #[cxx_name = "DownwardInvolution"]
+        fn downward_involution_i64(v: i64) -> i64;
+
+        #[cxx_name = "DownwardInvolution"]
+        fn downward_involution_u8(v: u8) -> u8;
+
+        #[cxx_name = "DownwardInvolution"]
+        fn downward_involution_u16(v: u16) -> u16;
+
+        #[cxx_name = "DownwardInvolution"]
+        fn downward_involution_u32(v: u32) -> u32;
+
+        #[cxx_name = "DownwardInvolution"]
+        fn downward_involution_u64(v: u64) -> u64;
     }
 }

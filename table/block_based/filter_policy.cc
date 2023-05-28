@@ -30,7 +30,6 @@
 #include "util/bloom_impl.h"
 #include "util/coding.h"
 #include "util/hash.h"
-#include "util/math.h"
 #include "util/ribbon_config.h"
 #include "util/ribbon_impl.h"
 #include "util/string_util.h"

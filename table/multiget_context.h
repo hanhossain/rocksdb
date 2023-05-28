@@ -17,7 +17,6 @@
 #include "rocksdb/types.h"
 #include "util/async_file_reader.h"
 #include "util/autovector.h"
-#include "util/math.h"
 #include "util/single_thread_executor.h"
 
 namespace ROCKSDB_NAMESPACE {

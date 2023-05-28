@@ -11,7 +11,6 @@
 #include "rocksdb/advanced_cache.h"
 #include "table/unique_id_impl.h"
 #include "util/hash.h"
-#include "util/math.h"
 
 namespace ROCKSDB_NAMESPACE {
 
@@ -330,7 +329,7 @@ OffsetableCacheKey OffsetableCacheKey::FromInternalUniqueId(UniqueIdPtr id) {
   // make this function invertible under various assumptions.
   OffsetableCacheKey rv;
   rv.file_num_etc64_ =
-      DownwardInvolution(session_lower) ^ rs::math::ReverseBits(file_num_etc);
+      rs::math::DownwardInvolution(session_lower) ^ rs::math::ReverseBits(file_num_etc);
   rv.offset_etc64_ = rs::math::ReverseBits(session_lower);
 
   // Because of these transformations and needing to allow arbitrary
@@ -357,7 +356,7 @@ UniqueId64x2 OffsetableCacheKey::ToInternalUniqueId() {
   }
   UniqueId64x2 rv;
   rv[0] = rs::math::ReverseBits(b);
-  rv[1] = rs::math::ReverseBits(a ^ DownwardInvolution(rv[0]));
+  rv[1] = rs::math::ReverseBits(a ^ rs::math::DownwardInvolution(rv[0]));
   return rv;
 }
 

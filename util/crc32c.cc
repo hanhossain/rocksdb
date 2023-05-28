@@ -20,10 +20,10 @@
 #include <wmmintrin.h>
 #endif
 
+#include "rocksdb-rs-cxx/lib.h"
 #include "port/lang.h"
 #include "util/coding.h"
 #include "util/crc32c_arm64.h"
-#include "util/math.h"
 
 #ifdef __powerpc64__
 #include "util/crc32c_ppc.h"

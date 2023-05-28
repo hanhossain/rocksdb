@@ -12,7 +12,6 @@
 #include "rocksdb/slice.h"
 #include "util/bloom_impl.h"
 #include "util/hash.h"
-#include "util/math.h"
 
 namespace ROCKSDB_NAMESPACE {
 class Slice;

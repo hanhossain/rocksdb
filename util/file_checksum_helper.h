@@ -8,12 +8,12 @@
 #include <unordered_map>
 
 #include "port/port.h"
+#include "rocksdb-rs-cxx/lib.h"
 #include "rocksdb/env.h"
 #include "rocksdb/file_checksum.h"
 #include "rocksdb/status.h"
 #include "util/coding.h"
 #include "util/crc32c.h"
-#include "util/math.h"
 
 namespace ROCKSDB_NAMESPACE {
 
