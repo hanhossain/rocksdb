@@ -128,18 +128,18 @@ Status RangeTreeLockManager::TryLock(PessimisticTransaction* txn,
     case 0:
       break;  // fall through
     case DB_LOCK_NOTGRANTED:
-      return Status::TimedOut(Status::SubCode::kLockTimeout);
+      return Status::TimedOut(rs::status::SubCode::kLockTimeout);
     case TOKUDB_OUT_OF_LOCKS:
-      return Status::Busy(Status::SubCode::kLockLimit);
+      return Status::Busy(rs::status::SubCode::kLockLimit);
     case DB_LOCK_DEADLOCK: {
       std::reverse(di_path.begin(), di_path.end());
       dlock_buffer_.AddNewPath(
           RangeDeadlockPath(di_path, request.get_start_time()));
-      return Status::Busy(Status::SubCode::kDeadlock);
+      return Status::Busy(rs::status::SubCode::kDeadlock);
     }
     default:
       assert(0);
-      return Status::Busy(Status::SubCode::kLockLimit);
+      return Status::Busy(rs::status::SubCode::kLockLimit);
   }
 
   return Status::OK();

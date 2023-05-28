@@ -140,7 +140,7 @@ TEST_F(PointLockManagerTest, DeadlockDepthExceeded) {
 
   auto s = locker_->TryLock(txn3, 1, "k2", env_, true);
   ASSERT_TRUE(s.IsBusy());
-  ASSERT_EQ(s.subcode(), Status::SubCode::kDeadlock);
+  ASSERT_EQ(s.subcode(), rs::status::SubCode::kDeadlock);
 
   std::vector<DeadlockPath> deadlock_paths = locker_->GetDeadlockInfoBuffer();
   ASSERT_EQ(deadlock_paths.size(), 1u);

@@ -248,7 +248,7 @@ TEST_P(AnyLockManagerTest, Deadlock) {
 
   auto s = locker_->TryLock(txn2, 1, "k1", env_, true);
   ASSERT_TRUE(s.IsBusy());
-  ASSERT_EQ(s.subcode(), Status::SubCode::kDeadlock);
+  ASSERT_EQ(s.subcode(), rs::status::SubCode::kDeadlock);
 
   std::vector<DeadlockPath> deadlock_paths = locker_->GetDeadlockInfoBuffer();
   ASSERT_EQ(deadlock_paths.size(), 1u);

@@ -1056,7 +1056,7 @@ void CompactionIterator::NextFromInput() {
   }
 
   if (IsPausingManualCompaction()) {
-    status_ = Status::Incomplete(Status::SubCode::kManualCompactionPaused);
+    status_ = Status::Incomplete(rs::status::SubCode::kManualCompactionPaused);
   }
 
   // Propagate corruption status from memtable itereator

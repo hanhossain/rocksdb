@@ -897,11 +897,11 @@ Status DBImpl::CompactRange(const CompactRangeOptions& options,
                             const Slice* begin_without_ts,
                             const Slice* end_without_ts) {
   if (manual_compaction_paused_.load(std::memory_order_acquire) > 0) {
-    return Status::Incomplete(Status::SubCode::kManualCompactionPaused);
+    return Status::Incomplete(rs::status::SubCode::kManualCompactionPaused);
   }
 
   if (options.canceled && options.canceled->load(std::memory_order_acquire)) {
-    return Status::Incomplete(Status::SubCode::kManualCompactionPaused);
+    return Status::Incomplete(rs::status::SubCode::kManualCompactionPaused);
   }
 
   const Comparator* const ucmp = column_family->GetComparator();
@@ -1352,7 +1352,7 @@ Status DBImpl::CompactFilesImpl(
     return Status::ShutdownInProgress();
   }
   if (manual_compaction_paused_.load(std::memory_order_acquire) > 0) {
-    return Status::Incomplete(Status::SubCode::kManualCompactionPaused);
+    return Status::Incomplete(rs::status::SubCode::kManualCompactionPaused);
   }
 
   std::unordered_set<uint64_t> input_set;
@@ -1919,7 +1919,7 @@ Status DBImpl::RunManualCompaction(
     // to drain. So return immediately.
     TEST_SYNC_POINT("DBImpl::RunManualCompaction:PausedAtStart");
     manual.status =
-        Status::Incomplete(Status::SubCode::kManualCompactionPaused);
+        Status::Incomplete(rs::status::SubCode::kManualCompactionPaused);
     manual.done = true;
     return manual.status;
   }
@@ -1953,7 +1953,7 @@ Status DBImpl::RunManualCompaction(
         // handling code can process it.
         manual.done = true;
         manual.status =
-            Status::Incomplete(Status::SubCode::kManualCompactionPaused);
+            Status::Incomplete(rs::status::SubCode::kManualCompactionPaused);
         break;
       }
       TEST_SYNC_POINT("DBImpl::RunManualCompaction:WaitScheduled");
@@ -1995,7 +1995,7 @@ Status DBImpl::RunManualCompaction(
           // compaction so the below cleanup/error handling code can process it.
           manual.done = true;
           manual.status =
-              Status::Incomplete(Status::SubCode::kManualCompactionPaused);
+              Status::Incomplete(rs::status::SubCode::kManualCompactionPaused);
         }
       }
       if (!manual.done) {
@@ -2082,7 +2082,7 @@ Status DBImpl::RunManualCompaction(
   // any unscheduled compaction job which was blocked by exclusive manual
   // compaction.
   if (manual.status.IsIncomplete() &&
-      manual.status.subcode() == Status::SubCode::kManualCompactionPaused) {
+      manual.status.subcode() == rs::status::SubCode::kManualCompactionPaused) {
     MaybeScheduleFlushOrCompaction();
   }
   bg_cv_.SignalAll();
@@ -2864,11 +2864,11 @@ void DBImpl::UnscheduleCompactionCallback(void* arg) {
     if (ca.prepicked_compaction->manual_compaction_state) {
       ca.prepicked_compaction->manual_compaction_state->done = true;
       ca.prepicked_compaction->manual_compaction_state->status =
-          Status::Incomplete(Status::SubCode::kManualCompactionPaused);
+          Status::Incomplete(rs::status::SubCode::kManualCompactionPaused);
     }
     if (ca.prepicked_compaction->compaction != nullptr) {
       ca.prepicked_compaction->compaction->ReleaseCompactionFiles(
-          Status::Incomplete(Status::SubCode::kManualCompactionPaused));
+          Status::Incomplete(rs::status::SubCode::kManualCompactionPaused));
       delete ca.prepicked_compaction->compaction;
     }
     delete ca.prepicked_compaction;
@@ -3222,7 +3222,7 @@ Status DBImpl::BackgroundCompaction(bool* made_progress,
       status = Status::ShutdownInProgress();
     } else if (is_manual &&
                manual_compaction->canceled.load(std::memory_order_acquire)) {
-      status = Status::Incomplete(Status::SubCode::kManualCompactionPaused);
+      status = Status::Incomplete(rs::status::SubCode::kManualCompactionPaused);
     }
   } else {
     status = error_handler_.GetBGError();
