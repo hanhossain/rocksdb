@@ -49,7 +49,7 @@ class ErrorHandler {
   void EnableAutoRecovery() { auto_recovery_ = true; }
 
   rs::status::Severity GetErrorSeverity(BackgroundErrorReason reason,
-                                    Status::Code code, Status::SubCode subcode);
+                                    rs::status::Code code, Status::SubCode subcode);
 
   const Status& SetBGError(const Status& bg_err, BackgroundErrorReason reason);
 

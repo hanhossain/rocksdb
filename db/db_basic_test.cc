@@ -46,7 +46,7 @@ TEST_F(DBBasicTest, OpenWhenOpen) {
     delete db2;
     return "db2 open: ok";
   }();
-  ASSERT_EQ(Status::Code::kIOError, s.code());
+  ASSERT_EQ(rs::status::Code::kIOError, s.code());
   ASSERT_EQ(Status::SubCode::kNone, s.subcode());
   ASSERT_TRUE(strstr(s.getState(), "lock ") != nullptr);
 

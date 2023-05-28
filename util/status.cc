@@ -47,7 +47,7 @@ static const char* msgs[static_cast<int>(Status::SubCode::kMaxSubCode)] = {
     "Merge operator failed",  // kMergeOperatorFailed
 };
 
-Status::Status(Code _code, SubCode _subcode, const Slice& msg,
+Status::Status(rs::status::Code _code, SubCode _subcode, const Slice& msg,
                const Slice& msg2, rs::status::Severity sev)
     : code_(_code),
       subcode_(_subcode),
@@ -83,54 +83,54 @@ std::string Status::ToString() const {
 #endif  // ROCKSDB_ASSERT_STATUS_CHECKED
   const char* type = nullptr;
   switch (code_) {
-    case Status::Code::kOk:
+    case rs::status::Code::kOk:
       return "OK";
-    case Status::Code::kNotFound:
+    case rs::status::Code::kNotFound:
       type = "NotFound: ";
       break;
-    case Status::Code::kCorruption:
+    case rs::status::Code::kCorruption:
       type = "Corruption: ";
       break;
-    case Status::Code::kNotSupported:
+    case rs::status::Code::kNotSupported:
       type = "Not implemented: ";
       break;
-    case Status::Code::kInvalidArgument:
+    case rs::status::Code::kInvalidArgument:
       type = "Invalid argument: ";
       break;
-    case Status::Code::kIOError:
+    case rs::status::Code::kIOError:
       type = "IO error: ";
       break;
-    case Status::Code::kMergeInProgress:
+    case rs::status::Code::kMergeInProgress:
       type = "Merge in progress: ";
       break;
-    case Status::Code::kIncomplete:
+    case rs::status::Code::kIncomplete:
       type = "Result incomplete: ";
       break;
-    case Status::Code::kShutdownInProgress:
+    case rs::status::Code::kShutdownInProgress:
       type = "Shutdown in progress: ";
       break;
-    case Status::Code::kTimedOut:
+    case rs::status::Code::kTimedOut:
       type = "Operation timed out: ";
       break;
-    case Status::Code::kAborted:
+    case rs::status::Code::kAborted:
       type = "Operation aborted: ";
       break;
-    case Status::Code::kBusy:
+    case rs::status::Code::kBusy:
       type = "Resource busy: ";
       break;
-    case Status::Code::kExpired:
+    case rs::status::Code::kExpired:
       type = "Operation expired: ";
       break;
-    case Status::Code::kTryAgain:
+    case rs::status::Code::kTryAgain:
       type = "Operation failed. Try again.: ";
       break;
-    case Status::Code::kCompactionTooLarge:
+    case rs::status::Code::kCompactionTooLarge:
       type = "Compaction too large: ";
       break;
-    case Status::Code::kColumnFamilyDropped:
+    case rs::status::Code::kColumnFamilyDropped:
       type = "Column family dropped: ";
       break;
-    case Status::Code::kMaxCode:
+    case rs::status::Code::kMaxCode:
       assert(false);
       break;
   }

@@ -2102,9 +2102,9 @@ TEST_P(WriteBatchWithIndexTest, GetFromBatchAfterMerge) {
   batch_->Merge("o", "bb");  // Merging bb under key "o"
   batch_->Merge("m", "cc");  // Merging bc under key "m"
   s = batch_->GetFromBatch(options_, "m", &value);
-  ASSERT_EQ(s.code(), Status::Code::kMergeInProgress);
+  ASSERT_EQ(s.code(), rs::status::Code::kMergeInProgress);
   s = batch_->GetFromBatch(options_, "o", &value);
-  ASSERT_EQ(s.code(), Status::Code::kMergeInProgress);
+  ASSERT_EQ(s.code(), rs::status::Code::kMergeInProgress);
 
   ASSERT_OK(db_->Write(write_opts_, batch_->GetWriteBatch()));
   ASSERT_OK(db_->Get(read_opts_, "o", &value));
@@ -2160,13 +2160,13 @@ TEST_P(WriteBatchWithIndexTest, GetAfterMergePut) {
 
   ASSERT_OK(batch_->Merge("key", "aa"));  // Merging aa under key
   Status s = batch_->GetFromBatch(cf0, options_, "key", &value);
-  ASSERT_EQ(s.code(), Status::Code::kMergeInProgress);
+  ASSERT_EQ(s.code(), rs::status::Code::kMergeInProgress);
   ASSERT_OK(batch_->GetFromBatchAndDB(db_, read_opts_, "key", &value));
   ASSERT_EQ(value, "orig,aa");
 
   ASSERT_OK(batch_->Merge("key", "bb"));  // Merging bb under key
   s = batch_->GetFromBatch(cf0, options_, "key", &value);
-  ASSERT_EQ(s.code(), Status::Code::kMergeInProgress);
+  ASSERT_EQ(s.code(), rs::status::Code::kMergeInProgress);
   ASSERT_OK(batch_->GetFromBatchAndDB(db_, read_opts_, "key", &value));
   ASSERT_EQ(value, "orig,aa,bb");
 
@@ -2190,13 +2190,13 @@ TEST_P(WriteBatchWithIndexTest, GetAfterMergeDelete) {
 
   ASSERT_OK(batch_->Merge("key", "aa"));  // Merging aa under key
   Status s = batch_->GetFromBatch(cf0, options_, "key", &value);
-  ASSERT_EQ(s.code(), Status::Code::kMergeInProgress);
+  ASSERT_EQ(s.code(), rs::status::Code::kMergeInProgress);
   ASSERT_OK(batch_->GetFromBatchAndDB(db_, read_opts_, "key", &value));
   ASSERT_EQ(value, "aa");
 
   ASSERT_OK(batch_->Merge("key", "bb"));  // Merging bb under key
   s = batch_->GetFromBatch(cf0, options_, "key", &value);
-  ASSERT_EQ(s.code(), Status::Code::kMergeInProgress);
+  ASSERT_EQ(s.code(), rs::status::Code::kMergeInProgress);
   ASSERT_OK(batch_->GetFromBatchAndDB(db_, read_opts_, "key", &value));
   ASSERT_EQ(value, "aa,bb");
 
