@@ -11,48 +11,9 @@
 
 namespace ROCKSDB_NAMESPACE {
 
-static std::unordered_map<std::string, rs::db::dbformat::ValueType> value_type_string_map = {
-    {"TypeDeletion", rs::db::dbformat::ValueType::TypeDeletion},
-    {"TypeValue", rs::db::dbformat::ValueType::TypeValue},
-    {"TypeMerge", rs::db::dbformat::ValueType::TypeMerge},
-    {"TypeLogData", rs::db::dbformat::ValueType::TypeLogData},
-    {"TypeColumnFamilyDeletion", rs::db::dbformat::ValueType::TypeColumnFamilyDeletion},
-    {"TypeColumnFamilyValue", rs::db::dbformat::ValueType::TypeColumnFamilyValue},
-    {"TypeColumnFamilyMerge", rs::db::dbformat::ValueType::TypeColumnFamilyMerge},
-    {"TypeSingleDeletion", rs::db::dbformat::ValueType::TypeSingleDeletion},
-    {"TypeColumnFamilySingleDeletion",
-     rs::db::dbformat::ValueType::TypeColumnFamilySingleDeletion},
-    {"TypeBeginPrepareXID", rs::db::dbformat::ValueType::TypeBeginPrepareXID},
-    {"TypeEndPrepareXID", rs::db::dbformat::ValueType::TypeEndPrepareXID},
-    {"TypeCommitXID", rs::db::dbformat::ValueType::TypeCommitXID},
-    {"TypeRollbackXID", rs::db::dbformat::ValueType::TypeRollbackXID},
-    {"TypeNoop", rs::db::dbformat::ValueType::TypeNoop},
-    {"TypeColumnFamilyRangeDeletion",
-     rs::db::dbformat::ValueType::TypeColumnFamilyRangeDeletion},
-    {"TypeRangeDeletion", rs::db::dbformat::ValueType::TypeRangeDeletion},
-    {"TypeColumnFamilyBlobIndex", rs::db::dbformat::ValueType::TypeColumnFamilyBlobIndex},
-    {"TypeBlobIndex", rs::db::dbformat::ValueType::TypeBlobIndex},
-    {"TypeBeginPersistedPrepareXID", rs::db::dbformat::ValueType::TypeBeginPersistedPrepareXID},
-    {"TypeBeginUnprepareXID", rs::db::dbformat::ValueType::TypeBeginUnprepareXID},
-    {"TypeDeletionWithTimestamp", rs::db::dbformat::ValueType::TypeDeletionWithTimestamp},
-    {"TypeCommitXIDAndTimestamp", rs::db::dbformat::ValueType::TypeCommitXIDAndTimestamp},
-    {"TypeWideColumnEntity", rs::db::dbformat::ValueType::TypeWideColumnEntity},
-    {"TypeColumnFamilyWideColumnEntity",
-     rs::db::dbformat::ValueType::TypeColumnFamilyWideColumnEntity}};
-
-std::string KeyVersion::GetTypeName() const {
-  std::string type_name;
-  if (SerializeEnum<rs::db::dbformat::ValueType>(value_type_string_map,
-                               static_cast<rs::db::dbformat::ValueType>(type), &type_name)) {
-    return type_name;
-  } else {
-    return "Invalid";
-  }
-}
-
 Status GetAllKeyVersions(DB* db, Slice begin_key, Slice end_key,
                          size_t max_num_ikeys,
-                         std::vector<KeyVersion>* key_versions) {
+                         std::vector<rs::debug::KeyVersion>* key_versions) {
   if (nullptr == db) {
     return Status::InvalidArgument("db cannot be null.");
   }
@@ -62,7 +23,7 @@ Status GetAllKeyVersions(DB* db, Slice begin_key, Slice end_key,
 
 Status GetAllKeyVersions(DB* db, ColumnFamilyHandle* cfh, Slice begin_key,
                          Slice end_key, size_t max_num_ikeys,
-                         std::vector<KeyVersion>* key_versions) {
+                         std::vector<rs::debug::KeyVersion>* key_versions) {
   if (nullptr == db) {
     return Status::InvalidArgument("db cannot be null.");
   }
@@ -103,10 +64,11 @@ Status GetAllKeyVersions(DB* db, ColumnFamilyHandle* cfh, Slice begin_key,
       break;
     }
 
-    key_versions->emplace_back(ikey.user_key.ToString() /* _user_key */,
-                               iter->value().ToString() /* _value */,
-                               ikey.sequence /* _sequence */,
-                               ikey.type /* _type */);
+    key_versions->push_back(rs::debug::KeyVersion_new(
+        ikey.user_key.ToString(),
+        iter->value().ToString(),
+        ikey.sequence,
+        ikey.type));
     if (++num_keys >= max_num_ikeys) {
       break;
     }

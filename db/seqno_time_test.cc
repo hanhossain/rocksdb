@@ -796,7 +796,7 @@ TEST_P(SeqnoTimeTablePropTest, SeqnoToTimeMappingUniversal) {
     ASSERT_EQ(tables_props.size(), 1);
   }
   ASSERT_GT(num_seqno_zeroing, 0);
-  std::vector<KeyVersion> key_versions;
+  std::vector<rs::debug::KeyVersion> key_versions;
   ASSERT_OK(GetAllKeyVersions(db_, Slice(), Slice(),
                               std::numeric_limits<size_t>::max(),
                               &key_versions));

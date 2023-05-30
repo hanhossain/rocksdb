@@ -505,8 +505,8 @@ class WritePreparedTransactionTestBase : public TransactionTestBase {
   }
 
   // Verify all versions of keys.
-  void VerifyInternalKeys(const std::vector<KeyVersion>& expected_versions) {
-    std::vector<KeyVersion> versions;
+  void VerifyInternalKeys(const std::vector<rs::debug::KeyVersion>& expected_versions) {
+    std::vector<rs::debug::KeyVersion> versions;
     const size_t kMaxKeys = 100000;
     ASSERT_OK(GetAllKeyVersions(db, expected_versions.front().user_key,
                                 expected_versions.back().user_key, kMaxKeys,
@@ -2329,14 +2329,14 @@ TEST_P(WritePreparedTransactionTest, DisableGCDuringRecovery) {
   // Use large buffer to avoid memtable flush after 1024 insertions
   options.write_buffer_size = 1024 * 1024;
   ASSERT_OK(ReOpen());
-  std::vector<KeyVersion> versions;
+  std::vector<rs::debug::KeyVersion> versions;
   uint64_t seq = 0;
   for (uint64_t i = 1; i <= 1024; i++) {
     std::string v = "bar" + std::to_string(i);
     ASSERT_OK(db->Put(WriteOptions(), "foo", v));
     VerifyKeys({{"foo", v}});
     seq++;  // one for the key/value
-    KeyVersion kv = {"foo", v, seq, rs::db::dbformat::ValueType::TypeValue};
+    rs::debug::KeyVersion kv = rs::debug::KeyVersion_new("foo", v, seq, rs::db::dbformat::ValueType::TypeValue);
     if (options.two_write_queues) {
       seq++;  // one for the commit
     }

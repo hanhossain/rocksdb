@@ -2919,7 +2919,7 @@ TEST_F(DBBasicTest, GetAllKeyVersions) {
   for (size_t i = 0; i != kNumDeletes; ++i) {
     ASSERT_OK(Delete(std::to_string(i)));
   }
-  std::vector<KeyVersion> key_versions;
+  std::vector<rs::debug::KeyVersion> key_versions;
   ASSERT_OK(GetAllKeyVersions(db_, Slice(), Slice(),
                               std::numeric_limits<size_t>::max(),
                               &key_versions));
@@ -2953,7 +2953,7 @@ TEST_F(DBBasicTest, GetAllKeyVersions) {
 }
 
 TEST_F(DBBasicTest, ValueTypeString) {
-  KeyVersion key_version;
+  rs::debug::KeyVersion key_version = rs::debug::KeyVersion_new();
   // when adding new type, please also update `value_type_string_map`
   for (unsigned char i = (unsigned char)rs::db::dbformat::ValueType::TypeDeletion; i < (unsigned char)rs::db::dbformat::ValueType::TypeMaxValid;
        i++) {

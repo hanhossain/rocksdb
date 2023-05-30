@@ -1829,7 +1829,7 @@ void InternalDumpCommand::DoCommand() {
   }
 
   // Cast as DBImpl to get internal iterator
-  std::vector<KeyVersion> key_versions;
+  std::vector<rs::debug::KeyVersion> key_versions;
   Status st = GetAllKeyVersions(db_, GetCfHandle(), from_, to_, max_keys_,
                                 &key_versions);
   if (!st.ok()) {
@@ -1856,7 +1856,7 @@ void InternalDumpCommand::DoCommand() {
       rtype1 = "";
       s1 = 0;
       row = ikey.Encode().ToString();
-      val = key_version.value;
+      val = std::string(key_version.value);
       for (k = 0; row[k] != '\x01' && row[k] != '\0'; k++) s1++;
       for (k = 0; val[k] != '\x01' && val[k] != '\0'; k++) s1++;
       for (int j = 0; row[j] != delim_[0] && row[j] != '\0' && row[j] != '\x01';

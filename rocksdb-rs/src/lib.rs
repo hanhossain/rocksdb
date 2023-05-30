@@ -1,10 +1,12 @@
 pub mod advanced_options;
+pub mod debug;
 pub mod math;
 pub mod options;
 
 use crate::advanced_options::{
     new_compaction_options_fifo, new_configurable_compaction_options_fifo,
 };
+use crate::debug::{default_key_version, new_key_version};
 use crate::math::*;
 use crate::options::new_live_files_storage_info_options;
 
@@ -101,7 +103,7 @@ mod ffi {
     // for them to do more flexible encoding.
     #[namespace = "rs::db::dbformat"]
     #[derive(Debug)]
-    enum ValueType {
+    pub(crate) enum ValueType {
         TypeDeletion = 0x0,
         TypeValue = 0x1,
         TypeMerge = 0x2,
@@ -753,5 +755,35 @@ mod ffi {
 
         #[cxx_name = "DownwardInvolution"]
         fn downward_involution_u64(v: u64) -> u64;
+    }
+
+    /// Data associated with a particular version of a key. A database may internally
+    /// store multiple versions of a same user key due to snapshots, compaction not
+    /// happening yet, etc.
+    #[namespace = "rs::debug"]
+    #[derive(Debug)]
+    pub(crate) struct KeyVersion {
+        pub(crate) user_key: String,
+        pub(crate) value: String,
+        pub(crate) sequence: u64,
+        #[cxx_name = "type"]
+        pub(crate) value_type: ValueType,
+    }
+
+    #[namespace = "rs::debug"]
+    extern "Rust" {
+        #[cxx_name = "KeyVersion_new"]
+        fn new_key_version(
+            user_key: String,
+            value: String,
+            sequence: u64,
+            value_type: ValueType,
+        ) -> KeyVersion;
+
+        #[cxx_name = "KeyVersion_new"]
+        fn default_key_version() -> KeyVersion;
+
+        #[cxx_name = "GetTypeName"]
+        fn get_type_name(self: &KeyVersion) -> String;
     }
 }

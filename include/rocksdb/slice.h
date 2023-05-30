@@ -26,6 +26,7 @@
 #include <string_view>  // RocksDB now requires C++17 support
 
 #include "rocksdb/cleanable.h"
+#include "rust/cxx.h"
 
 namespace ROCKSDB_NAMESPACE {
 
@@ -40,6 +41,8 @@ class Slice {
   // Create a slice that refers to the contents of "s"
   /* implicit */
   Slice(const std::string& s) : data_(s.data()), size_(s.size()) {}
+
+  Slice(const rust::String& s) : Slice(std::string(s)) {}
 
   // Create a slice that refers to the same contents as "sv"
   /* implicit */

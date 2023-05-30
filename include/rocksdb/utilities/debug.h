@@ -11,23 +11,6 @@
 
 namespace ROCKSDB_NAMESPACE {
 
-// Data associated with a particular version of a key. A database may internally
-// store multiple versions of a same user key due to snapshots, compaction not
-// happening yet, etc.
-struct KeyVersion final {
-  KeyVersion() : user_key(""), value(""), sequence(0), type(static_cast<rs::db::dbformat::ValueType>(0)) {}
-
-  KeyVersion(const std::string& _user_key, const std::string& _value,
-             SequenceNumber _sequence, rs::db::dbformat::ValueType _type)
-      : user_key(_user_key), value(_value), sequence(_sequence), type(_type) {}
-
-  std::string user_key;
-  std::string value;
-  SequenceNumber sequence;
-  rs::db::dbformat::ValueType type;
-  std::string GetTypeName() const;
-};
-
 // Returns listing of all versions of keys in the provided user key range.
 // The range is inclusive-inclusive, i.e., [`begin_key`, `end_key`], or
 // `max_num_ikeys` has been reached. Since all those keys returned will be
@@ -36,11 +19,11 @@ struct KeyVersion final {
 // The result is inserted into the provided vector, `key_versions`.
 Status GetAllKeyVersions(DB* db, Slice begin_key, Slice end_key,
                          size_t max_num_ikeys,
-                         std::vector<KeyVersion>* key_versions);
+                         std::vector<rs::debug::KeyVersion>* key_versions);
 
 Status GetAllKeyVersions(DB* db, ColumnFamilyHandle* cfh, Slice begin_key,
                          Slice end_key, size_t max_num_ikeys,
-                         std::vector<KeyVersion>* key_versions);
+                         std::vector<rs::debug::KeyVersion>* key_versions);
 
 }  // namespace ROCKSDB_NAMESPACE
 

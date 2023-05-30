@@ -737,7 +737,7 @@ class CfConsistencyStressTest : public StressTest {
           const auto print_key_versions = [&](ColumnFamilyHandle* cfh) {
             constexpr size_t kMaxNumIKeys = 8;
 
-            std::vector<KeyVersion> versions;
+            std::vector<rs::debug::KeyVersion> versions;
             const Status s = GetAllKeyVersions(db_, cfh, begin_key, end_key,
                                                kMaxNumIKeys, &versions);
             if (!s.ok()) {
@@ -754,7 +754,7 @@ class CfConsistencyStressTest : public StressTest {
                     begin_key.ToString(true /* hex */).c_str(),
                     end_key.ToString(true /* hex */).c_str(), kMaxNumIKeys);
 
-            for (const KeyVersion& kv : versions) {
+            for (const rs::debug::KeyVersion& kv : versions) {
               fprintf(stderr, "  key %s seq %" PRIu64 " type %d\n",
                       Slice(kv.user_key).ToString(true).c_str(), kv.sequence,
                       (int)kv.type);

@@ -1407,7 +1407,7 @@ TEST_F(PrecludeLastLevelTest, MigrationFromPreserveTimePartial) {
   // all data is pushed to the last level
   ASSERT_EQ("0,0,0,0,0,0,1", FilesPerLevel());
 
-  std::vector<KeyVersion> key_versions;
+  std::vector<rs::debug::KeyVersion> key_versions;
   ASSERT_OK(GetAllKeyVersions(db_, Slice(), Slice(),
                               std::numeric_limits<size_t>::max(),
                               &key_versions));
@@ -1548,7 +1548,7 @@ TEST_F(PrecludeLastLevelTest, LastLevelOnlyCompactionPartial) {
   ASSERT_GT(GetSstSizeHelper(rs::advanced_options::Temperature::Cold), 0);
   ASSERT_GT(GetSstSizeHelper(rs::advanced_options::Temperature::Unknown), 0);
 
-  std::vector<KeyVersion> key_versions;
+  std::vector<rs::debug::KeyVersion> key_versions;
   ASSERT_OK(GetAllKeyVersions(db_, Slice(), Slice(),
                               std::numeric_limits<size_t>::max(),
                               &key_versions));

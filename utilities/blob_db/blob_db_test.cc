@@ -232,16 +232,16 @@ class BlobDBTest : public testing::Test {
   }
 
   void VerifyBaseDB(
-      const std::map<std::string, KeyVersion> &expected_versions) {
+      const std::map<std::string, rs::debug::KeyVersion> &expected_versions) {
     auto *bdb_impl = static_cast<BlobDBImpl *>(blob_db_);
     DB *db = blob_db_->GetRootDB();
     const size_t kMaxKeys = 10000;
-    std::vector<KeyVersion> versions;
+    std::vector<rs::debug::KeyVersion> versions;
     ASSERT_OK(GetAllKeyVersions(db, "", "", kMaxKeys, &versions));
     ASSERT_EQ(expected_versions.size(), versions.size());
     size_t i = 0;
     for (auto &key_version : expected_versions) {
-      const KeyVersion &expected_version = key_version.second;
+      const rs::debug::KeyVersion &expected_version = key_version.second;
       ASSERT_EQ(expected_version.user_key, versions[i].user_key);
       ASSERT_EQ(expected_version.sequence, versions[i].sequence);
       ASSERT_EQ(expected_version.type, versions[i].type);
@@ -261,7 +261,7 @@ class BlobDBTest : public testing::Test {
   void VerifyBaseDBBlobIndex(
       const std::map<std::string, BlobIndexVersion> &expected_versions) {
     const size_t kMaxKeys = 10000;
-    std::vector<KeyVersion> versions;
+    std::vector<rs::debug::KeyVersion> versions;
     ASSERT_OK(
         GetAllKeyVersions(blob_db_->GetRootDB(), "", "", kMaxKeys, &versions));
     ASSERT_EQ(versions.size(), expected_versions.size());
@@ -1297,7 +1297,7 @@ TEST_F(BlobDBTest, InlineSmallValues) {
   mock_clock_->SetCurrentTime(0);
   Open(bdb_options, options);
   std::map<std::string, std::string> data;
-  std::map<std::string, KeyVersion> versions;
+  std::map<std::string, rs::debug::KeyVersion> versions;
   for (size_t i = 0; i < 1000; i++) {
     bool is_small_value = rnd.Next() % 2;
     bool has_ttl = rnd.Next() % 2;
@@ -1315,7 +1315,7 @@ TEST_F(BlobDBTest, InlineSmallValues) {
     }
     ASSERT_EQ(blob_db_->GetLatestSequenceNumber(), sequence);
     versions[key] =
-        KeyVersion(key, value, sequence,
+        rs::debug::KeyVersion_new(key, value, sequence,
                    (is_small_value && !has_ttl) ? rs::db::dbformat::ValueType::TypeValue : rs::db::dbformat::ValueType::TypeBlobIndex);
   }
   VerifyDB(data);
@@ -1575,12 +1575,12 @@ TEST_F(BlobDBTest, FilterExpiredBlobIndex) {
   ASSERT_OK(blob_db_->CompactRange(CompactRangeOptions(), nullptr, nullptr));
   blob_db_->ReleaseSnapshot(snapshot);
   // Verify expired blob index are filtered.
-  std::vector<KeyVersion> versions;
+  std::vector<rs::debug::KeyVersion> versions;
   const size_t kMaxKeys = 10000;
   ASSERT_OK(GetAllKeyVersions(blob_db_, "", "", kMaxKeys, &versions));
   ASSERT_EQ(data_after_compact.size(), versions.size());
   for (auto &version : versions) {
-    ASSERT_TRUE(data_after_compact.count(version.user_key) > 0);
+    ASSERT_TRUE(data_after_compact.count(std::string(version.user_key)) > 0);
   }
   VerifyDB(data_after_compact);
 }
@@ -1610,18 +1610,18 @@ TEST_F(BlobDBTest, FilterFileNotAvailable) {
   const size_t kMaxKeys = 10000;
 
   DB *base_db = blob_db_->GetRootDB();
-  std::vector<KeyVersion> versions;
+  std::vector<rs::debug::KeyVersion> versions;
   ASSERT_OK(GetAllKeyVersions(base_db, "", "", kMaxKeys, &versions));
   ASSERT_EQ(2, versions.size());
-  ASSERT_EQ("bar", versions[0].user_key);
-  ASSERT_EQ("foo", versions[1].user_key);
+  ASSERT_EQ(rust::String("bar"), versions[0].user_key);
+  ASSERT_EQ(rust::String("foo"), versions[1].user_key);
   VerifyDB({{"bar", "v2"}, {"foo", "v1"}});
 
   ASSERT_OK(blob_db_->CompactRange(CompactRangeOptions(), nullptr, nullptr));
   ASSERT_OK(GetAllKeyVersions(base_db, "", "", kMaxKeys, &versions));
   ASSERT_EQ(2, versions.size());
-  ASSERT_EQ("bar", versions[0].user_key);
-  ASSERT_EQ("foo", versions[1].user_key);
+  ASSERT_EQ(rust::String("bar"), versions[0].user_key);
+  ASSERT_EQ(rust::String("foo"), versions[1].user_key);
   VerifyDB({{"bar", "v2"}, {"foo", "v1"}});
 
   // Remove the first blob file and compact. foo should be remove from base db.
@@ -1630,7 +1630,7 @@ TEST_F(BlobDBTest, FilterFileNotAvailable) {
   ASSERT_OK(blob_db_->CompactRange(CompactRangeOptions(), nullptr, nullptr));
   ASSERT_OK(GetAllKeyVersions(base_db, "", "", kMaxKeys, &versions));
   ASSERT_EQ(1, versions.size());
-  ASSERT_EQ("bar", versions[0].user_key);
+  ASSERT_EQ(rust::String("bar"), versions[0].user_key);
   VerifyDB({{"bar", "v2"}});
 
   // Remove the second blob file and compact. bar should be remove from base db.
@@ -1772,7 +1772,7 @@ TEST_F(BlobDBTest, GarbageCollection) {
   Open(bdb_options, options);
 
   std::map<std::string, std::string> data;
-  std::map<std::string, KeyVersion> blob_value_versions;
+  std::map<std::string, rs::debug::KeyVersion> blob_value_versions;
   std::map<std::string, BlobIndexVersion> blob_index_versions;
 
   Random rnd(301);
@@ -1791,7 +1791,7 @@ TEST_F(BlobDBTest, GarbageCollection) {
     ASSERT_EQ(blob_db_->GetLatestSequenceNumber(), sequence);
 
     data[key] = value;
-    blob_value_versions[key] = KeyVersion(key, value, sequence, rs::db::dbformat::ValueType::TypeBlobIndex);
+    blob_value_versions[key] = rs::debug::KeyVersion_new(key, value, sequence, rs::db::dbformat::ValueType::TypeBlobIndex);
     blob_index_versions[key] =
         BlobIndexVersion(key, /* file_number */ (i >> 3) + 1, kNoExpiration,
                          sequence, rs::db::dbformat::ValueType::TypeBlobIndex);
@@ -1808,7 +1808,7 @@ TEST_F(BlobDBTest, GarbageCollection) {
     ASSERT_EQ(blob_db_->GetLatestSequenceNumber(), sequence);
 
     data[key] = value;
-    blob_value_versions[key] = KeyVersion(key, value, sequence, rs::db::dbformat::ValueType::TypeBlobIndex);
+    blob_value_versions[key] = rs::debug::KeyVersion_new(key, value, sequence, rs::db::dbformat::ValueType::TypeBlobIndex);
     blob_index_versions[key] =
         BlobIndexVersion(key, /* file_number */ kNumBlobFiles + 1, kExpiration,
                          sequence, rs::db::dbformat::ValueType::TypeBlobIndex);
@@ -1824,7 +1824,7 @@ TEST_F(BlobDBTest, GarbageCollection) {
     ASSERT_EQ(blob_db_->GetLatestSequenceNumber(), sequence);
 
     data[key] = value;
-    blob_value_versions[key] = KeyVersion(key, value, sequence, rs::db::dbformat::ValueType::TypeBlobIndex);
+    blob_value_versions[key] = rs::debug::KeyVersion_new(key, value, sequence, rs::db::dbformat::ValueType::TypeBlobIndex);
     blob_index_versions[key] = BlobIndexVersion(
         key, kInvalidBlobFileNumber, kExpiration, sequence, rs::db::dbformat::ValueType::TypeBlobIndex);
   }
@@ -1840,7 +1840,7 @@ TEST_F(BlobDBTest, GarbageCollection) {
     ASSERT_EQ(blob_db_->GetLatestSequenceNumber(), sequence);
 
     data[key] = value;
-    blob_value_versions[key] = KeyVersion(key, value, sequence, rs::db::dbformat::ValueType::TypeValue);
+    blob_value_versions[key] = rs::debug::KeyVersion_new(key, value, sequence, rs::db::dbformat::ValueType::TypeValue);
     blob_index_versions[key] = BlobIndexVersion(
         key, kInvalidBlobFileNumber, kNoExpiration, sequence, rs::db::dbformat::ValueType::TypeValue);
   }
@@ -1871,7 +1871,7 @@ TEST_F(BlobDBTest, GarbageCollection) {
   VerifyDB(data);
 
   for (auto &pair : blob_value_versions) {
-    KeyVersion &version = pair.second;
+    rs::debug::KeyVersion &version = pair.second;
     version.sequence = 0;
   }
 
