@@ -386,6 +386,16 @@ mod ffi {
         age_for_warm: u64,
     }
 
+    #[namespace = "rs::advanced_options"]
+    extern "Rust" {
+        fn new_compaction_options_fifo() -> CompactionOptionsFIFO;
+
+        fn new_configurable_compaction_options_fifo(
+            max_table_files_size: u64,
+            allow_compaction: bool,
+        ) -> CompactionOptionsFIFO;
+    }
+
     #[namespace = "rs::options"]
     #[derive(Debug)]
     enum CompactionServiceJobStatus {
@@ -513,6 +523,12 @@ mod ffi {
         wal_size_for_flush: u64,
     }
 
+    #[namespace = "rs::options"]
+    extern "Rust" {
+        #[cxx_name = "LiveFilesStorageInfoOptions_new"]
+        fn new_live_files_storage_info_options() -> LiveFilesStorageInfoOptions;
+    }
+
     #[namespace = "rs::status"]
     #[derive(Debug)]
     enum Severity {
@@ -566,22 +582,6 @@ mod ffi {
         IOFenced = 14,
         MergeOperatorFailed = 15,
         MaxSubCode,
-    }
-
-    #[namespace = "rs::advanced_options"]
-    extern "Rust" {
-        fn new_compaction_options_fifo() -> CompactionOptionsFIFO;
-
-        fn new_configurable_compaction_options_fifo(
-            max_table_files_size: u64,
-            allow_compaction: bool,
-        ) -> CompactionOptionsFIFO;
-    }
-
-    #[namespace = "rs::options"]
-    extern "Rust" {
-        #[cxx_name = "LiveFilesStorageInfoOptions_new"]
-        fn new_live_files_storage_info_options() -> LiveFilesStorageInfoOptions;
     }
 
     #[namespace = "rs::math"]
