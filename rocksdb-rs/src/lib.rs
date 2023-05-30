@@ -236,9 +236,8 @@ mod ffi {
     #[namespace = "rs::options_type"]
     #[derive(Debug)]
     enum OptionTypeFlags {
-        /// No flags
+        /// No flags. This was also known as CompareDefault
         None = 0x00,
-        CompareDefault = 0x0,
         // this should be SanityLevel::None
         CompareNever = 0x01,
         // this should be SanityLevel::LooselyCompatible

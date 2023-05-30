@@ -576,7 +576,7 @@ class OptionTypeInfo {
       return rs::convenience::SanityLevel::None;
     } else {
       auto match = (flags_ & rs::options_type::OptionTypeFlags::CompareExact);
-      if (match == rs::options_type::OptionTypeFlags::CompareDefault) {
+      if (match == rs::options_type::OptionTypeFlags::None) {
         return rs::convenience::SanityLevel::ExactMatch;
       } else {
         return (rs::convenience::SanityLevel)match;
