@@ -109,17 +109,17 @@ class DBBasicTestWithTimestampBase : public DBTestBase {
   std::string Timestamp(uint64_t low, uint64_t high);
 
   void CheckIterUserEntry(const Iterator* it, const Slice& expected_key,
-                          ValueType expected_value_type,
+                          rs::db::dbformat::ValueType expected_value_type,
                           const Slice& expected_value,
                           const Slice& expected_ts) const;
 
   void CheckIterEntry(const Iterator* it, const Slice& expected_ukey,
-                      SequenceNumber expected_seq, ValueType expected_val_type,
+                      SequenceNumber expected_seq, rs::db::dbformat::ValueType expected_val_type,
                       const Slice& expected_value,
                       const Slice& expected_ts) const;
 
   void CheckIterEntry(const Iterator* it, const Slice& expected_ukey,
-                      ValueType expected_val_type, const Slice& expected_value,
+                      rs::db::dbformat::ValueType expected_val_type, const Slice& expected_value,
                       const Slice& expected_ts) const;
 };
 }  // namespace ROCKSDB_NAMESPACE

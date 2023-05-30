@@ -63,7 +63,7 @@ struct SstFileWriter::Rep {
   uint64_t next_file_number = 1;
 
   Status AddImpl(const Slice& user_key, const Slice& value,
-                 ValueType value_type) {
+                 rs::db::dbformat::ValueType value_type) {
     if (!builder) {
       return Status::InvalidArgument("File is not opened");
     }
@@ -79,9 +79,9 @@ struct SstFileWriter::Rep {
       }
     }
 
-    assert(value_type == ValueType::kTypeValue || value_type == ValueType::kTypeMerge ||
-           value_type == ValueType::kTypeDeletion ||
-           value_type == ValueType::kTypeDeletionWithTimestamp);
+    assert(value_type == rs::db::dbformat::ValueType::kTypeValue || value_type == rs::db::dbformat::ValueType::kTypeMerge ||
+           value_type == rs::db::dbformat::ValueType::kTypeDeletion ||
+           value_type == rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp);
 
     constexpr SequenceNumber sequence_number = 0;
 
@@ -98,7 +98,7 @@ struct SstFileWriter::Rep {
     return Status::OK();
   }
 
-  Status Add(const Slice& user_key, const Slice& value, ValueType value_type) {
+  Status Add(const Slice& user_key, const Slice& value, rs::db::dbformat::ValueType value_type) {
     if (internal_comparator.user_comparator()->timestamp_size() != 0) {
       return Status::InvalidArgument("Timestamp size mismatch");
     }
@@ -107,7 +107,7 @@ struct SstFileWriter::Rep {
   }
 
   Status Add(const Slice& user_key, const Slice& timestamp, const Slice& value,
-             ValueType value_type) {
+             rs::db::dbformat::ValueType value_type) {
     const size_t timestamp_size = timestamp.size();
 
     if (internal_comparator.user_comparator()->timestamp_size() !=
@@ -359,29 +359,29 @@ Status SstFileWriter::Open(const std::string& file_path) {
 }
 
 Status SstFileWriter::Add(const Slice& user_key, const Slice& value) {
-  return rep_->Add(user_key, value, ValueType::kTypeValue);
+  return rep_->Add(user_key, value, rs::db::dbformat::ValueType::kTypeValue);
 }
 
 Status SstFileWriter::Put(const Slice& user_key, const Slice& value) {
-  return rep_->Add(user_key, value, ValueType::kTypeValue);
+  return rep_->Add(user_key, value, rs::db::dbformat::ValueType::kTypeValue);
 }
 
 Status SstFileWriter::Put(const Slice& user_key, const Slice& timestamp,
                           const Slice& value) {
-  return rep_->Add(user_key, timestamp, value, ValueType::kTypeValue);
+  return rep_->Add(user_key, timestamp, value, rs::db::dbformat::ValueType::kTypeValue);
 }
 
 Status SstFileWriter::Merge(const Slice& user_key, const Slice& value) {
-  return rep_->Add(user_key, value, ValueType::kTypeMerge);
+  return rep_->Add(user_key, value, rs::db::dbformat::ValueType::kTypeMerge);
 }
 
 Status SstFileWriter::Delete(const Slice& user_key) {
-  return rep_->Add(user_key, Slice(), ValueType::kTypeDeletion);
+  return rep_->Add(user_key, Slice(), rs::db::dbformat::ValueType::kTypeDeletion);
 }
 
 Status SstFileWriter::Delete(const Slice& user_key, const Slice& timestamp) {
   return rep_->Add(user_key, timestamp, Slice(),
-                   ValueType::kTypeDeletionWithTimestamp);
+                   rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp);
 }
 
 Status SstFileWriter::DeleteRange(const Slice& begin_key,

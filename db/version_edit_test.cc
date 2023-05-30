@@ -40,8 +40,8 @@ TEST_F(VersionEditTest, EncodeDecode) {
   for (int i = 0; i < 4; i++) {
     TestEncodeDecode(edit);
     edit.AddFile(3, kBig + 300 + i, kBig32Bit + 400 + i, 0,
-                 InternalKey("foo", kBig + 500 + i, ValueType::kTypeValue),
-                 InternalKey("zoo", kBig + 600 + i, ValueType::kTypeDeletion),
+                 InternalKey("foo", kBig + 500 + i, rs::db::dbformat::ValueType::kTypeValue),
+                 InternalKey("zoo", kBig + 600 + i, rs::db::dbformat::ValueType::kTypeDeletion),
                  kBig + 500 + i, kBig + 600 + i, false, rs::advanced_options::Temperature::Unknown,
                  kInvalidBlobFileNumber, 888, 678,
                  kBig + 300 + i /* epoch_number */, "234", "crc32c",
@@ -60,25 +60,25 @@ TEST_F(VersionEditTest, EncodeDecodeNewFile4) {
   static const uint64_t kBig = 1ull << 50;
 
   VersionEdit edit;
-  edit.AddFile(3, 300, 3, 100, InternalKey("foo", kBig + 500, ValueType::kTypeValue),
-               InternalKey("zoo", kBig + 600, ValueType::kTypeDeletion), kBig + 500,
+  edit.AddFile(3, 300, 3, 100, InternalKey("foo", kBig + 500, rs::db::dbformat::ValueType::kTypeValue),
+               InternalKey("zoo", kBig + 600, rs::db::dbformat::ValueType::kTypeDeletion), kBig + 500,
                kBig + 600, true, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
                kUnknownOldestAncesterTime, kUnknownFileCreationTime,
                300 /* epoch_number */, kUnknownFileChecksum,
                kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
-  edit.AddFile(4, 301, 3, 100, InternalKey("foo", kBig + 501, ValueType::kTypeValue),
-               InternalKey("zoo", kBig + 601, ValueType::kTypeDeletion), kBig + 501,
+  edit.AddFile(4, 301, 3, 100, InternalKey("foo", kBig + 501, rs::db::dbformat::ValueType::kTypeValue),
+               InternalKey("zoo", kBig + 601, rs::db::dbformat::ValueType::kTypeDeletion), kBig + 501,
                kBig + 601, false, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
                kUnknownOldestAncesterTime, kUnknownFileCreationTime,
                301 /* epoch_number */, kUnknownFileChecksum,
                kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
-  edit.AddFile(5, 302, 0, 100, InternalKey("foo", kBig + 502, ValueType::kTypeValue),
-               InternalKey("zoo", kBig + 602, ValueType::kTypeDeletion), kBig + 502,
+  edit.AddFile(5, 302, 0, 100, InternalKey("foo", kBig + 502, rs::db::dbformat::ValueType::kTypeValue),
+               InternalKey("zoo", kBig + 602, rs::db::dbformat::ValueType::kTypeDeletion), kBig + 502,
                kBig + 602, true, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
                666, 888, 302 /* epoch_number */, kUnknownFileChecksum,
                kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
-  edit.AddFile(5, 303, 0, 100, InternalKey("foo", kBig + 503, ValueType::kTypeBlobIndex),
-               InternalKey("zoo", kBig + 603, ValueType::kTypeBlobIndex), kBig + 503,
+  edit.AddFile(5, 303, 0, 100, InternalKey("foo", kBig + 503, rs::db::dbformat::ValueType::kTypeBlobIndex),
+               InternalKey("zoo", kBig + 603, rs::db::dbformat::ValueType::kTypeBlobIndex), kBig + 503,
                kBig + 603, true, rs::advanced_options::Temperature::Unknown, 1001,
                kUnknownOldestAncesterTime, kUnknownFileCreationTime,
                303 /* epoch_number */, kUnknownFileChecksum,
@@ -118,14 +118,14 @@ TEST_F(VersionEditTest, EncodeDecodeNewFile4) {
 TEST_F(VersionEditTest, ForwardCompatibleNewFile4) {
   static const uint64_t kBig = 1ull << 50;
   VersionEdit edit;
-  edit.AddFile(3, 300, 3, 100, InternalKey("foo", kBig + 500, ValueType::kTypeValue),
-               InternalKey("zoo", kBig + 600, ValueType::kTypeDeletion), kBig + 500,
+  edit.AddFile(3, 300, 3, 100, InternalKey("foo", kBig + 500, rs::db::dbformat::ValueType::kTypeValue),
+               InternalKey("zoo", kBig + 600, rs::db::dbformat::ValueType::kTypeDeletion), kBig + 500,
                kBig + 600, true, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
                kUnknownOldestAncesterTime, kUnknownFileCreationTime,
                300 /* epoch_number */, kUnknownFileChecksum,
                kUnknownFileChecksumFuncName, kNullUniqueId64x2, 0);
-  edit.AddFile(4, 301, 3, 100, InternalKey("foo", kBig + 501, ValueType::kTypeValue),
-               InternalKey("zoo", kBig + 601, ValueType::kTypeDeletion), kBig + 501,
+  edit.AddFile(4, 301, 3, 100, InternalKey("foo", kBig + 501, rs::db::dbformat::ValueType::kTypeValue),
+               InternalKey("zoo", kBig + 601, rs::db::dbformat::ValueType::kTypeDeletion), kBig + 501,
                kBig + 601, false, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
                686, 868, 301 /* epoch_number */, "234", "crc32c",
                kNullUniqueId64x2, 0);
@@ -172,8 +172,8 @@ TEST_F(VersionEditTest, ForwardCompatibleNewFile4) {
 TEST_F(VersionEditTest, NewFile4NotSupportedField) {
   static const uint64_t kBig = 1ull << 50;
   VersionEdit edit;
-  edit.AddFile(3, 300, 3, 100, InternalKey("foo", kBig + 500, ValueType::kTypeValue),
-               InternalKey("zoo", kBig + 600, ValueType::kTypeDeletion), kBig + 500,
+  edit.AddFile(3, 300, 3, 100, InternalKey("foo", kBig + 500, rs::db::dbformat::ValueType::kTypeValue),
+               InternalKey("zoo", kBig + 600, rs::db::dbformat::ValueType::kTypeDeletion), kBig + 500,
                kBig + 600, true, rs::advanced_options::Temperature::Unknown, kInvalidBlobFileNumber,
                kUnknownOldestAncesterTime, kUnknownFileCreationTime,
                300 /* epoch_number */, kUnknownFileChecksum,
@@ -621,7 +621,7 @@ TEST(FileMetaDataTest, UpdateBoundariesBlobIndex) {
     constexpr char value[] = "value";
     constexpr SequenceNumber seq = 200;
 
-    ASSERT_OK(meta.UpdateBoundaries(key, value, seq, ValueType::kTypeValue));
+    ASSERT_OK(meta.UpdateBoundaries(key, value, seq, rs::db::dbformat::ValueType::kTypeValue));
     ASSERT_EQ(meta.oldest_blob_file_number, kInvalidBlobFileNumber);
   }
 
@@ -640,7 +640,7 @@ TEST(FileMetaDataTest, UpdateBoundariesBlobIndex) {
 
     constexpr SequenceNumber seq = 201;
 
-    ASSERT_OK(meta.UpdateBoundaries(key, blob_index, seq, ValueType::kTypeBlobIndex));
+    ASSERT_OK(meta.UpdateBoundaries(key, blob_index, seq, rs::db::dbformat::ValueType::kTypeBlobIndex));
     ASSERT_EQ(meta.oldest_blob_file_number, blob_file_number);
   }
 
@@ -656,7 +656,7 @@ TEST(FileMetaDataTest, UpdateBoundariesBlobIndex) {
 
     constexpr SequenceNumber seq = 202;
 
-    ASSERT_OK(meta.UpdateBoundaries(key, blob_index, seq, ValueType::kTypeBlobIndex));
+    ASSERT_OK(meta.UpdateBoundaries(key, blob_index, seq, rs::db::dbformat::ValueType::kTypeBlobIndex));
     ASSERT_EQ(meta.oldest_blob_file_number, expected_oldest_blob_file_number);
   }
 
@@ -670,7 +670,7 @@ TEST(FileMetaDataTest, UpdateBoundariesBlobIndex) {
 
     constexpr SequenceNumber seq = 203;
 
-    ASSERT_OK(meta.UpdateBoundaries(key, blob_index, seq, ValueType::kTypeBlobIndex));
+    ASSERT_OK(meta.UpdateBoundaries(key, blob_index, seq, rs::db::dbformat::ValueType::kTypeBlobIndex));
     ASSERT_EQ(meta.oldest_blob_file_number, expected_oldest_blob_file_number);
   }
 
@@ -691,7 +691,7 @@ TEST(FileMetaDataTest, UpdateBoundariesBlobIndex) {
 
     constexpr SequenceNumber seq = 204;
 
-    ASSERT_OK(meta.UpdateBoundaries(key, blob_index, seq, ValueType::kTypeBlobIndex));
+    ASSERT_OK(meta.UpdateBoundaries(key, blob_index, seq, rs::db::dbformat::ValueType::kTypeBlobIndex));
     ASSERT_EQ(meta.oldest_blob_file_number, expected_oldest_blob_file_number);
   }
 
@@ -701,7 +701,7 @@ TEST(FileMetaDataTest, UpdateBoundariesBlobIndex) {
     constexpr SequenceNumber seq = 205;
 
     ASSERT_TRUE(
-        meta.UpdateBoundaries(key, corrupt_blob_index, seq, ValueType::kTypeBlobIndex)
+        meta.UpdateBoundaries(key, corrupt_blob_index, seq, rs::db::dbformat::ValueType::kTypeBlobIndex)
             .IsCorruption());
     ASSERT_EQ(meta.oldest_blob_file_number, expected_oldest_blob_file_number);
   }
@@ -717,7 +717,7 @@ TEST(FileMetaDataTest, UpdateBoundariesBlobIndex) {
 
     constexpr SequenceNumber seq = 206;
 
-    ASSERT_TRUE(meta.UpdateBoundaries(key, blob_index, seq, ValueType::kTypeBlobIndex)
+    ASSERT_TRUE(meta.UpdateBoundaries(key, blob_index, seq, rs::db::dbformat::ValueType::kTypeBlobIndex)
                     .IsCorruption());
     ASSERT_EQ(meta.oldest_blob_file_number, expected_oldest_blob_file_number);
   }

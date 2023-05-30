@@ -252,13 +252,13 @@ class KeyConvertingIterator : public InternalIterator {
   }
   bool Valid() const override { return iter_->Valid() && status_.ok(); }
   void Seek(const Slice& target) override {
-    ParsedInternalKey ikey(target, kMaxSequenceNumber, ValueType::kTypeValue);
+    ParsedInternalKey ikey(target, kMaxSequenceNumber, rs::db::dbformat::ValueType::kTypeValue);
     std::string encoded;
     AppendInternalKey(&encoded, ikey);
     iter_->Seek(encoded);
   }
   void SeekForPrev(const Slice& target) override {
-    ParsedInternalKey ikey(target, kMaxSequenceNumber, ValueType::kTypeValue);
+    ParsedInternalKey ikey(target, kMaxSequenceNumber, rs::db::dbformat::ValueType::kTypeValue);
     std::string encoded;
     AppendInternalKey(&encoded, ikey);
     iter_->SeekForPrev(encoded);
@@ -318,7 +318,7 @@ class BlockConstructor : public Constructor {
       // `DataBlockIter` assumes it reads only internal keys. `BlockConstructor`
       // clients provide user keys, so we need to convert to internal key format
       // before writing the data block.
-      ParsedInternalKey ikey(kv.first, kMaxSequenceNumber, ValueType::kTypeValue);
+      ParsedInternalKey ikey(kv.first, kMaxSequenceNumber, rs::db::dbformat::ValueType::kTypeValue);
       std::string encoded;
       AppendInternalKey(&encoded, ikey);
       builder.Add(encoded, kv.second);
@@ -390,7 +390,7 @@ class TableConstructor : public Constructor {
 
     for (const auto& kv : kv_map) {
       if (convert_to_internal_key_) {
-        ParsedInternalKey ikey(kv.first, kMaxSequenceNumber, ValueType::kTypeValue);
+        ParsedInternalKey ikey(kv.first, kMaxSequenceNumber, rs::db::dbformat::ValueType::kTypeValue);
         std::string encoded;
         AppendInternalKey(&encoded, ikey);
         builder->Add(encoded, kv.second);
@@ -426,7 +426,7 @@ class TableConstructor : public Constructor {
   uint64_t ApproximateOffsetOf(const Slice& key) const {
     const ReadOptions read_options;
     if (convert_to_internal_key_) {
-      InternalKey ikey(key, kMaxSequenceNumber, ValueType::kTypeValue);
+      InternalKey ikey(key, kMaxSequenceNumber, rs::db::dbformat::ValueType::kTypeValue);
       const Slice skey = ikey.Encode();
       return table_reader_->ApproximateOffsetOf(
           read_options, skey, TableReaderCaller::kUncategorized);
@@ -522,7 +522,7 @@ class MemTableConstructor : public Constructor {
     memtable_->Ref();
     int seq = 1;
     for (const auto& kv : kv_map) {
-      Status s = memtable_->Add(seq, ValueType::kTypeValue, kv.first, kv.second,
+      Status s = memtable_->Add(seq, rs::db::dbformat::ValueType::kTypeValue, kv.first, kv.second,
                                 nullptr /* kv_prot_info */);
       if (!s.ok()) {
         return s;
@@ -1153,12 +1153,12 @@ class BlockBasedTableTest
         trace_opt, std::move(block_cache_trace_writer)));
 
     {
-      InternalKey internal_key(auto_add_key1, 0, ValueType::kTypeValue);
+      InternalKey internal_key(auto_add_key1, 0, rs::db::dbformat::ValueType::kTypeValue);
       std::string encoded_key = internal_key.Encode().ToString();
       c->Add(encoded_key, kDummyValue);
     }
     {
-      InternalKey internal_key(auto_add_key2, 0, ValueType::kTypeValue);
+      InternalKey internal_key(auto_add_key2, 0, rs::db::dbformat::ValueType::kTypeValue);
       std::string encoded_key = internal_key.Encode().ToString();
       c->Add(encoded_key, kDummyValue);
     }
@@ -1288,7 +1288,7 @@ class FileChecksumTestHelper {
   Status WriteKVAndFlushTable() {
     for (const auto& kv : kv_map_) {
       if (convert_to_internal_key_) {
-        ParsedInternalKey ikey(kv.first, kMaxSequenceNumber, ValueType::kTypeValue);
+        ParsedInternalKey ikey(kv.first, kMaxSequenceNumber, rs::db::dbformat::ValueType::kTypeValue);
         std::string encoded;
         AppendInternalKey(&encoded, ikey);
         table_builder_->Add(encoded, kv.second);
@@ -1931,11 +1931,11 @@ void AssertKeysInCache(BlockBasedTable* table_reader,
                        bool convert = false) {
   if (convert) {
     for (auto key : keys_in_cache) {
-      InternalKey ikey(key, kMaxSequenceNumber, ValueType::kTypeValue);
+      InternalKey ikey(key, kMaxSequenceNumber, rs::db::dbformat::ValueType::kTypeValue);
       ASSERT_TRUE(table_reader->TEST_KeyInCache(ReadOptions(), ikey.Encode()));
     }
     for (auto key : keys_not_in_cache) {
-      InternalKey ikey(key, kMaxSequenceNumber, ValueType::kTypeValue);
+      InternalKey ikey(key, kMaxSequenceNumber, rs::db::dbformat::ValueType::kTypeValue);
       ASSERT_TRUE(!table_reader->TEST_KeyInCache(ReadOptions(), ikey.Encode()));
     }
   } else {
@@ -1968,7 +1968,7 @@ void PrefetchRange(TableConstructor* c, Options* opt,
   std::unique_ptr<InternalKey> i_begin, i_end;
   if (key_begin != nullptr) {
     if (c->ConvertToInternalKey()) {
-      i_begin.reset(new InternalKey(key_begin, kMaxSequenceNumber, ValueType::kTypeValue));
+      i_begin.reset(new InternalKey(key_begin, kMaxSequenceNumber, rs::db::dbformat::ValueType::kTypeValue));
       begin.reset(new Slice(i_begin->Encode()));
     } else {
       begin.reset(new Slice(key_begin));
@@ -1976,7 +1976,7 @@ void PrefetchRange(TableConstructor* c, Options* opt,
   }
   if (key_end != nullptr) {
     if (c->ConvertToInternalKey()) {
-      i_end.reset(new InternalKey(key_end, kMaxSequenceNumber, ValueType::kTypeValue));
+      i_end.reset(new InternalKey(key_end, kMaxSequenceNumber, rs::db::dbformat::ValueType::kTypeValue));
       end.reset(new Slice(i_end->Encode()));
     } else {
       end.reset(new Slice(key_end));
@@ -2122,7 +2122,7 @@ TEST_P(BlockBasedTableTest, TotalOrderSeekOnHashIndex) {
         ro, moptions.prefix_extractor.get(), /*arena=*/nullptr,
         /*skip_filters=*/false, TableReaderCaller::kUncategorized));
 
-    iter->Seek(InternalKey("b", 0, ValueType::kTypeValue).Encode());
+    iter->Seek(InternalKey("b", 0, rs::db::dbformat::ValueType::kTypeValue).Encode());
     ASSERT_OK(iter->status());
     ASSERT_TRUE(iter->Valid());
     ASSERT_EQ("baaa1", ExtractUserKey(iter->key()).ToString());
@@ -2131,7 +2131,7 @@ TEST_P(BlockBasedTableTest, TotalOrderSeekOnHashIndex) {
     ASSERT_TRUE(iter->Valid());
     ASSERT_EQ("bbaa1", ExtractUserKey(iter->key()).ToString());
 
-    iter->Seek(InternalKey("bb", 0, ValueType::kTypeValue).Encode());
+    iter->Seek(InternalKey("bb", 0, rs::db::dbformat::ValueType::kTypeValue).Encode());
     ASSERT_OK(iter->status());
     ASSERT_TRUE(iter->Valid());
     ASSERT_EQ("bbaa1", ExtractUserKey(iter->key()).ToString());
@@ -2140,7 +2140,7 @@ TEST_P(BlockBasedTableTest, TotalOrderSeekOnHashIndex) {
     ASSERT_TRUE(iter->Valid());
     ASSERT_EQ("bbbb1", ExtractUserKey(iter->key()).ToString());
 
-    iter->Seek(InternalKey("bbb", 0, ValueType::kTypeValue).Encode());
+    iter->Seek(InternalKey("bbb", 0, rs::db::dbformat::ValueType::kTypeValue).Encode());
     ASSERT_OK(iter->status());
     ASSERT_TRUE(iter->Valid());
     ASSERT_EQ("bbbb1", ExtractUserKey(iter->key()).ToString());
@@ -2164,7 +2164,7 @@ TEST_P(BlockBasedTableTest, NoopTransformSeek) {
   // To tickle the PrefixMayMatch bug it is important that the
   // user-key is a single byte so that the index key exactly matches
   // the user-key.
-  InternalKey key("a", 1, ValueType::kTypeValue);
+  InternalKey key("a", 1, rs::db::dbformat::ValueType::kTypeValue);
   c.Add(key.Encode().ToString(), "b");
   std::vector<std::string> keys;
   stl_wrappers::KVMap kvmap;
@@ -2202,7 +2202,7 @@ TEST_P(BlockBasedTableTest, SkipPrefixBloomFilter) {
   options.prefix_extractor.reset(NewFixedPrefixTransform(1));
 
   TableConstructor c(options.comparator);
-  InternalKey key("abcdefghijk", 1, ValueType::kTypeValue);
+  InternalKey key("abcdefghijk", 1, rs::db::dbformat::ValueType::kTypeValue);
   c.Add(key.Encode().ToString(), "test");
   std::vector<std::string> keys;
   stl_wrappers::KVMap kvmap;
@@ -2241,7 +2241,7 @@ TEST_P(BlockBasedTableTest, BadChecksumType) {
   options.table_factory.reset(new BlockBasedTableFactory(table_options));
 
   TableConstructor c(options.comparator);
-  InternalKey key("abc", 1, ValueType::kTypeValue);
+  InternalKey key("abc", 1, rs::db::dbformat::ValueType::kTypeValue);
   c.Add(key.Encode().ToString(), "test");
   std::vector<std::string> keys;
   stl_wrappers::KVMap kvmap;
@@ -2427,7 +2427,7 @@ TEST_P(BuiltinChecksumTest, ChecksumZeroInputs) {
 void AddInternalKey(TableConstructor* c, const std::string& prefix,
                     std::string value = "v", int /*suffix_len*/ = 800) {
   static Random rnd(1023);
-  InternalKey k(prefix + rnd.RandomString(800), 0, ValueType::kTypeValue);
+  InternalKey k(prefix + rnd.RandomString(800), 0, rs::db::dbformat::ValueType::kTypeValue);
   c->Add(k.Encode().ToString(), value);
 }
 
@@ -2484,7 +2484,7 @@ void TableTest::IndexTest(BlockBasedTableOptions table_options) {
 
   // find the lower bound of the prefix
   for (size_t i = 0; i < prefixes.size(); ++i) {
-    index_iter->Seek(InternalKey(prefixes[i], 0, ValueType::kTypeValue).Encode());
+    index_iter->Seek(InternalKey(prefixes[i], 0, rs::db::dbformat::ValueType::kTypeValue).Encode());
     ASSERT_OK(index_iter->status());
     ASSERT_TRUE(index_iter->Valid());
 
@@ -2519,7 +2519,7 @@ void TableTest::IndexTest(BlockBasedTableOptions table_options) {
   for (size_t i = 0; i < prefixes.size(); ++i) {
     // the key is greater than any existing keys.
     auto key = prefixes[i] + "9";
-    index_iter->Seek(InternalKey(key, 0, ValueType::kTypeValue).Encode());
+    index_iter->Seek(InternalKey(key, 0, rs::db::dbformat::ValueType::kTypeValue).Encode());
 
     ASSERT_TRUE(index_iter->status().ok() || index_iter->status().IsNotFound());
     ASSERT_TRUE(!index_iter->status().IsNotFound() || !index_iter->Valid());
@@ -2537,7 +2537,7 @@ void TableTest::IndexTest(BlockBasedTableOptions table_options) {
   // find keys with prefix that don't match any of the existing prefixes.
   std::vector<std::string> non_exist_prefixes = {"002", "004", "006", "008"};
   for (const auto& prefix : non_exist_prefixes) {
-    index_iter->Seek(InternalKey(prefix, 0, ValueType::kTypeValue).Encode());
+    index_iter->Seek(InternalKey(prefix, 0, rs::db::dbformat::ValueType::kTypeValue).Encode());
     // regular_iter->Seek(prefix);
 
     ASSERT_OK(index_iter->status());
@@ -2550,7 +2550,7 @@ void TableTest::IndexTest(BlockBasedTableOptions table_options) {
     }
   }
   for (const auto& prefix : non_exist_prefixes) {
-    index_iter->SeekForPrev(InternalKey(prefix, 0, ValueType::kTypeValue).Encode());
+    index_iter->SeekForPrev(InternalKey(prefix, 0, rs::db::dbformat::ValueType::kTypeValue).Encode());
     // regular_iter->Seek(prefix);
 
     ASSERT_OK(index_iter->status());
@@ -2577,7 +2577,7 @@ void TableTest::IndexTest(BlockBasedTableOptions table_options) {
     //    they reuse the same variable.
     // 2. When Next() or Prev() is called, the block moves, so the
     //    optimization should kick in only with the current one.
-    index_iter2->Seek(InternalKey("0055", 0, ValueType::kTypeValue).Encode());
+    index_iter2->Seek(InternalKey("0055", 0, rs::db::dbformat::ValueType::kTypeValue).Encode());
     ASSERT_TRUE(index_iter2->Valid());
     ASSERT_EQ("0055", index_iter2->key().ToString().substr(0, 4));
 
@@ -2585,7 +2585,7 @@ void TableTest::IndexTest(BlockBasedTableOptions table_options) {
     ASSERT_TRUE(index_iter2->Valid());
     ASSERT_EQ("0095", index_iter2->key().ToString().substr(0, 4));
 
-    index_iter2->Seek(InternalKey("0055", 0, ValueType::kTypeValue).Encode());
+    index_iter2->Seek(InternalKey("0055", 0, rs::db::dbformat::ValueType::kTypeValue).Encode());
     ASSERT_TRUE(index_iter2->Valid());
     ASSERT_EQ("0055", index_iter2->key().ToString().substr(0, 4));
 
@@ -2598,7 +2598,7 @@ void TableTest::IndexTest(BlockBasedTableOptions table_options) {
     ASSERT_TRUE(index_iter2->Valid());
     ASSERT_EQ("0075", index_iter2->key().ToString().substr(0, 4));
 
-    index_iter2->Seek(InternalKey("0095", 0, ValueType::kTypeValue).Encode());
+    index_iter2->Seek(InternalKey("0095", 0, rs::db::dbformat::ValueType::kTypeValue).Encode());
     ASSERT_TRUE(index_iter2->Valid());
     ASSERT_EQ("0095", index_iter2->key().ToString().substr(0, 4));
     index_iter2->Prev();
@@ -2611,7 +2611,7 @@ void TableTest::IndexTest(BlockBasedTableOptions table_options) {
     ASSERT_TRUE(index_iter2->Valid());
     ASSERT_EQ("0095", index_iter2->key().ToString().substr(0, 4));
 
-    index_iter2->Seek(InternalKey("0095", 0, ValueType::kTypeValue).Encode());
+    index_iter2->Seek(InternalKey("0095", 0, rs::db::dbformat::ValueType::kTypeValue).Encode());
     ASSERT_TRUE(index_iter2->Valid());
     ASSERT_EQ("0095", index_iter2->key().ToString().substr(0, 4));
 
@@ -2621,7 +2621,7 @@ void TableTest::IndexTest(BlockBasedTableOptions table_options) {
     ASSERT_TRUE(index_iter2->Valid());
     ASSERT_EQ("0075", index_iter2->key().ToString().substr(0, 4));
 
-    index_iter2->Seek(InternalKey("0075", 0, ValueType::kTypeValue).Encode());
+    index_iter2->Seek(InternalKey("0075", 0, rs::db::dbformat::ValueType::kTypeValue).Encode());
     ASSERT_TRUE(index_iter2->Valid());
     ASSERT_EQ("0075", index_iter2->key().ToString().substr(0, 4));
 
@@ -2689,7 +2689,7 @@ TEST_P(BlockBasedTableTest, IndexSeekOptimizationIncomplete) {
       /*skip_filters=*/false, TableReaderCaller::kUncategorized));
 
   auto ikey = [](Slice user_key) {
-    return InternalKey(user_key, 0, ValueType::kTypeValue).Encode().ToString();
+    return InternalKey(user_key, 0, rs::db::dbformat::ValueType::kTypeValue).Encode().ToString();
   };
 
   iter->Seek(ikey("pika"));
@@ -2798,7 +2798,7 @@ TEST_P(BlockBasedTableTest, BinaryIndexWithFirstKey2) {
     EXPECT_EQ(0, stats->getTickerCount(BLOCK_CACHE_DATA_HIT));
 
     auto ikey = [](Slice user_key) {
-      return InternalKey(user_key, 0, ValueType::kTypeValue).Encode().ToString();
+      return InternalKey(user_key, 0, rs::db::dbformat::ValueType::kTypeValue).Encode().ToString();
     };
 
     // Seek to a key between blocks. If index contains first key, we shouldn't
@@ -2960,8 +2960,8 @@ TEST_P(BlockBasedTableTest, BinaryIndexWithFirstKeyGlobalSeqno) {
   TableConstructor c(BytewiseComparator(), /* convert_to_internal_key */ false,
                      /* level */ -1, /* largest_seqno */ 42);
 
-  c.Add(InternalKey("b", 0, ValueType::kTypeValue).Encode().ToString(), "x");
-  c.Add(InternalKey("c", 0, ValueType::kTypeValue).Encode().ToString(), "y");
+  c.Add(InternalKey("b", 0, rs::db::dbformat::ValueType::kTypeValue).Encode().ToString(), "x");
+  c.Add(InternalKey("c", 0, rs::db::dbformat::ValueType::kTypeValue).Encode().ToString(), "y");
 
   std::vector<std::string> keys;
   stl_wrappers::KVMap kvmap;
@@ -2978,9 +2978,9 @@ TEST_P(BlockBasedTableTest, BinaryIndexWithFirstKeyGlobalSeqno) {
       /*skip_filters=*/false, TableReaderCaller::kUncategorized,
       /*compaction_readahead_size=*/0, /*allow_unprepared_value=*/true));
 
-  iter->Seek(InternalKey("a", 0, ValueType::kTypeValue).Encode().ToString());
+  iter->Seek(InternalKey("a", 0, rs::db::dbformat::ValueType::kTypeValue).Encode().ToString());
   ASSERT_TRUE(iter->Valid());
-  EXPECT_EQ(InternalKey("b", 42, ValueType::kTypeValue).Encode().ToString(),
+  EXPECT_EQ(InternalKey("b", 42, rs::db::dbformat::ValueType::kTypeValue).Encode().ToString(),
             iter->key().ToString());
   EXPECT_NE(keys[0], iter->key().ToString());
   // Key should have been served from index, without reading data blocks.
@@ -2990,7 +2990,7 @@ TEST_P(BlockBasedTableTest, BinaryIndexWithFirstKeyGlobalSeqno) {
   EXPECT_EQ("x", iter->value().ToString());
   EXPECT_EQ(1, stats->getTickerCount(BLOCK_CACHE_DATA_MISS));
   EXPECT_EQ(0, stats->getTickerCount(BLOCK_CACHE_DATA_HIT));
-  EXPECT_EQ(InternalKey("b", 42, ValueType::kTypeValue).Encode().ToString(),
+  EXPECT_EQ(InternalKey("b", 42, rs::db::dbformat::ValueType::kTypeValue).Encode().ToString(),
             iter->key().ToString());
 
   c.ResetTableReader();
@@ -3083,7 +3083,7 @@ TEST_P(BlockBasedTableTest, TracingGetTest) {
   MutableCFOptions moptions(options);
   c.Finish(options, ioptions, moptions, table_options,
            GetPlainInternalComparator(options.comparator), &keys, &kvmap);
-  InternalKey internal_key(auto_add_key1, 0, ValueType::kTypeValue);
+  InternalKey internal_key(auto_add_key1, 0, rs::db::dbformat::ValueType::kTypeValue);
   std::string encoded_key = internal_key.Encode().ToString();
   for (uint32_t i = 1; i <= 2; i++) {
     PinnableSlice value;
@@ -3253,8 +3253,8 @@ TEST_P(BlockBasedTableTest, TracingMultiGetTest) {
         ukeys[1], &values[1], nullptr, nullptr, nullptr, true, nullptr, nullptr,
         nullptr, nullptr, nullptr, nullptr, get_id_offset + 1);
     std::array<std::string, 2> encoded_keys;
-    encoded_keys[0] = InternalKey(ukeys[0], 0, ValueType::kTypeValue).Encode().ToString();
-    encoded_keys[1] = InternalKey(ukeys[1], 0, ValueType::kTypeValue).Encode().ToString();
+    encoded_keys[0] = InternalKey(ukeys[0], 0, rs::db::dbformat::ValueType::kTypeValue).Encode().ToString();
+    encoded_keys[1] = InternalKey(ukeys[1], 0, rs::db::dbformat::ValueType::kTypeValue).Encode().ToString();
     std::array<Status, 2> statuses;
     autovector<KeyContext, MultiGetContext::MAX_BATCH_SIZE> key_context;
     key_context.emplace_back(/*ColumnFamilyHandle omitted*/ nullptr, ukeys[0],
@@ -3341,7 +3341,7 @@ TEST_P(BlockBasedTableTest, TracingApproximateOffsetOfTest) {
            GetPlainInternalComparator(options.comparator), &keys, &kvmap);
   const ReadOptions read_options;
   for (uint32_t i = 1; i <= 2; i++) {
-    InternalKey internal_key(auto_add_key1, 0, ValueType::kTypeValue);
+    InternalKey internal_key(auto_add_key1, 0, rs::db::dbformat::ValueType::kTypeValue);
     std::string encoded_key = internal_key.Encode().ToString();
     c.GetTableReader()->ApproximateOffsetOf(
         read_options, encoded_key, TableReaderCaller::kUserApproximateSize);
@@ -3686,7 +3686,7 @@ TEST_P(BlockBasedTableTest, FilterBlockInBlockCache) {
 
   TableConstructor c3(BytewiseComparator());
   std::string user_key = "k01";
-  InternalKey internal_key(user_key, 0, ValueType::kTypeValue);
+  InternalKey internal_key(user_key, 0, rs::db::dbformat::ValueType::kTypeValue);
   c3.Add(internal_key.Encode().ToString(), "hello");
   ImmutableOptions ioptions3(options);
   MutableCFOptions moptions3(options);
@@ -3781,7 +3781,7 @@ TEST_P(BlockBasedTableTest, BlockReadCountTest) {
 
       TableConstructor c(BytewiseComparator());
       std::string user_key = "k04";
-      InternalKey internal_key(user_key, 0, ValueType::kTypeValue);
+      InternalKey internal_key(user_key, 0, rs::db::dbformat::ValueType::kTypeValue);
       std::string encoded_key = internal_key.Encode().ToString();
       c.Add(encoded_key, "hello");
       ImmutableOptions ioptions(options);
@@ -3813,7 +3813,7 @@ TEST_P(BlockBasedTableTest, BlockReadCountTest) {
 
       // Get non-existing key
       user_key = "does-not-exist";
-      internal_key = InternalKey(user_key, 0, ValueType::kTypeValue);
+      internal_key = InternalKey(user_key, 0, rs::db::dbformat::ValueType::kTypeValue);
       encoded_key = internal_key.Encode().ToString();
 
       value.Reset();
@@ -3892,7 +3892,7 @@ TEST_P(BlockBasedTableTest, BlockCacheLeak) {
   ASSERT_OK(c.Reopen(ioptions1, moptions1));
   auto table_reader = dynamic_cast<BlockBasedTable*>(c.GetTableReader());
   for (const std::string& key : keys) {
-    InternalKey ikey(key, kMaxSequenceNumber, ValueType::kTypeValue);
+    InternalKey ikey(key, kMaxSequenceNumber, rs::db::dbformat::ValueType::kTypeValue);
     ASSERT_TRUE(table_reader->TEST_KeyInCache(ReadOptions(), ikey.Encode()));
   }
   c.ResetTableReader();
@@ -3905,7 +3905,7 @@ TEST_P(BlockBasedTableTest, BlockCacheLeak) {
   ASSERT_OK(c.Reopen(ioptions2, moptions2));
   table_reader = dynamic_cast<BlockBasedTable*>(c.GetTableReader());
   for (const std::string& key : keys) {
-    InternalKey ikey(key, kMaxSequenceNumber, ValueType::kTypeValue);
+    InternalKey ikey(key, kMaxSequenceNumber, rs::db::dbformat::ValueType::kTypeValue);
     ASSERT_TRUE(!table_reader->TEST_KeyInCache(ReadOptions(), ikey.Encode()));
   }
   c.ResetTableReader();
@@ -4587,7 +4587,7 @@ TEST_P(IndexBlockRestartIntervalTest, IndexBlockRestartInterval) {
   TableConstructor c(BytewiseComparator());
   static Random rnd(301);
   for (int i = 0; i < kKeysInTable; i++) {
-    InternalKey k(rnd.RandomString(kKeySize), 0, ValueType::kTypeValue);
+    InternalKey k(rnd.RandomString(kKeySize), 0, rs::db::dbformat::ValueType::kTypeValue);
     c.Add(k.Encode().ToString(), rnd.RandomString(kValSize));
   }
 
@@ -4743,7 +4743,7 @@ TEST_P(BlockBasedTableTest, DISABLED_TableWithGlobalSeqno) {
   for (char c = 'a'; c <= 'z'; ++c) {
     std::string key(8, c);
     std::string value = key;
-    InternalKey ik(key, 0, ValueType::kTypeValue);
+    InternalKey ik(key, 0, rs::db::dbformat::ValueType::kTypeValue);
 
     builder->Add(ik.Encode(), value);
   }
@@ -4814,7 +4814,7 @@ TEST_P(BlockBasedTableTest, DISABLED_TableWithGlobalSeqno) {
     ParsedInternalKey pik;
     ASSERT_OK(ParseInternalKey(iter->key(), &pik, true /* log_err_key */));
 
-    ASSERT_EQ(pik.type, ValueType::kTypeValue);
+    ASSERT_EQ(pik.type, rs::db::dbformat::ValueType::kTypeValue);
     ASSERT_EQ(pik.sequence, 0);
     ASSERT_EQ(pik.user_key, iter->value());
     ASSERT_EQ(pik.user_key.ToString(), std::string(8, current_c));
@@ -4835,7 +4835,7 @@ TEST_P(BlockBasedTableTest, DISABLED_TableWithGlobalSeqno) {
     ParsedInternalKey pik;
     ASSERT_OK(ParseInternalKey(iter->key(), &pik, true /* log_err_key */));
 
-    ASSERT_EQ(pik.type, ValueType::kTypeValue);
+    ASSERT_EQ(pik.type, rs::db::dbformat::ValueType::kTypeValue);
     ASSERT_EQ(pik.sequence, 10);
     ASSERT_EQ(pik.user_key, iter->value());
     ASSERT_EQ(pik.user_key.ToString(), std::string(8, current_c));
@@ -4853,7 +4853,7 @@ TEST_P(BlockBasedTableTest, DISABLED_TableWithGlobalSeqno) {
     ParsedInternalKey pik;
     ASSERT_OK(ParseInternalKey(iter->key(), &pik, true /* log_err_key */));
 
-    ASSERT_EQ(pik.type, ValueType::kTypeValue);
+    ASSERT_EQ(pik.type, rs::db::dbformat::ValueType::kTypeValue);
     ASSERT_EQ(pik.sequence, 10);
     ASSERT_EQ(pik.user_key.ToString(), k);
     ASSERT_EQ(iter->value().ToString(), k);
@@ -4872,7 +4872,7 @@ TEST_P(BlockBasedTableTest, DISABLED_TableWithGlobalSeqno) {
     ParsedInternalKey pik;
     ASSERT_OK(ParseInternalKey(iter->key(), &pik, true /* log_err_key */));
 
-    ASSERT_EQ(pik.type, ValueType::kTypeValue);
+    ASSERT_EQ(pik.type, rs::db::dbformat::ValueType::kTypeValue);
     ASSERT_EQ(pik.sequence, 3);
     ASSERT_EQ(pik.user_key, iter->value());
     ASSERT_EQ(pik.user_key.ToString(), std::string(8, current_c));
@@ -4891,7 +4891,7 @@ TEST_P(BlockBasedTableTest, DISABLED_TableWithGlobalSeqno) {
     ParsedInternalKey pik;
     ASSERT_OK(ParseInternalKey(iter->key(), &pik, true /* log_err_key */));
 
-    ASSERT_EQ(pik.type, ValueType::kTypeValue);
+    ASSERT_EQ(pik.type, rs::db::dbformat::ValueType::kTypeValue);
     ASSERT_EQ(pik.sequence, 3);
     ASSERT_EQ(pik.user_key.ToString(), k);
     ASSERT_EQ(iter->value().ToString(), k);
@@ -4927,7 +4927,7 @@ TEST_P(BlockBasedTableTest, BlockAlignTest) {
     ostr << std::setfill('0') << std::setw(5) << i;
     std::string key = ostr.str();
     std::string value = "val";
-    InternalKey ik(key, 0, ValueType::kTypeValue);
+    InternalKey ik(key, 0, rs::db::dbformat::ValueType::kTypeValue);
 
     builder->Add(ik.Encode(), value);
   }
@@ -5020,7 +5020,7 @@ TEST_P(BlockBasedTableTest, PropertiesBlockRestartPointTest) {
     ostr << std::setfill('0') << std::setw(5) << i;
     std::string key = ostr.str();
     std::string value = "val";
-    InternalKey ik(key, 0, ValueType::kTypeValue);
+    InternalKey ik(key, 0, rs::db::dbformat::ValueType::kTypeValue);
 
     builder->Add(ik.Encode(), value);
   }
@@ -5394,7 +5394,7 @@ TEST_P(BlockBasedTableTest, DataBlockHashIndex) {
   for (int i = 0; i < kNumKeys; i++) {
     // padding one "0" to mark existent keys.
     std::string random_key(rnd.RandomString(kKeySize - 1) + "1");
-    InternalKey k(random_key, 0, ValueType::kTypeValue);
+    InternalKey k(random_key, 0, rs::db::dbformat::ValueType::kTypeValue);
     c.Add(k.Encode().ToString(), rnd.RandomString(kValSize));
   }
 
@@ -5449,7 +5449,7 @@ TEST_P(BlockBasedTableTest, DataBlockHashIndex) {
     for (auto& kv : kvmap) {
       std::string user_key = ExtractUserKey(kv.first).ToString();
       user_key.back() = '0';  // make it non-existent key
-      InternalKey internal_key(user_key, 0, ValueType::kTypeValue);
+      InternalKey internal_key(user_key, 0, rs::db::dbformat::ValueType::kTypeValue);
       std::string encoded_key = internal_key.Encode().ToString();
       if (i == 0) {  // Search using Seek()
         seek_iter->Seek(encoded_key);
@@ -5607,7 +5607,7 @@ TEST_F(ChargeCompressionDictionaryBuildingBufferTest, Basic) {
 
     std::string key1 = "key1";
     std::string value1 = "val1";
-    InternalKey ik1(key1, 0 /* sequnce number */, ValueType::kTypeValue);
+    InternalKey ik1(key1, 0 /* sequnce number */, rs::db::dbformat::ValueType::kTypeValue);
     // Adding the first key won't trigger a flush by FlushBlockEveryKeyPolicy
     // therefore won't trigger any data block's buffering
     builder->Add(ik1.Encode(), value1);
@@ -5615,7 +5615,7 @@ TEST_F(ChargeCompressionDictionaryBuildingBufferTest, Basic) {
 
     std::string key2 = "key2";
     std::string value2 = "val2";
-    InternalKey ik2(key2, 1 /* sequnce number */, ValueType::kTypeValue);
+    InternalKey ik2(key2, 1 /* sequnce number */, rs::db::dbformat::ValueType::kTypeValue);
     // Adding the second key will trigger a flush of the last data block (the
     // one containing key1 and value1) by FlushBlockEveryKeyPolicy and hence
     // trigger buffering of that data block.
@@ -5682,7 +5682,7 @@ TEST_F(ChargeCompressionDictionaryBuildingBufferTest,
 
   std::string key1 = "key1";
   std::string value1(kSizeDummyEntry, '0');
-  InternalKey ik1(key1, 0 /* sequnce number */, ValueType::kTypeValue);
+  InternalKey ik1(key1, 0 /* sequnce number */, rs::db::dbformat::ValueType::kTypeValue);
   // Adding the first key won't trigger a flush by FlushBlockEveryKeyPolicy
   // therefore won't trigger any data block's buffering
   builder->Add(ik1.Encode(), value1);
@@ -5690,7 +5690,7 @@ TEST_F(ChargeCompressionDictionaryBuildingBufferTest,
 
   std::string key2 = "key2";
   std::string value2(kSizeDummyEntry, '0');
-  InternalKey ik2(key2, 1 /* sequnce number */, ValueType::kTypeValue);
+  InternalKey ik2(key2, 1 /* sequnce number */, rs::db::dbformat::ValueType::kTypeValue);
   // Adding the second key will trigger a flush of the last data block (the one
   // containing key1 and value1) by FlushBlockEveryKeyPolicy and hence trigger
   // buffering of the last data block.
@@ -5704,7 +5704,7 @@ TEST_F(ChargeCompressionDictionaryBuildingBufferTest,
 
   std::string key3 = "key3";
   std::string value3 = "val3";
-  InternalKey ik3(key3, 2 /* sequnce number */, ValueType::kTypeValue);
+  InternalKey ik3(key3, 2 /* sequnce number */, rs::db::dbformat::ValueType::kTypeValue);
   // Adding the third key will trigger a flush of the last data block (the one
   // containing key2 and value2) by FlushBlockEveryKeyPolicy and hence trigger
   // buffering of the last data block.
@@ -5767,7 +5767,7 @@ TEST_F(ChargeCompressionDictionaryBuildingBufferTest, BasicWithCacheFull) {
 
   std::string key1 = "key1";
   std::string value1 = "val1";
-  InternalKey ik1(key1, 0 /* sequnce number */, ValueType::kTypeValue);
+  InternalKey ik1(key1, 0 /* sequnce number */, rs::db::dbformat::ValueType::kTypeValue);
   // Adding the first key won't trigger a flush by FlushBlockEveryKeyPolicy
   // therefore won't trigger any data block's buffering
   builder->Add(ik1.Encode(), value1);
@@ -5775,7 +5775,7 @@ TEST_F(ChargeCompressionDictionaryBuildingBufferTest, BasicWithCacheFull) {
 
   std::string key2 = "key2";
   std::string value2(kSizeDummyEntry, '0');
-  InternalKey ik2(key2, 1 /* sequnce number */, ValueType::kTypeValue);
+  InternalKey ik2(key2, 1 /* sequnce number */, rs::db::dbformat::ValueType::kTypeValue);
   // Adding the second key will trigger a flush of the last data block (the one
   // containing key1 and value1) by FlushBlockEveryKeyPolicy and hence trigger
   // buffering of the last data block.
@@ -5789,7 +5789,7 @@ TEST_F(ChargeCompressionDictionaryBuildingBufferTest, BasicWithCacheFull) {
 
   std::string key3 = "key3";
   std::string value3 = "value3";
-  InternalKey ik3(key3, 2 /* sequnce number */, ValueType::kTypeValue);
+  InternalKey ik3(key3, 2 /* sequnce number */, rs::db::dbformat::ValueType::kTypeValue);
   // Adding the third key will trigger a flush of the last data block (the one
   // containing key2 and value2) by FlushBlockEveryKeyPolicy and hence trigger
   // buffering of the last data block.

@@ -247,17 +247,17 @@ void TestCustomizedTablePropertiesCollector(
     bool backward_mode, uint64_t magic_number, bool test_int_tbl_prop_collector,
     const Options& options, const InternalKeyComparator& internal_comparator) {
   // make sure the entries will be inserted with order.
-  std::map<std::pair<std::string, ValueType>, std::string> kvs = {
-      {{"About   ", ValueType::kTypeValue}, "val5"},  // starts with 'A'
-      {{"Abstract", ValueType::kTypeValue}, "val2"},  // starts with 'A'
-      {{"Around  ", ValueType::kTypeValue}, "val7"},  // starts with 'A'
-      {{"Beyond  ", ValueType::kTypeValue}, "val3"},
-      {{"Builder ", ValueType::kTypeValue}, "val1"},
-      {{"Love    ", ValueType::kTypeDeletion}, ""},
-      {{"Cancel  ", ValueType::kTypeValue}, "val4"},
-      {{"Find    ", ValueType::kTypeValue}, "val6"},
-      {{"Rocks   ", ValueType::kTypeDeletion}, ""},
-      {{"Foo     ", ValueType::kTypeSingleDeletion}, ""},
+  std::map<std::pair<std::string, rs::db::dbformat::ValueType>, std::string> kvs = {
+      {{"About   ", rs::db::dbformat::ValueType::kTypeValue}, "val5"},  // starts with 'A'
+      {{"Abstract", rs::db::dbformat::ValueType::kTypeValue}, "val2"},  // starts with 'A'
+      {{"Around  ", rs::db::dbformat::ValueType::kTypeValue}, "val7"},  // starts with 'A'
+      {{"Beyond  ", rs::db::dbformat::ValueType::kTypeValue}, "val3"},
+      {{"Builder ", rs::db::dbformat::ValueType::kTypeValue}, "val1"},
+      {{"Love    ", rs::db::dbformat::ValueType::kTypeDeletion}, ""},
+      {{"Cancel  ", rs::db::dbformat::ValueType::kTypeValue}, "val4"},
+      {{"Find    ", rs::db::dbformat::ValueType::kTypeValue}, "val6"},
+      {{"Rocks   ", rs::db::dbformat::ValueType::kTypeDeletion}, ""},
+      {{"Foo     ", rs::db::dbformat::ValueType::kTypeSingleDeletion}, ""},
   };
 
   // -- Step 1: build table
@@ -375,16 +375,16 @@ void TestInternalKeyPropertiesCollector(
     bool backward_mode, uint64_t magic_number, bool sanitized,
     std::shared_ptr<TableFactory> table_factory) {
   InternalKey keys[] = {
-      InternalKey("A       ", 0, ValueType::kTypeValue),
-      InternalKey("B       ", 1, ValueType::kTypeValue),
-      InternalKey("C       ", 2, ValueType::kTypeValue),
-      InternalKey("W       ", 3, ValueType::kTypeDeletion),
-      InternalKey("X       ", 4, ValueType::kTypeDeletion),
-      InternalKey("Y       ", 5, ValueType::kTypeDeletion),
-      InternalKey("Z       ", 6, ValueType::kTypeDeletion),
-      InternalKey("a       ", 7, ValueType::kTypeSingleDeletion),
-      InternalKey("b       ", 8, ValueType::kTypeMerge),
-      InternalKey("c       ", 9, ValueType::kTypeMerge),
+      InternalKey("A       ", 0, rs::db::dbformat::ValueType::kTypeValue),
+      InternalKey("B       ", 1, rs::db::dbformat::ValueType::kTypeValue),
+      InternalKey("C       ", 2, rs::db::dbformat::ValueType::kTypeValue),
+      InternalKey("W       ", 3, rs::db::dbformat::ValueType::kTypeDeletion),
+      InternalKey("X       ", 4, rs::db::dbformat::ValueType::kTypeDeletion),
+      InternalKey("Y       ", 5, rs::db::dbformat::ValueType::kTypeDeletion),
+      InternalKey("Z       ", 6, rs::db::dbformat::ValueType::kTypeDeletion),
+      InternalKey("a       ", 7, rs::db::dbformat::ValueType::kTypeSingleDeletion),
+      InternalKey("b       ", 8, rs::db::dbformat::ValueType::kTypeMerge),
+      InternalKey("c       ", 9, rs::db::dbformat::ValueType::kTypeMerge),
   };
 
   std::unique_ptr<TableBuilder> builder;

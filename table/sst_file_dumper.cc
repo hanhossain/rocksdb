@@ -479,7 +479,7 @@ Status SstFileDumper::ReadSequential(bool print_kv, uint64_t read_num,
     }
 
     if (print_kv) {
-      if (!decode_blob_index_ || ikey.type != ValueType::kTypeBlobIndex) {
+      if (!decode_blob_index_ || ikey.type != rs::db::dbformat::ValueType::kTypeBlobIndex) {
         fprintf(stdout, "%s => %s\n",
                 ikey.DebugString(true, output_hex_).c_str(),
                 value.ToString(output_hex_).c_str());

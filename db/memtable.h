@@ -230,7 +230,7 @@ class MemTable {
   // Returns `Status::TryAgain` if the `seq`, `key` combination already exists
   // in the memtable and `MemTableRepFactory::CanHandleDuplicatedKey()` is true.
   // The next attempt should try a larger value for `seq`.
-  Status Add(SequenceNumber seq, ValueType type, const Slice& key,
+  Status Add(SequenceNumber seq, rs::db::dbformat::ValueType type, const Slice& key,
              const Slice& value, const ProtectionInfoKVOS64* kv_prot_info,
              bool allow_concurrent = false,
              MemTablePostProcessInfo* post_process_info = nullptr,
@@ -296,7 +296,7 @@ class MemTable {
   //
   // REQUIRES: external synchronization to prevent simultaneous
   // operations on the same MemTable.
-  Status Update(SequenceNumber seq, ValueType value_type, const Slice& key,
+  Status Update(SequenceNumber seq, rs::db::dbformat::ValueType value_type, const Slice& key,
                 const Slice& value, const ProtectionInfoKVOS64* kv_prot_info);
 
   // If `key` exists in current memtable with type `ValueType::kTypeValue` and the existing
@@ -651,7 +651,7 @@ class MemTable {
       cached_range_tombstone_;
 
   void UpdateEntryChecksum(const ProtectionInfoKVOS64* kv_prot_info,
-                           const Slice& key, const Slice& value, ValueType type,
+                           const Slice& key, const Slice& value, rs::db::dbformat::ValueType type,
                            SequenceNumber s, char* checksum_ptr);
 };
 

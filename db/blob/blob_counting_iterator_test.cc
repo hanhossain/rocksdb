@@ -43,9 +43,9 @@ TEST(BlobCountingIteratorTest, CountBlobs) {
   constexpr char user_key2[] = "key2";
 
   const std::vector<std::string> keys{
-      test::KeyStr(user_key0, 1, ValueType::kTypeBlobIndex),
-      test::KeyStr(user_key1, 2, ValueType::kTypeBlobIndex),
-      test::KeyStr(user_key2, 3, ValueType::kTypeValue)};
+      test::KeyStr(user_key0, 1, rs::db::dbformat::ValueType::kTypeBlobIndex),
+      test::KeyStr(user_key1, 2, rs::db::dbformat::ValueType::kTypeBlobIndex),
+      test::KeyStr(user_key2, 3, rs::db::dbformat::ValueType::kTypeValue)};
 
   constexpr uint64_t first_blob_file_number = 4;
   constexpr uint64_t first_offset = 1000;
@@ -303,7 +303,7 @@ TEST(BlobCountingIteratorTest, CountBlobs) {
 
 TEST(BlobCountingIteratorTest, CorruptBlobIndex) {
   const std::vector<std::string> keys{
-      test::KeyStr("user_key", 1, ValueType::kTypeBlobIndex)};
+      test::KeyStr("user_key", 1, rs::db::dbformat::ValueType::kTypeBlobIndex)};
   const std::vector<std::string> values{"i_am_not_a_blob_index"};
 
   assert(keys.size() == values.size());

@@ -212,46 +212,46 @@ Status WriteBatchWithIndex::Rep::ReBuildIndex() {
       break;
     }
 
-    switch ((ValueType)tag) {
-      case ValueType::kTypeColumnFamilyValue:
-      case ValueType::kTypeValue:
+    switch ((rs::db::dbformat::ValueType)tag) {
+      case rs::db::dbformat::ValueType::kTypeColumnFamilyValue:
+      case rs::db::dbformat::ValueType::kTypeValue:
         found++;
         if (!UpdateExistingEntryWithCfId(column_family_id, key, kPutRecord)) {
           AddNewEntry(column_family_id);
         }
         break;
-      case ValueType::kTypeColumnFamilyDeletion:
-      case ValueType::kTypeDeletion:
+      case rs::db::dbformat::ValueType::kTypeColumnFamilyDeletion:
+      case rs::db::dbformat::ValueType::kTypeDeletion:
         found++;
         if (!UpdateExistingEntryWithCfId(column_family_id, key,
                                          kDeleteRecord)) {
           AddNewEntry(column_family_id);
         }
         break;
-      case ValueType::kTypeColumnFamilySingleDeletion:
-      case ValueType::kTypeSingleDeletion:
+      case rs::db::dbformat::ValueType::kTypeColumnFamilySingleDeletion:
+      case rs::db::dbformat::ValueType::kTypeSingleDeletion:
         found++;
         if (!UpdateExistingEntryWithCfId(column_family_id, key,
                                          kSingleDeleteRecord)) {
           AddNewEntry(column_family_id);
         }
         break;
-      case ValueType::kTypeColumnFamilyMerge:
-      case ValueType::kTypeMerge:
+      case rs::db::dbformat::ValueType::kTypeColumnFamilyMerge:
+      case rs::db::dbformat::ValueType::kTypeMerge:
         found++;
         if (!UpdateExistingEntryWithCfId(column_family_id, key, kMergeRecord)) {
           AddNewEntry(column_family_id);
         }
         break;
-      case ValueType::kTypeLogData:
-      case ValueType::kTypeBeginPrepareXID:
-      case ValueType::kTypeBeginPersistedPrepareXID:
-      case ValueType::kTypeBeginUnprepareXID:
-      case ValueType::kTypeEndPrepareXID:
-      case ValueType::kTypeCommitXID:
-      case ValueType::kTypeCommitXIDAndTimestamp:
-      case ValueType::kTypeRollbackXID:
-      case ValueType::kTypeNoop:
+      case rs::db::dbformat::ValueType::kTypeLogData:
+      case rs::db::dbformat::ValueType::kTypeBeginPrepareXID:
+      case rs::db::dbformat::ValueType::kTypeBeginPersistedPrepareXID:
+      case rs::db::dbformat::ValueType::kTypeBeginUnprepareXID:
+      case rs::db::dbformat::ValueType::kTypeEndPrepareXID:
+      case rs::db::dbformat::ValueType::kTypeCommitXID:
+      case rs::db::dbformat::ValueType::kTypeCommitXIDAndTimestamp:
+      case rs::db::dbformat::ValueType::kTypeRollbackXID:
+      case rs::db::dbformat::ValueType::kTypeNoop:
         break;
       default:
         return Status::Corruption(

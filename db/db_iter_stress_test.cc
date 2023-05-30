@@ -42,7 +42,7 @@ namespace {
 
 struct Entry {
   std::string key;
-  ValueType type;  // ValueType::kTypeValue, ValueType::kTypeDeletion, ValueType::kTypeMerge
+  rs::db::dbformat::ValueType type;  // rs::db::dbformat::ValueType::kTypeValue, rs::db::dbformat::ValueType::kTypeDeletion, rs::db::dbformat::ValueType::kTypeMerge
   uint64_t sequence;
   std::string ikey;  // internal key, made from `key`, `sequence` and `type`
   std::string value;
@@ -319,15 +319,15 @@ struct ReferenceIterator {
       }
       assert(e.sequence <= sequence);
       if (!e.visible) continue;
-      if (e.type == ValueType::kTypeDeletion) {
+      if (e.type == rs::db::dbformat::ValueType::kTypeDeletion) {
         return false;
       }
-      if (e.type == ValueType::kTypeValue) {
+      if (e.type == rs::db::dbformat::ValueType::kTypeValue) {
         value = e.value;
         valid = true;
         return true;
       }
-      assert(e.type == ValueType::kTypeMerge);
+      assert(e.type == rs::db::dbformat::ValueType::kTypeMerge);
       break;
     }
 
@@ -340,11 +340,11 @@ struct ReferenceIterator {
       }
       assert(e.sequence <= sequence);
       if (!e.visible) continue;
-      if (e.type == ValueType::kTypeDeletion) {
+      if (e.type == rs::db::dbformat::ValueType::kTypeDeletion) {
         break;
       }
       operands.push_back(e.value);
-      if (e.type == ValueType::kTypeValue) {
+      if (e.type == rs::db::dbformat::ValueType::kTypeValue) {
         break;
       }
     }
@@ -438,8 +438,8 @@ TEST_F(DBIteratorStressTest, StressTest) {
 
   for (int num_entries : {5, 10, 100}) {
     for (double key_space : {0.1, 1.0, 3.0}) {
-      for (ValueType prevalent_entry_type :
-           {ValueType::kTypeValue, ValueType::kTypeDeletion, ValueType::kTypeMerge}) {
+      for (rs::db::dbformat::ValueType prevalent_entry_type :
+           {rs::db::dbformat::ValueType::kTypeValue, rs::db::dbformat::ValueType::kTypeDeletion, rs::db::dbformat::ValueType::kTypeMerge}) {
         for (double error_probability : {0.01, 0.1}) {
           for (double mutation_probability : {0.01, 0.5}) {
             for (double target_hidden_fraction : {0.1, 0.5}) {
@@ -465,8 +465,8 @@ TEST_F(DBIteratorStressTest, StressTest) {
                 if (rnd.Next() % 10 != 0) {
                   e.type = prevalent_entry_type;
                 } else {
-                  const ValueType types[] = {ValueType::kTypeValue, ValueType::kTypeDeletion,
-                                             ValueType::kTypeMerge};
+                  const rs::db::dbformat::ValueType types[] = {rs::db::dbformat::ValueType::kTypeValue, rs::db::dbformat::ValueType::kTypeDeletion,
+                                             rs::db::dbformat::ValueType::kTypeMerge};
                   e.type =
                       types[rnd.Next() % (sizeof(types) / sizeof(types[0]))];
                 }
@@ -484,8 +484,8 @@ TEST_F(DBIteratorStressTest, StressTest) {
                   Entry& e = data.entries[i];
                   std::cout << "\n  idx " << i << ": \"" << e.key << "\": \""
                             << e.value << "\" seq: " << e.sequence << " type: "
-                            << (e.type == ValueType::kTypeValue      ? "val"
-                                : e.type == ValueType::kTypeDeletion ? "del"
+                            << (e.type == rs::db::dbformat::ValueType::kTypeValue      ? "val"
+                                : e.type == rs::db::dbformat::ValueType::kTypeDeletion ? "del"
                                                           : "merge");
                 }
                 std::cout << std::endl;

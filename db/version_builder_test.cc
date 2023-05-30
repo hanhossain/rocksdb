@@ -55,7 +55,7 @@ class VersionBuilderTest : public testing::Test {
 
   InternalKey GetInternalKey(const char* ukey,
                              SequenceNumber smallest_seq = 100) {
-    return InternalKey(ukey, smallest_seq, ValueType::kTypeValue);
+    return InternalKey(ukey, smallest_seq, rs::db::dbformat::ValueType::kTypeValue);
   }
 
   void Add(int level, uint64_t file_number, const char* smallest,

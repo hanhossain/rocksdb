@@ -1045,9 +1045,9 @@ class NonBatchedOpsStressTest : public StressTest {
       // tombstones; however, we want to perform column validation only for
       // value-like types.
       if (ro_copy.iter_start_ts) {
-        const ValueType value_type = ExtractValueType(iter->key());
-        if (value_type != ValueType::kTypeValue && value_type != ValueType::kTypeBlobIndex &&
-            value_type != ValueType::kTypeWideColumnEntity) {
+        const rs::db::dbformat::ValueType value_type = ExtractValueType(iter->key());
+        if (value_type != rs::db::dbformat::ValueType::kTypeValue && value_type != rs::db::dbformat::ValueType::kTypeBlobIndex &&
+            value_type != rs::db::dbformat::ValueType::kTypeWideColumnEntity) {
           continue;
         }
       }

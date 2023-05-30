@@ -973,7 +973,7 @@ std::string DBTestBase::AllEntriesFor(const Slice& user_key, int cf) {
     iter.set(dbfull()->NewInternalIterator(read_options, &arena,
                                            kMaxSequenceNumber, handles_[cf]));
   }
-  InternalKey target(user_key, kMaxSequenceNumber, ValueType::kTypeValue);
+  InternalKey target(user_key, kMaxSequenceNumber, rs::db::dbformat::ValueType::kTypeValue);
   iter->Seek(target.Encode());
   std::string result;
   if (!iter->status().ok()) {
@@ -982,7 +982,7 @@ std::string DBTestBase::AllEntriesFor(const Slice& user_key, int cf) {
     result = "[ ";
     bool first = true;
     while (iter->Valid()) {
-      ParsedInternalKey ikey(Slice(), 0, ValueType::kTypeValue);
+      ParsedInternalKey ikey(Slice(), 0, rs::db::dbformat::ValueType::kTypeValue);
       if (ParseInternalKey(iter->key(), &ikey, true /* log_err_key */) !=
           Status::OK()) {
         result += "CORRUPTED";
@@ -995,17 +995,17 @@ std::string DBTestBase::AllEntriesFor(const Slice& user_key, int cf) {
         }
         first = false;
         switch (ikey.type) {
-          case ValueType::kTypeValue:
+          case rs::db::dbformat::ValueType::kTypeValue:
             result += iter->value().ToString();
             break;
-          case ValueType::kTypeMerge:
-            // keep it the same as ValueType::kTypeValue for testing kMergePut
+          case rs::db::dbformat::ValueType::kTypeMerge:
+            // keep it the same as rs::db::dbformat::ValueType::kTypeValue for testing kMergePut
             result += iter->value().ToString();
             break;
-          case ValueType::kTypeDeletion:
+          case rs::db::dbformat::ValueType::kTypeDeletion:
             result += "DEL";
             break;
-          case ValueType::kTypeSingleDeletion:
+          case rs::db::dbformat::ValueType::kTypeSingleDeletion:
             result += "SDEL";
             break;
           default:

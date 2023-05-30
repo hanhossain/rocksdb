@@ -62,10 +62,10 @@ class ProtectionInfo {
 
   Status GetStatus() const;
   ProtectionInfoKVO<T> ProtectKVO(const Slice& key, const Slice& value,
-                                  ValueType op_type) const;
+                                  rs::db::dbformat::ValueType op_type) const;
   ProtectionInfoKVO<T> ProtectKVO(const SliceParts& key,
                                   const SliceParts& value,
-                                  ValueType op_type) const;
+                                  rs::db::dbformat::ValueType op_type) const;
   ProtectionInfoKV<T> ProtectKV(const Slice& key, const Slice& value) const;
 
  private:
@@ -141,9 +141,9 @@ class ProtectionInfoKVO {
   ProtectionInfoKVO() = default;
 
   ProtectionInfo<T> StripKVO(const Slice& key, const Slice& value,
-                             ValueType op_type) const;
+                             rs::db::dbformat::ValueType op_type) const;
   ProtectionInfo<T> StripKVO(const SliceParts& key, const SliceParts& value,
-                             ValueType op_type) const;
+                             rs::db::dbformat::ValueType op_type) const;
 
   ProtectionInfoKVOC<T> ProtectC(ColumnFamilyId column_family_id) const;
   ProtectionInfoKVOS<T> ProtectS(SequenceNumber sequence_number) const;
@@ -152,7 +152,7 @@ class ProtectionInfoKVO {
   void UpdateK(const SliceParts& old_key, const SliceParts& new_key);
   void UpdateV(const Slice& old_value, const Slice& new_value);
   void UpdateV(const SliceParts& old_value, const SliceParts& new_value);
-  void UpdateO(ValueType old_op_type, ValueType new_op_type);
+  void UpdateO(rs::db::dbformat::ValueType old_op_type, rs::db::dbformat::ValueType new_op_type);
 
   // Encode this protection info into `len` bytes and stores them in `dst`.
   void Encode(uint8_t len, char* dst) const { info_.Encode(len, dst); }
@@ -197,7 +197,7 @@ class ProtectionInfoKVOC {
   void UpdateV(const SliceParts& old_value, const SliceParts& new_value) {
     kvo_.UpdateV(old_value, new_value);
   }
-  void UpdateO(ValueType old_op_type, ValueType new_op_type) {
+  void UpdateO(rs::db::dbformat::ValueType old_op_type, rs::db::dbformat::ValueType new_op_type) {
     kvo_.UpdateO(old_op_type, new_op_type);
   }
   void UpdateC(ColumnFamilyId old_column_family_id,
@@ -240,7 +240,7 @@ class ProtectionInfoKVOS {
   void UpdateV(const SliceParts& old_value, const SliceParts& new_value) {
     kvo_.UpdateV(old_value, new_value);
   }
-  void UpdateO(ValueType old_op_type, ValueType new_op_type) {
+  void UpdateO(rs::db::dbformat::ValueType old_op_type, rs::db::dbformat::ValueType new_op_type) {
     kvo_.UpdateO(old_op_type, new_op_type);
   }
   void UpdateS(SequenceNumber old_sequence_number,
@@ -295,7 +295,7 @@ Status ProtectionInfo<T>::GetStatus() const {
 template <typename T>
 ProtectionInfoKVO<T> ProtectionInfo<T>::ProtectKVO(const Slice& key,
                                                    const Slice& value,
-                                                   ValueType op_type) const {
+                                                   rs::db::dbformat::ValueType op_type) const {
   T val = GetVal();
   val = val ^ static_cast<T>(GetSliceNPHash64(key, ProtectionInfo<T>::kSeedK));
   val =
@@ -309,7 +309,7 @@ ProtectionInfoKVO<T> ProtectionInfo<T>::ProtectKVO(const Slice& key,
 template <typename T>
 ProtectionInfoKVO<T> ProtectionInfo<T>::ProtectKVO(const SliceParts& key,
                                                    const SliceParts& value,
-                                                   ValueType op_type) const {
+                                                   rs::db::dbformat::ValueType op_type) const {
   T val = GetVal();
   val = val ^
         static_cast<T>(GetSlicePartsNPHash64(key, ProtectionInfo<T>::kSeedK));
@@ -375,8 +375,8 @@ void ProtectionInfoKVO<T>::UpdateV(const SliceParts& old_value,
 }
 
 template <typename T>
-void ProtectionInfoKVO<T>::UpdateO(ValueType old_op_type,
-                                   ValueType new_op_type) {
+void ProtectionInfoKVO<T>::UpdateO(rs::db::dbformat::ValueType old_op_type,
+                                   rs::db::dbformat::ValueType new_op_type) {
   T val = GetVal();
   val = val ^ static_cast<T>(NPHash64(reinterpret_cast<char*>(&old_op_type),
                                       sizeof(old_op_type),
@@ -390,7 +390,7 @@ void ProtectionInfoKVO<T>::UpdateO(ValueType old_op_type,
 template <typename T>
 ProtectionInfo<T> ProtectionInfoKVO<T>::StripKVO(const Slice& key,
                                                  const Slice& value,
-                                                 ValueType op_type) const {
+                                                 rs::db::dbformat::ValueType op_type) const {
   T val = GetVal();
   val = val ^ static_cast<T>(GetSliceNPHash64(key, ProtectionInfo<T>::kSeedK));
   val =
@@ -404,7 +404,7 @@ ProtectionInfo<T> ProtectionInfoKVO<T>::StripKVO(const Slice& key,
 template <typename T>
 ProtectionInfo<T> ProtectionInfoKVO<T>::StripKVO(const SliceParts& key,
                                                  const SliceParts& value,
-                                                 ValueType op_type) const {
+                                                 rs::db::dbformat::ValueType op_type) const {
   T val = GetVal();
   val = val ^
         static_cast<T>(GetSlicePartsNPHash64(key, ProtectionInfo<T>::kSeedK));

@@ -150,7 +150,7 @@ IOStatus PlainTableKeyEncoder::AppendKey(const Slice& key,
   // For value size as varint32 (up to 5 bytes).
   // If the row is of value type with seqId 0, flush the special flag together
   // in this buffer to safe one file append call, which takes 1 byte.
-  if (parsed_key.sequence == 0 && parsed_key.type == ValueType::kTypeValue) {
+  if (parsed_key.sequence == 0 && parsed_key.type == rs::db::dbformat::ValueType::kTypeValue) {
     IOStatus io_s =
         file->Append(Slice(key_to_write.data(), key_to_write.size() - 8));
     if (!io_s.ok()) {
@@ -274,7 +274,7 @@ Status PlainTableKeyDecoder::ReadInternalKey(
     // Special encoding for the row with seqID=0
     parsed_key->user_key = Slice(tmp_slice.data(), user_key_size);
     parsed_key->sequence = 0;
-    parsed_key->type = ValueType::kTypeValue;
+    parsed_key->type = rs::db::dbformat::ValueType::kTypeValue;
     *bytes_read += user_key_size + 1;
     *internal_key_valid = false;
   } else {

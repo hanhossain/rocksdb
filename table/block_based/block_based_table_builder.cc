@@ -930,7 +930,7 @@ void BlockBasedTableBuilder::Add(const Slice& key, const Slice& value) {
   Rep* r = rep_;
   assert(rep_->state != Rep::State::kClosed);
   if (!ok()) return;
-  ValueType value_type = ExtractValueType(key);
+  rs::db::dbformat::ValueType value_type = ExtractValueType(key);
   if (IsValueType(value_type)) {
 #ifndef NDEBUG
     if (r->props.num_entries > r->props.num_range_deletions) {
@@ -1011,7 +1011,7 @@ void BlockBasedTableBuilder::Add(const Slice& key, const Slice& value) {
                                       r->table_properties_collectors,
                                       r->ioptions.logger);
 
-  } else if (value_type == ValueType::kTypeRangeDeletion) {
+  } else if (value_type == rs::db::dbformat::ValueType::kTypeRangeDeletion) {
     r->range_del_block.Add(key, value);
     // TODO offset passed in is not accurate for parallel compression case
     NotifyCollectTableCollectorsOnAdd(key, value, r->get_offset(),
@@ -1024,13 +1024,13 @@ void BlockBasedTableBuilder::Add(const Slice& key, const Slice& value) {
   r->props.num_entries++;
   r->props.raw_key_size += key.size();
   r->props.raw_value_size += value.size();
-  if (value_type == ValueType::kTypeDeletion || value_type == ValueType::kTypeSingleDeletion ||
-      value_type == ValueType::kTypeDeletionWithTimestamp) {
+  if (value_type == rs::db::dbformat::ValueType::kTypeDeletion || value_type == rs::db::dbformat::ValueType::kTypeSingleDeletion ||
+      value_type == rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp) {
     r->props.num_deletions++;
-  } else if (value_type == ValueType::kTypeRangeDeletion) {
+  } else if (value_type == rs::db::dbformat::ValueType::kTypeRangeDeletion) {
     r->props.num_deletions++;
     r->props.num_range_deletions++;
-  } else if (value_type == ValueType::kTypeMerge) {
+  } else if (value_type == rs::db::dbformat::ValueType::kTypeMerge) {
     r->props.num_merge_operands++;
   }
 }

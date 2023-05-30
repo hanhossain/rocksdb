@@ -270,25 +270,25 @@ TEST_F(DBBlobIndexTest, Updated) {
 // corresponding blob value. If a regular DBIter is created (i.e.
 // expose_blob_index is not set), it should return Status::Corruption.
 TEST_F(DBBlobIndexTest, Iterate) {
-  const std::vector<std::vector<ValueType>> data = {
-      /*00*/ {ValueType::kTypeValue},
-      /*01*/ {ValueType::kTypeBlobIndex},
-      /*02*/ {ValueType::kTypeValue},
-      /*03*/ {ValueType::kTypeBlobIndex, ValueType::kTypeValue},
-      /*04*/ {ValueType::kTypeValue},
-      /*05*/ {ValueType::kTypeValue, ValueType::kTypeBlobIndex},
-      /*06*/ {ValueType::kTypeValue},
-      /*07*/ {ValueType::kTypeDeletion, ValueType::kTypeBlobIndex},
-      /*08*/ {ValueType::kTypeValue},
-      /*09*/ {ValueType::kTypeSingleDeletion, ValueType::kTypeBlobIndex},
-      /*10*/ {ValueType::kTypeValue},
-      /*11*/ {ValueType::kTypeMerge, ValueType::kTypeMerge, ValueType::kTypeMerge, ValueType::kTypeBlobIndex},
-      /*12*/ {ValueType::kTypeValue},
+  const std::vector<std::vector<rs::db::dbformat::ValueType>> data = {
+      /*00*/ {rs::db::dbformat::ValueType::kTypeValue},
+      /*01*/ {rs::db::dbformat::ValueType::kTypeBlobIndex},
+      /*02*/ {rs::db::dbformat::ValueType::kTypeValue},
+      /*03*/ {rs::db::dbformat::ValueType::kTypeBlobIndex, rs::db::dbformat::ValueType::kTypeValue},
+      /*04*/ {rs::db::dbformat::ValueType::kTypeValue},
+      /*05*/ {rs::db::dbformat::ValueType::kTypeValue, rs::db::dbformat::ValueType::kTypeBlobIndex},
+      /*06*/ {rs::db::dbformat::ValueType::kTypeValue},
+      /*07*/ {rs::db::dbformat::ValueType::kTypeDeletion, rs::db::dbformat::ValueType::kTypeBlobIndex},
+      /*08*/ {rs::db::dbformat::ValueType::kTypeValue},
+      /*09*/ {rs::db::dbformat::ValueType::kTypeSingleDeletion, rs::db::dbformat::ValueType::kTypeBlobIndex},
+      /*10*/ {rs::db::dbformat::ValueType::kTypeValue},
+      /*11*/ {rs::db::dbformat::ValueType::kTypeMerge, rs::db::dbformat::ValueType::kTypeMerge, rs::db::dbformat::ValueType::kTypeMerge, rs::db::dbformat::ValueType::kTypeBlobIndex},
+      /*12*/ {rs::db::dbformat::ValueType::kTypeValue},
       /*13*/
-      {ValueType::kTypeMerge, ValueType::kTypeMerge, ValueType::kTypeMerge, ValueType::kTypeDeletion, ValueType::kTypeBlobIndex},
-      /*14*/ {ValueType::kTypeValue},
-      /*15*/ {ValueType::kTypeBlobIndex},
-      /*16*/ {ValueType::kTypeValue},
+      {rs::db::dbformat::ValueType::kTypeMerge, rs::db::dbformat::ValueType::kTypeMerge, rs::db::dbformat::ValueType::kTypeMerge, rs::db::dbformat::ValueType::kTypeDeletion, rs::db::dbformat::ValueType::kTypeBlobIndex},
+      /*14*/ {rs::db::dbformat::ValueType::kTypeValue},
+      /*15*/ {rs::db::dbformat::ValueType::kTypeBlobIndex},
+      /*16*/ {rs::db::dbformat::ValueType::kTypeValue},
   };
 
   auto get_key = [](int index) {
@@ -389,19 +389,19 @@ TEST_F(DBBlobIndexTest, Iterate) {
         std::string value = get_value(i, j);
         WriteBatch batch;
         switch (data[i][j]) {
-          case ValueType::kTypeValue:
+          case rs::db::dbformat::ValueType::kTypeValue:
             ASSERT_OK(Put(key, value));
             break;
-          case ValueType::kTypeDeletion:
+          case rs::db::dbformat::ValueType::kTypeDeletion:
             ASSERT_OK(Delete(key));
             break;
-          case ValueType::kTypeSingleDeletion:
+          case rs::db::dbformat::ValueType::kTypeSingleDeletion:
             ASSERT_OK(SingleDelete(key));
             break;
-          case ValueType::kTypeMerge:
+          case rs::db::dbformat::ValueType::kTypeMerge:
             ASSERT_OK(Merge(key, value));
             break;
-          case ValueType::kTypeBlobIndex:
+          case rs::db::dbformat::ValueType::kTypeBlobIndex:
             ASSERT_OK(PutBlobIndex(&batch, key, value));
             ASSERT_OK(Write(&batch));
             break;

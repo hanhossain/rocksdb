@@ -136,12 +136,12 @@ const Comparator* BytewiseComparatorWithU64TsWrapper() {
 
 void CorruptKeyType(InternalKey* ikey) {
   std::string keystr = ikey->Encode().ToString();
-  keystr[keystr.size() - 8] = (char)ValueType::kTypeLogData;
+  keystr[keystr.size() - 8] = (char)rs::db::dbformat::ValueType::kTypeLogData;
   ikey->DecodeFrom(Slice(keystr.data(), keystr.size()));
 }
 
 std::string KeyStr(const std::string& user_key, const SequenceNumber& seq,
-                   const ValueType& t, bool corrupt) {
+                   const rs::db::dbformat::ValueType& t, bool corrupt) {
   InternalKey k(user_key, seq, t);
   if (corrupt) {
     CorruptKeyType(&k);
@@ -150,7 +150,7 @@ std::string KeyStr(const std::string& user_key, const SequenceNumber& seq,
 }
 
 std::string KeyStr(uint64_t ts, const std::string& user_key,
-                   const SequenceNumber& seq, const ValueType& t,
+                   const SequenceNumber& seq, const rs::db::dbformat::ValueType& t,
                    bool corrupt) {
   std::string user_key_with_ts(user_key);
   std::string ts_str;

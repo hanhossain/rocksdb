@@ -27,7 +27,7 @@ class MergerTest : public testing::Test {
 
     for (size_t i = 0; i < len; ++i) {
       InternalKey ik(rnd_.HumanReadableString(string_len), 0,
-                     ValueType::kTypeValue);
+                     rs::db::dbformat::ValueType::kTypeValue);
       ret.push_back(ik.Encode().ToString(false));
     }
     return ret;
@@ -46,7 +46,7 @@ class MergerTest : public testing::Test {
   }
 
   void SeekToRandom() {
-    InternalKey ik(rnd_.HumanReadableString(5), 0, ValueType::kTypeValue);
+    InternalKey ik(rnd_.HumanReadableString(5), 0, rs::db::dbformat::ValueType::kTypeValue);
     Seek(ik.Encode().ToString(false));
   }
 

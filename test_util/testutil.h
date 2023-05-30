@@ -348,11 +348,11 @@ class NullLogger : public Logger {
 extern void CorruptKeyType(InternalKey* ikey);
 
 extern std::string KeyStr(const std::string& user_key,
-                          const SequenceNumber& seq, const ValueType& t,
+                          const SequenceNumber& seq, const rs::db::dbformat::ValueType& t,
                           bool corrupt = false);
 
 extern std::string KeyStr(uint64_t ts, const std::string& user_key,
-                          const SequenceNumber& seq, const ValueType& t,
+                          const SequenceNumber& seq, const rs::db::dbformat::ValueType& t,
                           bool corrupt = false);
 
 class SleepingBackgroundTask {

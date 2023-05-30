@@ -4144,7 +4144,7 @@ TEST_F(DBCompactionTest, RoundRobinTtlCompactionUnsortedTime) {
   ASSERT_NE(current, nullptr);
   VersionStorageInfo* storage_info = current->storage_info();
   ASSERT_NE(storage_info, nullptr);
-  const InternalKey split_cursor = InternalKey(Key(600), 100000, ValueType::kTypeValue);
+  const InternalKey split_cursor = InternalKey(Key(600), 100000, rs::db::dbformat::ValueType::kTypeValue);
   storage_info->AddCursorForOneLevel(5, split_cursor);
 
   // make the first file on L5 expired, there should be 3 TTL compactions:
@@ -6014,7 +6014,7 @@ TEST_F(DBCompactionTest, RoundRobinCutOutputAtCompactCursor) {
   VersionStorageInfo* storage_info = current->storage_info();
   ASSERT_NE(storage_info, nullptr);
 
-  const InternalKey split_cursor = InternalKey(Key(600), 100, ValueType::kTypeValue);
+  const InternalKey split_cursor = InternalKey(Key(600), 100, rs::db::dbformat::ValueType::kTypeValue);
   storage_info->AddCursorForOneLevel(2, split_cursor);
 
   Random rnd(301);

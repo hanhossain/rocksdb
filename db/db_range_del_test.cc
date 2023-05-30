@@ -2806,12 +2806,12 @@ TEST_F(DBRangeDelTest, LeftSentinelKeyTestWithNewerKey) {
   ASSERT_TRUE(iter->Valid());
   ASSERT_EQ(iter->user_key(), Key(2));
   SequenceNumber actual_seq;
-  ValueType type;
+  rs::db::dbformat::ValueType type;
   UnPackSequenceAndType(ExtractInternalKeyFooter(iter->key()), &actual_seq,
                         &type);
   ASSERT_EQ(seq, actual_seq);
   // might as well check type
-  ASSERT_EQ(type, ValueType::kTypeValue);
+  ASSERT_EQ(type, rs::db::dbformat::ValueType::kTypeValue);
 
   iter->Prev();
   ASSERT_TRUE(iter->Valid());

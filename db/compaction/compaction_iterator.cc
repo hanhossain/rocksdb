@@ -226,16 +226,16 @@ bool CompactionIterator::InvokeFilterIfNeeded(bool* need_skip,
     return true;
   }
 
-  if (ikey_.type != ValueType::kTypeValue && ikey_.type != ValueType::kTypeBlobIndex &&
-      ikey_.type != ValueType::kTypeWideColumnEntity) {
+  if (ikey_.type != rs::db::dbformat::ValueType::kTypeValue && ikey_.type != rs::db::dbformat::ValueType::kTypeBlobIndex &&
+      ikey_.type != rs::db::dbformat::ValueType::kTypeWideColumnEntity) {
     return true;
   }
 
   CompactionFilter::Decision decision =
       CompactionFilter::Decision::kUndetermined;
   CompactionFilter::ValueType value_type =
-      ikey_.type == ValueType::kTypeValue ? CompactionFilter::ValueType::kValue
-      : ikey_.type == ValueType::kTypeBlobIndex
+      ikey_.type == rs::db::dbformat::ValueType::kTypeValue ? CompactionFilter::ValueType::kValue
+      : ikey_.type == rs::db::dbformat::ValueType::kTypeBlobIndex
           ? CompactionFilter::ValueType::kBlobIndex
           : CompactionFilter::ValueType::kWideColumnEntity;
 
@@ -243,7 +243,7 @@ bool CompactionIterator::InvokeFilterIfNeeded(bool* need_skip,
   // to get sequence number.
   assert(compaction_filter_);
   const Slice& filter_key =
-      (ikey_.type != ValueType::kTypeBlobIndex ||
+      (ikey_.type != rs::db::dbformat::ValueType::kTypeBlobIndex ||
        !compaction_filter_->IsStackedBlobDbInternalCompactionFilter())
           ? ikey_.user_key
           : key_;
@@ -256,7 +256,7 @@ bool CompactionIterator::InvokeFilterIfNeeded(bool* need_skip,
   {
     StopWatchNano timer(clock_, report_detailed_time_);
 
-    if (ikey_.type == ValueType::kTypeBlobIndex) {
+    if (ikey_.type == rs::db::dbformat::ValueType::kTypeBlobIndex) {
       decision = compaction_filter_->FilterBlobByKey(
           level_, filter_key, &compaction_filter_value_,
           compaction_filter_skip_until_.rep());
@@ -315,7 +315,7 @@ bool CompactionIterator::InvokeFilterIfNeeded(bool* need_skip,
 
       WideColumns existing_columns;
 
-      if (ikey_.type != ValueType::kTypeWideColumnEntity) {
+      if (ikey_.type != rs::db::dbformat::ValueType::kTypeWideColumnEntity) {
         if (!blob_value_.empty()) {
           existing_val = &blob_value_;
         } else {
@@ -365,23 +365,23 @@ bool CompactionIterator::InvokeFilterIfNeeded(bool* need_skip,
   if (decision == CompactionFilter::Decision::kRemove) {
     // convert the current key to a delete; key_ is pointing into
     // current_key_ at this point, so updating current_key_ updates key()
-    ikey_.type = ValueType::kTypeDeletion;
-    current_key_.UpdateInternalKey(ikey_.sequence, ValueType::kTypeDeletion);
+    ikey_.type = rs::db::dbformat::ValueType::kTypeDeletion;
+    current_key_.UpdateInternalKey(ikey_.sequence, rs::db::dbformat::ValueType::kTypeDeletion);
     // no value associated with delete
     value_.clear();
     iter_stats_.num_record_drop_user++;
   } else if (decision == CompactionFilter::Decision::kPurge) {
     // convert the current key to a single delete; key_ is pointing into
     // current_key_ at this point, so updating current_key_ updates key()
-    ikey_.type = ValueType::kTypeSingleDeletion;
-    current_key_.UpdateInternalKey(ikey_.sequence, ValueType::kTypeSingleDeletion);
+    ikey_.type = rs::db::dbformat::ValueType::kTypeSingleDeletion;
+    current_key_.UpdateInternalKey(ikey_.sequence, rs::db::dbformat::ValueType::kTypeSingleDeletion);
     // no value associated with single delete
     value_.clear();
     iter_stats_.num_record_drop_user++;
   } else if (decision == CompactionFilter::Decision::kChangeValue) {
-    if (ikey_.type != ValueType::kTypeValue) {
-      ikey_.type = ValueType::kTypeValue;
-      current_key_.UpdateInternalKey(ikey_.sequence, ValueType::kTypeValue);
+    if (ikey_.type != rs::db::dbformat::ValueType::kTypeValue) {
+      ikey_.type = rs::db::dbformat::ValueType::kTypeValue;
+      current_key_.UpdateInternalKey(ikey_.sequence, rs::db::dbformat::ValueType::kTypeValue);
     }
 
     value_ = compaction_filter_value_;
@@ -403,9 +403,9 @@ bool CompactionIterator::InvokeFilterIfNeeded(bool* need_skip,
       return false;
     }
 
-    if (ikey_.type != ValueType::kTypeBlobIndex) {
-      ikey_.type = ValueType::kTypeBlobIndex;
-      current_key_.UpdateInternalKey(ikey_.sequence, ValueType::kTypeBlobIndex);
+    if (ikey_.type != rs::db::dbformat::ValueType::kTypeBlobIndex) {
+      ikey_.type = rs::db::dbformat::ValueType::kTypeBlobIndex;
+      current_key_.UpdateInternalKey(ikey_.sequence, rs::db::dbformat::ValueType::kTypeBlobIndex);
     }
 
     value_ = compaction_filter_value_;
@@ -443,9 +443,9 @@ bool CompactionIterator::InvokeFilterIfNeeded(bool* need_skip,
       }
     }
 
-    if (ikey_.type != ValueType::kTypeWideColumnEntity) {
-      ikey_.type = ValueType::kTypeWideColumnEntity;
-      current_key_.UpdateInternalKey(ikey_.sequence, ValueType::kTypeWideColumnEntity);
+    if (ikey_.type != rs::db::dbformat::ValueType::kTypeWideColumnEntity) {
+      ikey_.type = rs::db::dbformat::ValueType::kTypeWideColumnEntity;
+      current_key_.UpdateInternalKey(ikey_.sequence, rs::db::dbformat::ValueType::kTypeWideColumnEntity);
     }
 
     value_ = compaction_filter_value_;
@@ -489,8 +489,8 @@ void CompactionIterator::NextFromInput() {
       break;
     }
     // Update input statistics
-    if (ikey_.type == ValueType::kTypeDeletion || ikey_.type == ValueType::kTypeSingleDeletion ||
-        ikey_.type == ValueType::kTypeDeletionWithTimestamp) {
+    if (ikey_.type == rs::db::dbformat::ValueType::kTypeDeletion || ikey_.type == rs::db::dbformat::ValueType::kTypeSingleDeletion ||
+        ikey_.type == rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp) {
       iter_stats_.num_input_deletion_records++;
     }
     iter_stats_.total_input_raw_key_bytes += key_.size();
@@ -618,8 +618,8 @@ void CompactionIterator::NextFromInput() {
       // In the previous iteration we encountered a single delete that we could
       // not compact out.  We will keep this Put, but can drop it's data.
       // (See Optimization 3, below.)
-      if (ikey_.type != ValueType::kTypeValue && ikey_.type != ValueType::kTypeBlobIndex &&
-          ikey_.type != ValueType::kTypeWideColumnEntity) {
+      if (ikey_.type != rs::db::dbformat::ValueType::kTypeValue && ikey_.type != rs::db::dbformat::ValueType::kTypeBlobIndex &&
+          ikey_.type != rs::db::dbformat::ValueType::kTypeWideColumnEntity) {
         ROCKS_LOG_FATAL(info_log_, "Unexpected key %s for compaction output",
                         ikey_.DebugString(allow_data_in_errors_, true).c_str());
         assert(false);
@@ -633,15 +633,15 @@ void CompactionIterator::NextFromInput() {
         assert(false);
       }
 
-      if (ikey_.type == ValueType::kTypeBlobIndex || ikey_.type == ValueType::kTypeWideColumnEntity) {
-        ikey_.type = ValueType::kTypeValue;
+      if (ikey_.type == rs::db::dbformat::ValueType::kTypeBlobIndex || ikey_.type == rs::db::dbformat::ValueType::kTypeWideColumnEntity) {
+        ikey_.type = rs::db::dbformat::ValueType::kTypeValue;
         current_key_.UpdateInternalKey(ikey_.sequence, ikey_.type);
       }
 
       value_.clear();
       validity_info_.SetValid(ValidContext::kKeepSDAndClearPut);
       clear_and_output_next_key_ = false;
-    } else if (ikey_.type == ValueType::kTypeSingleDeletion) {
+    } else if (ikey_.type == rs::db::dbformat::ValueType::kTypeSingleDeletion) {
       // We can compact out a SingleDelete if:
       // 1) We encounter the corresponding PUT -OR- we know that this key
       //    doesn't appear past this output level
@@ -744,7 +744,7 @@ void CompactionIterator::NextFromInput() {
 
           TEST_SYNC_POINT_CALLBACK(
               "CompactionIterator::NextFromInput:SingleDelete:2", nullptr);
-          if (next_ikey.type == ValueType::kTypeSingleDeletion) {
+          if (next_ikey.type == rs::db::dbformat::ValueType::kTypeSingleDeletion) {
             // We encountered two SingleDeletes for same key in a row. This
             // could be due to unexpected user input. If write-(un)prepared
             // transaction is used, this could also be due to releasing an old
@@ -756,7 +756,7 @@ void CompactionIterator::NextFromInput() {
             // input_.Next().
             ++iter_stats_.num_record_drop_obsolete;
             ++iter_stats_.num_single_del_mismatch;
-          } else if (next_ikey.type == ValueType::kTypeDeletion) {
+          } else if (next_ikey.type == rs::db::dbformat::ValueType::kTypeDeletion) {
             std::ostringstream oss;
             oss << "Found SD and type: " << static_cast<int>(next_ikey.type)
                 << " on the same key, violating the contract "
@@ -797,9 +797,9 @@ void CompactionIterator::NextFromInput() {
             // is an unexpected Merge or Delete.  We will compact it out
             // either way. We will maintain counts of how many mismatches
             // happened
-            if (next_ikey.type != ValueType::kTypeValue &&
-                next_ikey.type != ValueType::kTypeBlobIndex &&
-                next_ikey.type != ValueType::kTypeWideColumnEntity) {
+            if (next_ikey.type != rs::db::dbformat::ValueType::kTypeValue &&
+                next_ikey.type != rs::db::dbformat::ValueType::kTypeBlobIndex &&
+                next_ikey.type != rs::db::dbformat::ValueType::kTypeWideColumnEntity) {
               ++iter_stats_.num_single_del_mismatch;
             }
 
@@ -891,8 +891,8 @@ void CompactionIterator::NextFromInput() {
       ++iter_stats_.num_record_drop_hidden;  // rule (A)
       AdvanceInputIter();
     } else if (compaction_ != nullptr &&
-               (ikey_.type == ValueType::kTypeDeletion ||
-                (ikey_.type == ValueType::kTypeDeletionWithTimestamp &&
+               (ikey_.type == rs::db::dbformat::ValueType::kTypeDeletion ||
+                (ikey_.type == rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp &&
                  cmp_with_history_ts_low_ < 0)) &&
                DefinitelyInSnapshot(ikey_.sequence, earliest_snapshot_) &&
                compaction_->KeyNotExistsBeyondOutputLevel(ikey_.user_key,
@@ -925,8 +925,8 @@ void CompactionIterator::NextFromInput() {
         ++iter_stats_.num_optimized_del_drop_obsolete;
       }
       AdvanceInputIter();
-    } else if ((ikey_.type == ValueType::kTypeDeletion ||
-                (ikey_.type == ValueType::kTypeDeletionWithTimestamp &&
+    } else if ((ikey_.type == rs::db::dbformat::ValueType::kTypeDeletion ||
+                (ikey_.type == rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp &&
                  cmp_with_history_ts_low_ < 0)) &&
                bottommost_level_) {
       // Handle the case where we have a delete key at the bottom most level
@@ -969,7 +969,7 @@ void CompactionIterator::NextFromInput() {
         validity_info_.SetValid(ValidContext::kKeepDel);
         at_next_ = true;
       }
-    } else if (ikey_.type == ValueType::kTypeMerge) {
+    } else if (ikey_.type == rs::db::dbformat::ValueType::kTypeMerge) {
       if (!merge_helper_->HasOperator()) {
         status_ = Status::InvalidArgument(
             "merge_operator is not properly initialized.");
@@ -1090,18 +1090,18 @@ bool CompactionIterator::ExtractLargeValueIfNeededImpl() {
 }
 
 void CompactionIterator::ExtractLargeValueIfNeeded() {
-  assert(ikey_.type == ValueType::kTypeValue);
+  assert(ikey_.type == rs::db::dbformat::ValueType::kTypeValue);
 
   if (!ExtractLargeValueIfNeededImpl()) {
     return;
   }
 
-  ikey_.type = ValueType::kTypeBlobIndex;
+  ikey_.type = rs::db::dbformat::ValueType::kTypeBlobIndex;
   current_key_.UpdateInternalKey(ikey_.sequence, ikey_.type);
 }
 
 void CompactionIterator::GarbageCollectBlobIfNeeded() {
-  assert(ikey_.type == ValueType::kTypeBlobIndex);
+  assert(ikey_.type == rs::db::dbformat::ValueType::kTypeBlobIndex);
 
   if (!compaction_) {
     return;
@@ -1164,7 +1164,7 @@ void CompactionIterator::GarbageCollectBlobIfNeeded() {
       return;
     }
 
-    ikey_.type = ValueType::kTypeValue;
+    ikey_.type = rs::db::dbformat::ValueType::kTypeValue;
     current_key_.UpdateInternalKey(ikey_.sequence, ikey_.type);
 
     return;
@@ -1252,9 +1252,9 @@ void CompactionIterator::DecideOutputLevel() {
 void CompactionIterator::PrepareOutput() {
   if (Valid()) {
     if (LIKELY(!is_range_del_)) {
-      if (ikey_.type == ValueType::kTypeValue) {
+      if (ikey_.type == rs::db::dbformat::ValueType::kTypeValue) {
         ExtractLargeValueIfNeeded();
-      } else if (ikey_.type == ValueType::kTypeBlobIndex) {
+      } else if (ikey_.type == rs::db::dbformat::ValueType::kTypeBlobIndex) {
         GarbageCollectBlobIfNeeded();
       }
     }
@@ -1277,11 +1277,11 @@ void CompactionIterator::PrepareOutput() {
     if (Valid() && compaction_ != nullptr &&
         !compaction_->allow_ingest_behind() && bottommost_level_ &&
         DefinitelyInSnapshot(ikey_.sequence, earliest_snapshot_) &&
-        ikey_.type != ValueType::kTypeMerge && current_key_committed_ &&
+        ikey_.type != rs::db::dbformat::ValueType::kTypeMerge && current_key_committed_ &&
         !output_to_penultimate_level_ &&
         ikey_.sequence < preserve_time_min_seqno_ && !is_range_del_) {
-      if (ikey_.type == ValueType::kTypeDeletion ||
-          (ikey_.type == ValueType::kTypeSingleDeletion && timestamp_size_ == 0)) {
+      if (ikey_.type == rs::db::dbformat::ValueType::kTypeDeletion ||
+          (ikey_.type == rs::db::dbformat::ValueType::kTypeSingleDeletion && timestamp_size_ == 0)) {
         ROCKS_LOG_FATAL(
             info_log_,
             "Unexpected key %s for seq-zero optimization. "

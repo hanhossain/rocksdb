@@ -272,7 +272,7 @@ Status MemTable::VerifyEntryChecksum(const char* entry,
   Slice user_key = Slice(key_ptr, key_length - 8);
 
   const uint64_t tag = DecodeFixed64(key_ptr + key_length - 8);
-  ValueType type;
+  rs::db::dbformat::ValueType type;
   SequenceNumber seq;
   UnPackSequenceAndType(tag, &seq, &type);
 
@@ -638,7 +638,7 @@ Status MemTable::VerifyEncodedEntry(Slice encoded,
   encoded.remove_prefix(user_key_len);
 
   uint64_t packed = DecodeFixed64(encoded.data());
-  ValueType value_type = ValueType::kMaxValue;
+  rs::db::dbformat::ValueType value_type = rs::db::dbformat::ValueType::kMaxValue;
   SequenceNumber sequence_number = kMaxSequenceNumber;
   UnPackSequenceAndType(packed, &sequence_number, &value_type);
   encoded.remove_prefix(8);
@@ -661,7 +661,7 @@ Status MemTable::VerifyEncodedEntry(Slice encoded,
 
 void MemTable::UpdateEntryChecksum(const ProtectionInfoKVOS64* kv_prot_info,
                                    const Slice& key, const Slice& value,
-                                   ValueType type, SequenceNumber s,
+                                   rs::db::dbformat::ValueType type, SequenceNumber s,
                                    char* checksum_ptr) {
   if (moptions_.protection_bytes_per_key == 0) {
     return;
@@ -679,7 +679,7 @@ void MemTable::UpdateEntryChecksum(const ProtectionInfoKVOS64* kv_prot_info,
   }
 }
 
-Status MemTable::Add(SequenceNumber s, ValueType type,
+Status MemTable::Add(SequenceNumber s, rs::db::dbformat::ValueType type,
                      const Slice& key, /* user key */
                      const Slice& value,
                      const ProtectionInfoKVOS64* kv_prot_info,
@@ -699,7 +699,7 @@ Status MemTable::Add(SequenceNumber s, ValueType type,
                                val_size + moptions_.protection_bytes_per_key;
   char* buf = nullptr;
   std::unique_ptr<MemTableRep>& table =
-      type == ValueType::kTypeRangeDeletion ? range_del_table_ : table_;
+      type == rs::db::dbformat::ValueType::kTypeRangeDeletion ? range_del_table_ : table_;
   KeyHandle handle = table->Allocate(encoded_len, &buf);
 
   char* p = EncodeVarint32(buf, internal_key_size);
@@ -750,8 +750,8 @@ Status MemTable::Add(SequenceNumber s, ValueType type,
                        std::memory_order_relaxed);
     data_size_.store(data_size_.load(std::memory_order_relaxed) + encoded_len,
                      std::memory_order_relaxed);
-    if (type == ValueType::kTypeDeletion || type == ValueType::kTypeSingleDeletion ||
-        type == ValueType::kTypeDeletionWithTimestamp) {
+    if (type == rs::db::dbformat::ValueType::kTypeDeletion || type == rs::db::dbformat::ValueType::kTypeSingleDeletion ||
+        type == rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp) {
       num_deletes_.store(num_deletes_.load(std::memory_order_relaxed) + 1,
                          std::memory_order_relaxed);
     }
@@ -788,7 +788,7 @@ Status MemTable::Add(SequenceNumber s, ValueType type,
     assert(post_process_info != nullptr);
     post_process_info->num_entries++;
     post_process_info->data_size += encoded_len;
-    if (type == ValueType::kTypeDeletion) {
+    if (type == rs::db::dbformat::ValueType::kTypeDeletion) {
       post_process_info->num_deletes++;
     }
 
@@ -813,7 +813,7 @@ Status MemTable::Add(SequenceNumber s, ValueType type,
         !first_seqno_.compare_exchange_weak(cur_earliest_seqno, s)) {
     }
   }
-  if (type == ValueType::kTypeRangeDeletion) {
+  if (type == rs::db::dbformat::ValueType::kTypeRangeDeletion) {
     auto new_cache = std::make_shared<FragmentedRangeTombstoneListCache>();
     size_t size = cached_range_tombstone_.Size();
     if (allow_concurrent) {
@@ -921,7 +921,7 @@ static bool SaveValue(void* arg, const char* entry) {
                                              s->key->user_key())) {
     // Correct user key
     const uint64_t tag = DecodeFixed64(key_ptr + key_length - 8);
-    ValueType type;
+    rs::db::dbformat::ValueType type;
     SequenceNumber seq;
     UnPackSequenceAndType(tag, &seq, &type);
     // If the value is not in the snapshot, skip it
@@ -958,14 +958,14 @@ static bool SaveValue(void* arg, const char* entry) {
       }
     }
 
-    if ((type == ValueType::kTypeValue || type == ValueType::kTypeMerge || type == ValueType::kTypeBlobIndex ||
-         type == ValueType::kTypeWideColumnEntity || type == ValueType::kTypeDeletion ||
-         type == ValueType::kTypeSingleDeletion || type == ValueType::kTypeDeletionWithTimestamp) &&
+    if ((type == rs::db::dbformat::ValueType::kTypeValue || type == rs::db::dbformat::ValueType::kTypeMerge || type == rs::db::dbformat::ValueType::kTypeBlobIndex ||
+         type == rs::db::dbformat::ValueType::kTypeWideColumnEntity || type == rs::db::dbformat::ValueType::kTypeDeletion ||
+         type == rs::db::dbformat::ValueType::kTypeSingleDeletion || type == rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp) &&
         max_covering_tombstone_seq > seq) {
-      type = ValueType::kTypeRangeDeletion;
+      type = rs::db::dbformat::ValueType::kTypeRangeDeletion;
     }
     switch (type) {
-      case ValueType::kTypeBlobIndex: {
+      case rs::db::dbformat::ValueType::kTypeBlobIndex: {
         if (!s->do_merge) {
           *(s->status) = Status::NotSupported(
               "GetMergeOperands not supported by stacked BlobDB");
@@ -1012,7 +1012,7 @@ static bool SaveValue(void* arg, const char* entry) {
 
         return false;
       }
-      case ValueType::kTypeValue: {
+      case rs::db::dbformat::ValueType::kTypeValue: {
         if (s->inplace_update_support) {
           s->mem->GetLock(s->key->user_key())->ReadLock();
         }
@@ -1071,7 +1071,7 @@ static bool SaveValue(void* arg, const char* entry) {
 
         return false;
       }
-      case ValueType::kTypeWideColumnEntity: {
+      case rs::db::dbformat::ValueType::kTypeWideColumnEntity: {
         if (s->inplace_update_support) {
           s->mem->GetLock(s->key->user_key())->ReadLock();
         }
@@ -1149,10 +1149,10 @@ static bool SaveValue(void* arg, const char* entry) {
 
         return false;
       }
-      case ValueType::kTypeDeletion:
-      case ValueType::kTypeDeletionWithTimestamp:
-      case ValueType::kTypeSingleDeletion:
-      case ValueType::kTypeRangeDeletion: {
+      case rs::db::dbformat::ValueType::kTypeDeletion:
+      case rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp:
+      case rs::db::dbformat::ValueType::kTypeSingleDeletion:
+      case rs::db::dbformat::ValueType::kTypeRangeDeletion: {
         if (*(s->merge_in_progress)) {
           if (s->value || s->columns) {
             std::string result;
@@ -1186,7 +1186,7 @@ static bool SaveValue(void* arg, const char* entry) {
         *(s->found_final_value) = true;
         return false;
       }
-      case ValueType::kTypeMerge: {
+      case rs::db::dbformat::ValueType::kTypeMerge: {
         if (!merge_operator) {
           *(s->status) = Status::InvalidArgument(
               "merge_operator is not properly initialized.");
@@ -1459,7 +1459,7 @@ void MemTable::MultiGet(const ReadOptions& read_options, MultiGetRange* range,
   PERF_COUNTER_ADD(get_from_memtable_count, 1);
 }
 
-Status MemTable::Update(SequenceNumber seq, ValueType value_type,
+Status MemTable::Update(SequenceNumber seq, rs::db::dbformat::ValueType value_type,
                         const Slice& key, const Slice& value,
                         const ProtectionInfoKVOS64* kv_prot_info) {
   LookupKey lkey(key, seq);
@@ -1481,7 +1481,7 @@ Status MemTable::Update(SequenceNumber seq, ValueType value_type,
             Slice(key_ptr, key_length - 8), lkey.user_key())) {
       // Correct user key
       const uint64_t tag = DecodeFixed64(key_ptr + key_length - 8);
-      ValueType type;
+      rs::db::dbformat::ValueType type;
       SequenceNumber existing_seq;
       UnPackSequenceAndType(tag, &existing_seq, &type);
       assert(existing_seq != seq);
@@ -1544,10 +1544,10 @@ Status MemTable::UpdateCallback(SequenceNumber seq, const Slice& key,
             Slice(key_ptr, key_length - 8), lkey.user_key())) {
       // Correct user key
       const uint64_t tag = DecodeFixed64(key_ptr + key_length - 8);
-      ValueType type;
+      rs::db::dbformat::ValueType type;
       uint64_t existing_seq;
       UnPackSequenceAndType(tag, &existing_seq, &type);
-      if (type == ValueType::kTypeValue) {
+      if (type == rs::db::dbformat::ValueType::kTypeValue) {
         Slice prev_value = GetLengthPrefixedSlice(key_ptr + key_length);
         uint32_t prev_size = static_cast<uint32_t>(prev_value.size());
 
@@ -1593,10 +1593,10 @@ Status MemTable::UpdateCallback(SequenceNumber seq, const Slice& key,
           if (kv_prot_info != nullptr) {
             ProtectionInfoKVOS64 updated_kv_prot_info(*kv_prot_info);
             updated_kv_prot_info.UpdateV(delta, str_value);
-            s = Add(seq, ValueType::kTypeValue, key, Slice(str_value),
+            s = Add(seq, rs::db::dbformat::ValueType::kTypeValue, key, Slice(str_value),
                     &updated_kv_prot_info);
           } else {
-            s = Add(seq, ValueType::kTypeValue, key, Slice(str_value),
+            s = Add(seq, rs::db::dbformat::ValueType::kTypeValue, key, Slice(str_value),
                     nullptr /* kv_prot_info */);
           }
           RecordTick(moptions_.statistics, NUMBER_KEYS_WRITTEN);
@@ -1637,10 +1637,10 @@ size_t MemTable::CountSuccessiveMergeEntries(const LookupKey& key) {
     }
 
     const uint64_t tag = DecodeFixed64(iter_key_ptr + key_length - 8);
-    ValueType type;
+    rs::db::dbformat::ValueType type;
     uint64_t unused;
     UnPackSequenceAndType(tag, &unused, &type);
-    if (type != ValueType::kTypeMerge) {
+    if (type != rs::db::dbformat::ValueType::kTypeMerge) {
       break;
     }
 

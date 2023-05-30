@@ -196,18 +196,18 @@ TEST_F(FlushJobTest, NonEmpty) {
   for (int i = 1; i < 10000; ++i) {
     std::string key(std::to_string((i + 1000) % 10000));
     std::string value("value" + key);
-    ASSERT_OK(new_mem->Add(SequenceNumber(i), ValueType::kTypeValue, key, value,
+    ASSERT_OK(new_mem->Add(SequenceNumber(i), rs::db::dbformat::ValueType::kTypeValue, key, value,
                            nullptr /* kv_prot_info */));
     if ((i + 1000) % 10000 < 9995) {
-      InternalKey internal_key(key, SequenceNumber(i), ValueType::kTypeValue);
+      InternalKey internal_key(key, SequenceNumber(i), rs::db::dbformat::ValueType::kTypeValue);
       inserted_keys.push_back({internal_key.Encode().ToString(), value});
     }
   }
 
   {
-    ASSERT_OK(new_mem->Add(SequenceNumber(10000), ValueType::kTypeRangeDeletion, "9995",
+    ASSERT_OK(new_mem->Add(SequenceNumber(10000), rs::db::dbformat::ValueType::kTypeRangeDeletion, "9995",
                            "9999a", nullptr /* kv_prot_info */));
-    InternalKey internal_key("9995", SequenceNumber(10000), ValueType::kTypeRangeDeletion);
+    InternalKey internal_key("9995", SequenceNumber(10000), rs::db::dbformat::ValueType::kTypeRangeDeletion);
     inserted_keys.push_back({internal_key.Encode().ToString(), "9999a"});
   }
 
@@ -233,10 +233,10 @@ TEST_F(FlushJobTest, NonEmpty) {
     }
 
     const SequenceNumber seq(i + 10001);
-    ASSERT_OK(new_mem->Add(seq, ValueType::kTypeBlobIndex, key, blob_index,
+    ASSERT_OK(new_mem->Add(seq, rs::db::dbformat::ValueType::kTypeBlobIndex, key, blob_index,
                            nullptr /* kv_prot_info */));
 
-    InternalKey internal_key(key, seq, ValueType::kTypeBlobIndex);
+    InternalKey internal_key(key, seq, rs::db::dbformat::ValueType::kTypeBlobIndex);
     inserted_keys.push_back({internal_key.Encode().ToString(), blob_index});
   }
   mock::SortKVVector(&inserted_keys);
@@ -297,7 +297,7 @@ TEST_F(FlushJobTest, FlushMemTablesSingleColumnFamily) {
     for (size_t j = 0; j < num_keys_per_table; ++j) {
       std::string key(std::to_string(j + i * num_keys_per_table));
       std::string value("value" + key);
-      ASSERT_OK(mem->Add(SequenceNumber(j + i * num_keys_per_table), ValueType::kTypeValue,
+      ASSERT_OK(mem->Add(SequenceNumber(j + i * num_keys_per_table), rs::db::dbformat::ValueType::kTypeValue,
                          key, value, nullptr /* kv_prot_info */));
     }
   }
@@ -371,7 +371,7 @@ TEST_F(FlushJobTest, FlushMemtablesMultipleColumnFamilies) {
       for (size_t j = 0; j != num_keys_per_memtable; ++j) {
         std::string key(std::to_string(j + i * num_keys_per_memtable));
         std::string value("value" + key);
-        ASSERT_OK(mem->Add(curr_seqno++, ValueType::kTypeValue, key, value,
+        ASSERT_OK(mem->Add(curr_seqno++, rs::db::dbformat::ValueType::kTypeValue, key, value,
                            nullptr /* kv_prot_info */));
       }
       mem->ConstructFragmentedRangeTombstones();
@@ -489,7 +489,7 @@ TEST_F(FlushJobTest, Snapshots) {
     for (int j = 0; j < insertions; ++j) {
       std::string value(rnd.HumanReadableString(10));
       auto seqno = ++current_seqno;
-      ASSERT_OK(new_mem->Add(SequenceNumber(seqno), ValueType::kTypeValue, key, value,
+      ASSERT_OK(new_mem->Add(SequenceNumber(seqno), rs::db::dbformat::ValueType::kTypeValue, key, value,
                              nullptr /* kv_prot_info */));
       // a key is visible only if:
       // 1. it's the last one written (j == insertions - 1)
@@ -497,7 +497,7 @@ TEST_F(FlushJobTest, Snapshots) {
       bool visible = (j == insertions - 1) ||
                      (snapshots_set.find(seqno) != snapshots_set.end());
       if (visible) {
-        InternalKey internal_key(key, seqno, ValueType::kTypeValue);
+        InternalKey internal_key(key, seqno, rs::db::dbformat::ValueType::kTypeValue);
         inserted_keys.push_back({internal_key.Encode().ToString(), value});
       }
     }
@@ -553,7 +553,7 @@ TEST_F(FlushJobTest, GetRateLimiterPriorityForWrite) {
     for (size_t j = 0; j < num_keys_per_table; ++j) {
       std::string key(std::to_string(j + i * num_keys_per_table));
       std::string value("value" + key);
-      ASSERT_OK(mem->Add(SequenceNumber(j + i * num_keys_per_table), ValueType::kTypeValue,
+      ASSERT_OK(mem->Add(SequenceNumber(j + i * num_keys_per_table), rs::db::dbformat::ValueType::kTypeValue,
                          key, value, nullptr /* kv_prot_info */));
     }
   }
@@ -607,7 +607,7 @@ class FlushJobTimestampTest : public FlushJobTestBase {
                          test::BytewiseComparatorWithU64TsWrapper()) {}
 
   void AddKeyValueToMemtable(MemTable* memtable, std::string key, uint64_t ts,
-                             SequenceNumber seq, ValueType value_type,
+                             SequenceNumber seq, rs::db::dbformat::ValueType value_type,
                              Slice value) {
     std::string key_str(std::move(key));
     PutFixed64(&key_str, ts);
@@ -634,12 +634,12 @@ TEST_F(FlushJobTimestampTest, AllKeysExpired) {
       uint64_t ts = curr_ts_.fetch_add(1);
       SequenceNumber seq = (curr_seq_++);
       AddKeyValueToMemtable(new_mem, test::EncodeInt(0), ts, seq,
-                            ValueType::kTypeValue, "0_value");
+                            rs::db::dbformat::ValueType::kTypeValue, "0_value");
     }
     uint64_t ts = curr_ts_.fetch_add(1);
     SequenceNumber seq = (curr_seq_++);
     AddKeyValueToMemtable(new_mem, test::EncodeInt(0), ts, seq,
-                          ValueType::kTypeDeletionWithTimestamp, "");
+                          rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp, "");
     new_mem->ConstructFragmentedRangeTombstones();
     cfd->imm()->Add(new_mem, &to_delete);
   }
@@ -670,7 +670,7 @@ TEST_F(FlushJobTimestampTest, AllKeysExpired) {
   {
     std::string key = test::EncodeInt(0);
     key.append(test::EncodeInt(curr_ts_.load(std::memory_order_relaxed) - 1));
-    InternalKey ikey(key, curr_seq_ - 1, ValueType::kTypeDeletionWithTimestamp);
+    InternalKey ikey(key, curr_seq_ - 1, rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp);
     ASSERT_EQ(ikey.Encode(), fmeta.smallest.Encode());
     ASSERT_EQ(ikey.Encode(), fmeta.largest.Encode());
   }
@@ -691,7 +691,7 @@ TEST_F(FlushJobTimestampTest, NoKeyExpired) {
       uint64_t ts = curr_ts_.fetch_add(1);
       SequenceNumber seq = (curr_seq_++);
       AddKeyValueToMemtable(new_mem, test::EncodeInt(0), ts, seq,
-                            ValueType::kTypeValue, "0_value");
+                            rs::db::dbformat::ValueType::kTypeValue, "0_value");
     }
     new_mem->ConstructFragmentedRangeTombstones();
     cfd->imm()->Add(new_mem, &to_delete);
@@ -725,8 +725,8 @@ TEST_F(FlushJobTimestampTest, NoKeyExpired) {
     std::string smallest_key =
         ukey + test::EncodeInt(curr_ts_.load(std::memory_order_relaxed) - 1);
     std::string largest_key = ukey + test::EncodeInt(kStartTs);
-    InternalKey smallest(smallest_key, curr_seq_ - 1, ValueType::kTypeValue);
-    InternalKey largest(largest_key, kStartSeq, ValueType::kTypeValue);
+    InternalKey smallest(smallest_key, curr_seq_ - 1, rs::db::dbformat::ValueType::kTypeValue);
+    InternalKey largest(largest_key, kStartSeq, rs::db::dbformat::ValueType::kTypeValue);
     ASSERT_EQ(smallest.Encode(), fmeta.smallest.Encode());
     ASSERT_EQ(largest.Encode(), fmeta.largest.Encode());
   }

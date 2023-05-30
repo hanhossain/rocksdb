@@ -101,7 +101,7 @@ void CuckooTableBuilder::Add(const Slice& key, const Slice& value) {
                                  pik_status.getState());
     return;
   }
-  if (ikey.type != ValueType::kTypeDeletion && ikey.type != ValueType::kTypeValue) {
+  if (ikey.type != rs::db::dbformat::ValueType::kTypeDeletion && ikey.type != rs::db::dbformat::ValueType::kTypeValue) {
     status_ = Status::NotSupported("Unsupported key type " +
                                    std::to_string((char)ikey.type));
     return;
@@ -123,7 +123,7 @@ void CuckooTableBuilder::Add(const Slice& key, const Slice& value) {
     return;
   }
 
-  if (ikey.type == ValueType::kTypeValue) {
+  if (ikey.type == rs::db::dbformat::ValueType::kTypeValue) {
     if (!has_seen_first_value_) {
       has_seen_first_value_ = true;
       value_size_ = value.size();
@@ -305,7 +305,7 @@ Status CuckooTableBuilder::Finish() {
     if (is_last_level_file_) {
       unused_bucket = unused_user_key;
     } else {
-      ParsedInternalKey ikey(unused_user_key, 0, ValueType::kTypeValue);
+      ParsedInternalKey ikey(unused_user_key, 0, rs::db::dbformat::ValueType::kTypeValue);
       AppendInternalKey(&unused_bucket, ikey);
     }
   }

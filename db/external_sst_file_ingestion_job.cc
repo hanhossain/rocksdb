@@ -757,9 +757,9 @@ Status ExternalSstFileIngestionJob::GetIngestedFileInfo(
 
   // Get first (smallest) and last (largest) key from file.
   file_to_ingest->smallest_internal_key =
-      InternalKey("", 0, ValueType::kTypeValue);
+      InternalKey("", 0, rs::db::dbformat::ValueType::kTypeValue);
   file_to_ingest->largest_internal_key =
-      InternalKey("", 0, ValueType::kTypeValue);
+      InternalKey("", 0, rs::db::dbformat::ValueType::kTypeValue);
   bool bounds_set = false;
   bool allow_data_in_errors = db_options_.allow_data_in_errors;
   iter->SeekToFirst();

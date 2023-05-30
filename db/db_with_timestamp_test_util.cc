@@ -44,12 +44,12 @@ std::string DBBasicTestWithTimestampBase::Timestamp(uint64_t low,
 
 void DBBasicTestWithTimestampBase::CheckIterUserEntry(
     const Iterator* it, const Slice& expected_key,
-    ValueType expected_value_type, const Slice& expected_value,
+    rs::db::dbformat::ValueType expected_value_type, const Slice& expected_value,
     const Slice& expected_ts) const {
   ASSERT_TRUE(it->Valid());
   ASSERT_OK(it->status());
   ASSERT_EQ(expected_key, it->key());
-  if (ValueType::kTypeValue == expected_value_type) {
+  if (rs::db::dbformat::ValueType::kTypeValue == expected_value_type) {
     ASSERT_EQ(expected_value, it->value());
   }
   ASSERT_EQ(expected_ts, it->timestamp());
@@ -57,7 +57,7 @@ void DBBasicTestWithTimestampBase::CheckIterUserEntry(
 
 void DBBasicTestWithTimestampBase::CheckIterEntry(
     const Iterator* it, const Slice& expected_ukey, SequenceNumber expected_seq,
-    ValueType expected_val_type, const Slice& expected_value,
+    rs::db::dbformat::ValueType expected_val_type, const Slice& expected_value,
     const Slice& expected_ts) const {
   ASSERT_TRUE(it->Valid());
   ASSERT_OK(it->status());
@@ -69,14 +69,14 @@ void DBBasicTestWithTimestampBase::CheckIterEntry(
   ASSERT_EQ(ukey_and_ts, parsed_ikey.user_key);
   ASSERT_EQ(expected_val_type, parsed_ikey.type);
   ASSERT_EQ(expected_seq, parsed_ikey.sequence);
-  if (expected_val_type == ValueType::kTypeValue) {
+  if (expected_val_type == rs::db::dbformat::ValueType::kTypeValue) {
     ASSERT_EQ(expected_value, it->value());
   }
   ASSERT_EQ(expected_ts, it->timestamp());
 }
 
 void DBBasicTestWithTimestampBase::CheckIterEntry(
-    const Iterator* it, const Slice& expected_ukey, ValueType expected_val_type,
+    const Iterator* it, const Slice& expected_ukey, rs::db::dbformat::ValueType expected_val_type,
     const Slice& expected_value, const Slice& expected_ts) const {
   ASSERT_TRUE(it->Valid());
   ASSERT_OK(it->status());
@@ -88,7 +88,7 @@ void DBBasicTestWithTimestampBase::CheckIterEntry(
   ASSERT_OK(ParseInternalKey(it->key(), &parsed_ikey, true /* log_err_key */));
   ASSERT_EQ(expected_val_type, parsed_ikey.type);
   ASSERT_EQ(Slice(ukey_and_ts), parsed_ikey.user_key);
-  if (expected_val_type == ValueType::kTypeValue) {
+  if (expected_val_type == rs::db::dbformat::ValueType::kTypeValue) {
     ASSERT_EQ(expected_value, it->value());
   }
   ASSERT_EQ(expected_ts, it->timestamp());

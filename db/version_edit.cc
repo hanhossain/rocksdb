@@ -29,8 +29,8 @@ uint64_t PackFileNumberAndPathId(uint64_t number, uint64_t path_id) {
 
 Status FileMetaData::UpdateBoundaries(const Slice& key, const Slice& value,
                                       SequenceNumber seqno,
-                                      ValueType value_type) {
-  if (value_type == ValueType::kTypeBlobIndex) {
+                                      rs::db::dbformat::ValueType value_type) {
+  if (value_type == rs::db::dbformat::ValueType::kTypeBlobIndex) {
     BlobIndex blob_index;
     const Status s = blob_index.DecodeFrom(value);
     if (!s.ok()) {

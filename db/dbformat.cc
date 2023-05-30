@@ -26,27 +26,27 @@ namespace ROCKSDB_NAMESPACE {
 // and the value type is embedded as the low 8 bits in the sequence
 // number in internal keys, we need to use the highest-numbered
 // ValueType, not the lowest).
-const ValueType kValueTypeForSeek = ValueType::kTypeWideColumnEntity;
-const ValueType kValueTypeForSeekForPrev = ValueType::kTypeDeletion;
+const rs::db::dbformat::ValueType kValueTypeForSeek = rs::db::dbformat::ValueType::kTypeWideColumnEntity;
+const rs::db::dbformat::ValueType kValueTypeForSeekForPrev = rs::db::dbformat::ValueType::kTypeDeletion;
 const std::string kDisableUserTimestamp("");
 
-rs::types::EntryType GetEntryType(ValueType value_type) {
+rs::types::EntryType GetEntryType(rs::db::dbformat::ValueType value_type) {
   switch (value_type) {
-    case ValueType::kTypeValue:
+    case rs::db::dbformat::ValueType::kTypeValue:
       return rs::types::EntryType::Put;
-    case ValueType::kTypeDeletion:
+    case rs::db::dbformat::ValueType::kTypeDeletion:
       return rs::types::EntryType::Delete;
-    case ValueType::kTypeDeletionWithTimestamp:
+    case rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp:
       return rs::types::EntryType::DeleteWithTimestamp;
-    case ValueType::kTypeSingleDeletion:
+    case rs::db::dbformat::ValueType::kTypeSingleDeletion:
       return rs::types::EntryType::SingleDelete;
-    case ValueType::kTypeMerge:
+    case rs::db::dbformat::ValueType::kTypeMerge:
       return rs::types::EntryType::Merge;
-    case ValueType::kTypeRangeDeletion:
+    case rs::db::dbformat::ValueType::kTypeRangeDeletion:
       return rs::types::EntryType::RangeDeletion;
-    case ValueType::kTypeBlobIndex:
+    case rs::db::dbformat::ValueType::kTypeBlobIndex:
       return rs::types::EntryType::BlobIndex;
-    case ValueType::kTypeWideColumnEntity:
+    case rs::db::dbformat::ValueType::kTypeWideColumnEntity:
       return rs::types::EntryType::WideColumnEntity;
     default:
       return rs::types::EntryType::Other;
@@ -68,7 +68,7 @@ void AppendInternalKeyWithDifferentTimestamp(std::string* result,
 }
 
 void AppendInternalKeyFooter(std::string* result, SequenceNumber s,
-                             ValueType t) {
+                             rs::db::dbformat::ValueType t) {
   PutFixed64(result, PackSequenceAndType(s, t));
 }
 

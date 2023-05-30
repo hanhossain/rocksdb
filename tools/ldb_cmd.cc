@@ -1843,7 +1843,7 @@ void InternalDumpCommand::DoCommand() {
 
   long long count = 0;
   for (auto& key_version : key_versions) {
-    ValueType value_type = static_cast<ValueType>(key_version.type);
+    rs::db::dbformat::ValueType value_type = static_cast<rs::db::dbformat::ValueType>(key_version.type);
     InternalKey ikey(key_version.user_key, key_version.sequence, value_type);
     if (has_to_ && ikey.user_key() == to_) {
       // GetAllKeyVersions() includes keys with user key `to_`, but idump has
@@ -1878,7 +1878,7 @@ void InternalDumpCommand::DoCommand() {
     if (!count_only_ && !count_delim_) {
       std::string key = ikey.DebugString(is_key_hex_);
       Slice value(key_version.value);
-      if (!decode_blob_index_ || value_type != ValueType::kTypeBlobIndex) {
+      if (!decode_blob_index_ || value_type != rs::db::dbformat::ValueType::kTypeBlobIndex) {
         fprintf(stdout, "%s => %s\n", key.c_str(),
                 value.ToString(is_value_hex_).c_str());
       } else {

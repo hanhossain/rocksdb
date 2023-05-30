@@ -11,39 +11,39 @@
 
 namespace ROCKSDB_NAMESPACE {
 
-static std::unordered_map<std::string, ValueType> value_type_string_map = {
-    {"TypeDeletion", ValueType::kTypeDeletion},
-    {"TypeValue", ValueType::kTypeValue},
-    {"TypeMerge", ValueType::kTypeMerge},
-    {"TypeLogData", ValueType::kTypeLogData},
-    {"TypeColumnFamilyDeletion", ValueType::kTypeColumnFamilyDeletion},
-    {"TypeColumnFamilyValue", ValueType::kTypeColumnFamilyValue},
-    {"TypeColumnFamilyMerge", ValueType::kTypeColumnFamilyMerge},
-    {"TypeSingleDeletion", ValueType::kTypeSingleDeletion},
+static std::unordered_map<std::string, rs::db::dbformat::ValueType> value_type_string_map = {
+    {"TypeDeletion", rs::db::dbformat::ValueType::kTypeDeletion},
+    {"TypeValue", rs::db::dbformat::ValueType::kTypeValue},
+    {"TypeMerge", rs::db::dbformat::ValueType::kTypeMerge},
+    {"TypeLogData", rs::db::dbformat::ValueType::kTypeLogData},
+    {"TypeColumnFamilyDeletion", rs::db::dbformat::ValueType::kTypeColumnFamilyDeletion},
+    {"TypeColumnFamilyValue", rs::db::dbformat::ValueType::kTypeColumnFamilyValue},
+    {"TypeColumnFamilyMerge", rs::db::dbformat::ValueType::kTypeColumnFamilyMerge},
+    {"TypeSingleDeletion", rs::db::dbformat::ValueType::kTypeSingleDeletion},
     {"TypeColumnFamilySingleDeletion",
-     ValueType::kTypeColumnFamilySingleDeletion},
-    {"TypeBeginPrepareXID", ValueType::kTypeBeginPrepareXID},
-    {"TypeEndPrepareXID", ValueType::kTypeEndPrepareXID},
-    {"TypeCommitXID", ValueType::kTypeCommitXID},
-    {"TypeRollbackXID", ValueType::kTypeRollbackXID},
-    {"TypeNoop", ValueType::kTypeNoop},
+     rs::db::dbformat::ValueType::kTypeColumnFamilySingleDeletion},
+    {"TypeBeginPrepareXID", rs::db::dbformat::ValueType::kTypeBeginPrepareXID},
+    {"TypeEndPrepareXID", rs::db::dbformat::ValueType::kTypeEndPrepareXID},
+    {"TypeCommitXID", rs::db::dbformat::ValueType::kTypeCommitXID},
+    {"TypeRollbackXID", rs::db::dbformat::ValueType::kTypeRollbackXID},
+    {"TypeNoop", rs::db::dbformat::ValueType::kTypeNoop},
     {"TypeColumnFamilyRangeDeletion",
-     ValueType::kTypeColumnFamilyRangeDeletion},
-    {"TypeRangeDeletion", ValueType::kTypeRangeDeletion},
-    {"TypeColumnFamilyBlobIndex", ValueType::kTypeColumnFamilyBlobIndex},
-    {"TypeBlobIndex", ValueType::kTypeBlobIndex},
-    {"TypeBeginPersistedPrepareXID", ValueType::kTypeBeginPersistedPrepareXID},
-    {"TypeBeginUnprepareXID", ValueType::kTypeBeginUnprepareXID},
-    {"TypeDeletionWithTimestamp", ValueType::kTypeDeletionWithTimestamp},
-    {"TypeCommitXIDAndTimestamp", ValueType::kTypeCommitXIDAndTimestamp},
-    {"TypeWideColumnEntity", ValueType::kTypeWideColumnEntity},
+     rs::db::dbformat::ValueType::kTypeColumnFamilyRangeDeletion},
+    {"TypeRangeDeletion", rs::db::dbformat::ValueType::kTypeRangeDeletion},
+    {"TypeColumnFamilyBlobIndex", rs::db::dbformat::ValueType::kTypeColumnFamilyBlobIndex},
+    {"TypeBlobIndex", rs::db::dbformat::ValueType::kTypeBlobIndex},
+    {"TypeBeginPersistedPrepareXID", rs::db::dbformat::ValueType::kTypeBeginPersistedPrepareXID},
+    {"TypeBeginUnprepareXID", rs::db::dbformat::ValueType::kTypeBeginUnprepareXID},
+    {"TypeDeletionWithTimestamp", rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp},
+    {"TypeCommitXIDAndTimestamp", rs::db::dbformat::ValueType::kTypeCommitXIDAndTimestamp},
+    {"TypeWideColumnEntity", rs::db::dbformat::ValueType::kTypeWideColumnEntity},
     {"TypeColumnFamilyWideColumnEntity",
-     ValueType::kTypeColumnFamilyWideColumnEntity}};
+     rs::db::dbformat::ValueType::kTypeColumnFamilyWideColumnEntity}};
 
 std::string KeyVersion::GetTypeName() const {
   std::string type_name;
-  if (SerializeEnum<ValueType>(value_type_string_map,
-                               static_cast<ValueType>(type), &type_name)) {
+  if (SerializeEnum<rs::db::dbformat::ValueType>(value_type_string_map,
+                               static_cast<rs::db::dbformat::ValueType>(type), &type_name)) {
     return type_name;
   } else {
     return "Invalid";
