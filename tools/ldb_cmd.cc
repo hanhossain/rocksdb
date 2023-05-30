@@ -1878,7 +1878,7 @@ void InternalDumpCommand::DoCommand() {
     if (!count_only_ && !count_delim_) {
       std::string key = ikey.DebugString(is_key_hex_);
       Slice value(key_version.value);
-      if (!decode_blob_index_ || value_type != rs::db::dbformat::ValueType::kTypeBlobIndex) {
+      if (!decode_blob_index_ || value_type != rs::db::dbformat::ValueType::TypeBlobIndex) {
         fprintf(stdout, "%s => %s\n", key.c_str(),
                 value.ToString(is_value_hex_).c_str());
       } else {

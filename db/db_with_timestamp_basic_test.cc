@@ -504,7 +504,7 @@ TEST_F(DBBasicTestWithTimestamp, SimpleIterate) {
     // Forward iterate.
     for (it->Seek(Key1(0)), key = start_keys[i]; it->Valid();
          it->Next(), ++count, ++key) {
-      CheckIterUserEntry(it.get(), Key1(key), rs::db::dbformat::ValueType::kTypeValue,
+      CheckIterUserEntry(it.get(), Key1(key), rs::db::dbformat::ValueType::TypeValue,
                          "value" + std::to_string(i), write_timestamps[i]);
     }
     size_t expected_count = kMaxKey - start_keys[i] + 1;
@@ -514,7 +514,7 @@ TEST_F(DBBasicTestWithTimestamp, SimpleIterate) {
     count = 0;
     for (it->SeekForPrev(Key1(kMaxKey)), key = kMaxKey; it->Valid();
          it->Prev(), ++count, --key) {
-      CheckIterUserEntry(it.get(), Key1(key), rs::db::dbformat::ValueType::kTypeValue,
+      CheckIterUserEntry(it.get(), Key1(key), rs::db::dbformat::ValueType::TypeValue,
                          "value" + std::to_string(i), write_timestamps[i]);
     }
     ASSERT_EQ(static_cast<size_t>(kMaxKey) - start_keys[i] + 1, count);
@@ -533,14 +533,14 @@ TEST_F(DBBasicTestWithTimestamp, SimpleIterate) {
       it.reset(db_->NewIterator(read_opts));
       for (it->SeekToFirst(), key = std::max(l, start_keys[i]), count = 0;
            it->Valid(); it->Next(), ++key, ++count) {
-        CheckIterUserEntry(it.get(), Key1(key), rs::db::dbformat::ValueType::kTypeValue,
+        CheckIterUserEntry(it.get(), Key1(key), rs::db::dbformat::ValueType::TypeValue,
                            "value" + std::to_string(i), write_timestamps[i]);
       }
       ASSERT_EQ(r - std::max(l, start_keys[i]), count);
 
       for (it->SeekToLast(), key = std::min(r, kMaxKey + 1), count = 0;
            it->Valid(); it->Prev(), --key, ++count) {
-        CheckIterUserEntry(it.get(), Key1(key - 1), rs::db::dbformat::ValueType::kTypeValue,
+        CheckIterUserEntry(it.get(), Key1(key - 1), rs::db::dbformat::ValueType::TypeValue,
                            "value" + std::to_string(i), write_timestamps[i]);
       }
       l += (kMaxKey / 100);
@@ -913,15 +913,15 @@ TEST_P(DBBasicTestWithTimestampTableOptions, SeekWithBound) {
     // Make sure the prefix extractor doesn't include timestamp, otherwise it
     // may return invalid result.
     iter->Seek("foo");
-    CheckIterUserEntry(iter.get(), lo_bound, rs::db::dbformat::ValueType::kTypeValue, "bar2",
+    CheckIterUserEntry(iter.get(), lo_bound, rs::db::dbformat::ValueType::TypeValue, "bar2",
                        Timestamp(1, 0));
     iter->SeekToFirst();
-    CheckIterUserEntry(iter.get(), lo_bound, rs::db::dbformat::ValueType::kTypeValue, "bar2",
+    CheckIterUserEntry(iter.get(), lo_bound, rs::db::dbformat::ValueType::TypeValue, "bar2",
                        Timestamp(1, 0));
     iter->SeekForPrev("g");
-    CheckIterUserEntry(iter.get(), "foo4", rs::db::dbformat::ValueType::kTypeValue, "bar4", Timestamp(1, 0));
+    CheckIterUserEntry(iter.get(), "foo4", rs::db::dbformat::ValueType::TypeValue, "bar4", Timestamp(1, 0));
     iter->SeekToLast();
-    CheckIterUserEntry(iter.get(), "foo4", rs::db::dbformat::ValueType::kTypeValue, "bar4", Timestamp(1, 0));
+    CheckIterUserEntry(iter.get(), "foo4", rs::db::dbformat::ValueType::TypeValue, "bar4", Timestamp(1, 0));
   }
 
   Close();
@@ -975,35 +975,35 @@ TEST_F(DBBasicTestWithTimestamp, ChangeIterationDirection) {
             options.statistics->getTickerCount(NUMBER_OF_RESEEKS_IN_ITERATION));
 
   it->Seek(std::get<0>(kvs[0]));
-  CheckIterUserEntry(it.get(), std::get<0>(kvs[0]), rs::db::dbformat::ValueType::kTypeValue,
+  CheckIterUserEntry(it.get(), std::get<0>(kvs[0]), rs::db::dbformat::ValueType::TypeValue,
                      std::get<1>(kvs[0]), Timestamp(4, 3));
   it->Next();
-  CheckIterUserEntry(it.get(), std::get<0>(kvs[1]), rs::db::dbformat::ValueType::kTypeValue,
+  CheckIterUserEntry(it.get(), std::get<0>(kvs[1]), rs::db::dbformat::ValueType::TypeValue,
                      std::get<1>(kvs[1]), Timestamp(4, 3));
   it->Prev();
-  CheckIterUserEntry(it.get(), std::get<0>(kvs[0]), rs::db::dbformat::ValueType::kTypeValue,
+  CheckIterUserEntry(it.get(), std::get<0>(kvs[0]), rs::db::dbformat::ValueType::TypeValue,
                      std::get<1>(kvs[0]), Timestamp(4, 3));
 
   prev_reseek_count =
       options.statistics->getTickerCount(NUMBER_OF_RESEEKS_IN_ITERATION);
   ASSERT_EQ(1, prev_reseek_count);
   it->Next();
-  CheckIterUserEntry(it.get(), std::get<0>(kvs[1]), rs::db::dbformat::ValueType::kTypeValue,
+  CheckIterUserEntry(it.get(), std::get<0>(kvs[1]), rs::db::dbformat::ValueType::TypeValue,
                      std::get<1>(kvs[1]), Timestamp(4, 3));
   ASSERT_EQ(1 + prev_reseek_count,
             options.statistics->getTickerCount(NUMBER_OF_RESEEKS_IN_ITERATION));
 
   it->SeekForPrev(std::get<0>(kvs[1]));
-  CheckIterUserEntry(it.get(), std::get<0>(kvs[1]), rs::db::dbformat::ValueType::kTypeValue,
+  CheckIterUserEntry(it.get(), std::get<0>(kvs[1]), rs::db::dbformat::ValueType::TypeValue,
                      std::get<1>(kvs[1]), Timestamp(4, 3));
   it->Prev();
-  CheckIterUserEntry(it.get(), std::get<0>(kvs[0]), rs::db::dbformat::ValueType::kTypeValue,
+  CheckIterUserEntry(it.get(), std::get<0>(kvs[0]), rs::db::dbformat::ValueType::TypeValue,
                      std::get<1>(kvs[0]), Timestamp(4, 3));
 
   prev_reseek_count =
       options.statistics->getTickerCount(NUMBER_OF_RESEEKS_IN_ITERATION);
   it->Next();
-  CheckIterUserEntry(it.get(), std::get<0>(kvs[1]), rs::db::dbformat::ValueType::kTypeValue,
+  CheckIterUserEntry(it.get(), std::get<0>(kvs[1]), rs::db::dbformat::ValueType::TypeValue,
                      std::get<1>(kvs[1]), Timestamp(4, 3));
   ASSERT_EQ(1 + prev_reseek_count,
             options.statistics->getTickerCount(NUMBER_OF_RESEEKS_IN_ITERATION));
@@ -1048,11 +1048,11 @@ TEST_F(DBBasicTestWithTimestamp, SimpleForwardIterateLowerTsBound) {
     int count = 0;
     uint64_t key = 0;
     for (it->Seek(Key1(0)), key = 0; it->Valid(); it->Next(), ++count, ++key) {
-      CheckIterEntry(it.get(), Key1(key), rs::db::dbformat::ValueType::kTypeValue,
+      CheckIterEntry(it.get(), Key1(key), rs::db::dbformat::ValueType::TypeValue,
                      "value" + std::to_string(i), write_timestamps[i]);
       if (i > 0) {
         it->Next();
-        CheckIterEntry(it.get(), Key1(key), rs::db::dbformat::ValueType::kTypeValue,
+        CheckIterEntry(it.get(), Key1(key), rs::db::dbformat::ValueType::TypeValue,
                        "value" + std::to_string(i - 1),
                        write_timestamps[i - 1]);
       }
@@ -1080,7 +1080,7 @@ TEST_F(DBBasicTestWithTimestamp, SimpleForwardIterateLowerTsBound) {
     int count = 0;
     uint64_t key = 0;
     for (it->Seek(Key1(0)), key = 0; it->Valid(); it->Next(), ++count, ++key) {
-      CheckIterEntry(it.get(), Key1(key), rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp, Slice(),
+      CheckIterEntry(it.get(), Key1(key), rs::db::dbformat::ValueType::TypeDeletionWithTimestamp, Slice(),
                      write_timestamp);
       // Skip key@ts=3 and land on tombstone key@ts=5
       it->Next();
@@ -1127,11 +1127,11 @@ TEST_F(DBBasicTestWithTimestamp, BackwardIterateLowerTsBound) {
     uint64_t key = 0;
     for (it->SeekForPrev(Key1(kMaxKey)), key = kMaxKey; it->Valid();
          it->Prev(), ++count, --key) {
-      CheckIterEntry(it.get(), Key1(key), rs::db::dbformat::ValueType::kTypeValue, "value0",
+      CheckIterEntry(it.get(), Key1(key), rs::db::dbformat::ValueType::TypeValue, "value0",
                      write_timestamps[0]);
       if (i > 0) {
         it->Prev();
-        CheckIterEntry(it.get(), Key1(key), rs::db::dbformat::ValueType::kTypeValue, "value1",
+        CheckIterEntry(it.get(), Key1(key), rs::db::dbformat::ValueType::TypeValue, "value1",
                        write_timestamps[1]);
       }
     }
@@ -1159,10 +1159,10 @@ TEST_F(DBBasicTestWithTimestamp, BackwardIterateLowerTsBound) {
     uint64_t key = kMaxKey;
     for (it->SeekForPrev(Key1(key)), key = kMaxKey; it->Valid();
          it->Prev(), ++count, --key) {
-      CheckIterEntry(it.get(), Key1(key), rs::db::dbformat::ValueType::kTypeValue, "value1",
+      CheckIterEntry(it.get(), Key1(key), rs::db::dbformat::ValueType::TypeValue, "value1",
                      Timestamp(3, 0));
       it->Prev();
-      CheckIterEntry(it.get(), Key1(key), rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp, Slice(),
+      CheckIterEntry(it.get(), Key1(key), rs::db::dbformat::ValueType::TypeDeletionWithTimestamp, Slice(),
                      write_timestamp);
     }
     ASSERT_EQ(kMaxKey + 1, count);
@@ -1216,7 +1216,7 @@ TEST_F(DBBasicTestWithTimestamp, SimpleBackwardIterateLowerTsBound) {
     read_opts.iterate_upper_bound = &key_ub;
     std::unique_ptr<Iterator> it(db_->NewIterator(read_opts));
     it->SeekToLast();
-    CheckIterEntry(it.get(), "a", rs::db::dbformat::ValueType::kTypeSingleDeletion, Slice(),
+    CheckIterEntry(it.get(), "a", rs::db::dbformat::ValueType::TypeSingleDeletion, Slice(),
                    Timestamp(1, 0));
 
     key_ub_str = "a";  // exclusive
@@ -1263,11 +1263,11 @@ TEST_F(DBBasicTestWithTimestamp, BackwardIterateLowerTsBound_Reseek) {
     std::unique_ptr<Iterator> it(db_->NewIterator(read_opts));
     it->SeekToLast();
     for (int i = 0; i < 3 && it->Valid(); it->Prev(), ++i) {
-      CheckIterEntry(it.get(), "b", rs::db::dbformat::ValueType::kTypeValue, "v" + std::to_string(4 + i),
+      CheckIterEntry(it.get(), "b", rs::db::dbformat::ValueType::TypeValue, "v" + std::to_string(4 + i),
                      Timestamp(4 + i, 0));
     }
     for (int i = 0; i < 3 && it->Valid(); it->Prev(), ++i) {
-      CheckIterEntry(it.get(), "a", rs::db::dbformat::ValueType::kTypeValue, "v" + std::to_string(4 + i),
+      CheckIterEntry(it.get(), "a", rs::db::dbformat::ValueType::TypeValue, "v" + std::to_string(4 + i),
                      Timestamp(4 + i, 0));
     }
   }
@@ -1301,7 +1301,7 @@ TEST_F(DBBasicTestWithTimestamp, ReseekToTargetTimestamp) {
     read_opts.timestamp = &ts;
     std::unique_ptr<Iterator> iter(db_->NewIterator(read_opts));
     iter->SeekToFirst();
-    CheckIterUserEntry(iter.get(), "foo", rs::db::dbformat::ValueType::kTypeValue, "value0", ts_str);
+    CheckIterUserEntry(iter.get(), "foo", rs::db::dbformat::ValueType::TypeValue, "value0", ts_str);
     ASSERT_EQ(
         1, options.statistics->getTickerCount(NUMBER_OF_RESEEKS_IN_ITERATION));
 
@@ -1310,7 +1310,7 @@ TEST_F(DBBasicTestWithTimestamp, ReseekToTargetTimestamp) {
     read_opts.timestamp = &ts;
     iter.reset(db_->NewIterator(read_opts));
     iter->SeekToLast();
-    CheckIterUserEntry(iter.get(), "foo", rs::db::dbformat::ValueType::kTypeValue,
+    CheckIterUserEntry(iter.get(), "foo", rs::db::dbformat::ValueType::TypeValue,
                        "value" + std::to_string(kNumKeys - 1), ts_str);
     ASSERT_EQ(
         2, options.statistics->getTickerCount(NUMBER_OF_RESEEKS_IN_ITERATION));
@@ -1356,7 +1356,7 @@ TEST_F(DBBasicTestWithTimestamp, ReseekToNextUserKey) {
     std::unique_ptr<Iterator> iter(db_->NewIterator(read_opts));
     iter->Seek("a");
     iter->Next();
-    CheckIterUserEntry(iter.get(), "b", rs::db::dbformat::ValueType::kTypeValue, "new_value", ts_str);
+    CheckIterUserEntry(iter.get(), "b", rs::db::dbformat::ValueType::TypeValue, "new_value", ts_str);
     ASSERT_EQ(
         1, options.statistics->getTickerCount(NUMBER_OF_RESEEKS_IN_ITERATION));
   }
@@ -1393,7 +1393,7 @@ TEST_F(DBBasicTestWithTimestamp, ReseekToUserKeyBeforeSavedKey) {
     std::unique_ptr<Iterator> iter(db_->NewIterator(read_opts));
     iter->SeekToLast();
     iter->Prev();
-    CheckIterUserEntry(iter.get(), "a", rs::db::dbformat::ValueType::kTypeValue, "value", ts_str);
+    CheckIterUserEntry(iter.get(), "a", rs::db::dbformat::ValueType::TypeValue, "value", ts_str);
     ASSERT_EQ(
         1, options.statistics->getTickerCount(NUMBER_OF_RESEEKS_IN_ITERATION));
   }
@@ -3034,14 +3034,14 @@ TEST_P(DBBasicTestWithTimestampPrefixSeek, IterateWithPrefix) {
 
       // Seek to kMaxKey
       iter->Seek(Key1(kMaxKey));
-      CheckIterUserEntry(iter.get(), Key1(kMaxKey), rs::db::dbformat::ValueType::kTypeValue,
+      CheckIterUserEntry(iter.get(), Key1(kMaxKey), rs::db::dbformat::ValueType::TypeValue,
                          "value" + std::to_string(i), write_ts_list[i]);
       iter->Next();
       ASSERT_FALSE(iter->Valid());
 
       // Seek to kMinKey
       iter->Seek(Key1(kMinKey));
-      CheckIterUserEntry(iter.get(), Key1(kMinKey), rs::db::dbformat::ValueType::kTypeValue,
+      CheckIterUserEntry(iter.get(), Key1(kMinKey), rs::db::dbformat::ValueType::TypeValue,
                          "value" + std::to_string(i), write_ts_list[i]);
       iter->Prev();
       ASSERT_FALSE(iter->Valid());
@@ -3077,7 +3077,7 @@ TEST_P(DBBasicTestWithTimestampPrefixSeek, IterateWithPrefix) {
               pe->Transform(saved_prev_key) != pe->Transform(start_key)) {
             break;
           }
-          CheckIterUserEntry(it.get(), Key1(expected_key), rs::db::dbformat::ValueType::kTypeValue,
+          CheckIterUserEntry(it.get(), Key1(expected_key), rs::db::dbformat::ValueType::TypeValue,
                              "value" + std::to_string(i), write_ts_list[i]);
           ++count;
           ++expected_key;
@@ -3095,7 +3095,7 @@ TEST_P(DBBasicTestWithTimestampPrefixSeek, IterateWithPrefix) {
               pe->Transform(it->key()) != pe->Transform(start_key)) {
             break;
           }
-          CheckIterUserEntry(it.get(), Key1(expected_key), rs::db::dbformat::ValueType::kTypeValue,
+          CheckIterUserEntry(it.get(), Key1(expected_key), rs::db::dbformat::ValueType::TypeValue,
                              "value" + std::to_string(i), write_ts_list[i]);
           ++count;
           --expected_key;

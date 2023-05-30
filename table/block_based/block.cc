@@ -430,12 +430,12 @@ bool DataBlockIter::SeekForGetImpl(const Slice& target) {
 
   // Here we are conservative and only support a limited set of cases
   rs::db::dbformat::ValueType value_type = ExtractValueType(raw_key_.GetInternalKey());
-  if (value_type != rs::db::dbformat::ValueType::kTypeValue &&
-      value_type != rs::db::dbformat::ValueType::kTypeDeletion &&
-      value_type != rs::db::dbformat::ValueType::kTypeMerge &&
-      value_type != rs::db::dbformat::ValueType::kTypeSingleDeletion &&
-      value_type != rs::db::dbformat::ValueType::kTypeBlobIndex &&
-      value_type != rs::db::dbformat::ValueType::kTypeWideColumnEntity) {
+  if (value_type != rs::db::dbformat::ValueType::TypeValue &&
+      value_type != rs::db::dbformat::ValueType::TypeDeletion &&
+      value_type != rs::db::dbformat::ValueType::TypeMerge &&
+      value_type != rs::db::dbformat::ValueType::TypeSingleDeletion &&
+      value_type != rs::db::dbformat::ValueType::TypeBlobIndex &&
+      value_type != rs::db::dbformat::ValueType::TypeWideColumnEntity) {
     SeekImpl(target);
   }
 
@@ -666,11 +666,11 @@ bool DataBlockIter::ParseNextDataKey(bool* is_shared) {
       SequenceNumber seqno;
       rs::db::dbformat::ValueType value_type;
       UnPackSequenceAndType(packed, &seqno, &value_type);
-      assert(value_type == rs::db::dbformat::ValueType::kTypeValue ||
-             value_type == rs::db::dbformat::ValueType::kTypeMerge ||
-             value_type == rs::db::dbformat::ValueType::kTypeDeletion ||
-             value_type == rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp ||
-             value_type == rs::db::dbformat::ValueType::kTypeRangeDeletion);
+      assert(value_type == rs::db::dbformat::ValueType::TypeValue ||
+             value_type == rs::db::dbformat::ValueType::TypeMerge ||
+             value_type == rs::db::dbformat::ValueType::TypeDeletion ||
+             value_type == rs::db::dbformat::ValueType::TypeDeletionWithTimestamp ||
+             value_type == rs::db::dbformat::ValueType::TypeRangeDeletion);
       assert(seqno == 0);
     }
 #endif  // NDEBUG
@@ -722,10 +722,10 @@ void IndexBlockIter::DecodeCurrentValue(bool is_shared) {
     assert(GetInternalKeySeqno(first_internal_key.GetInternalKey()) == 0);
 
     rs::db::dbformat::ValueType value_type = ExtractValueType(first_internal_key.GetKey());
-    assert(value_type == rs::db::dbformat::ValueType::kTypeValue ||
-           value_type == rs::db::dbformat::ValueType::kTypeMerge ||
-           value_type == rs::db::dbformat::ValueType::kTypeDeletion ||
-           value_type == rs::db::dbformat::ValueType::kTypeRangeDeletion);
+    assert(value_type == rs::db::dbformat::ValueType::TypeValue ||
+           value_type == rs::db::dbformat::ValueType::TypeMerge ||
+           value_type == rs::db::dbformat::ValueType::TypeDeletion ||
+           value_type == rs::db::dbformat::ValueType::TypeRangeDeletion);
 
     first_internal_key.UpdateInternalKey(global_seqno_state_->global_seqno,
                                          value_type);

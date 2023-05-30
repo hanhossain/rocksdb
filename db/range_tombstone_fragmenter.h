@@ -218,11 +218,11 @@ class FragmentedRangeTombstoneIterator : public InternalIterator {
   }
 
   ParsedInternalKey parsed_start_key() const {
-    return ParsedInternalKey(pos_->start_key, seq(), rs::db::dbformat::ValueType::kTypeRangeDeletion);
+    return ParsedInternalKey(pos_->start_key, seq(), rs::db::dbformat::ValueType::TypeRangeDeletion);
   }
   ParsedInternalKey parsed_end_key() const {
     return ParsedInternalKey(pos_->end_key, kMaxSequenceNumber,
-                             rs::db::dbformat::ValueType::kTypeRangeDeletion);
+                             rs::db::dbformat::ValueType::TypeRangeDeletion);
   }
 
   // Return the max sequence number of a range tombstone that covers
@@ -296,7 +296,7 @@ class FragmentedRangeTombstoneIterator : public InternalIterator {
   void MaybePinKey() const {
     if (pos_ != tombstones_->end() && seq_pos_ != tombstones_->seq_end() &&
         (pinned_pos_ != pos_ || pinned_seq_pos_ != seq_pos_)) {
-      current_start_key_.Set(pos_->start_key, *seq_pos_, rs::db::dbformat::ValueType::kTypeRangeDeletion);
+      current_start_key_.Set(pos_->start_key, *seq_pos_, rs::db::dbformat::ValueType::TypeRangeDeletion);
       pinned_pos_ = pos_;
       pinned_seq_pos_ = seq_pos_;
     }

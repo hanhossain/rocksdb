@@ -26,20 +26,20 @@ namespace {
 static std::string MakeKey(int i) {
   char buf[100];
   snprintf(buf, sizeof(buf), "k_%04d", i);
-  InternalKey key(std::string(buf), 0, rs::db::dbformat::ValueType::kTypeValue);
+  InternalKey key(std::string(buf), 0, rs::db::dbformat::ValueType::TypeValue);
   return key.Encode().ToString();
 }
 
 static std::string MakeKeyWithTimeStamp(int i, uint64_t ts) {
   char buf[100];
   snprintf(buf, sizeof(buf), "k_%04d", i);
-  return test::KeyStr(ts, std::string(buf), /*seq=*/0, rs::db::dbformat::ValueType::kTypeValue);
+  return test::KeyStr(ts, std::string(buf), /*seq=*/0, rs::db::dbformat::ValueType::TypeValue);
 }
 
 static std::string MakeValue(int i) {
   char buf[100];
   snprintf(buf, sizeof(buf), "v_%04d", i);
-  InternalKey key(std::string(buf), 0, rs::db::dbformat::ValueType::kTypeValue);
+  InternalKey key(std::string(buf), 0, rs::db::dbformat::ValueType::TypeValue);
   return key.Encode().ToString();
 }
 

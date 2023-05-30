@@ -170,7 +170,7 @@ class PartitionedFilterBlockTest
     // Querying added keys
     const bool no_io = true;
     for (auto key : keys) {
-      auto ikey = InternalKey(key, 0, rs::db::dbformat::ValueType::kTypeValue);
+      auto ikey = InternalKey(key, 0, rs::db::dbformat::ValueType::TypeValue);
       const Slice ikey_slice = Slice(*ikey.rep());
       ASSERT_TRUE(reader->KeyMayMatch(key, !no_io, &ikey_slice,
                                       /*get_context=*/nullptr,
@@ -179,7 +179,7 @@ class PartitionedFilterBlockTest
     }
     {
       // querying a key twice
-      auto ikey = InternalKey(keys[0], 0, rs::db::dbformat::ValueType::kTypeValue);
+      auto ikey = InternalKey(keys[0], 0, rs::db::dbformat::ValueType::TypeValue);
       const Slice ikey_slice = Slice(*ikey.rep());
       ASSERT_TRUE(reader->KeyMayMatch(keys[0], !no_io, &ikey_slice,
                                       /*get_context=*/nullptr,
@@ -188,7 +188,7 @@ class PartitionedFilterBlockTest
     }
     // querying missing keys
     for (auto key : missing_keys) {
-      auto ikey = InternalKey(key, 0, rs::db::dbformat::ValueType::kTypeValue);
+      auto ikey = InternalKey(key, 0, rs::db::dbformat::ValueType::TypeValue);
       const Slice ikey_slice = Slice(*ikey.rep());
       if (empty) {
         ASSERT_TRUE(reader->KeyMayMatch(key, !no_io, &ikey_slice,
@@ -268,7 +268,7 @@ class PartitionedFilterBlockTest
                  const std::string& user_key) {
     // Assuming a block is cut, add an entry to the index
     std::string key =
-        std::string(*InternalKey(user_key, 0, rs::db::dbformat::ValueType::kTypeValue).rep());
+        std::string(*InternalKey(user_key, 0, rs::db::dbformat::ValueType::TypeValue).rep());
     BlockHandle dont_care_block_handle(1, 1);
     builder->AddIndexEntry(&key, nullptr, dont_care_block_handle);
   }
@@ -277,9 +277,9 @@ class PartitionedFilterBlockTest
                  const std::string& next_user_key) {
     // Assuming a block is cut, add an entry to the index
     std::string key =
-        std::string(*InternalKey(user_key, 0, rs::db::dbformat::ValueType::kTypeValue).rep());
+        std::string(*InternalKey(user_key, 0, rs::db::dbformat::ValueType::TypeValue).rep());
     std::string next_key = std::string(
-        *InternalKey(next_user_key, 0, rs::db::dbformat::ValueType::kTypeValue).rep());
+        *InternalKey(next_user_key, 0, rs::db::dbformat::ValueType::TypeValue).rep());
     BlockHandle dont_care_block_handle(1, 1);
     Slice slice = Slice(next_key.data(), next_key.size());
     builder->AddIndexEntry(&key, &slice, dont_care_block_handle);
@@ -347,7 +347,7 @@ TEST_P(PartitionedFilterBlockTest, SamePrefixInMultipleBlocks) {
   std::unique_ptr<PartitionedFilterBlockReader> reader(
       NewReader(builder.get(), pib.get()));
   for (auto key : pkeys) {
-    auto ikey = InternalKey(key, 0, rs::db::dbformat::ValueType::kTypeValue);
+    auto ikey = InternalKey(key, 0, rs::db::dbformat::ValueType::TypeValue);
     const Slice ikey_slice = Slice(*ikey.rep());
     ASSERT_TRUE(reader->PrefixMayMatch(prefix_extractor->Transform(key),
                                        /*no_io=*/false, &ikey_slice,
@@ -358,7 +358,7 @@ TEST_P(PartitionedFilterBlockTest, SamePrefixInMultipleBlocks) {
   // Non-existent keys but with the same prefix
   const std::string pnonkeys[4] = {"p-key9", "p-key11", "p-key21", "p-key31"};
   for (auto key : pnonkeys) {
-    auto ikey = InternalKey(key, 0, rs::db::dbformat::ValueType::kTypeValue);
+    auto ikey = InternalKey(key, 0, rs::db::dbformat::ValueType::TypeValue);
     const Slice ikey_slice = Slice(*ikey.rep());
     ASSERT_TRUE(reader->PrefixMayMatch(prefix_extractor->Transform(key),
                                        /*no_io=*/false, &ikey_slice,
@@ -397,7 +397,7 @@ TEST_P(PartitionedFilterBlockTest, PrefixInWrongPartitionBug) {
       NewReader(builder.get(), pib.get()));
   for (auto key : pkeys) {
     auto prefix = prefix_extractor->Transform(key);
-    auto ikey = InternalKey(prefix, 0, rs::db::dbformat::ValueType::kTypeValue);
+    auto ikey = InternalKey(prefix, 0, rs::db::dbformat::ValueType::TypeValue);
     const Slice ikey_slice = Slice(*ikey.rep());
     ASSERT_TRUE(reader->PrefixMayMatch(prefix,
                                        /*no_io=*/false, &ikey_slice,

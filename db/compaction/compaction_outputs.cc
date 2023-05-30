@@ -434,14 +434,14 @@ void SetMaxSeqAndTs(InternalKey& internal_key, const Slice& user_key,
     static constexpr char kTsMax[] = "\xff\xff\xff\xff\xff\xff\xff\xff\xff";
     if (ts_sz <= strlen(kTsMax)) {
       internal_key = InternalKey(user_key, kMaxSequenceNumber,
-                                 rs::db::dbformat::ValueType::kTypeRangeDeletion, Slice(kTsMax, ts_sz));
+                                 rs::db::dbformat::ValueType::TypeRangeDeletion, Slice(kTsMax, ts_sz));
     } else {
       internal_key =
-          InternalKey(user_key, kMaxSequenceNumber, rs::db::dbformat::ValueType::kTypeRangeDeletion,
+          InternalKey(user_key, kMaxSequenceNumber, rs::db::dbformat::ValueType::TypeRangeDeletion,
                       std::string(ts_sz, '\xff'));
     }
   } else {
-    internal_key.Set(user_key, kMaxSequenceNumber, rs::db::dbformat::ValueType::kTypeRangeDeletion);
+    internal_key.Set(user_key, kMaxSequenceNumber, rs::db::dbformat::ValueType::TypeRangeDeletion);
   }
 }
 }  // namespace
@@ -494,7 +494,7 @@ Status CompactionOutputs::AddRangeDels(
     // `kMaxTs` here, which similarly permits any timestamp.
     if (comp_start_user_key) {
       lower_bound_buf.Set(*comp_start_user_key, kMaxSequenceNumber,
-                          rs::db::dbformat::ValueType::kTypeRangeDeletion);
+                          rs::db::dbformat::ValueType::TypeRangeDeletion);
       lower_bound_guard = lower_bound_buf.Encode();
       lower_bound = &lower_bound_guard;
     } else {
@@ -520,7 +520,7 @@ Status CompactionOutputs::AddRangeDels(
     // Last file of the subcompaction.
     if (comp_end_user_key) {
       upper_bound_buf.Set(*comp_end_user_key, kMaxSequenceNumber,
-                          rs::db::dbformat::ValueType::kTypeRangeDeletion);
+                          rs::db::dbformat::ValueType::TypeRangeDeletion);
       upper_bound_guard = upper_bound_buf.Encode();
       upper_bound = &upper_bound_guard;
     } else {

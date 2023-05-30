@@ -53,7 +53,7 @@ class CuckooBuilderTest : public testing::Test {
       ParsedInternalKey parsed;
       Status pik_status =
           ParseInternalKey(key, &parsed, true /* log_err_key */);
-      if (pik_status.ok() && parsed.type == rs::db::dbformat::ValueType::kTypeDeletion) {
+      if (pik_status.ok() && parsed.type == rs::db::dbformat::ValueType::TypeDeletion) {
         num_deletions++;
       }
     }
@@ -146,7 +146,7 @@ class CuckooBuilderTest : public testing::Test {
   }
 
   std::string GetInternalKey(Slice user_key, bool zero_seqno,
-                             rs::db::dbformat::ValueType type = rs::db::dbformat::ValueType::kTypeValue) {
+                             rs::db::dbformat::ValueType type = rs::db::dbformat::ValueType::TypeValue) {
     IterKey ikey;
     ikey.SetInternalKey(user_key, zero_seqno ? 0 : 1000, type);
     return ikey.GetInternalKey().ToString();
@@ -188,11 +188,11 @@ TEST_F(CuckooBuilderTest, SuccessWithEmptyFile) {
 }
 
 TEST_F(CuckooBuilderTest, WriteSuccessNoCollisionFullKey) {
-  for (auto type : {rs::db::dbformat::ValueType::kTypeValue, rs::db::dbformat::ValueType::kTypeDeletion}) {
+  for (auto type : {rs::db::dbformat::ValueType::TypeValue, rs::db::dbformat::ValueType::TypeDeletion}) {
     uint32_t num_hash_fun = 4;
     std::vector<std::string> user_keys = {"key01", "key02", "key03", "key04"};
     std::vector<std::string> values;
-    if (type == rs::db::dbformat::ValueType::kTypeValue) {
+    if (type == rs::db::dbformat::ValueType::TypeValue) {
       values = {"v01", "v02", "v03", "v04"};
     } else {
       values = {"", "", "", ""};

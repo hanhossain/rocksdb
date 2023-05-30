@@ -222,7 +222,7 @@ Status MergeHelper::MergeUntil(InternalIterator* iter,
   assert(s.ok());
   if (!s.ok()) return s;
 
-  assert(rs::db::dbformat::ValueType::kTypeMerge == orig_ikey.type);
+  assert(rs::db::dbformat::ValueType::TypeMerge == orig_ikey.type);
 
   bool hit_the_next_user_key = false;
   int cmp_with_full_history_ts_low = 0;
@@ -283,7 +283,7 @@ Status MergeHelper::MergeUntil(InternalIterator* iter,
     // At this point we are guaranteed that we need to process this key.
 
     assert(IsValueType(ikey.type));
-    if (ikey.type != rs::db::dbformat::ValueType::kTypeMerge) {
+    if (ikey.type != rs::db::dbformat::ValueType::TypeMerge) {
       // hit a put/delete/single delete
       //   => merge the put value or a nullptr with operands_
       //   => store result in operands_.back() (and update keys_.back())
@@ -310,7 +310,7 @@ Status MergeHelper::MergeUntil(InternalIterator* iter,
                            stats_, clock_,
                            /* result_operand */ nullptr,
                            /* update_num_ops_stats */ false, &op_failure_scope);
-      } else if (ikey.type == rs::db::dbformat::ValueType::kTypeValue) {
+      } else if (ikey.type == rs::db::dbformat::ValueType::TypeValue) {
         const Slice val = iter->value();
 
         s = TimedFullMerge(user_merge_operator_, ikey.user_key, &val,
@@ -318,7 +318,7 @@ Status MergeHelper::MergeUntil(InternalIterator* iter,
                            stats_, clock_,
                            /* result_operand */ nullptr,
                            /* update_num_ops_stats */ false, &op_failure_scope);
-      } else if (ikey.type == rs::db::dbformat::ValueType::kTypeBlobIndex) {
+      } else if (ikey.type == rs::db::dbformat::ValueType::TypeBlobIndex) {
         BlobIndex blob_index;
 
         s = blob_index.DecodeFrom(iter->value());
@@ -352,7 +352,7 @@ Status MergeHelper::MergeUntil(InternalIterator* iter,
                            stats_, clock_,
                            /* result_operand */ nullptr,
                            /* update_num_ops_stats */ false, &op_failure_scope);
-      } else if (ikey.type == rs::db::dbformat::ValueType::kTypeWideColumnEntity) {
+      } else if (ikey.type == rs::db::dbformat::ValueType::TypeWideColumnEntity) {
         s = TimedFullMergeWithEntity(
             user_merge_operator_, ikey.user_key, iter->value(),
             merge_context_.GetOperands(), &merge_result, logger_, stats_,
@@ -370,9 +370,9 @@ Status MergeHelper::MergeUntil(InternalIterator* iter,
       if (s.ok()) {
         // The original key encountered
         original_key = std::move(keys_.back());
-        orig_ikey.type = ikey.type == rs::db::dbformat::ValueType::kTypeWideColumnEntity
-                             ? rs::db::dbformat::ValueType::kTypeWideColumnEntity
-                             : rs::db::dbformat::ValueType::kTypeValue;
+        orig_ikey.type = ikey.type == rs::db::dbformat::ValueType::TypeWideColumnEntity
+                             ? rs::db::dbformat::ValueType::TypeWideColumnEntity
+                             : rs::db::dbformat::ValueType::TypeValue;
         UpdateInternalKey(&original_key, orig_ikey.sequence, orig_ikey.type);
         keys_.clear();
         merge_context_.Clear();
@@ -494,7 +494,7 @@ Status MergeHelper::MergeUntil(InternalIterator* iter,
   if (surely_seen_the_beginning) {
     // do a final merge with nullptr as the existing value and say
     // bye to the merge type (it's now converted to a Put)
-    assert(rs::db::dbformat::ValueType::kTypeMerge == orig_ikey.type);
+    assert(rs::db::dbformat::ValueType::TypeMerge == orig_ikey.type);
     assert(merge_context_.GetNumOperands() >= 1);
     assert(merge_context_.GetNumOperands() == keys_.size());
     std::string merge_result;
@@ -509,7 +509,7 @@ Status MergeHelper::MergeUntil(InternalIterator* iter,
       // We are certain that keys_ is not empty here (see assertions couple of
       // lines before).
       original_key = std::move(keys_.back());
-      orig_ikey.type = rs::db::dbformat::ValueType::kTypeValue;
+      orig_ikey.type = rs::db::dbformat::ValueType::TypeValue;
       UpdateInternalKey(&original_key, orig_ikey.sequence, orig_ikey.type);
       keys_.clear();
       merge_context_.Clear();

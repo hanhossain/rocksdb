@@ -235,7 +235,7 @@ TEST_F(DBReadOnlyTestWithTimestamp, IteratorAndGet) {
     // Forward iterate.
     for (it->Seek(Key1(0)), key = start_keys[i]; it->Valid();
          it->Next(), ++count, ++key) {
-      CheckIterUserEntry(it.get(), Key1(key), rs::db::dbformat::ValueType::kTypeValue,
+      CheckIterUserEntry(it.get(), Key1(key), rs::db::dbformat::ValueType::TypeValue,
                          "value" + std::to_string(i), write_timestamps[i]);
       get_value_and_check(db_, read_opts, it->key(), it->value(),
                           write_timestamps[i]);
@@ -247,7 +247,7 @@ TEST_F(DBReadOnlyTestWithTimestamp, IteratorAndGet) {
     count = 0;
     for (it->SeekForPrev(Key1(kMaxKey)), key = kMaxKey; it->Valid();
          it->Prev(), ++count, --key) {
-      CheckIterUserEntry(it.get(), Key1(key), rs::db::dbformat::ValueType::kTypeValue,
+      CheckIterUserEntry(it.get(), Key1(key), rs::db::dbformat::ValueType::TypeValue,
                          "value" + std::to_string(i), write_timestamps[i]);
       get_value_and_check(db_, read_opts, it->key(), it->value(),
                           write_timestamps[i]);
@@ -268,7 +268,7 @@ TEST_F(DBReadOnlyTestWithTimestamp, IteratorAndGet) {
       it.reset(db_->NewIterator(read_opts));
       for (it->SeekToFirst(), key = std::max(l, start_keys[i]), count = 0;
            it->Valid(); it->Next(), ++key, ++count) {
-        CheckIterUserEntry(it.get(), Key1(key), rs::db::dbformat::ValueType::kTypeValue,
+        CheckIterUserEntry(it.get(), Key1(key), rs::db::dbformat::ValueType::TypeValue,
                            "value" + std::to_string(i), write_timestamps[i]);
         get_value_and_check(db_, read_opts, it->key(), it->value(),
                             write_timestamps[i]);
@@ -277,7 +277,7 @@ TEST_F(DBReadOnlyTestWithTimestamp, IteratorAndGet) {
 
       for (it->SeekToLast(), key = std::min(r, kMaxKey + 1), count = 0;
            it->Valid(); it->Prev(), --key, ++count) {
-        CheckIterUserEntry(it.get(), Key1(key - 1), rs::db::dbformat::ValueType::kTypeValue,
+        CheckIterUserEntry(it.get(), Key1(key - 1), rs::db::dbformat::ValueType::TypeValue,
                            "value" + std::to_string(i), write_timestamps[i]);
         get_value_and_check(db_, read_opts, it->key(), it->value(),
                             write_timestamps[i]);
@@ -325,7 +325,7 @@ TEST_F(DBReadOnlyTestWithTimestamp, Iterators) {
   // Forward iterate.
   for (iters[0]->Seek(Key1(0)), key = 0; iters[0]->Valid();
        iters[0]->Next(), ++count, ++key) {
-    CheckIterUserEntry(iters[0], Key1(key), rs::db::dbformat::ValueType::kTypeValue,
+    CheckIterUserEntry(iters[0], Key1(key), rs::db::dbformat::ValueType::TypeValue,
                        "value" + std::to_string(key), write_timestamp);
   }
 

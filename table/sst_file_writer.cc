@@ -79,9 +79,9 @@ struct SstFileWriter::Rep {
       }
     }
 
-    assert(value_type == rs::db::dbformat::ValueType::kTypeValue || value_type == rs::db::dbformat::ValueType::kTypeMerge ||
-           value_type == rs::db::dbformat::ValueType::kTypeDeletion ||
-           value_type == rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp);
+    assert(value_type == rs::db::dbformat::ValueType::TypeValue || value_type == rs::db::dbformat::ValueType::TypeMerge ||
+           value_type == rs::db::dbformat::ValueType::TypeDeletion ||
+           value_type == rs::db::dbformat::ValueType::TypeDeletionWithTimestamp);
 
     constexpr SequenceNumber sequence_number = 0;
 
@@ -359,29 +359,29 @@ Status SstFileWriter::Open(const std::string& file_path) {
 }
 
 Status SstFileWriter::Add(const Slice& user_key, const Slice& value) {
-  return rep_->Add(user_key, value, rs::db::dbformat::ValueType::kTypeValue);
+  return rep_->Add(user_key, value, rs::db::dbformat::ValueType::TypeValue);
 }
 
 Status SstFileWriter::Put(const Slice& user_key, const Slice& value) {
-  return rep_->Add(user_key, value, rs::db::dbformat::ValueType::kTypeValue);
+  return rep_->Add(user_key, value, rs::db::dbformat::ValueType::TypeValue);
 }
 
 Status SstFileWriter::Put(const Slice& user_key, const Slice& timestamp,
                           const Slice& value) {
-  return rep_->Add(user_key, timestamp, value, rs::db::dbformat::ValueType::kTypeValue);
+  return rep_->Add(user_key, timestamp, value, rs::db::dbformat::ValueType::TypeValue);
 }
 
 Status SstFileWriter::Merge(const Slice& user_key, const Slice& value) {
-  return rep_->Add(user_key, value, rs::db::dbformat::ValueType::kTypeMerge);
+  return rep_->Add(user_key, value, rs::db::dbformat::ValueType::TypeMerge);
 }
 
 Status SstFileWriter::Delete(const Slice& user_key) {
-  return rep_->Add(user_key, Slice(), rs::db::dbformat::ValueType::kTypeDeletion);
+  return rep_->Add(user_key, Slice(), rs::db::dbformat::ValueType::TypeDeletion);
 }
 
 Status SstFileWriter::Delete(const Slice& user_key, const Slice& timestamp) {
   return rep_->Add(user_key, timestamp, Slice(),
-                   rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp);
+                   rs::db::dbformat::ValueType::TypeDeletionWithTimestamp);
 }
 
 Status SstFileWriter::DeleteRange(const Slice& begin_key,

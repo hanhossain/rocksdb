@@ -346,7 +346,7 @@ class CompactionJobTestBase : public testing::Test {
 
       first_key = false;
 
-      if (pik_status.ok() && key.type == rs::db::dbformat::ValueType::kTypeBlobIndex) {
+      if (pik_status.ok() && key.type == rs::db::dbformat::ValueType::TypeBlobIndex) {
         BlobIndex blob_index;
         const Status s = blob_index.DecodeFrom(value);
         if (!s.ok()) {
@@ -498,11 +498,11 @@ class CompactionJobTestBase : public testing::Test {
       for (int k = 0; k < kKeysPerFile; ++k) {
         auto key = std::to_string(i * kMatchingKeys + k);
         auto value = std::to_string(i * kKeysPerFile + k);
-        InternalKey internal_key(key, ++sequence_number, rs::db::dbformat::ValueType::kTypeValue);
+        InternalKey internal_key(key, ++sequence_number, rs::db::dbformat::ValueType::TypeValue);
 
         // This is how the key will look like once it's written in bottommost
         // file
-        InternalKey bottommost_internal_key(key, 0, rs::db::dbformat::ValueType::kTypeValue);
+        InternalKey bottommost_internal_key(key, 0, rs::db::dbformat::ValueType::TypeValue);
 
         if (corrupt_id(k)) {
           test::CorruptKeyType(&internal_key);
@@ -783,16 +783,16 @@ TEST_F(CompactionJobTest, DISABLED_SimpleCorrupted) {
 TEST_F(CompactionJobTest, SimpleDeletion) {
   NewDB();
 
-  auto file1 = mock::MakeMockFile({{KeyStr("c", 4U, rs::db::dbformat::ValueType::kTypeDeletion), ""},
-                                   {KeyStr("c", 3U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file1 = mock::MakeMockFile({{KeyStr("c", 4U, rs::db::dbformat::ValueType::TypeDeletion), ""},
+                                   {KeyStr("c", 3U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file1);
 
-  auto file2 = mock::MakeMockFile({{KeyStr("b", 2U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("b", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file2 = mock::MakeMockFile({{KeyStr("b", 2U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("b", 1U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file2);
 
   auto expected_results =
-      mock::MakeMockFile({{KeyStr("b", 0U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+      mock::MakeMockFile({{KeyStr("b", 0U, rs::db::dbformat::ValueType::TypeValue), "val"}});
 
   SetLastSequence(4U);
   constexpr int input_level = 0;
@@ -803,11 +803,11 @@ TEST_F(CompactionJobTest, SimpleDeletion) {
 TEST_F(CompactionJobTest, OutputNothing) {
   NewDB();
 
-  auto file1 = mock::MakeMockFile({{KeyStr("a", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file1 = mock::MakeMockFile({{KeyStr("a", 1U, rs::db::dbformat::ValueType::TypeValue), "val"}});
 
   AddMockFile(file1);
 
-  auto file2 = mock::MakeMockFile({{KeyStr("a", 2U, rs::db::dbformat::ValueType::kTypeDeletion), ""}});
+  auto file2 = mock::MakeMockFile({{KeyStr("a", 2U, rs::db::dbformat::ValueType::TypeDeletion), ""}});
 
   AddMockFile(file2);
 
@@ -824,18 +824,18 @@ TEST_F(CompactionJobTest, SimpleOverwrite) {
   NewDB();
 
   auto file1 = mock::MakeMockFile({
-      {KeyStr("a", 3U, rs::db::dbformat::ValueType::kTypeValue), "val2"},
-      {KeyStr("b", 4U, rs::db::dbformat::ValueType::kTypeValue), "val3"},
+      {KeyStr("a", 3U, rs::db::dbformat::ValueType::TypeValue), "val2"},
+      {KeyStr("b", 4U, rs::db::dbformat::ValueType::TypeValue), "val3"},
   });
   AddMockFile(file1);
 
-  auto file2 = mock::MakeMockFile({{KeyStr("a", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("b", 2U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file2 = mock::MakeMockFile({{KeyStr("a", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("b", 2U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file2);
 
   auto expected_results =
-      mock::MakeMockFile({{KeyStr("a", 0U, rs::db::dbformat::ValueType::kTypeValue), "val2"},
-                          {KeyStr("b", 0U, rs::db::dbformat::ValueType::kTypeValue), "val3"}});
+      mock::MakeMockFile({{KeyStr("a", 0U, rs::db::dbformat::ValueType::TypeValue), "val2"},
+                          {KeyStr("b", 0U, rs::db::dbformat::ValueType::TypeValue), "val3"}});
 
   SetLastSequence(4U);
   constexpr int input_level = 0;
@@ -847,24 +847,24 @@ TEST_F(CompactionJobTest, SimpleNonLastLevel) {
   NewDB();
 
   auto file1 = mock::MakeMockFile({
-      {KeyStr("a", 5U, rs::db::dbformat::ValueType::kTypeValue), "val2"},
-      {KeyStr("b", 6U, rs::db::dbformat::ValueType::kTypeValue), "val3"},
+      {KeyStr("a", 5U, rs::db::dbformat::ValueType::TypeValue), "val2"},
+      {KeyStr("b", 6U, rs::db::dbformat::ValueType::TypeValue), "val3"},
   });
   AddMockFile(file1);
 
-  auto file2 = mock::MakeMockFile({{KeyStr("a", 3U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("b", 4U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file2 = mock::MakeMockFile({{KeyStr("a", 3U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("b", 4U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file2, 1);
 
-  auto file3 = mock::MakeMockFile({{KeyStr("a", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("b", 2U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file3 = mock::MakeMockFile({{KeyStr("a", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("b", 2U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file3, 2);
 
   // Because level 1 is not the last level, the sequence numbers of a and b
   // cannot be set to 0
   auto expected_results =
-      mock::MakeMockFile({{KeyStr("a", 5U, rs::db::dbformat::ValueType::kTypeValue), "val2"},
-                          {KeyStr("b", 6U, rs::db::dbformat::ValueType::kTypeValue), "val3"}});
+      mock::MakeMockFile({{KeyStr("a", 5U, rs::db::dbformat::ValueType::TypeValue), "val2"},
+                          {KeyStr("b", 6U, rs::db::dbformat::ValueType::TypeValue), "val3"}});
 
   SetLastSequence(6U);
   const std::vector<int> input_levels = {0, 1};
@@ -880,19 +880,19 @@ TEST_F(CompactionJobTest, SimpleMerge) {
   NewDB();
 
   auto file1 = mock::MakeMockFile({
-      {KeyStr("a", 5U, rs::db::dbformat::ValueType::kTypeMerge), "5"},
-      {KeyStr("a", 4U, rs::db::dbformat::ValueType::kTypeMerge), "4"},
-      {KeyStr("a", 3U, rs::db::dbformat::ValueType::kTypeValue), "3"},
+      {KeyStr("a", 5U, rs::db::dbformat::ValueType::TypeMerge), "5"},
+      {KeyStr("a", 4U, rs::db::dbformat::ValueType::TypeMerge), "4"},
+      {KeyStr("a", 3U, rs::db::dbformat::ValueType::TypeValue), "3"},
   });
   AddMockFile(file1);
 
   auto file2 = mock::MakeMockFile(
-      {{KeyStr("b", 2U, rs::db::dbformat::ValueType::kTypeMerge), "2"}, {KeyStr("b", 1U, rs::db::dbformat::ValueType::kTypeValue), "1"}});
+      {{KeyStr("b", 2U, rs::db::dbformat::ValueType::TypeMerge), "2"}, {KeyStr("b", 1U, rs::db::dbformat::ValueType::TypeValue), "1"}});
   AddMockFile(file2);
 
   auto expected_results =
-      mock::MakeMockFile({{KeyStr("a", 0U, rs::db::dbformat::ValueType::kTypeValue), "3,4,5"},
-                          {KeyStr("b", 0U, rs::db::dbformat::ValueType::kTypeValue), "1,2"}});
+      mock::MakeMockFile({{KeyStr("a", 0U, rs::db::dbformat::ValueType::TypeValue), "3,4,5"},
+                          {KeyStr("b", 0U, rs::db::dbformat::ValueType::TypeValue), "1,2"}});
 
   SetLastSequence(5U);
   constexpr int input_level = 0;
@@ -905,19 +905,19 @@ TEST_F(CompactionJobTest, NonAssocMerge) {
   NewDB();
 
   auto file1 = mock::MakeMockFile({
-      {KeyStr("a", 5U, rs::db::dbformat::ValueType::kTypeMerge), "5"},
-      {KeyStr("a", 4U, rs::db::dbformat::ValueType::kTypeMerge), "4"},
-      {KeyStr("a", 3U, rs::db::dbformat::ValueType::kTypeMerge), "3"},
+      {KeyStr("a", 5U, rs::db::dbformat::ValueType::TypeMerge), "5"},
+      {KeyStr("a", 4U, rs::db::dbformat::ValueType::TypeMerge), "4"},
+      {KeyStr("a", 3U, rs::db::dbformat::ValueType::TypeMerge), "3"},
   });
   AddMockFile(file1);
 
   auto file2 = mock::MakeMockFile(
-      {{KeyStr("b", 2U, rs::db::dbformat::ValueType::kTypeMerge), "2"}, {KeyStr("b", 1U, rs::db::dbformat::ValueType::kTypeMerge), "1"}});
+      {{KeyStr("b", 2U, rs::db::dbformat::ValueType::TypeMerge), "2"}, {KeyStr("b", 1U, rs::db::dbformat::ValueType::TypeMerge), "1"}});
   AddMockFile(file2);
 
   auto expected_results =
-      mock::MakeMockFile({{KeyStr("a", 0U, rs::db::dbformat::ValueType::kTypeValue), "3,4,5"},
-                          {KeyStr("b", 0U, rs::db::dbformat::ValueType::kTypeValue), "1,2"}});
+      mock::MakeMockFile({{KeyStr("a", 0U, rs::db::dbformat::ValueType::TypeValue), "3,4,5"},
+                          {KeyStr("b", 0U, rs::db::dbformat::ValueType::TypeValue), "1,2"}});
 
   SetLastSequence(5U);
   constexpr int input_level = 0;
@@ -932,20 +932,20 @@ TEST_F(CompactionJobTest, MergeOperandFilter) {
   NewDB();
 
   auto file1 = mock::MakeMockFile(
-      {{KeyStr("a", 5U, rs::db::dbformat::ValueType::kTypeMerge), test::EncodeInt(5U)},
-       {KeyStr("a", 4U, rs::db::dbformat::ValueType::kTypeMerge), test::EncodeInt(10U)},  // Filtered
-       {KeyStr("a", 3U, rs::db::dbformat::ValueType::kTypeMerge), test::EncodeInt(3U)}});
+      {{KeyStr("a", 5U, rs::db::dbformat::ValueType::TypeMerge), test::EncodeInt(5U)},
+       {KeyStr("a", 4U, rs::db::dbformat::ValueType::TypeMerge), test::EncodeInt(10U)},  // Filtered
+       {KeyStr("a", 3U, rs::db::dbformat::ValueType::TypeMerge), test::EncodeInt(3U)}});
   AddMockFile(file1);
 
   auto file2 = mock::MakeMockFile({
-      {KeyStr("b", 2U, rs::db::dbformat::ValueType::kTypeMerge), test::EncodeInt(2U)},
-      {KeyStr("b", 1U, rs::db::dbformat::ValueType::kTypeMerge), test::EncodeInt(10U)}  // Filtered
+      {KeyStr("b", 2U, rs::db::dbformat::ValueType::TypeMerge), test::EncodeInt(2U)},
+      {KeyStr("b", 1U, rs::db::dbformat::ValueType::TypeMerge), test::EncodeInt(10U)}  // Filtered
   });
   AddMockFile(file2);
 
   auto expected_results =
-      mock::MakeMockFile({{KeyStr("a", 0U, rs::db::dbformat::ValueType::kTypeValue), test::EncodeInt(8U)},
-                          {KeyStr("b", 0U, rs::db::dbformat::ValueType::kTypeValue), test::EncodeInt(2U)}});
+      mock::MakeMockFile({{KeyStr("a", 0U, rs::db::dbformat::ValueType::TypeValue), test::EncodeInt(8U)},
+                          {KeyStr("b", 0U, rs::db::dbformat::ValueType::TypeValue), test::EncodeInt(2U)}});
 
   SetLastSequence(5U);
   constexpr int input_level = 0;
@@ -959,28 +959,28 @@ TEST_F(CompactionJobTest, FilterSomeMergeOperands) {
   NewDB();
 
   auto file1 = mock::MakeMockFile(
-      {{KeyStr("a", 5U, rs::db::dbformat::ValueType::kTypeMerge), test::EncodeInt(5U)},
-       {KeyStr("a", 4U, rs::db::dbformat::ValueType::kTypeMerge), test::EncodeInt(10U)},  // Filtered
-       {KeyStr("a", 3U, rs::db::dbformat::ValueType::kTypeValue), test::EncodeInt(5U)},
-       {KeyStr("d", 8U, rs::db::dbformat::ValueType::kTypeMerge), test::EncodeInt(10U)}});
+      {{KeyStr("a", 5U, rs::db::dbformat::ValueType::TypeMerge), test::EncodeInt(5U)},
+       {KeyStr("a", 4U, rs::db::dbformat::ValueType::TypeMerge), test::EncodeInt(10U)},  // Filtered
+       {KeyStr("a", 3U, rs::db::dbformat::ValueType::TypeValue), test::EncodeInt(5U)},
+       {KeyStr("d", 8U, rs::db::dbformat::ValueType::TypeMerge), test::EncodeInt(10U)}});
   AddMockFile(file1);
 
   auto file2 =
-      mock::MakeMockFile({{KeyStr("b", 2U, rs::db::dbformat::ValueType::kTypeMerge), test::EncodeInt(10U)},
-                          {KeyStr("b", 1U, rs::db::dbformat::ValueType::kTypeMerge), test::EncodeInt(10U)},
-                          {KeyStr("c", 2U, rs::db::dbformat::ValueType::kTypeMerge), test::EncodeInt(3U)},
-                          {KeyStr("c", 1U, rs::db::dbformat::ValueType::kTypeValue), test::EncodeInt(7U)},
-                          {KeyStr("d", 1U, rs::db::dbformat::ValueType::kTypeValue), test::EncodeInt(6U)}});
+      mock::MakeMockFile({{KeyStr("b", 2U, rs::db::dbformat::ValueType::TypeMerge), test::EncodeInt(10U)},
+                          {KeyStr("b", 1U, rs::db::dbformat::ValueType::TypeMerge), test::EncodeInt(10U)},
+                          {KeyStr("c", 2U, rs::db::dbformat::ValueType::TypeMerge), test::EncodeInt(3U)},
+                          {KeyStr("c", 1U, rs::db::dbformat::ValueType::TypeValue), test::EncodeInt(7U)},
+                          {KeyStr("d", 1U, rs::db::dbformat::ValueType::TypeValue), test::EncodeInt(6U)}});
   AddMockFile(file2);
 
   auto file3 =
-      mock::MakeMockFile({{KeyStr("a", 1U, rs::db::dbformat::ValueType::kTypeMerge), test::EncodeInt(3U)}});
+      mock::MakeMockFile({{KeyStr("a", 1U, rs::db::dbformat::ValueType::TypeMerge), test::EncodeInt(3U)}});
   AddMockFile(file3, 2);
 
   auto expected_results = mock::MakeMockFile({
-      {KeyStr("a", 5U, rs::db::dbformat::ValueType::kTypeValue), test::EncodeInt(10U)},
-      {KeyStr("c", 2U, rs::db::dbformat::ValueType::kTypeValue), test::EncodeInt(10U)},
-      {KeyStr("d", 1U, rs::db::dbformat::ValueType::kTypeValue), test::EncodeInt(6U)}
+      {KeyStr("a", 5U, rs::db::dbformat::ValueType::TypeValue), test::EncodeInt(10U)},
+      {KeyStr("c", 2U, rs::db::dbformat::ValueType::TypeValue), test::EncodeInt(10U)},
+      {KeyStr("d", 1U, rs::db::dbformat::ValueType::TypeValue), test::EncodeInt(6U)}
       // b does not appear because the operands are filtered
   });
 
@@ -997,26 +997,26 @@ TEST_F(CompactionJobTest, FilterAllMergeOperands) {
   NewDB();
 
   auto file1 =
-      mock::MakeMockFile({{KeyStr("a", 11U, rs::db::dbformat::ValueType::kTypeMerge), test::EncodeInt(10U)},
-                          {KeyStr("a", 10U, rs::db::dbformat::ValueType::kTypeMerge), test::EncodeInt(10U)},
-                          {KeyStr("a", 9U, rs::db::dbformat::ValueType::kTypeMerge), test::EncodeInt(10U)}});
+      mock::MakeMockFile({{KeyStr("a", 11U, rs::db::dbformat::ValueType::TypeMerge), test::EncodeInt(10U)},
+                          {KeyStr("a", 10U, rs::db::dbformat::ValueType::TypeMerge), test::EncodeInt(10U)},
+                          {KeyStr("a", 9U, rs::db::dbformat::ValueType::TypeMerge), test::EncodeInt(10U)}});
   AddMockFile(file1);
 
   auto file2 =
-      mock::MakeMockFile({{KeyStr("b", 8U, rs::db::dbformat::ValueType::kTypeMerge), test::EncodeInt(10U)},
-                          {KeyStr("b", 7U, rs::db::dbformat::ValueType::kTypeMerge), test::EncodeInt(10U)},
-                          {KeyStr("b", 6U, rs::db::dbformat::ValueType::kTypeMerge), test::EncodeInt(10U)},
-                          {KeyStr("b", 5U, rs::db::dbformat::ValueType::kTypeMerge), test::EncodeInt(10U)},
-                          {KeyStr("b", 4U, rs::db::dbformat::ValueType::kTypeMerge), test::EncodeInt(10U)},
-                          {KeyStr("b", 3U, rs::db::dbformat::ValueType::kTypeMerge), test::EncodeInt(10U)},
-                          {KeyStr("b", 2U, rs::db::dbformat::ValueType::kTypeMerge), test::EncodeInt(10U)},
-                          {KeyStr("c", 2U, rs::db::dbformat::ValueType::kTypeMerge), test::EncodeInt(10U)},
-                          {KeyStr("c", 1U, rs::db::dbformat::ValueType::kTypeMerge), test::EncodeInt(10U)}});
+      mock::MakeMockFile({{KeyStr("b", 8U, rs::db::dbformat::ValueType::TypeMerge), test::EncodeInt(10U)},
+                          {KeyStr("b", 7U, rs::db::dbformat::ValueType::TypeMerge), test::EncodeInt(10U)},
+                          {KeyStr("b", 6U, rs::db::dbformat::ValueType::TypeMerge), test::EncodeInt(10U)},
+                          {KeyStr("b", 5U, rs::db::dbformat::ValueType::TypeMerge), test::EncodeInt(10U)},
+                          {KeyStr("b", 4U, rs::db::dbformat::ValueType::TypeMerge), test::EncodeInt(10U)},
+                          {KeyStr("b", 3U, rs::db::dbformat::ValueType::TypeMerge), test::EncodeInt(10U)},
+                          {KeyStr("b", 2U, rs::db::dbformat::ValueType::TypeMerge), test::EncodeInt(10U)},
+                          {KeyStr("c", 2U, rs::db::dbformat::ValueType::TypeMerge), test::EncodeInt(10U)},
+                          {KeyStr("c", 1U, rs::db::dbformat::ValueType::TypeMerge), test::EncodeInt(10U)}});
   AddMockFile(file2);
 
   auto file3 =
-      mock::MakeMockFile({{KeyStr("a", 2U, rs::db::dbformat::ValueType::kTypeMerge), test::EncodeInt(10U)},
-                          {KeyStr("b", 1U, rs::db::dbformat::ValueType::kTypeMerge), test::EncodeInt(10U)}});
+      mock::MakeMockFile({{KeyStr("a", 2U, rs::db::dbformat::ValueType::TypeMerge), test::EncodeInt(10U)},
+                          {KeyStr("b", 1U, rs::db::dbformat::ValueType::TypeMerge), test::EncodeInt(10U)}});
   AddMockFile(file3, 2);
 
   SetLastSequence(11U);
@@ -1031,22 +1031,22 @@ TEST_F(CompactionJobTest, SimpleSingleDelete) {
   NewDB();
 
   auto file1 = mock::MakeMockFile({
-      {KeyStr("a", 5U, rs::db::dbformat::ValueType::kTypeDeletion), ""},
-      {KeyStr("b", 6U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
+      {KeyStr("a", 5U, rs::db::dbformat::ValueType::TypeDeletion), ""},
+      {KeyStr("b", 6U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
   });
   AddMockFile(file1);
 
-  auto file2 = mock::MakeMockFile({{KeyStr("a", 3U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("b", 4U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file2 = mock::MakeMockFile({{KeyStr("a", 3U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("b", 4U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file2);
 
   auto file3 = mock::MakeMockFile({
-      {KeyStr("a", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
+      {KeyStr("a", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
   });
   AddMockFile(file3, 2);
 
   auto expected_results =
-      mock::MakeMockFile({{KeyStr("a", 5U, rs::db::dbformat::ValueType::kTypeDeletion), ""}});
+      mock::MakeMockFile({{KeyStr("a", 5U, rs::db::dbformat::ValueType::TypeDeletion), ""}});
 
   SetLastSequence(6U);
   constexpr int input_level = 0;
@@ -1058,60 +1058,60 @@ TEST_F(CompactionJobTest, SingleDeleteSnapshots) {
   NewDB();
 
   auto file1 = mock::MakeMockFile({
-      {KeyStr("A", 12U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("a", 12U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("b", 21U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("c", 22U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("d", 9U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("f", 21U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("j", 11U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("j", 9U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("k", 12U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("k", 11U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("l", 3U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("l", 2U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
+      {KeyStr("A", 12U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("a", 12U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("b", 21U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("c", 22U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("d", 9U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("f", 21U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("j", 11U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("j", 9U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("k", 12U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("k", 11U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("l", 3U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("l", 2U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
   });
   AddMockFile(file1);
 
   auto file2 = mock::MakeMockFile({
-      {KeyStr("0", 2U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("a", 11U, rs::db::dbformat::ValueType::kTypeValue), "val1"},
-      {KeyStr("b", 11U, rs::db::dbformat::ValueType::kTypeValue), "val2"},
-      {KeyStr("c", 21U, rs::db::dbformat::ValueType::kTypeValue), "val3"},
-      {KeyStr("d", 8U, rs::db::dbformat::ValueType::kTypeValue), "val4"},
-      {KeyStr("e", 2U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("f", 1U, rs::db::dbformat::ValueType::kTypeValue), "val1"},
-      {KeyStr("g", 11U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("h", 2U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("m", 12U, rs::db::dbformat::ValueType::kTypeValue), "val1"},
-      {KeyStr("m", 11U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("m", 8U, rs::db::dbformat::ValueType::kTypeValue), "val2"},
+      {KeyStr("0", 2U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("a", 11U, rs::db::dbformat::ValueType::TypeValue), "val1"},
+      {KeyStr("b", 11U, rs::db::dbformat::ValueType::TypeValue), "val2"},
+      {KeyStr("c", 21U, rs::db::dbformat::ValueType::TypeValue), "val3"},
+      {KeyStr("d", 8U, rs::db::dbformat::ValueType::TypeValue), "val4"},
+      {KeyStr("e", 2U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("f", 1U, rs::db::dbformat::ValueType::TypeValue), "val1"},
+      {KeyStr("g", 11U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("h", 2U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("m", 12U, rs::db::dbformat::ValueType::TypeValue), "val1"},
+      {KeyStr("m", 11U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("m", 8U, rs::db::dbformat::ValueType::TypeValue), "val2"},
   });
   AddMockFile(file2);
 
   auto file3 = mock::MakeMockFile({
-      {KeyStr("A", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("e", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
+      {KeyStr("A", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("e", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
   });
   AddMockFile(file3, 2);
 
   auto expected_results = mock::MakeMockFile({
-      {KeyStr("A", 12U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("a", 12U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("a", 11U, rs::db::dbformat::ValueType::kTypeValue), ""},
-      {KeyStr("b", 21U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("b", 11U, rs::db::dbformat::ValueType::kTypeValue), "val2"},
-      {KeyStr("c", 22U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("c", 21U, rs::db::dbformat::ValueType::kTypeValue), ""},
-      {KeyStr("e", 2U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("f", 21U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("f", 1U, rs::db::dbformat::ValueType::kTypeValue), "val1"},
-      {KeyStr("g", 11U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("j", 11U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("k", 11U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("m", 12U, rs::db::dbformat::ValueType::kTypeValue), "val1"},
-      {KeyStr("m", 11U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("m", 8U, rs::db::dbformat::ValueType::kTypeValue), "val2"},
+      {KeyStr("A", 12U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("a", 12U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("a", 11U, rs::db::dbformat::ValueType::TypeValue), ""},
+      {KeyStr("b", 21U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("b", 11U, rs::db::dbformat::ValueType::TypeValue), "val2"},
+      {KeyStr("c", 22U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("c", 21U, rs::db::dbformat::ValueType::TypeValue), ""},
+      {KeyStr("e", 2U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("f", 21U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("f", 1U, rs::db::dbformat::ValueType::TypeValue), "val1"},
+      {KeyStr("g", 11U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("j", 11U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("k", 11U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("m", 12U, rs::db::dbformat::ValueType::TypeValue), "val1"},
+      {KeyStr("m", 11U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("m", 8U, rs::db::dbformat::ValueType::TypeValue), "val2"},
   });
 
   SetLastSequence(22U);
@@ -1127,70 +1127,70 @@ TEST_F(CompactionJobTest, EarliestWriteConflictSnapshot) {
   // write-conflic-snapshot.
 
   auto file1 = mock::MakeMockFile({
-      {KeyStr("A", 24U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("A", 23U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("B", 24U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("B", 23U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("D", 24U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("G", 32U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("G", 31U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("G", 24U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("G", 23U, rs::db::dbformat::ValueType::kTypeValue), "val2"},
-      {KeyStr("H", 31U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("H", 24U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("H", 23U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("I", 35U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("I", 34U, rs::db::dbformat::ValueType::kTypeValue), "val2"},
-      {KeyStr("I", 33U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("I", 32U, rs::db::dbformat::ValueType::kTypeValue), "val3"},
-      {KeyStr("I", 31U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("J", 34U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("J", 33U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("J", 25U, rs::db::dbformat::ValueType::kTypeValue), "val2"},
-      {KeyStr("J", 24U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
+      {KeyStr("A", 24U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("A", 23U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("B", 24U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("B", 23U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("D", 24U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("G", 32U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("G", 31U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("G", 24U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("G", 23U, rs::db::dbformat::ValueType::TypeValue), "val2"},
+      {KeyStr("H", 31U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("H", 24U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("H", 23U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("I", 35U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("I", 34U, rs::db::dbformat::ValueType::TypeValue), "val2"},
+      {KeyStr("I", 33U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("I", 32U, rs::db::dbformat::ValueType::TypeValue), "val3"},
+      {KeyStr("I", 31U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("J", 34U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("J", 33U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("J", 25U, rs::db::dbformat::ValueType::TypeValue), "val2"},
+      {KeyStr("J", 24U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
   });
   AddMockFile(file1);
 
   auto file2 = mock::MakeMockFile({
-      {KeyStr("A", 14U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("A", 13U, rs::db::dbformat::ValueType::kTypeValue), "val2"},
-      {KeyStr("C", 14U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("C", 13U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("E", 12U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("F", 4U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("F", 3U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("G", 14U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("G", 13U, rs::db::dbformat::ValueType::kTypeValue), "val3"},
-      {KeyStr("H", 14U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("H", 13U, rs::db::dbformat::ValueType::kTypeValue), "val2"},
-      {KeyStr("I", 13U, rs::db::dbformat::ValueType::kTypeValue), "val4"},
-      {KeyStr("I", 12U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("I", 11U, rs::db::dbformat::ValueType::kTypeValue), "val5"},
-      {KeyStr("J", 15U, rs::db::dbformat::ValueType::kTypeValue), "val3"},
-      {KeyStr("J", 14U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
+      {KeyStr("A", 14U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("A", 13U, rs::db::dbformat::ValueType::TypeValue), "val2"},
+      {KeyStr("C", 14U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("C", 13U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("E", 12U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("F", 4U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("F", 3U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("G", 14U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("G", 13U, rs::db::dbformat::ValueType::TypeValue), "val3"},
+      {KeyStr("H", 14U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("H", 13U, rs::db::dbformat::ValueType::TypeValue), "val2"},
+      {KeyStr("I", 13U, rs::db::dbformat::ValueType::TypeValue), "val4"},
+      {KeyStr("I", 12U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("I", 11U, rs::db::dbformat::ValueType::TypeValue), "val5"},
+      {KeyStr("J", 15U, rs::db::dbformat::ValueType::TypeValue), "val3"},
+      {KeyStr("J", 14U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
   });
   AddMockFile(file2);
 
   auto expected_results = mock::MakeMockFile({
-      {KeyStr("A", 24U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("A", 23U, rs::db::dbformat::ValueType::kTypeValue), ""},
-      {KeyStr("B", 24U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("B", 23U, rs::db::dbformat::ValueType::kTypeValue), ""},
-      {KeyStr("D", 24U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("E", 12U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("G", 32U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("G", 31U, rs::db::dbformat::ValueType::kTypeValue), ""},
-      {KeyStr("H", 31U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("I", 35U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("I", 34U, rs::db::dbformat::ValueType::kTypeValue), ""},
-      {KeyStr("I", 31U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("I", 13U, rs::db::dbformat::ValueType::kTypeValue), "val4"},
-      {KeyStr("J", 34U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("J", 33U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("J", 25U, rs::db::dbformat::ValueType::kTypeValue), "val2"},
-      {KeyStr("J", 24U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("J", 15U, rs::db::dbformat::ValueType::kTypeValue), "val3"},
-      {KeyStr("J", 14U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
+      {KeyStr("A", 24U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("A", 23U, rs::db::dbformat::ValueType::TypeValue), ""},
+      {KeyStr("B", 24U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("B", 23U, rs::db::dbformat::ValueType::TypeValue), ""},
+      {KeyStr("D", 24U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("E", 12U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("G", 32U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("G", 31U, rs::db::dbformat::ValueType::TypeValue), ""},
+      {KeyStr("H", 31U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("I", 35U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("I", 34U, rs::db::dbformat::ValueType::TypeValue), ""},
+      {KeyStr("I", 31U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("I", 13U, rs::db::dbformat::ValueType::TypeValue), "val4"},
+      {KeyStr("J", 34U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("J", 33U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("J", 25U, rs::db::dbformat::ValueType::TypeValue), "val2"},
+      {KeyStr("J", 24U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("J", 15U, rs::db::dbformat::ValueType::TypeValue), "val3"},
+      {KeyStr("J", 14U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
   });
 
   SetLastSequence(24U);
@@ -1204,18 +1204,18 @@ TEST_F(CompactionJobTest, SingleDeleteZeroSeq) {
   NewDB();
 
   auto file1 = mock::MakeMockFile({
-      {KeyStr("A", 10U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("dummy", 5U, rs::db::dbformat::ValueType::kTypeValue), "val2"},
+      {KeyStr("A", 10U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("dummy", 5U, rs::db::dbformat::ValueType::TypeValue), "val2"},
   });
   AddMockFile(file1);
 
   auto file2 = mock::MakeMockFile({
-      {KeyStr("A", 0U, rs::db::dbformat::ValueType::kTypeValue), "val"},
+      {KeyStr("A", 0U, rs::db::dbformat::ValueType::TypeValue), "val"},
   });
   AddMockFile(file2);
 
   auto expected_results = mock::MakeMockFile({
-      {KeyStr("dummy", 0U, rs::db::dbformat::ValueType::kTypeValue), "val2"},
+      {KeyStr("dummy", 0U, rs::db::dbformat::ValueType::TypeValue), "val2"},
   });
 
   SetLastSequence(22U);
@@ -1247,132 +1247,132 @@ TEST_F(CompactionJobTest, MultiSingleDelete) {
   NewDB();
 
   auto file1 = mock::MakeMockFile({
-      {KeyStr("A", 14U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("A", 13U, rs::db::dbformat::ValueType::kTypeValue), "val5"},
-      {KeyStr("A", 12U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("B", 14U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("B", 13U, rs::db::dbformat::ValueType::kTypeValue), "val2"},
-      {KeyStr("C", 14U, rs::db::dbformat::ValueType::kTypeValue), "val3"},
-      {KeyStr("D", 12U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("D", 11U, rs::db::dbformat::ValueType::kTypeValue), "val4"},
-      {KeyStr("G", 15U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("G", 14U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("G", 13U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("I", 14U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("I", 13U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("J", 15U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("J", 14U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("J", 13U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("J", 12U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("J", 11U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("K", 16U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("K", 15U, rs::db::dbformat::ValueType::kTypeValue), "val1"},
-      {KeyStr("K", 14U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("K", 13U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("K", 12U, rs::db::dbformat::ValueType::kTypeValue), "val2"},
-      {KeyStr("K", 11U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("L", 16U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("L", 15U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("L", 14U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("L", 13U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("L", 12U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("L", 11U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("M", 16U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("M", 15U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("M", 14U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("M", 13U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("M", 12U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("M", 11U, rs::db::dbformat::ValueType::kTypeValue), "val"},
+      {KeyStr("A", 14U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("A", 13U, rs::db::dbformat::ValueType::TypeValue), "val5"},
+      {KeyStr("A", 12U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("B", 14U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("B", 13U, rs::db::dbformat::ValueType::TypeValue), "val2"},
+      {KeyStr("C", 14U, rs::db::dbformat::ValueType::TypeValue), "val3"},
+      {KeyStr("D", 12U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("D", 11U, rs::db::dbformat::ValueType::TypeValue), "val4"},
+      {KeyStr("G", 15U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("G", 14U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("G", 13U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("I", 14U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("I", 13U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("J", 15U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("J", 14U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("J", 13U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("J", 12U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("J", 11U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("K", 16U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("K", 15U, rs::db::dbformat::ValueType::TypeValue), "val1"},
+      {KeyStr("K", 14U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("K", 13U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("K", 12U, rs::db::dbformat::ValueType::TypeValue), "val2"},
+      {KeyStr("K", 11U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("L", 16U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("L", 15U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("L", 14U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("L", 13U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("L", 12U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("L", 11U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("M", 16U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("M", 15U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("M", 14U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("M", 13U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("M", 12U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("M", 11U, rs::db::dbformat::ValueType::TypeValue), "val"},
   });
   AddMockFile(file1);
 
   auto file2 = mock::MakeMockFile({
-      {KeyStr("A", 10U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("B", 12U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("B", 11U, rs::db::dbformat::ValueType::kTypeValue), "val2"},
-      {KeyStr("C", 10U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("C", 9U, rs::db::dbformat::ValueType::kTypeValue), "val6"},
-      {KeyStr("C", 8U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("D", 10U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("E", 12U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("E", 11U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("E", 5U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("E", 4U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("F", 6U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("F", 5U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("F", 4U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("F", 3U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("G", 12U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("H", 6U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("H", 5U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("H", 4U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("H", 3U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("I", 12U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("I", 11U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("J", 6U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("J", 5U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("J", 4U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("J", 3U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("J", 2U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("K", 8U, rs::db::dbformat::ValueType::kTypeValue), "val3"},
-      {KeyStr("K", 7U, rs::db::dbformat::ValueType::kTypeValue), "val4"},
-      {KeyStr("K", 6U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("K", 5U, rs::db::dbformat::ValueType::kTypeValue), "val5"},
-      {KeyStr("K", 2U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("K", 1U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("L", 5U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("L", 4U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("L", 3U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("L", 2U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("L", 1U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("M", 10U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("M", 7U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("M", 5U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-      {KeyStr("M", 4U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("M", 3U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
+      {KeyStr("A", 10U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("B", 12U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("B", 11U, rs::db::dbformat::ValueType::TypeValue), "val2"},
+      {KeyStr("C", 10U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("C", 9U, rs::db::dbformat::ValueType::TypeValue), "val6"},
+      {KeyStr("C", 8U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("D", 10U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("E", 12U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("E", 11U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("E", 5U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("E", 4U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("F", 6U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("F", 5U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("F", 4U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("F", 3U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("G", 12U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("H", 6U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("H", 5U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("H", 4U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("H", 3U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("I", 12U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("I", 11U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("J", 6U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("J", 5U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("J", 4U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("J", 3U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("J", 2U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("K", 8U, rs::db::dbformat::ValueType::TypeValue), "val3"},
+      {KeyStr("K", 7U, rs::db::dbformat::ValueType::TypeValue), "val4"},
+      {KeyStr("K", 6U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("K", 5U, rs::db::dbformat::ValueType::TypeValue), "val5"},
+      {KeyStr("K", 2U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("K", 1U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("L", 5U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("L", 4U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("L", 3U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("L", 2U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("L", 1U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("M", 10U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("M", 7U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("M", 5U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+      {KeyStr("M", 4U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("M", 3U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
   });
   AddMockFile(file2);
 
   auto file3 = mock::MakeMockFile({
-      {KeyStr("D", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("H", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-      {KeyStr("I", 2U, rs::db::dbformat::ValueType::kTypeValue), "val"},
+      {KeyStr("D", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("H", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+      {KeyStr("I", 2U, rs::db::dbformat::ValueType::TypeValue), "val"},
   });
   AddMockFile(file3, 2);
 
   auto file4 = mock::MakeMockFile({
-      {KeyStr("M", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
+      {KeyStr("M", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
   });
   AddMockFile(file4, 2);
 
   auto expected_results =
-      mock::MakeMockFile({{KeyStr("A", 14U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-                          {KeyStr("A", 13U, rs::db::dbformat::ValueType::kTypeValue), ""},
-                          {KeyStr("A", 12U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-                          {KeyStr("A", 10U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                          {KeyStr("B", 14U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-                          {KeyStr("B", 13U, rs::db::dbformat::ValueType::kTypeValue), ""},
-                          {KeyStr("C", 14U, rs::db::dbformat::ValueType::kTypeValue), "val3"},
-                          {KeyStr("D", 12U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-                          {KeyStr("D", 11U, rs::db::dbformat::ValueType::kTypeValue), ""},
-                          {KeyStr("D", 10U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-                          {KeyStr("E", 12U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-                          {KeyStr("E", 11U, rs::db::dbformat::ValueType::kTypeValue), ""},
-                          {KeyStr("G", 15U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                          {KeyStr("G", 12U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-                          {KeyStr("I", 14U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-                          {KeyStr("I", 13U, rs::db::dbformat::ValueType::kTypeValue), ""},
-                          {KeyStr("J", 15U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                          {KeyStr("K", 16U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-                          {KeyStr("K", 15U, rs::db::dbformat::ValueType::kTypeValue), ""},
-                          {KeyStr("K", 11U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-                          {KeyStr("K", 8U, rs::db::dbformat::ValueType::kTypeValue), "val3"},
-                          {KeyStr("L", 16U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-                          {KeyStr("L", 15U, rs::db::dbformat::ValueType::kTypeValue), ""},
-                          {KeyStr("L", 11U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-                          {KeyStr("M", 15U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-                          {KeyStr("M", 14U, rs::db::dbformat::ValueType::kTypeValue), ""},
-                          {KeyStr("M", 3U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""}});
+      mock::MakeMockFile({{KeyStr("A", 14U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+                          {KeyStr("A", 13U, rs::db::dbformat::ValueType::TypeValue), ""},
+                          {KeyStr("A", 12U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+                          {KeyStr("A", 10U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                          {KeyStr("B", 14U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+                          {KeyStr("B", 13U, rs::db::dbformat::ValueType::TypeValue), ""},
+                          {KeyStr("C", 14U, rs::db::dbformat::ValueType::TypeValue), "val3"},
+                          {KeyStr("D", 12U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+                          {KeyStr("D", 11U, rs::db::dbformat::ValueType::TypeValue), ""},
+                          {KeyStr("D", 10U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+                          {KeyStr("E", 12U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+                          {KeyStr("E", 11U, rs::db::dbformat::ValueType::TypeValue), ""},
+                          {KeyStr("G", 15U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                          {KeyStr("G", 12U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+                          {KeyStr("I", 14U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+                          {KeyStr("I", 13U, rs::db::dbformat::ValueType::TypeValue), ""},
+                          {KeyStr("J", 15U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                          {KeyStr("K", 16U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+                          {KeyStr("K", 15U, rs::db::dbformat::ValueType::TypeValue), ""},
+                          {KeyStr("K", 11U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+                          {KeyStr("K", 8U, rs::db::dbformat::ValueType::TypeValue), "val3"},
+                          {KeyStr("L", 16U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+                          {KeyStr("L", 15U, rs::db::dbformat::ValueType::TypeValue), ""},
+                          {KeyStr("L", 11U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+                          {KeyStr("M", 15U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+                          {KeyStr("M", 14U, rs::db::dbformat::ValueType::TypeValue), ""},
+                          {KeyStr("M", 3U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""}});
 
   SetLastSequence(22U);
   constexpr int input_level = 0;
@@ -1388,22 +1388,22 @@ TEST_F(CompactionJobTest, DISABLED_CorruptionAfterDeletion) {
   NewDB();
 
   auto file1 =
-      mock::MakeMockFile({{test::KeyStr("A", 6U, rs::db::dbformat::ValueType::kTypeValue), "val3"},
-                          {test::KeyStr("a", 5U, rs::db::dbformat::ValueType::kTypeDeletion), ""},
-                          {test::KeyStr("a", 4U, rs::db::dbformat::ValueType::kTypeValue, true), "val"}});
+      mock::MakeMockFile({{test::KeyStr("A", 6U, rs::db::dbformat::ValueType::TypeValue), "val3"},
+                          {test::KeyStr("a", 5U, rs::db::dbformat::ValueType::TypeDeletion), ""},
+                          {test::KeyStr("a", 4U, rs::db::dbformat::ValueType::TypeValue, true), "val"}});
   AddMockFile(file1);
 
   auto file2 =
-      mock::MakeMockFile({{test::KeyStr("b", 3U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-                          {test::KeyStr("b", 2U, rs::db::dbformat::ValueType::kTypeValue, true), "val"},
-                          {test::KeyStr("c", 1U, rs::db::dbformat::ValueType::kTypeValue), "val2"}});
+      mock::MakeMockFile({{test::KeyStr("b", 3U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+                          {test::KeyStr("b", 2U, rs::db::dbformat::ValueType::TypeValue, true), "val"},
+                          {test::KeyStr("c", 1U, rs::db::dbformat::ValueType::TypeValue), "val2"}});
   AddMockFile(file2);
 
   auto expected_results =
-      mock::MakeMockFile({{test::KeyStr("A", 0U, rs::db::dbformat::ValueType::kTypeValue), "val3"},
-                          {test::KeyStr("a", 0U, rs::db::dbformat::ValueType::kTypeValue, true), "val"},
-                          {test::KeyStr("b", 0U, rs::db::dbformat::ValueType::kTypeValue, true), "val"},
-                          {test::KeyStr("c", 0U, rs::db::dbformat::ValueType::kTypeValue), "val2"}});
+      mock::MakeMockFile({{test::KeyStr("A", 0U, rs::db::dbformat::ValueType::TypeValue), "val3"},
+                          {test::KeyStr("a", 0U, rs::db::dbformat::ValueType::TypeValue, true), "val"},
+                          {test::KeyStr("b", 0U, rs::db::dbformat::ValueType::TypeValue, true), "val"},
+                          {test::KeyStr("c", 0U, rs::db::dbformat::ValueType::TypeValue), "val2"}});
 
   SetLastSequence(6U);
   constexpr int input_level = 0;
@@ -1418,36 +1418,36 @@ TEST_F(CompactionJobTest, OldestBlobFileNumber) {
   // of identifying the oldest referenced blob file. Similarly, blob6 will be
   // ignored because it has TTL and hence refers to a TTL blob file.
   const stl_wrappers::KVMap::value_type blob1(
-      KeyStr("a", 1U, rs::db::dbformat::ValueType::kTypeBlobIndex), BlobStrInlinedTTL("foo", 1234567890ULL));
-  const stl_wrappers::KVMap::value_type blob2(KeyStr("b", 2U, rs::db::dbformat::ValueType::kTypeBlobIndex),
+      KeyStr("a", 1U, rs::db::dbformat::ValueType::TypeBlobIndex), BlobStrInlinedTTL("foo", 1234567890ULL));
+  const stl_wrappers::KVMap::value_type blob2(KeyStr("b", 2U, rs::db::dbformat::ValueType::TypeBlobIndex),
                                               BlobStr(59, 123456, 999));
-  const stl_wrappers::KVMap::value_type blob3(KeyStr("c", 3U, rs::db::dbformat::ValueType::kTypeBlobIndex),
+  const stl_wrappers::KVMap::value_type blob3(KeyStr("c", 3U, rs::db::dbformat::ValueType::TypeBlobIndex),
                                               BlobStr(138, 1000, 1 << 8));
   auto file1 = mock::MakeMockFile({blob1, blob2, blob3});
   AddMockFile(file1);
 
-  const stl_wrappers::KVMap::value_type blob4(KeyStr("d", 4U, rs::db::dbformat::ValueType::kTypeBlobIndex),
+  const stl_wrappers::KVMap::value_type blob4(KeyStr("d", 4U, rs::db::dbformat::ValueType::TypeBlobIndex),
                                               BlobStr(199, 3 << 10, 1 << 20));
-  const stl_wrappers::KVMap::value_type blob5(KeyStr("e", 5U, rs::db::dbformat::ValueType::kTypeBlobIndex),
+  const stl_wrappers::KVMap::value_type blob5(KeyStr("e", 5U, rs::db::dbformat::ValueType::TypeBlobIndex),
                                               BlobStr(19, 6789, 333));
   const stl_wrappers::KVMap::value_type blob6(
-      KeyStr("f", 6U, rs::db::dbformat::ValueType::kTypeBlobIndex),
+      KeyStr("f", 6U, rs::db::dbformat::ValueType::TypeBlobIndex),
       BlobStrTTL(5, 2048, 1 << 7, 1234567890ULL));
   auto file2 = mock::MakeMockFile({blob4, blob5, blob6});
   AddMockFile(file2);
 
   const stl_wrappers::KVMap::value_type expected_blob1(
-      KeyStr("a", 0U, rs::db::dbformat::ValueType::kTypeBlobIndex), blob1.second);
+      KeyStr("a", 0U, rs::db::dbformat::ValueType::TypeBlobIndex), blob1.second);
   const stl_wrappers::KVMap::value_type expected_blob2(
-      KeyStr("b", 0U, rs::db::dbformat::ValueType::kTypeBlobIndex), blob2.second);
+      KeyStr("b", 0U, rs::db::dbformat::ValueType::TypeBlobIndex), blob2.second);
   const stl_wrappers::KVMap::value_type expected_blob3(
-      KeyStr("c", 0U, rs::db::dbformat::ValueType::kTypeBlobIndex), blob3.second);
+      KeyStr("c", 0U, rs::db::dbformat::ValueType::TypeBlobIndex), blob3.second);
   const stl_wrappers::KVMap::value_type expected_blob4(
-      KeyStr("d", 0U, rs::db::dbformat::ValueType::kTypeBlobIndex), blob4.second);
+      KeyStr("d", 0U, rs::db::dbformat::ValueType::TypeBlobIndex), blob4.second);
   const stl_wrappers::KVMap::value_type expected_blob5(
-      KeyStr("e", 0U, rs::db::dbformat::ValueType::kTypeBlobIndex), blob5.second);
+      KeyStr("e", 0U, rs::db::dbformat::ValueType::TypeBlobIndex), blob5.second);
   const stl_wrappers::KVMap::value_type expected_blob6(
-      KeyStr("f", 0U, rs::db::dbformat::ValueType::kTypeBlobIndex), blob6.second);
+      KeyStr("f", 0U, rs::db::dbformat::ValueType::TypeBlobIndex), blob6.second);
   auto expected_results =
       mock::MakeMockFile({expected_blob1, expected_blob2, expected_blob3,
                           expected_blob4, expected_blob5, expected_blob6});
@@ -1482,31 +1482,31 @@ TEST_F(CompactionJobTest, VerifyPenultimateLevelOutput) {
   NewDB();
 
   // Add files on different levels that may overlap
-  auto file0_1 = mock::MakeMockFile({{KeyStr("z", 12U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file0_1 = mock::MakeMockFile({{KeyStr("z", 12U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file0_1);
 
-  auto file1_1 = mock::MakeMockFile({{KeyStr("b", 10U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                     {KeyStr("f", 11U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file1_1 = mock::MakeMockFile({{KeyStr("b", 10U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                     {KeyStr("f", 11U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file1_1, 1);
-  auto file1_2 = mock::MakeMockFile({{KeyStr("j", 12U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                     {KeyStr("k", 13U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file1_2 = mock::MakeMockFile({{KeyStr("j", 12U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                     {KeyStr("k", 13U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file1_2, 1);
-  auto file1_3 = mock::MakeMockFile({{KeyStr("p", 14U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                     {KeyStr("u", 15U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file1_3 = mock::MakeMockFile({{KeyStr("p", 14U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                     {KeyStr("u", 15U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file1_3, 1);
 
-  auto file2_1 = mock::MakeMockFile({{KeyStr("f", 8U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                     {KeyStr("h", 9U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file2_1 = mock::MakeMockFile({{KeyStr("f", 8U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                     {KeyStr("h", 9U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file2_1, 2);
-  auto file2_2 = mock::MakeMockFile({{KeyStr("m", 6U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                     {KeyStr("p", 7U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file2_2 = mock::MakeMockFile({{KeyStr("m", 6U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                     {KeyStr("p", 7U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file2_2, 2);
 
-  auto file3_1 = mock::MakeMockFile({{KeyStr("g", 2U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                     {KeyStr("k", 3U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file3_1 = mock::MakeMockFile({{KeyStr("g", 2U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                     {KeyStr("k", 3U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file3_1, 3);
-  auto file3_2 = mock::MakeMockFile({{KeyStr("v", 4U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                     {KeyStr("x", 5U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file3_2 = mock::MakeMockFile({{KeyStr("v", 4U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                     {KeyStr("x", 5U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file3_2, 3);
 
   auto cfd = versions_->GetColumnFamilySet()->GetDefault();
@@ -1537,8 +1537,8 @@ TEST_F(CompactionJobTest, NoEnforceSingleDeleteContract) {
   NewDB();
 
   auto file =
-      mock::MakeMockFile({{KeyStr("a", 4U, rs::db::dbformat::ValueType::kTypeSingleDeletion), ""},
-                          {KeyStr("a", 3U, rs::db::dbformat::ValueType::kTypeDeletion), "dontcare"}});
+      mock::MakeMockFile({{KeyStr("a", 4U, rs::db::dbformat::ValueType::TypeSingleDeletion), ""},
+                          {KeyStr("a", 3U, rs::db::dbformat::ValueType::TypeDeletion), "dontcare"}});
   AddMockFile(file);
   SetLastSequence(4U);
 
@@ -1761,46 +1761,46 @@ TEST_P(CompactionJobDynamicFileSizeTest, CutForMaxCompactionBytes) {
   mutable_cf_options_.max_compaction_bytes = 21;
 
   auto file1 = mock::MakeMockFile({
-      {KeyStr("c", 5U, rs::db::dbformat::ValueType::kTypeValue), "val2"},
-      {KeyStr("n", 6U, rs::db::dbformat::ValueType::kTypeValue), "val3"},
+      {KeyStr("c", 5U, rs::db::dbformat::ValueType::TypeValue), "val2"},
+      {KeyStr("n", 6U, rs::db::dbformat::ValueType::TypeValue), "val3"},
   });
   AddMockFile(file1);
 
-  auto file2 = mock::MakeMockFile({{KeyStr("h", 3U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("j", 4U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file2 = mock::MakeMockFile({{KeyStr("h", 3U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("j", 4U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file2, 1);
 
   // Create three L2 files, each size 10.
   // max_compaction_bytes 21 means the compaction output in L1 will
   // be cut to at least two files.
-  auto file3 = mock::MakeMockFile({{KeyStr("b", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("c", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("c1", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("c2", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("c3", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("c4", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("d", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("e", 2U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file3 = mock::MakeMockFile({{KeyStr("b", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("c", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("c1", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("c2", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("c3", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("c4", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("d", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("e", 2U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file3, 2);
 
-  auto file4 = mock::MakeMockFile({{KeyStr("h", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("i", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("i1", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("i2", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("i3", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("i4", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("j", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("k", 2U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file4 = mock::MakeMockFile({{KeyStr("h", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("i", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("i1", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("i2", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("i3", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("i4", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("j", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("k", 2U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file4, 2);
 
-  auto file5 = mock::MakeMockFile({{KeyStr("l", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("m", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("m1", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("m2", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("m3", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("m4", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("n", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("o", 2U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file5 = mock::MakeMockFile({{KeyStr("l", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("m", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("m1", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("m2", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("m3", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("m4", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("n", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("o", 2U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file5, 2);
 
   // The expected output should be:
@@ -1813,11 +1813,11 @@ TEST_P(CompactionJobDynamicFileSizeTest, CutForMaxCompactionBytes) {
   // seqno 1, but actually they're overlapped with the compaction picker).
 
   auto expected_file1 =
-      mock::MakeMockFile({{KeyStr("c", 5U, rs::db::dbformat::ValueType::kTypeValue), "val2"},
-                          {KeyStr("h", 3U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                          {KeyStr("j", 4U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+      mock::MakeMockFile({{KeyStr("c", 5U, rs::db::dbformat::ValueType::TypeValue), "val2"},
+                          {KeyStr("h", 3U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                          {KeyStr("j", 4U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   auto expected_file2 =
-      mock::MakeMockFile({{KeyStr("n", 6U, rs::db::dbformat::ValueType::kTypeValue), "val3"}});
+      mock::MakeMockFile({{KeyStr("n", 6U, rs::db::dbformat::ValueType::TypeValue), "val3"}});
 
   SetLastSequence(6U);
 
@@ -1839,39 +1839,39 @@ TEST_P(CompactionJobDynamicFileSizeTest, CutToSkipGrandparentFile) {
   mutable_cf_options_.target_file_size_base = 70;
 
   auto file1 = mock::MakeMockFile({
-      {KeyStr("a", 5U, rs::db::dbformat::ValueType::kTypeValue), "val2"},
-      {KeyStr("z", 6U, rs::db::dbformat::ValueType::kTypeValue), "val3"},
+      {KeyStr("a", 5U, rs::db::dbformat::ValueType::TypeValue), "val2"},
+      {KeyStr("z", 6U, rs::db::dbformat::ValueType::TypeValue), "val3"},
   });
   AddMockFile(file1);
 
-  auto file2 = mock::MakeMockFile({{KeyStr("c", 3U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("x", 4U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file2 = mock::MakeMockFile({{KeyStr("c", 3U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("x", 4U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file2, 1);
 
-  auto file3 = mock::MakeMockFile({{KeyStr("b", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("d", 2U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file3 = mock::MakeMockFile({{KeyStr("b", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("d", 2U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file3, 2);
 
-  auto file4 = mock::MakeMockFile({{KeyStr("h", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("i", 2U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file4 = mock::MakeMockFile({{KeyStr("h", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("i", 2U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file4, 2);
 
-  auto file5 = mock::MakeMockFile({{KeyStr("v", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("y", 2U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file5 = mock::MakeMockFile({{KeyStr("v", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("y", 2U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file5, 2);
 
   auto expected_file1 =
-      mock::MakeMockFile({{KeyStr("a", 5U, rs::db::dbformat::ValueType::kTypeValue), "val2"},
-                          {KeyStr("c", 3U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+      mock::MakeMockFile({{KeyStr("a", 5U, rs::db::dbformat::ValueType::TypeValue), "val2"},
+                          {KeyStr("c", 3U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   auto expected_file2 =
-      mock::MakeMockFile({{KeyStr("x", 4U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                          {KeyStr("z", 6U, rs::db::dbformat::ValueType::kTypeValue), "val3"}});
+      mock::MakeMockFile({{KeyStr("x", 4U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                          {KeyStr("z", 6U, rs::db::dbformat::ValueType::TypeValue), "val3"}});
 
   auto expected_file_disable_dynamic_file_size =
-      mock::MakeMockFile({{KeyStr("a", 5U, rs::db::dbformat::ValueType::kTypeValue), "val2"},
-                          {KeyStr("c", 3U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                          {KeyStr("x", 4U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                          {KeyStr("z", 6U, rs::db::dbformat::ValueType::kTypeValue), "val3"}});
+      mock::MakeMockFile({{KeyStr("a", 5U, rs::db::dbformat::ValueType::TypeValue), "val2"},
+                          {KeyStr("c", 3U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                          {KeyStr("x", 4U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                          {KeyStr("z", 6U, rs::db::dbformat::ValueType::TypeValue), "val3"}});
 
   SetLastSequence(6U);
   const std::vector<int> input_levels = {0, 1};
@@ -1903,35 +1903,35 @@ TEST_P(CompactionJobDynamicFileSizeTest, CutToAlignGrandparentBoundary) {
   char ch = 'd';
   // Add value from d -> o
   for (char i = 0; i < 12; i++) {
-    file1.emplace_back(KeyStr(std::string(1, ch + i), i + 10, rs::db::dbformat::ValueType::kTypeValue),
+    file1.emplace_back(KeyStr(std::string(1, ch + i), i + 10, rs::db::dbformat::ValueType::TypeValue),
                        "val" + std::to_string(i));
   }
 
   AddMockFile(file1);
 
-  auto file2 = mock::MakeMockFile({{KeyStr("e", 3U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("s", 4U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file2 = mock::MakeMockFile({{KeyStr("e", 3U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("s", 4U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file2, 1);
 
   // the 1st grandparent file should be skipped
-  auto file3 = mock::MakeMockFile({{KeyStr("a", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("b", 2U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file3 = mock::MakeMockFile({{KeyStr("a", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("b", 2U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file3, 2);
 
-  auto file4 = mock::MakeMockFile({{KeyStr("c", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("e", 2U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file4 = mock::MakeMockFile({{KeyStr("c", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("e", 2U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file4, 2);
 
-  auto file5 = mock::MakeMockFile({{KeyStr("h", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("j", 2U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file5 = mock::MakeMockFile({{KeyStr("h", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("j", 2U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file5, 2);
 
-  auto file6 = mock::MakeMockFile({{KeyStr("k", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("n", 2U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file6 = mock::MakeMockFile({{KeyStr("k", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("n", 2U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file6, 2);
 
-  auto file7 = mock::MakeMockFile({{KeyStr("q", 1U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("t", 2U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file7 = mock::MakeMockFile({{KeyStr("q", 1U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("t", 2U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file7, 2);
 
   // The expected outputs are:
@@ -1943,34 +1943,34 @@ TEST_P(CompactionJobDynamicFileSizeTest, CutToAlignGrandparentBoundary) {
   mock::KVVector expected_file1;
   for (char i = 0; i < 7; i++) {
     expected_file1.emplace_back(
-        KeyStr(std::string(1, ch + i), i + 10, rs::db::dbformat::ValueType::kTypeValue),
+        KeyStr(std::string(1, ch + i), i + 10, rs::db::dbformat::ValueType::TypeValue),
         "val" + std::to_string(i));
   }
 
   mock::KVVector expected_file2;
   for (char i = 7; i < 12; i++) {
     expected_file2.emplace_back(
-        KeyStr(std::string(1, ch + i), i + 10, rs::db::dbformat::ValueType::kTypeValue),
+        KeyStr(std::string(1, ch + i), i + 10, rs::db::dbformat::ValueType::TypeValue),
         "val" + std::to_string(i));
   }
-  expected_file2.emplace_back(KeyStr("s", 4U, rs::db::dbformat::ValueType::kTypeValue), "val");
+  expected_file2.emplace_back(KeyStr("s", 4U, rs::db::dbformat::ValueType::TypeValue), "val");
 
   mock::KVVector expected_file_disable_dynamic_file_size1;
   for (char i = 0; i < 10; i++) {
     expected_file_disable_dynamic_file_size1.emplace_back(
-        KeyStr(std::string(1, ch + i), i + 10, rs::db::dbformat::ValueType::kTypeValue),
+        KeyStr(std::string(1, ch + i), i + 10, rs::db::dbformat::ValueType::TypeValue),
         "val" + std::to_string(i));
   }
 
   mock::KVVector expected_file_disable_dynamic_file_size2;
   for (char i = 10; i < 12; i++) {
     expected_file_disable_dynamic_file_size2.emplace_back(
-        KeyStr(std::string(1, ch + i), i + 10, rs::db::dbformat::ValueType::kTypeValue),
+        KeyStr(std::string(1, ch + i), i + 10, rs::db::dbformat::ValueType::TypeValue),
         "val" + std::to_string(i));
   }
 
   expected_file_disable_dynamic_file_size2.emplace_back(
-      KeyStr("s", 4U, rs::db::dbformat::ValueType::kTypeValue), "val");
+      KeyStr("s", 4U, rs::db::dbformat::ValueType::TypeValue), "val");
 
   SetLastSequence(22U);
   const std::vector<int> input_levels = {0, 1};
@@ -2001,47 +2001,47 @@ TEST_P(CompactionJobDynamicFileSizeTest, CutToAlignGrandparentBoundarySameKey) {
 
   mock::KVVector file1;
   for (int i = 0; i < 7; i++) {
-    file1.emplace_back(KeyStr("a", 100 - i, rs::db::dbformat::ValueType::kTypeValue),
+    file1.emplace_back(KeyStr("a", 100 - i, rs::db::dbformat::ValueType::TypeValue),
                        "val" + std::to_string(100 - i));
   }
-  file1.emplace_back(KeyStr("b", 90, rs::db::dbformat::ValueType::kTypeValue), "valb");
+  file1.emplace_back(KeyStr("b", 90, rs::db::dbformat::ValueType::TypeValue), "valb");
 
   AddMockFile(file1);
 
-  auto file2 = mock::MakeMockFile({{KeyStr("a", 93U, rs::db::dbformat::ValueType::kTypeValue), "val93"},
-                                   {KeyStr("b", 90U, rs::db::dbformat::ValueType::kTypeValue), "valb"}});
+  auto file2 = mock::MakeMockFile({{KeyStr("a", 93U, rs::db::dbformat::ValueType::TypeValue), "val93"},
+                                   {KeyStr("b", 90U, rs::db::dbformat::ValueType::TypeValue), "valb"}});
   AddMockFile(file2, 1);
 
-  auto file3 = mock::MakeMockFile({{KeyStr("a", 89U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("a", 88U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file3 = mock::MakeMockFile({{KeyStr("a", 89U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("a", 88U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file3, 2);
 
-  auto file4 = mock::MakeMockFile({{KeyStr("a", 87U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("a", 86U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file4 = mock::MakeMockFile({{KeyStr("a", 87U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("a", 86U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file4, 2);
 
-  auto file5 = mock::MakeMockFile({{KeyStr("b", 85U, rs::db::dbformat::ValueType::kTypeValue), "val"},
-                                   {KeyStr("b", 84U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file5 = mock::MakeMockFile({{KeyStr("b", 85U, rs::db::dbformat::ValueType::TypeValue), "val"},
+                                   {KeyStr("b", 84U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file5, 2);
 
   mock::KVVector expected_file1;
   mock::KVVector expected_file_disable_dynamic_file_size;
 
   for (int i = 0; i < 8; i++) {
-    expected_file1.emplace_back(KeyStr("a", 100 - i, rs::db::dbformat::ValueType::kTypeValue),
+    expected_file1.emplace_back(KeyStr("a", 100 - i, rs::db::dbformat::ValueType::TypeValue),
                                 "val" + std::to_string(100 - i));
     expected_file_disable_dynamic_file_size.emplace_back(
-        KeyStr("a", 100 - i, rs::db::dbformat::ValueType::kTypeValue), "val" + std::to_string(100 - i));
+        KeyStr("a", 100 - i, rs::db::dbformat::ValueType::TypeValue), "val" + std::to_string(100 - i));
   }
 
   // make sure `b` is cut in a separated file (so internally it's not using
   // internal comparator, which will think the "b:90" (seqno 90) here is smaller
   // than "b:85" on L2.)
   auto expected_file2 =
-      mock::MakeMockFile({{KeyStr("b", 90U, rs::db::dbformat::ValueType::kTypeValue), "valb"}});
+      mock::MakeMockFile({{KeyStr("b", 90U, rs::db::dbformat::ValueType::TypeValue), "valb"}});
 
   expected_file_disable_dynamic_file_size.emplace_back(
-      KeyStr("b", 90U, rs::db::dbformat::ValueType::kTypeValue), "valb");
+      KeyStr("b", 90U, rs::db::dbformat::ValueType::TypeValue), "valb");
 
   SetLastSequence(122U);
   const std::vector<int> input_levels = {0, 1};
@@ -2072,42 +2072,42 @@ TEST_P(CompactionJobDynamicFileSizeTest, CutForMaxCompactionBytesSameKey) {
   mutable_cf_options_.target_file_size_base = 80;
   mutable_cf_options_.max_compaction_bytes = 20;
 
-  auto file1 = mock::MakeMockFile({{KeyStr("a", 104U, rs::db::dbformat::ValueType::kTypeValue), "val1"},
-                                   {KeyStr("b", 103U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file1 = mock::MakeMockFile({{KeyStr("a", 104U, rs::db::dbformat::ValueType::TypeValue), "val1"},
+                                   {KeyStr("b", 103U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file1);
 
-  auto file2 = mock::MakeMockFile({{KeyStr("a", 102U, rs::db::dbformat::ValueType::kTypeValue), "val2"},
-                                   {KeyStr("c", 101U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+  auto file2 = mock::MakeMockFile({{KeyStr("a", 102U, rs::db::dbformat::ValueType::TypeValue), "val2"},
+                                   {KeyStr("c", 101U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   AddMockFile(file2, 1);
 
   for (int i = 0; i < 10; i++) {
     auto file =
-        mock::MakeMockFile({{KeyStr("a", 100 - (i * 2), rs::db::dbformat::ValueType::kTypeValue), "val"},
-                            {KeyStr("a", 99 - (i * 2), rs::db::dbformat::ValueType::kTypeValue), "val"}});
+        mock::MakeMockFile({{KeyStr("a", 100 - (i * 2), rs::db::dbformat::ValueType::TypeValue), "val"},
+                            {KeyStr("a", 99 - (i * 2), rs::db::dbformat::ValueType::TypeValue), "val"}});
     AddMockFile(file, 2);
   }
 
   for (int i = 0; i < 10; i++) {
     auto file =
-        mock::MakeMockFile({{KeyStr("b", 80 - (i * 2), rs::db::dbformat::ValueType::kTypeValue), "val"},
-                            {KeyStr("b", 79 - (i * 2), rs::db::dbformat::ValueType::kTypeValue), "val"}});
+        mock::MakeMockFile({{KeyStr("b", 80 - (i * 2), rs::db::dbformat::ValueType::TypeValue), "val"},
+                            {KeyStr("b", 79 - (i * 2), rs::db::dbformat::ValueType::TypeValue), "val"}});
     AddMockFile(file, 2);
   }
 
-  auto file5 = mock::MakeMockFile({{KeyStr("c", 60U, rs::db::dbformat::ValueType::kTypeValue), "valc"},
-                                   {KeyStr("c", 59U, rs::db::dbformat::ValueType::kTypeValue), "valc"}});
+  auto file5 = mock::MakeMockFile({{KeyStr("c", 60U, rs::db::dbformat::ValueType::TypeValue), "valc"},
+                                   {KeyStr("c", 59U, rs::db::dbformat::ValueType::TypeValue), "valc"}});
 
   // "a" has 10 overlapped grandparent files (each size 10), which is far
   // exceeded the `max_compaction_bytes`, but make sure 2 "a" are not separated,
   // as splitting them won't help reducing the compaction size.
   // also make sure "b" and "c" are cut separately.
   mock::KVVector expected_file1 =
-      mock::MakeMockFile({{KeyStr("a", 104U, rs::db::dbformat::ValueType::kTypeValue), "val1"},
-                          {KeyStr("a", 102U, rs::db::dbformat::ValueType::kTypeValue), "val2"}});
+      mock::MakeMockFile({{KeyStr("a", 104U, rs::db::dbformat::ValueType::TypeValue), "val1"},
+                          {KeyStr("a", 102U, rs::db::dbformat::ValueType::TypeValue), "val2"}});
   mock::KVVector expected_file2 =
-      mock::MakeMockFile({{KeyStr("b", 103U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+      mock::MakeMockFile({{KeyStr("b", 103U, rs::db::dbformat::ValueType::TypeValue), "val"}});
   mock::KVVector expected_file3 =
-      mock::MakeMockFile({{KeyStr("c", 101U, rs::db::dbformat::ValueType::kTypeValue), "val"}});
+      mock::MakeMockFile({{KeyStr("c", 101U, rs::db::dbformat::ValueType::TypeValue), "val"}});
 
   SetLastSequence(122U);
   const std::vector<int> input_levels = {0, 1};
@@ -2139,31 +2139,31 @@ TEST_F(CompactionJobTimestampTest, GCDisabled) {
   NewDB();
 
   auto file1 =
-      mock::MakeMockFile({{KeyStr("a", 10, rs::db::dbformat::ValueType::kTypeValue, 100), "a10"},
-                          {KeyStr("a", 9, rs::db::dbformat::ValueType::kTypeValue, 99), "a9"},
-                          {KeyStr("b", 8, rs::db::dbformat::ValueType::kTypeValue, 98), "b8"},
-                          {KeyStr("d", 7, rs::db::dbformat::ValueType::kTypeValue, 97), "d7"}});
+      mock::MakeMockFile({{KeyStr("a", 10, rs::db::dbformat::ValueType::TypeValue, 100), "a10"},
+                          {KeyStr("a", 9, rs::db::dbformat::ValueType::TypeValue, 99), "a9"},
+                          {KeyStr("b", 8, rs::db::dbformat::ValueType::TypeValue, 98), "b8"},
+                          {KeyStr("d", 7, rs::db::dbformat::ValueType::TypeValue, 97), "d7"}});
 
   AddMockFile(file1);
 
   auto file2 = mock::MakeMockFile(
-      {{KeyStr("b", 6, rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp, 96), ""},
-       {KeyStr("c", 5, rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp, 95), ""},
-       {KeyStr("c", 4, rs::db::dbformat::ValueType::kTypeValue, 94), "c5"},
-       {KeyStr("d", 3, rs::db::dbformat::ValueType::kTypeSingleDeletion, 93), ""}});
+      {{KeyStr("b", 6, rs::db::dbformat::ValueType::TypeDeletionWithTimestamp, 96), ""},
+       {KeyStr("c", 5, rs::db::dbformat::ValueType::TypeDeletionWithTimestamp, 95), ""},
+       {KeyStr("c", 4, rs::db::dbformat::ValueType::TypeValue, 94), "c5"},
+       {KeyStr("d", 3, rs::db::dbformat::ValueType::TypeSingleDeletion, 93), ""}});
   AddMockFile(file2);
 
   SetLastSequence(10);
 
   auto expected_results = mock::MakeMockFile(
-      {{KeyStr("a", 10, rs::db::dbformat::ValueType::kTypeValue, 100), "a10"},
-       {KeyStr("a", 9, rs::db::dbformat::ValueType::kTypeValue, 99), "a9"},
-       {KeyStr("b", 8, rs::db::dbformat::ValueType::kTypeValue, 98), "b8"},
-       {KeyStr("b", 6, rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp, 96), ""},
-       {KeyStr("c", 5, rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp, 95), ""},
-       {KeyStr("c", 4, rs::db::dbformat::ValueType::kTypeValue, 94), "c5"},
-       {KeyStr("d", 7, rs::db::dbformat::ValueType::kTypeValue, 97), "d7"},
-       {KeyStr("d", 3, rs::db::dbformat::ValueType::kTypeSingleDeletion, 93), ""}});
+      {{KeyStr("a", 10, rs::db::dbformat::ValueType::TypeValue, 100), "a10"},
+       {KeyStr("a", 9, rs::db::dbformat::ValueType::TypeValue, 99), "a9"},
+       {KeyStr("b", 8, rs::db::dbformat::ValueType::TypeValue, 98), "b8"},
+       {KeyStr("b", 6, rs::db::dbformat::ValueType::TypeDeletionWithTimestamp, 96), ""},
+       {KeyStr("c", 5, rs::db::dbformat::ValueType::TypeDeletionWithTimestamp, 95), ""},
+       {KeyStr("c", 4, rs::db::dbformat::ValueType::TypeValue, 94), "c5"},
+       {KeyStr("d", 7, rs::db::dbformat::ValueType::TypeValue, 97), "d7"},
+       {KeyStr("d", 3, rs::db::dbformat::ValueType::TypeSingleDeletion, 93), ""}});
   constexpr int input_level = 0;
   const auto& files = cfd_->current()->storage_info()->LevelFiles(input_level);
   RunCompaction({files}, {input_level}, {expected_results});
@@ -2173,24 +2173,24 @@ TEST_F(CompactionJobTimestampTest, NoKeyExpired) {
   NewDB();
 
   auto file1 =
-      mock::MakeMockFile({{KeyStr("a", 6, rs::db::dbformat::ValueType::kTypeValue, 100), "a6"},
-                          {KeyStr("b", 7, rs::db::dbformat::ValueType::kTypeValue, 101), "b7"},
-                          {KeyStr("c", 5, rs::db::dbformat::ValueType::kTypeValue, 99), "c5"}});
+      mock::MakeMockFile({{KeyStr("a", 6, rs::db::dbformat::ValueType::TypeValue, 100), "a6"},
+                          {KeyStr("b", 7, rs::db::dbformat::ValueType::TypeValue, 101), "b7"},
+                          {KeyStr("c", 5, rs::db::dbformat::ValueType::TypeValue, 99), "c5"}});
   AddMockFile(file1);
 
   auto file2 =
-      mock::MakeMockFile({{KeyStr("a", 4, rs::db::dbformat::ValueType::kTypeValue, 98), "a4"},
-                          {KeyStr("c", 3, rs::db::dbformat::ValueType::kTypeValue, 97), "c3"}});
+      mock::MakeMockFile({{KeyStr("a", 4, rs::db::dbformat::ValueType::TypeValue, 98), "a4"},
+                          {KeyStr("c", 3, rs::db::dbformat::ValueType::TypeValue, 97), "c3"}});
   AddMockFile(file2);
 
   SetLastSequence(101);
 
   auto expected_results =
-      mock::MakeMockFile({{KeyStr("a", 6, rs::db::dbformat::ValueType::kTypeValue, 100), "a6"},
-                          {KeyStr("a", 4, rs::db::dbformat::ValueType::kTypeValue, 98), "a4"},
-                          {KeyStr("b", 7, rs::db::dbformat::ValueType::kTypeValue, 101), "b7"},
-                          {KeyStr("c", 5, rs::db::dbformat::ValueType::kTypeValue, 99), "c5"},
-                          {KeyStr("c", 3, rs::db::dbformat::ValueType::kTypeValue, 97), "c3"}});
+      mock::MakeMockFile({{KeyStr("a", 6, rs::db::dbformat::ValueType::TypeValue, 100), "a6"},
+                          {KeyStr("a", 4, rs::db::dbformat::ValueType::TypeValue, 98), "a4"},
+                          {KeyStr("b", 7, rs::db::dbformat::ValueType::TypeValue, 101), "b7"},
+                          {KeyStr("c", 5, rs::db::dbformat::ValueType::TypeValue, 99), "c5"},
+                          {KeyStr("c", 3, rs::db::dbformat::ValueType::TypeValue, 97), "c3"}});
   constexpr int input_level = 0;
   const auto& files = cfd_->current()->storage_info()->LevelFiles(input_level);
 
@@ -2202,22 +2202,22 @@ TEST_F(CompactionJobTimestampTest, AllKeysExpired) {
   NewDB();
 
   auto file1 = mock::MakeMockFile(
-      {{KeyStr("a", 5, rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp, 100), ""},
-       {KeyStr("b", 6, rs::db::dbformat::ValueType::kTypeSingleDeletion, 99), ""},
-       {KeyStr("c", 7, rs::db::dbformat::ValueType::kTypeValue, 98), "c7"}});
+      {{KeyStr("a", 5, rs::db::dbformat::ValueType::TypeDeletionWithTimestamp, 100), ""},
+       {KeyStr("b", 6, rs::db::dbformat::ValueType::TypeSingleDeletion, 99), ""},
+       {KeyStr("c", 7, rs::db::dbformat::ValueType::TypeValue, 98), "c7"}});
   AddMockFile(file1);
 
   auto file2 = mock::MakeMockFile(
-      {{KeyStr("a", 4, rs::db::dbformat::ValueType::kTypeValue, 97), "a4"},
-       {KeyStr("b", 3, rs::db::dbformat::ValueType::kTypeValue, 96), "b3"},
-       {KeyStr("c", 2, rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp, 95), ""},
-       {KeyStr("c", 1, rs::db::dbformat::ValueType::kTypeValue, 94), "c1"}});
+      {{KeyStr("a", 4, rs::db::dbformat::ValueType::TypeValue, 97), "a4"},
+       {KeyStr("b", 3, rs::db::dbformat::ValueType::TypeValue, 96), "b3"},
+       {KeyStr("c", 2, rs::db::dbformat::ValueType::TypeDeletionWithTimestamp, 95), ""},
+       {KeyStr("c", 1, rs::db::dbformat::ValueType::TypeValue, 94), "c1"}});
   AddMockFile(file2);
 
   SetLastSequence(7);
 
   auto expected_results =
-      mock::MakeMockFile({{KeyStr("c", 0, rs::db::dbformat::ValueType::kTypeValue, 0), "c7"}});
+      mock::MakeMockFile({{KeyStr("c", 0, rs::db::dbformat::ValueType::TypeValue, 0), "c7"}});
   constexpr int input_level = 0;
   const auto& files = cfd_->current()->storage_info()->LevelFiles(input_level);
 
@@ -2229,22 +2229,22 @@ TEST_F(CompactionJobTimestampTest, SomeKeysExpired) {
   NewDB();
 
   auto file1 =
-      mock::MakeMockFile({{KeyStr("a", 5, rs::db::dbformat::ValueType::kTypeValue, 50), "a5"},
-                          {KeyStr("b", 6, rs::db::dbformat::ValueType::kTypeValue, 49), "b6"}});
+      mock::MakeMockFile({{KeyStr("a", 5, rs::db::dbformat::ValueType::TypeValue, 50), "a5"},
+                          {KeyStr("b", 6, rs::db::dbformat::ValueType::TypeValue, 49), "b6"}});
   AddMockFile(file1);
 
   auto file2 = mock::MakeMockFile(
-      {{KeyStr("a", 3, rs::db::dbformat::ValueType::kTypeValue, 48), "a3"},
-       {KeyStr("a", 2, rs::db::dbformat::ValueType::kTypeValue, 46), "a2"},
-       {KeyStr("b", 4, rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp, 47), ""}});
+      {{KeyStr("a", 3, rs::db::dbformat::ValueType::TypeValue, 48), "a3"},
+       {KeyStr("a", 2, rs::db::dbformat::ValueType::TypeValue, 46), "a2"},
+       {KeyStr("b", 4, rs::db::dbformat::ValueType::TypeDeletionWithTimestamp, 47), ""}});
   AddMockFile(file2);
 
   SetLastSequence(6);
 
   auto expected_results =
-      mock::MakeMockFile({{KeyStr("a", 5, rs::db::dbformat::ValueType::kTypeValue, 50), "a5"},
-                          {KeyStr("a", 0, rs::db::dbformat::ValueType::kTypeValue, 0), "a3"},
-                          {KeyStr("b", 6, rs::db::dbformat::ValueType::kTypeValue, 49), "b6"}});
+      mock::MakeMockFile({{KeyStr("a", 5, rs::db::dbformat::ValueType::TypeValue, 50), "a5"},
+                          {KeyStr("a", 0, rs::db::dbformat::ValueType::TypeValue, 0), "a3"},
+                          {KeyStr("b", 6, rs::db::dbformat::ValueType::TypeValue, 49), "b6"}});
   constexpr int input_level = 0;
   const auto& files = cfd_->current()->storage_info()->LevelFiles(input_level);
 
@@ -2269,13 +2269,13 @@ TEST_F(CompactionJobTimestampTestWithBbTable, SubcompactionAnchorL1) {
   NewDB();
 
   const std::vector<std::string> keys = {
-      KeyStr("a", 20, rs::db::dbformat::ValueType::kTypeValue, 200),
-      KeyStr("b", 21, rs::db::dbformat::ValueType::kTypeValue, 210),
-      KeyStr("b", 20, rs::db::dbformat::ValueType::kTypeValue, 200),
-      KeyStr("b", 18, rs::db::dbformat::ValueType::kTypeValue, 180),
-      KeyStr("c", 17, rs::db::dbformat::ValueType::kTypeValue, 170),
-      KeyStr("c", 16, rs::db::dbformat::ValueType::kTypeValue, 160),
-      KeyStr("c", 15, rs::db::dbformat::ValueType::kTypeValue, 150)};
+      KeyStr("a", 20, rs::db::dbformat::ValueType::TypeValue, 200),
+      KeyStr("b", 21, rs::db::dbformat::ValueType::TypeValue, 210),
+      KeyStr("b", 20, rs::db::dbformat::ValueType::TypeValue, 200),
+      KeyStr("b", 18, rs::db::dbformat::ValueType::TypeValue, 180),
+      KeyStr("c", 17, rs::db::dbformat::ValueType::TypeValue, 170),
+      KeyStr("c", 16, rs::db::dbformat::ValueType::TypeValue, 160),
+      KeyStr("c", 15, rs::db::dbformat::ValueType::TypeValue, 150)};
   const std::vector<std::string> values = {"a20", "b21", "b20", "b18",
                                            "c17", "c16", "c15"};
 
@@ -2319,13 +2319,13 @@ TEST_F(CompactionJobTimestampTestWithBbTable, SubcompactionL0) {
   NewDB();
 
   const std::vector<std::string> keys = {
-      KeyStr("a", 20, rs::db::dbformat::ValueType::kTypeValue, 200),
-      KeyStr("b", 20, rs::db::dbformat::ValueType::kTypeValue, 200),
-      KeyStr("b", 19, rs::db::dbformat::ValueType::kTypeValue, 190),
-      KeyStr("b", 18, rs::db::dbformat::ValueType::kTypeValue, 180),
-      KeyStr("c", 17, rs::db::dbformat::ValueType::kTypeValue, 170),
-      KeyStr("c", 16, rs::db::dbformat::ValueType::kTypeValue, 160),
-      KeyStr("c", 15, rs::db::dbformat::ValueType::kTypeValue, 150)};
+      KeyStr("a", 20, rs::db::dbformat::ValueType::TypeValue, 200),
+      KeyStr("b", 20, rs::db::dbformat::ValueType::TypeValue, 200),
+      KeyStr("b", 19, rs::db::dbformat::ValueType::TypeValue, 190),
+      KeyStr("b", 18, rs::db::dbformat::ValueType::TypeValue, 180),
+      KeyStr("c", 17, rs::db::dbformat::ValueType::TypeValue, 170),
+      KeyStr("c", 16, rs::db::dbformat::ValueType::TypeValue, 160),
+      KeyStr("c", 15, rs::db::dbformat::ValueType::TypeValue, 150)};
   const std::vector<std::string> values = {"a20", "b20", "b19", "b18",
                                            "c17", "c16", "c15"};
 

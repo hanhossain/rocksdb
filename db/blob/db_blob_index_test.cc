@@ -271,24 +271,24 @@ TEST_F(DBBlobIndexTest, Updated) {
 // expose_blob_index is not set), it should return Status::Corruption.
 TEST_F(DBBlobIndexTest, Iterate) {
   const std::vector<std::vector<rs::db::dbformat::ValueType>> data = {
-      /*00*/ {rs::db::dbformat::ValueType::kTypeValue},
-      /*01*/ {rs::db::dbformat::ValueType::kTypeBlobIndex},
-      /*02*/ {rs::db::dbformat::ValueType::kTypeValue},
-      /*03*/ {rs::db::dbformat::ValueType::kTypeBlobIndex, rs::db::dbformat::ValueType::kTypeValue},
-      /*04*/ {rs::db::dbformat::ValueType::kTypeValue},
-      /*05*/ {rs::db::dbformat::ValueType::kTypeValue, rs::db::dbformat::ValueType::kTypeBlobIndex},
-      /*06*/ {rs::db::dbformat::ValueType::kTypeValue},
-      /*07*/ {rs::db::dbformat::ValueType::kTypeDeletion, rs::db::dbformat::ValueType::kTypeBlobIndex},
-      /*08*/ {rs::db::dbformat::ValueType::kTypeValue},
-      /*09*/ {rs::db::dbformat::ValueType::kTypeSingleDeletion, rs::db::dbformat::ValueType::kTypeBlobIndex},
-      /*10*/ {rs::db::dbformat::ValueType::kTypeValue},
-      /*11*/ {rs::db::dbformat::ValueType::kTypeMerge, rs::db::dbformat::ValueType::kTypeMerge, rs::db::dbformat::ValueType::kTypeMerge, rs::db::dbformat::ValueType::kTypeBlobIndex},
-      /*12*/ {rs::db::dbformat::ValueType::kTypeValue},
+      /*00*/ {rs::db::dbformat::ValueType::TypeValue},
+      /*01*/ {rs::db::dbformat::ValueType::TypeBlobIndex},
+      /*02*/ {rs::db::dbformat::ValueType::TypeValue},
+      /*03*/ {rs::db::dbformat::ValueType::TypeBlobIndex, rs::db::dbformat::ValueType::TypeValue},
+      /*04*/ {rs::db::dbformat::ValueType::TypeValue},
+      /*05*/ {rs::db::dbformat::ValueType::TypeValue, rs::db::dbformat::ValueType::TypeBlobIndex},
+      /*06*/ {rs::db::dbformat::ValueType::TypeValue},
+      /*07*/ {rs::db::dbformat::ValueType::TypeDeletion, rs::db::dbformat::ValueType::TypeBlobIndex},
+      /*08*/ {rs::db::dbformat::ValueType::TypeValue},
+      /*09*/ {rs::db::dbformat::ValueType::TypeSingleDeletion, rs::db::dbformat::ValueType::TypeBlobIndex},
+      /*10*/ {rs::db::dbformat::ValueType::TypeValue},
+      /*11*/ {rs::db::dbformat::ValueType::TypeMerge, rs::db::dbformat::ValueType::TypeMerge, rs::db::dbformat::ValueType::TypeMerge, rs::db::dbformat::ValueType::TypeBlobIndex},
+      /*12*/ {rs::db::dbformat::ValueType::TypeValue},
       /*13*/
-      {rs::db::dbformat::ValueType::kTypeMerge, rs::db::dbformat::ValueType::kTypeMerge, rs::db::dbformat::ValueType::kTypeMerge, rs::db::dbformat::ValueType::kTypeDeletion, rs::db::dbformat::ValueType::kTypeBlobIndex},
-      /*14*/ {rs::db::dbformat::ValueType::kTypeValue},
-      /*15*/ {rs::db::dbformat::ValueType::kTypeBlobIndex},
-      /*16*/ {rs::db::dbformat::ValueType::kTypeValue},
+      {rs::db::dbformat::ValueType::TypeMerge, rs::db::dbformat::ValueType::TypeMerge, rs::db::dbformat::ValueType::TypeMerge, rs::db::dbformat::ValueType::TypeDeletion, rs::db::dbformat::ValueType::TypeBlobIndex},
+      /*14*/ {rs::db::dbformat::ValueType::TypeValue},
+      /*15*/ {rs::db::dbformat::ValueType::TypeBlobIndex},
+      /*16*/ {rs::db::dbformat::ValueType::TypeValue},
   };
 
   auto get_key = [](int index) {
@@ -389,19 +389,19 @@ TEST_F(DBBlobIndexTest, Iterate) {
         std::string value = get_value(i, j);
         WriteBatch batch;
         switch (data[i][j]) {
-          case rs::db::dbformat::ValueType::kTypeValue:
+          case rs::db::dbformat::ValueType::TypeValue:
             ASSERT_OK(Put(key, value));
             break;
-          case rs::db::dbformat::ValueType::kTypeDeletion:
+          case rs::db::dbformat::ValueType::TypeDeletion:
             ASSERT_OK(Delete(key));
             break;
-          case rs::db::dbformat::ValueType::kTypeSingleDeletion:
+          case rs::db::dbformat::ValueType::TypeSingleDeletion:
             ASSERT_OK(SingleDelete(key));
             break;
-          case rs::db::dbformat::ValueType::kTypeMerge:
+          case rs::db::dbformat::ValueType::TypeMerge:
             ASSERT_OK(Merge(key, value));
             break;
-          case rs::db::dbformat::ValueType::kTypeBlobIndex:
+          case rs::db::dbformat::ValueType::TypeBlobIndex:
             ASSERT_OK(PutBlobIndex(&batch, key, value));
             ASSERT_OK(Write(&batch));
             break;

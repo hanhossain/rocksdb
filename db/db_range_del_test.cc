@@ -2811,7 +2811,7 @@ TEST_F(DBRangeDelTest, LeftSentinelKeyTestWithNewerKey) {
                         &type);
   ASSERT_EQ(seq, actual_seq);
   // might as well check type
-  ASSERT_EQ(type, rs::db::dbformat::ValueType::kTypeValue);
+  ASSERT_EQ(type, rs::db::dbformat::ValueType::TypeValue);
 
   iter->Prev();
   ASSERT_TRUE(iter->Valid());

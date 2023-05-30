@@ -65,13 +65,13 @@ class MergeHelperTest : public testing::Test {
 TEST_F(MergeHelperTest, MergeAtBottomSuccess) {
   merge_op_ = MergeOperators::CreateUInt64AddOperator();
 
-  AddKeyVal("a", 20, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(1U));
-  AddKeyVal("a", 10, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(3U));
-  AddKeyVal("b", 10, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(4U));  // <- iter_ after merge
+  AddKeyVal("a", 20, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(1U));
+  AddKeyVal("a", 10, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(3U));
+  AddKeyVal("b", 10, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(4U));  // <- iter_ after merge
 
   ASSERT_TRUE(Run(0, true).ok());
   ASSERT_EQ(ks_[2], iter_->key());
-  ASSERT_EQ(test::KeyStr("a", 20, rs::db::dbformat::ValueType::kTypeValue), merge_helper_->keys()[0]);
+  ASSERT_EQ(test::KeyStr("a", 20, rs::db::dbformat::ValueType::TypeValue), merge_helper_->keys()[0]);
   ASSERT_EQ(test::EncodeInt(4U), merge_helper_->values()[0]);
   ASSERT_EQ(1U, merge_helper_->keys().size());
   ASSERT_EQ(1U, merge_helper_->values().size());
@@ -81,14 +81,14 @@ TEST_F(MergeHelperTest, MergeAtBottomSuccess) {
 TEST_F(MergeHelperTest, MergeValue) {
   merge_op_ = MergeOperators::CreateUInt64AddOperator();
 
-  AddKeyVal("a", 40, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(1U));
-  AddKeyVal("a", 30, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(3U));
-  AddKeyVal("a", 20, rs::db::dbformat::ValueType::kTypeValue, test::EncodeInt(4U));  // <- iter_ after merge
-  AddKeyVal("a", 10, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(1U));
+  AddKeyVal("a", 40, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(1U));
+  AddKeyVal("a", 30, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(3U));
+  AddKeyVal("a", 20, rs::db::dbformat::ValueType::TypeValue, test::EncodeInt(4U));  // <- iter_ after merge
+  AddKeyVal("a", 10, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(1U));
 
   ASSERT_TRUE(Run(0, false).ok());
   ASSERT_EQ(ks_[3], iter_->key());
-  ASSERT_EQ(test::KeyStr("a", 40, rs::db::dbformat::ValueType::kTypeValue), merge_helper_->keys()[0]);
+  ASSERT_EQ(test::KeyStr("a", 40, rs::db::dbformat::ValueType::TypeValue), merge_helper_->keys()[0]);
   ASSERT_EQ(test::EncodeInt(8U), merge_helper_->values()[0]);
   ASSERT_EQ(1U, merge_helper_->keys().size());
   ASSERT_EQ(1U, merge_helper_->values().size());
@@ -98,15 +98,15 @@ TEST_F(MergeHelperTest, MergeValue) {
 TEST_F(MergeHelperTest, SnapshotBeforeValue) {
   merge_op_ = MergeOperators::CreateUInt64AddOperator();
 
-  AddKeyVal("a", 50, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(1U));
-  AddKeyVal("a", 40, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(3U));  // <- iter_ after merge
-  AddKeyVal("a", 30, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(1U));
-  AddKeyVal("a", 20, rs::db::dbformat::ValueType::kTypeValue, test::EncodeInt(4U));
-  AddKeyVal("a", 10, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(1U));
+  AddKeyVal("a", 50, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(1U));
+  AddKeyVal("a", 40, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(3U));  // <- iter_ after merge
+  AddKeyVal("a", 30, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(1U));
+  AddKeyVal("a", 20, rs::db::dbformat::ValueType::TypeValue, test::EncodeInt(4U));
+  AddKeyVal("a", 10, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(1U));
 
   ASSERT_TRUE(Run(31, true).IsMergeInProgress());
   ASSERT_EQ(ks_[2], iter_->key());
-  ASSERT_EQ(test::KeyStr("a", 50, rs::db::dbformat::ValueType::kTypeMerge), merge_helper_->keys()[0]);
+  ASSERT_EQ(test::KeyStr("a", 50, rs::db::dbformat::ValueType::TypeMerge), merge_helper_->keys()[0]);
   ASSERT_EQ(test::EncodeInt(4U), merge_helper_->values()[0]);
   ASSERT_EQ(1U, merge_helper_->keys().size());
   ASSERT_EQ(1U, merge_helper_->values().size());
@@ -117,15 +117,15 @@ TEST_F(MergeHelperTest, SnapshotBeforeValue) {
 TEST_F(MergeHelperTest, NoPartialMerge) {
   merge_op_ = MergeOperators::CreateStringAppendTESTOperator();
 
-  AddKeyVal("a", 50, rs::db::dbformat::ValueType::kTypeMerge, "v2");
-  AddKeyVal("a", 40, rs::db::dbformat::ValueType::kTypeMerge, "v");  // <- iter_ after merge
-  AddKeyVal("a", 30, rs::db::dbformat::ValueType::kTypeMerge, "v");
+  AddKeyVal("a", 50, rs::db::dbformat::ValueType::TypeMerge, "v2");
+  AddKeyVal("a", 40, rs::db::dbformat::ValueType::TypeMerge, "v");  // <- iter_ after merge
+  AddKeyVal("a", 30, rs::db::dbformat::ValueType::TypeMerge, "v");
 
   ASSERT_TRUE(Run(31, true).IsMergeInProgress());
   ASSERT_EQ(ks_[2], iter_->key());
-  ASSERT_EQ(test::KeyStr("a", 40, rs::db::dbformat::ValueType::kTypeMerge), merge_helper_->keys()[0]);
+  ASSERT_EQ(test::KeyStr("a", 40, rs::db::dbformat::ValueType::TypeMerge), merge_helper_->keys()[0]);
   ASSERT_EQ("v", merge_helper_->values()[0]);
-  ASSERT_EQ(test::KeyStr("a", 50, rs::db::dbformat::ValueType::kTypeMerge), merge_helper_->keys()[1]);
+  ASSERT_EQ(test::KeyStr("a", 50, rs::db::dbformat::ValueType::TypeMerge), merge_helper_->keys()[1]);
   ASSERT_EQ("v2", merge_helper_->values()[1]);
   ASSERT_EQ(2U, merge_helper_->keys().size());
   ASSERT_EQ(2U, merge_helper_->values().size());
@@ -135,11 +135,11 @@ TEST_F(MergeHelperTest, NoPartialMerge) {
 TEST_F(MergeHelperTest, SingleOperand) {
   merge_op_ = MergeOperators::CreateUInt64AddOperator();
 
-  AddKeyVal("a", 50, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(1U));
+  AddKeyVal("a", 50, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(1U));
 
   ASSERT_TRUE(Run(31, false).IsMergeInProgress());
   ASSERT_FALSE(iter_->Valid());
-  ASSERT_EQ(test::KeyStr("a", 50, rs::db::dbformat::ValueType::kTypeMerge), merge_helper_->keys()[0]);
+  ASSERT_EQ(test::KeyStr("a", 50, rs::db::dbformat::ValueType::TypeMerge), merge_helper_->keys()[0]);
   ASSERT_EQ(test::EncodeInt(1U), merge_helper_->values()[0]);
   ASSERT_EQ(1U, merge_helper_->keys().size());
   ASSERT_EQ(1U, merge_helper_->values().size());
@@ -149,12 +149,12 @@ TEST_F(MergeHelperTest, SingleOperand) {
 TEST_F(MergeHelperTest, MergeDeletion) {
   merge_op_ = MergeOperators::CreateUInt64AddOperator();
 
-  AddKeyVal("a", 30, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(3U));
-  AddKeyVal("a", 20, rs::db::dbformat::ValueType::kTypeDeletion, "");
+  AddKeyVal("a", 30, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(3U));
+  AddKeyVal("a", 20, rs::db::dbformat::ValueType::TypeDeletion, "");
 
   ASSERT_TRUE(Run(15, false).ok());
   ASSERT_FALSE(iter_->Valid());
-  ASSERT_EQ(test::KeyStr("a", 30, rs::db::dbformat::ValueType::kTypeValue), merge_helper_->keys()[0]);
+  ASSERT_EQ(test::KeyStr("a", 30, rs::db::dbformat::ValueType::TypeValue), merge_helper_->keys()[0]);
   ASSERT_EQ(test::EncodeInt(3U), merge_helper_->values()[0]);
   ASSERT_EQ(1U, merge_helper_->keys().size());
   ASSERT_EQ(1U, merge_helper_->values().size());
@@ -164,14 +164,14 @@ TEST_F(MergeHelperTest, MergeDeletion) {
 TEST_F(MergeHelperTest, CorruptKey) {
   merge_op_ = MergeOperators::CreateUInt64AddOperator();
 
-  AddKeyVal("a", 30, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(3U));
-  AddKeyVal("a", 25, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(1U));
+  AddKeyVal("a", 30, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(3U));
+  AddKeyVal("a", 25, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(1U));
   // Corrupt key
-  AddKeyVal("a", 20, rs::db::dbformat::ValueType::kTypeDeletion, "", true);  // <- iter_ after merge
+  AddKeyVal("a", 20, rs::db::dbformat::ValueType::TypeDeletion, "", true);  // <- iter_ after merge
 
   ASSERT_TRUE(Run(15, false).IsMergeInProgress());
   ASSERT_EQ(ks_[2], iter_->key());
-  ASSERT_EQ(test::KeyStr("a", 30, rs::db::dbformat::ValueType::kTypeMerge), merge_helper_->keys()[0]);
+  ASSERT_EQ(test::KeyStr("a", 30, rs::db::dbformat::ValueType::TypeMerge), merge_helper_->keys()[0]);
   ASSERT_EQ(test::EncodeInt(4U), merge_helper_->values()[0]);
   ASSERT_EQ(1U, merge_helper_->keys().size());
   ASSERT_EQ(1U, merge_helper_->values().size());
@@ -182,18 +182,18 @@ TEST_F(MergeHelperTest, FilterMergeOperands) {
   merge_op_ = MergeOperators::CreateUInt64AddOperator();
   filter_.reset(new test::FilterNumber(5U));
 
-  AddKeyVal("a", 30, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(3U));
-  AddKeyVal("a", 29, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(5U));  // Filtered
-  AddKeyVal("a", 28, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(3U));
-  AddKeyVal("a", 27, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(1U));
-  AddKeyVal("a", 26, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(5U));  // Filtered
-  AddKeyVal("a", 25, rs::db::dbformat::ValueType::kTypeValue, test::EncodeInt(1U));
+  AddKeyVal("a", 30, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(3U));
+  AddKeyVal("a", 29, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(5U));  // Filtered
+  AddKeyVal("a", 28, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(3U));
+  AddKeyVal("a", 27, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(1U));
+  AddKeyVal("a", 26, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(5U));  // Filtered
+  AddKeyVal("a", 25, rs::db::dbformat::ValueType::TypeValue, test::EncodeInt(1U));
 
   ASSERT_TRUE(Run(15, false).ok());
   ASSERT_FALSE(iter_->Valid());
   MergeOutputIterator merge_output_iter(merge_helper_.get());
   merge_output_iter.SeekToFirst();
-  ASSERT_EQ(test::KeyStr("a", 30, rs::db::dbformat::ValueType::kTypeValue),
+  ASSERT_EQ(test::KeyStr("a", 30, rs::db::dbformat::ValueType::TypeValue),
             merge_output_iter.key().ToString());
   ASSERT_EQ(test::EncodeInt(8U), merge_output_iter.value().ToString());
   merge_output_iter.Next();
@@ -204,12 +204,12 @@ TEST_F(MergeHelperTest, FilterAllMergeOperands) {
   merge_op_ = MergeOperators::CreateUInt64AddOperator();
   filter_.reset(new test::FilterNumber(5U));
 
-  AddKeyVal("a", 30, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(5U));
-  AddKeyVal("a", 29, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(5U));
-  AddKeyVal("a", 28, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(5U));
-  AddKeyVal("a", 27, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(5U));
-  AddKeyVal("a", 26, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(5U));
-  AddKeyVal("a", 25, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(5U));
+  AddKeyVal("a", 30, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(5U));
+  AddKeyVal("a", 29, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(5U));
+  AddKeyVal("a", 28, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(5U));
+  AddKeyVal("a", 27, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(5U));
+  AddKeyVal("a", 26, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(5U));
+  AddKeyVal("a", 25, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(5U));
 
   // filtered out all
   ASSERT_TRUE(Run(15, false).ok());
@@ -219,8 +219,8 @@ TEST_F(MergeHelperTest, FilterAllMergeOperands) {
   ASSERT_FALSE(merge_output_iter.Valid());
 
   // we have one operand that will survive because it's a delete
-  AddKeyVal("a", 24, rs::db::dbformat::ValueType::kTypeDeletion, test::EncodeInt(5U));
-  AddKeyVal("b", 23, rs::db::dbformat::ValueType::kTypeValue, test::EncodeInt(5U));
+  AddKeyVal("a", 24, rs::db::dbformat::ValueType::TypeDeletion, test::EncodeInt(5U));
+  AddKeyVal("b", 23, rs::db::dbformat::ValueType::TypeValue, test::EncodeInt(5U));
   ASSERT_TRUE(Run(15, true).ok());
   merge_output_iter = MergeOutputIterator(merge_helper_.get());
   ASSERT_TRUE(iter_->Valid());
@@ -229,7 +229,7 @@ TEST_F(MergeHelperTest, FilterAllMergeOperands) {
 
   // when all merge operands are filtered out, we leave the iterator pointing to
   // the Put/Delete that survived
-  ASSERT_EQ(test::KeyStr("a", 24, rs::db::dbformat::ValueType::kTypeDeletion), iter_->key().ToString());
+  ASSERT_EQ(test::KeyStr("a", 24, rs::db::dbformat::ValueType::TypeDeletion), iter_->key().ToString());
   ASSERT_EQ(test::EncodeInt(5U), iter_->value().ToString());
 }
 
@@ -238,14 +238,14 @@ TEST_F(MergeHelperTest, FilterFirstMergeOperand) {
   merge_op_ = MergeOperators::CreateUInt64AddOperator();
   filter_.reset(new test::FilterNumber(5U));
 
-  AddKeyVal("a", 31, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(5U));  // Filtered
-  AddKeyVal("a", 30, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(5U));  // Filtered
-  AddKeyVal("a", 29, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(2U));
-  AddKeyVal("a", 28, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(1U));
-  AddKeyVal("a", 27, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(3U));
-  AddKeyVal("a", 26, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(5U));  // Filtered
-  AddKeyVal("a", 25, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(5U));  // Filtered
-  AddKeyVal("b", 24, rs::db::dbformat::ValueType::kTypeValue, test::EncodeInt(5U));  // next user key
+  AddKeyVal("a", 31, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(5U));  // Filtered
+  AddKeyVal("a", 30, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(5U));  // Filtered
+  AddKeyVal("a", 29, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(2U));
+  AddKeyVal("a", 28, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(1U));
+  AddKeyVal("a", 27, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(3U));
+  AddKeyVal("a", 26, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(5U));  // Filtered
+  AddKeyVal("a", 25, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(5U));  // Filtered
+  AddKeyVal("b", 24, rs::db::dbformat::ValueType::TypeValue, test::EncodeInt(5U));  // next user key
 
   ASSERT_OK(Run(15, true));
   ASSERT_TRUE(iter_->Valid());
@@ -253,7 +253,7 @@ TEST_F(MergeHelperTest, FilterFirstMergeOperand) {
   merge_output_iter.SeekToFirst();
   // sequence number is 29 here, because the first merge operand got filtered
   // out
-  ASSERT_EQ(test::KeyStr("a", 29, rs::db::dbformat::ValueType::kTypeValue),
+  ASSERT_EQ(test::KeyStr("a", 29, rs::db::dbformat::ValueType::TypeValue),
             merge_output_iter.key().ToString());
   ASSERT_EQ(test::EncodeInt(6U), merge_output_iter.value().ToString());
   merge_output_iter.Next();
@@ -269,20 +269,20 @@ TEST_F(MergeHelperTest, DontFilterMergeOperandsBeforeSnapshotTest) {
   merge_op_ = MergeOperators::CreateUInt64AddOperator();
   filter_.reset(new test::FilterNumber(5U));
 
-  AddKeyVal("a", 31, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(5U));
-  AddKeyVal("a", 30, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(5U));
-  AddKeyVal("a", 29, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(2U));
-  AddKeyVal("a", 28, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(1U));
-  AddKeyVal("a", 27, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(3U));
-  AddKeyVal("a", 26, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(5U));
-  AddKeyVal("a", 25, rs::db::dbformat::ValueType::kTypeMerge, test::EncodeInt(5U));
-  AddKeyVal("b", 24, rs::db::dbformat::ValueType::kTypeValue, test::EncodeInt(5U));
+  AddKeyVal("a", 31, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(5U));
+  AddKeyVal("a", 30, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(5U));
+  AddKeyVal("a", 29, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(2U));
+  AddKeyVal("a", 28, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(1U));
+  AddKeyVal("a", 27, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(3U));
+  AddKeyVal("a", 26, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(5U));
+  AddKeyVal("a", 25, rs::db::dbformat::ValueType::TypeMerge, test::EncodeInt(5U));
+  AddKeyVal("b", 24, rs::db::dbformat::ValueType::TypeValue, test::EncodeInt(5U));
 
   ASSERT_OK(Run(15, true, 32));
   ASSERT_TRUE(iter_->Valid());
   MergeOutputIterator merge_output_iter(merge_helper_.get());
   merge_output_iter.SeekToFirst();
-  ASSERT_EQ(test::KeyStr("a", 31, rs::db::dbformat::ValueType::kTypeValue),
+  ASSERT_EQ(test::KeyStr("a", 31, rs::db::dbformat::ValueType::TypeValue),
             merge_output_iter.key().ToString());
   ASSERT_EQ(test::EncodeInt(26U), merge_output_iter.value().ToString());
   merge_output_iter.Next();

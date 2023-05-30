@@ -174,7 +174,7 @@ class BlockBasedTableReaderBaseTest : public testing::Test {
   }
 
   std::string ToInternalKey(const std::string& key) {
-    InternalKey internal_key(key, 0, rs::db::dbformat::ValueType::kTypeValue);
+    InternalKey internal_key(key, 0, rs::db::dbformat::ValueType::TypeValue);
     return internal_key.Encode().ToString();
   }
 };

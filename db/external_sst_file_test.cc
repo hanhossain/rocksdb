@@ -2765,7 +2765,7 @@ TEST_P(ExternalSSTFileTest, DeltaEncodingWhileGlobalSeqnoPresent) {
   // key is composed as (seqno << 8 | value_type), and here `1` represents
   // ValueType::kTypeValue
 
-  PutFixed64(&key2, PackSequenceAndType(0, rs::db::dbformat::ValueType::kTypeValue));
+  PutFixed64(&key2, PackSequenceAndType(0, rs::db::dbformat::ValueType::TypeValue));
   key2 += "cdefghijkl";
 
   ASSERT_OK(writer.Put(key1, value));
@@ -2796,9 +2796,9 @@ TEST_P(ExternalSSTFileTest,
   std::string key1 = "ab";
   // Make the prefix of key2 is same with key1 add zero seqno. The tail of every
   // key is composed as (seqno << 8 | value_type), and here `1` represents
-  // rs::db::dbformat::ValueType::kTypeValue
+  // rs::db::dbformat::ValueType::TypeValue
   std::string key2 = "ab";
-  PutFixed64(&key2, PackSequenceAndType(0, rs::db::dbformat::ValueType::kTypeValue));
+  PutFixed64(&key2, PackSequenceAndType(0, rs::db::dbformat::ValueType::TypeValue));
   key2 += "cdefghijkl";
   std::string key3 = key2 + "_";
 

@@ -38,7 +38,7 @@ TruncatedRangeDelIterator::TruncatedRangeDelIterator(
     Status pik_status = ParseInternalKey(smallest->Encode(), &parsed_smallest,
                                          false /* log_err_key */);  // TODO
     pik_status.PermitUncheckedError();
-    parsed_smallest.type = rs::db::dbformat::ValueType::kTypeMaxValid;
+    parsed_smallest.type = rs::db::dbformat::ValueType::TypeMaxValid;
     assert(pik_status.ok());
     smallest_ = &parsed_smallest;
   }
@@ -51,7 +51,7 @@ TruncatedRangeDelIterator::TruncatedRangeDelIterator(
     pik_status.PermitUncheckedError();
     assert(pik_status.ok());
 
-    if (parsed_largest.type == rs::db::dbformat::ValueType::kTypeRangeDeletion &&
+    if (parsed_largest.type == rs::db::dbformat::ValueType::TypeRangeDeletion &&
         parsed_largest.sequence == kMaxSequenceNumber) {
       // The file boundary has been artificially extended by a range tombstone.
       // We do not need to adjust largest to properly truncate range
@@ -75,7 +75,7 @@ TruncatedRangeDelIterator::TruncatedRangeDelIterator(
       parsed_largest.sequence -= 1;
       // This line is not needed for correctness, but it ensures that the
       // truncated end key is not covering keys from the next SST file.
-      parsed_largest.type = rs::db::dbformat::ValueType::kTypeMaxValid;
+      parsed_largest.type = rs::db::dbformat::ValueType::TypeMaxValid;
     }
     largest_ = &parsed_largest;
   }
@@ -94,7 +94,7 @@ bool TruncatedRangeDelIterator::Valid() const {
 void TruncatedRangeDelIterator::Seek(const Slice& target) {
   if (largest_ != nullptr &&
       icmp_->Compare(*largest_, ParsedInternalKey(target, kMaxSequenceNumber,
-                                                  rs::db::dbformat::ValueType::kTypeRangeDeletion)) <= 0) {
+                                                  rs::db::dbformat::ValueType::TypeRangeDeletion)) <= 0) {
     iter_->Invalidate();
     return;
   }
@@ -127,7 +127,7 @@ void TruncatedRangeDelIterator::SeekInternalKey(const Slice& target) {
 // NOTE: target is a user key, with timestamp if enabled.
 void TruncatedRangeDelIterator::SeekForPrev(const Slice& target) {
   if (smallest_ != nullptr &&
-      icmp_->Compare(ParsedInternalKey(target, 0, rs::db::dbformat::ValueType::kTypeRangeDeletion),
+      icmp_->Compare(ParsedInternalKey(target, 0, rs::db::dbformat::ValueType::TypeRangeDeletion),
                      *smallest_) < 0) {
     iter_->Invalidate();
     return;
@@ -480,10 +480,10 @@ class TruncatedRangeDelMergingIter : public InternalIterator {
     auto* top = heap_.top();
     if (ts_sz_) {
       cur_start_key_.Set(top->start_key().user_key, top->seq(),
-                         rs::db::dbformat::ValueType::kTypeRangeDeletion, top->timestamp());
+                         rs::db::dbformat::ValueType::TypeRangeDeletion, top->timestamp());
     } else {
       cur_start_key_.Set(top->start_key().user_key, top->seq(),
-                         rs::db::dbformat::ValueType::kTypeRangeDeletion);
+                         rs::db::dbformat::ValueType::TypeRangeDeletion);
     }
     assert(top->start_key().user_key.size() >= ts_sz_);
     return cur_start_key_.Encode();

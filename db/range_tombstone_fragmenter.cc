@@ -242,7 +242,7 @@ void FragmentedRangeTombstoneList::FragmentTombstones(
     }
     cur_start_key = tombstone_start_key;
 
-    cur_end_keys.emplace(tombstone_end_key, tombstone_seq, rs::db::dbformat::ValueType::kTypeRangeDeletion);
+    cur_end_keys.emplace(tombstone_end_key, tombstone_seq, rs::db::dbformat::ValueType::TypeRangeDeletion);
   }
   if (!cur_end_keys.empty()) {
     ParsedInternalKey last_end_key = *std::prev(cur_end_keys.end());

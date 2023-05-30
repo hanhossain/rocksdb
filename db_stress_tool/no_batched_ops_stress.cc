@@ -1046,8 +1046,8 @@ class NonBatchedOpsStressTest : public StressTest {
       // value-like types.
       if (ro_copy.iter_start_ts) {
         const rs::db::dbformat::ValueType value_type = ExtractValueType(iter->key());
-        if (value_type != rs::db::dbformat::ValueType::kTypeValue && value_type != rs::db::dbformat::ValueType::kTypeBlobIndex &&
-            value_type != rs::db::dbformat::ValueType::kTypeWideColumnEntity) {
+        if (value_type != rs::db::dbformat::ValueType::TypeValue && value_type != rs::db::dbformat::ValueType::TypeBlobIndex &&
+            value_type != rs::db::dbformat::ValueType::TypeWideColumnEntity) {
           continue;
         }
       }

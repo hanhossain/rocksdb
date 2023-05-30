@@ -2688,7 +2688,7 @@ TEST_F(DBTest2, ReadAmpBitmap) {
       ASSERT_OK(db_->Get(ReadOptions(), key, &value));
 
       if (read_keys.find(key_idx) == read_keys.end()) {
-        auto internal_key = InternalKey(key, 0, rs::db::dbformat::ValueType::kTypeValue);
+        auto internal_key = InternalKey(key, 0, rs::db::dbformat::ValueType::TypeValue);
         total_useful_bytes +=
             GetEncodedEntrySize(internal_key.size(), value.size());
         read_keys.insert(key_idx);
@@ -2798,7 +2798,7 @@ TEST_F(DBTest2, ReadAmpBitmapLiveInCacheAfterDBClose) {
       ASSERT_OK(db_->Get(ReadOptions(), key, &value));
 
       if (read_keys.find(i) == read_keys.end()) {
-        auto internal_key = InternalKey(key, 0, rs::db::dbformat::ValueType::kTypeValue);
+        auto internal_key = InternalKey(key, 0, rs::db::dbformat::ValueType::TypeValue);
         read_keys.insert(i);
       }
     }
@@ -2824,7 +2824,7 @@ TEST_F(DBTest2, ReadAmpBitmapLiveInCacheAfterDBClose) {
       ASSERT_OK(db_->Get(ReadOptions(), key, &value));
 
       if (read_keys.find(i) == read_keys.end()) {
-        auto internal_key = InternalKey(key, 0, rs::db::dbformat::ValueType::kTypeValue);
+        auto internal_key = InternalKey(key, 0, rs::db::dbformat::ValueType::TypeValue);
         read_keys.insert(i);
       }
     }

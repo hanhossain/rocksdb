@@ -40,7 +40,7 @@ static void TestKey(const std::string& key, uint64_t seq, rs::db::dbformat::Valu
   std::string encoded = IKey(key, seq, vt);
 
   Slice in(encoded);
-  ParsedInternalKey decoded("", 0, rs::db::dbformat::ValueType::kTypeValue);
+  ParsedInternalKey decoded("", 0, rs::db::dbformat::ValueType::TypeValue);
 
   ASSERT_OK(ParseInternalKey(in, &decoded, true /* log_err_key */));
   ASSERT_EQ(key, decoded.user_key.ToString());
@@ -68,75 +68,75 @@ TEST_F(FormatTest, InternalKey_EncodeDecode) {
                           (1ull << 32) + 1};
   for (unsigned int k = 0; k < sizeof(keys) / sizeof(keys[0]); k++) {
     for (unsigned int s = 0; s < sizeof(seq) / sizeof(seq[0]); s++) {
-      TestKey(keys[k], seq[s], rs::db::dbformat::ValueType::kTypeValue);
-      TestKey("hello", 1, rs::db::dbformat::ValueType::kTypeDeletion);
+      TestKey(keys[k], seq[s], rs::db::dbformat::ValueType::TypeValue);
+      TestKey("hello", 1, rs::db::dbformat::ValueType::TypeDeletion);
     }
   }
 }
 
 TEST_F(FormatTest, InternalKeyShortSeparator) {
   // When user keys are same
-  ASSERT_EQ(IKey("foo", 100, rs::db::dbformat::ValueType::kTypeValue),
-            Shorten(IKey("foo", 100, rs::db::dbformat::ValueType::kTypeValue), IKey("foo", 99, rs::db::dbformat::ValueType::kTypeValue)));
+  ASSERT_EQ(IKey("foo", 100, rs::db::dbformat::ValueType::TypeValue),
+            Shorten(IKey("foo", 100, rs::db::dbformat::ValueType::TypeValue), IKey("foo", 99, rs::db::dbformat::ValueType::TypeValue)));
   ASSERT_EQ(
-      IKey("foo", 100, rs::db::dbformat::ValueType::kTypeValue),
-      Shorten(IKey("foo", 100, rs::db::dbformat::ValueType::kTypeValue), IKey("foo", 101, rs::db::dbformat::ValueType::kTypeValue)));
+      IKey("foo", 100, rs::db::dbformat::ValueType::TypeValue),
+      Shorten(IKey("foo", 100, rs::db::dbformat::ValueType::TypeValue), IKey("foo", 101, rs::db::dbformat::ValueType::TypeValue)));
   ASSERT_EQ(
-      IKey("foo", 100, rs::db::dbformat::ValueType::kTypeValue),
-      Shorten(IKey("foo", 100, rs::db::dbformat::ValueType::kTypeValue), IKey("foo", 100, rs::db::dbformat::ValueType::kTypeValue)));
+      IKey("foo", 100, rs::db::dbformat::ValueType::TypeValue),
+      Shorten(IKey("foo", 100, rs::db::dbformat::ValueType::TypeValue), IKey("foo", 100, rs::db::dbformat::ValueType::TypeValue)));
   ASSERT_EQ(
-      IKey("foo", 100, rs::db::dbformat::ValueType::kTypeValue),
-      Shorten(IKey("foo", 100, rs::db::dbformat::ValueType::kTypeValue), IKey("foo", 100, rs::db::dbformat::ValueType::kTypeDeletion)));
+      IKey("foo", 100, rs::db::dbformat::ValueType::TypeValue),
+      Shorten(IKey("foo", 100, rs::db::dbformat::ValueType::TypeValue), IKey("foo", 100, rs::db::dbformat::ValueType::TypeDeletion)));
 
   // When user keys are misordered
-  ASSERT_EQ(IKey("foo", 100, rs::db::dbformat::ValueType::kTypeValue),
-            Shorten(IKey("foo", 100, rs::db::dbformat::ValueType::kTypeValue), IKey("bar", 99, rs::db::dbformat::ValueType::kTypeValue)));
+  ASSERT_EQ(IKey("foo", 100, rs::db::dbformat::ValueType::TypeValue),
+            Shorten(IKey("foo", 100, rs::db::dbformat::ValueType::TypeValue), IKey("bar", 99, rs::db::dbformat::ValueType::TypeValue)));
 
   // When user keys are different, but correctly ordered
   ASSERT_EQ(
       IKey("g", kMaxSequenceNumber, kValueTypeForSeek),
-      Shorten(IKey("foo", 100, rs::db::dbformat::ValueType::kTypeValue), IKey("hello", 200, rs::db::dbformat::ValueType::kTypeValue)));
+      Shorten(IKey("foo", 100, rs::db::dbformat::ValueType::TypeValue), IKey("hello", 200, rs::db::dbformat::ValueType::TypeValue)));
 
   ASSERT_EQ(IKey("ABC2", kMaxSequenceNumber, kValueTypeForSeek),
-            Shorten(IKey("ABC1AAAAA", 100, rs::db::dbformat::ValueType::kTypeValue),
-                    IKey("ABC2ABB", 200, rs::db::dbformat::ValueType::kTypeValue)));
+            Shorten(IKey("ABC1AAAAA", 100, rs::db::dbformat::ValueType::TypeValue),
+                    IKey("ABC2ABB", 200, rs::db::dbformat::ValueType::TypeValue)));
 
   ASSERT_EQ(IKey("AAA2", kMaxSequenceNumber, kValueTypeForSeek),
-            Shorten(IKey("AAA1AAA", 100, rs::db::dbformat::ValueType::kTypeValue),
-                    IKey("AAA2AA", 200, rs::db::dbformat::ValueType::kTypeValue)));
+            Shorten(IKey("AAA1AAA", 100, rs::db::dbformat::ValueType::TypeValue),
+                    IKey("AAA2AA", 200, rs::db::dbformat::ValueType::TypeValue)));
 
   ASSERT_EQ(
       IKey("AAA2", kMaxSequenceNumber, kValueTypeForSeek),
-      Shorten(IKey("AAA1AAA", 100, rs::db::dbformat::ValueType::kTypeValue), IKey("AAA4", 200, rs::db::dbformat::ValueType::kTypeValue)));
+      Shorten(IKey("AAA1AAA", 100, rs::db::dbformat::ValueType::TypeValue), IKey("AAA4", 200, rs::db::dbformat::ValueType::TypeValue)));
 
   ASSERT_EQ(
       IKey("AAA1B", kMaxSequenceNumber, kValueTypeForSeek),
-      Shorten(IKey("AAA1AAA", 100, rs::db::dbformat::ValueType::kTypeValue), IKey("AAA2", 200, rs::db::dbformat::ValueType::kTypeValue)));
+      Shorten(IKey("AAA1AAA", 100, rs::db::dbformat::ValueType::TypeValue), IKey("AAA2", 200, rs::db::dbformat::ValueType::TypeValue)));
 
   ASSERT_EQ(IKey("AAA2", kMaxSequenceNumber, kValueTypeForSeek),
-            Shorten(IKey("AAA1AAA", 100, rs::db::dbformat::ValueType::kTypeValue),
-                    IKey("AAA2A", 200, rs::db::dbformat::ValueType::kTypeValue)));
+            Shorten(IKey("AAA1AAA", 100, rs::db::dbformat::ValueType::TypeValue),
+                    IKey("AAA2A", 200, rs::db::dbformat::ValueType::TypeValue)));
 
   ASSERT_EQ(
-      IKey("AAA1", 100, rs::db::dbformat::ValueType::kTypeValue),
-      Shorten(IKey("AAA1", 100, rs::db::dbformat::ValueType::kTypeValue), IKey("AAA2", 200, rs::db::dbformat::ValueType::kTypeValue)));
+      IKey("AAA1", 100, rs::db::dbformat::ValueType::TypeValue),
+      Shorten(IKey("AAA1", 100, rs::db::dbformat::ValueType::TypeValue), IKey("AAA2", 200, rs::db::dbformat::ValueType::TypeValue)));
 
   // When start user key is prefix of limit user key
   ASSERT_EQ(
-      IKey("foo", 100, rs::db::dbformat::ValueType::kTypeValue),
-      Shorten(IKey("foo", 100, rs::db::dbformat::ValueType::kTypeValue), IKey("foobar", 200, rs::db::dbformat::ValueType::kTypeValue)));
+      IKey("foo", 100, rs::db::dbformat::ValueType::TypeValue),
+      Shorten(IKey("foo", 100, rs::db::dbformat::ValueType::TypeValue), IKey("foobar", 200, rs::db::dbformat::ValueType::TypeValue)));
 
   // When limit user key is prefix of start user key
   ASSERT_EQ(
-      IKey("foobar", 100, rs::db::dbformat::ValueType::kTypeValue),
-      Shorten(IKey("foobar", 100, rs::db::dbformat::ValueType::kTypeValue), IKey("foo", 200, rs::db::dbformat::ValueType::kTypeValue)));
+      IKey("foobar", 100, rs::db::dbformat::ValueType::TypeValue),
+      Shorten(IKey("foobar", 100, rs::db::dbformat::ValueType::TypeValue), IKey("foo", 200, rs::db::dbformat::ValueType::TypeValue)));
 }
 
 TEST_F(FormatTest, InternalKeyShortestSuccessor) {
   ASSERT_EQ(IKey("g", kMaxSequenceNumber, kValueTypeForSeek),
-            ShortSuccessor(IKey("foo", 100, rs::db::dbformat::ValueType::kTypeValue)));
-  ASSERT_EQ(IKey("\xff\xff", 100, rs::db::dbformat::ValueType::kTypeValue),
-            ShortSuccessor(IKey("\xff\xff", 100, rs::db::dbformat::ValueType::kTypeValue)));
+            ShortSuccessor(IKey("foo", 100, rs::db::dbformat::ValueType::TypeValue)));
+  ASSERT_EQ(IKey("\xff\xff", 100, rs::db::dbformat::ValueType::TypeValue),
+            ShortSuccessor(IKey("\xff\xff", 100, rs::db::dbformat::ValueType::TypeValue)));
 }
 
 TEST_F(FormatTest, IterKeyOperation) {
@@ -181,10 +181,10 @@ TEST_F(FormatTest, IterKeyOperation) {
 TEST_F(FormatTest, UpdateInternalKey) {
   std::string user_key("abcdefghijklmnopqrstuvwxyz");
   uint64_t new_seq = 0x123456;
-  rs::db::dbformat::ValueType new_val_type = rs::db::dbformat::ValueType::kTypeDeletion;
+  rs::db::dbformat::ValueType new_val_type = rs::db::dbformat::ValueType::TypeDeletion;
 
   std::string ikey;
-  AppendInternalKey(&ikey, ParsedInternalKey(user_key, 100U, rs::db::dbformat::ValueType::kTypeValue));
+  AppendInternalKey(&ikey, ParsedInternalKey(user_key, 100U, rs::db::dbformat::ValueType::TypeValue));
   size_t ikey_size = ikey.size();
   UpdateInternalKey(&ikey, new_seq, new_val_type);
   ASSERT_EQ(ikey_size, ikey.size());
@@ -199,7 +199,7 @@ TEST_F(FormatTest, UpdateInternalKey) {
 
 TEST_F(FormatTest, RangeTombstoneSerializeEndKey) {
   RangeTombstone t("a", "b", 2);
-  InternalKey k("b", 3, rs::db::dbformat::ValueType::kTypeValue);
+  InternalKey k("b", 3, rs::db::dbformat::ValueType::TypeValue);
   const InternalKeyComparator cmp(BytewiseComparator());
   ASSERT_LT(cmp.Compare(t.SerializeEndKey(), k), 0);
 }

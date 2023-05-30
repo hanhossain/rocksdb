@@ -545,7 +545,7 @@ Status FlushJob::MemPurge() {
             tombstone.seq_ < new_first_seqno ? tombstone.seq_ : new_first_seqno;
         s = new_mem->Add(
             tombstone.seq_,        // Sequence number
-            rs::db::dbformat::ValueType::kTypeRangeDeletion,    // KV type
+            rs::db::dbformat::ValueType::TypeRangeDeletion,    // KV type
             tombstone.start_key_,  // Key is start key.
             tombstone.end_key_,    // Value is end key.
             nullptr,               // KV protection info set as nullptr since it
@@ -705,7 +705,7 @@ bool FlushJob::MemPurgeDecider(double threshold) {
 
       // Size of the entry is "key size (+ value size if KV entry)"
       entry_size = key_slice.size();
-      if (res.type == rs::db::dbformat::ValueType::kTypeValue) {
+      if (res.type == rs::db::dbformat::ValueType::TypeValue) {
         value_slice =
             GetLengthPrefixedSlice(key_slice.data() + key_slice.size());
         entry_size += value_slice.size();
@@ -754,7 +754,7 @@ bool FlushJob::MemPurgeDecider(double threshold) {
       // Evaluate if the entry can be useful payload
       // Situation #1: entry is a KV entry, was found in the memtable mt
       //               and the sequence numbers match.
-      can_be_useful_payload = (res.type == rs::db::dbformat::ValueType::kTypeValue) && get_res &&
+      can_be_useful_payload = (res.type == rs::db::dbformat::ValueType::TypeValue) && get_res &&
                               mget_s.ok() && (sqno == res.sequence);
 
       // Situation #2: entry is a delete entry, was found in the memtable mt
@@ -764,7 +764,7 @@ bool FlushJob::MemPurgeDecider(double threshold) {
       //               in memtable->Get(&sqno) operation is set to be equal
       //               to the most recent delete entry as well).
       can_be_useful_payload |=
-          ((res.type == rs::db::dbformat::ValueType::kTypeDeletion) || (res.type == rs::db::dbformat::ValueType::kTypeSingleDeletion)) &&
+          ((res.type == rs::db::dbformat::ValueType::TypeDeletion) || (res.type == rs::db::dbformat::ValueType::TypeSingleDeletion)) &&
           mget_s.IsNotFound() && get_res && (sqno == res.sequence);
 
       // If there is a chance that the entry is useful payload

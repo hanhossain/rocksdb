@@ -49,7 +49,7 @@ void DBBasicTestWithTimestampBase::CheckIterUserEntry(
   ASSERT_TRUE(it->Valid());
   ASSERT_OK(it->status());
   ASSERT_EQ(expected_key, it->key());
-  if (rs::db::dbformat::ValueType::kTypeValue == expected_value_type) {
+  if (rs::db::dbformat::ValueType::TypeValue == expected_value_type) {
     ASSERT_EQ(expected_value, it->value());
   }
   ASSERT_EQ(expected_ts, it->timestamp());
@@ -69,7 +69,7 @@ void DBBasicTestWithTimestampBase::CheckIterEntry(
   ASSERT_EQ(ukey_and_ts, parsed_ikey.user_key);
   ASSERT_EQ(expected_val_type, parsed_ikey.type);
   ASSERT_EQ(expected_seq, parsed_ikey.sequence);
-  if (expected_val_type == rs::db::dbformat::ValueType::kTypeValue) {
+  if (expected_val_type == rs::db::dbformat::ValueType::TypeValue) {
     ASSERT_EQ(expected_value, it->value());
   }
   ASSERT_EQ(expected_ts, it->timestamp());
@@ -88,7 +88,7 @@ void DBBasicTestWithTimestampBase::CheckIterEntry(
   ASSERT_OK(ParseInternalKey(it->key(), &parsed_ikey, true /* log_err_key */));
   ASSERT_EQ(expected_val_type, parsed_ikey.type);
   ASSERT_EQ(Slice(ukey_and_ts), parsed_ikey.user_key);
-  if (expected_val_type == rs::db::dbformat::ValueType::kTypeValue) {
+  if (expected_val_type == rs::db::dbformat::ValueType::TypeValue) {
     ASSERT_EQ(expected_value, it->value());
   }
   ASSERT_EQ(expected_ts, it->timestamp());

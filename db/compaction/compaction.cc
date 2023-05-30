@@ -21,7 +21,7 @@
 namespace ROCKSDB_NAMESPACE {
 
 const uint64_t kRangeTombstoneSentinel =
-    PackSequenceAndType(kMaxSequenceNumber, rs::db::dbformat::ValueType::kTypeRangeDeletion);
+    PackSequenceAndType(kMaxSequenceNumber, rs::db::dbformat::ValueType::TypeRangeDeletion);
 
 int sstableKeyCompare(const Comparator* user_cmp, const InternalKey& a,
                       const InternalKey& b) {

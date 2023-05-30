@@ -256,12 +256,12 @@ TEST_F(MemTableListTest, GetTest) {
 
   // Write some keys to this memtable.
   ASSERT_OK(
-      mem->Add(++seq, rs::db::dbformat::ValueType::kTypeDeletion, "key1", "", nullptr /* kv_prot_info */));
-  ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::kTypeValue, "key2", "value2",
+      mem->Add(++seq, rs::db::dbformat::ValueType::TypeDeletion, "key1", "", nullptr /* kv_prot_info */));
+  ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::TypeValue, "key2", "value2",
                      nullptr /* kv_prot_info */));
-  ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::kTypeValue, "key1", "value1",
+  ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::TypeValue, "key1", "value1",
                      nullptr /* kv_prot_info */));
-  ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::kTypeValue, "key2", "value2.2",
+  ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::TypeValue, "key2", "value2.2",
                      nullptr /* kv_prot_info */));
 
   // Fetch the newly written keys
@@ -307,8 +307,8 @@ TEST_F(MemTableListTest, GetTest) {
   mem2->Ref();
 
   ASSERT_OK(
-      mem2->Add(++seq, rs::db::dbformat::ValueType::kTypeDeletion, "key1", "", nullptr /* kv_prot_info */));
-  ASSERT_OK(mem2->Add(++seq, rs::db::dbformat::ValueType::kTypeValue, "key2", "value2.3",
+      mem2->Add(++seq, rs::db::dbformat::ValueType::TypeDeletion, "key1", "", nullptr /* kv_prot_info */));
+  ASSERT_OK(mem2->Add(++seq, rs::db::dbformat::ValueType::TypeValue, "key2", "value2.3",
                       nullptr /* kv_prot_info */));
 
   // Add second memtable to list
@@ -391,10 +391,10 @@ TEST_F(MemTableListTest, GetFromHistoryTest) {
 
   // Write some keys to this memtable.
   ASSERT_OK(
-      mem->Add(++seq, rs::db::dbformat::ValueType::kTypeDeletion, "key1", "", nullptr /* kv_prot_info */));
-  ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::kTypeValue, "key2", "value2",
+      mem->Add(++seq, rs::db::dbformat::ValueType::TypeDeletion, "key1", "", nullptr /* kv_prot_info */));
+  ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::TypeValue, "key2", "value2",
                      nullptr /* kv_prot_info */));
-  ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::kTypeValue, "key2", "value2.2",
+  ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::TypeValue, "key2", "value2.2",
                      nullptr /* kv_prot_info */));
 
   // Fetch the newly written keys
@@ -490,8 +490,8 @@ TEST_F(MemTableListTest, GetFromHistoryTest) {
   mem2->Ref();
 
   ASSERT_OK(
-      mem2->Add(++seq, rs::db::dbformat::ValueType::kTypeDeletion, "key1", "", nullptr /* kv_prot_info */));
-  ASSERT_OK(mem2->Add(++seq, rs::db::dbformat::ValueType::kTypeValue, "key3", "value3",
+      mem2->Add(++seq, rs::db::dbformat::ValueType::TypeDeletion, "key1", "", nullptr /* kv_prot_info */));
+  ASSERT_OK(mem2->Add(++seq, rs::db::dbformat::ValueType::TypeValue, "key3", "value3",
                       nullptr /* kv_prot_info */));
 
   // Add second memtable to list
@@ -615,15 +615,15 @@ TEST_F(MemTableListTest, FlushPendingTest) {
     std::string value;
     MergeContext merge_context;
 
-    ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::kTypeValue, "key1", std::to_string(i),
+    ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::TypeValue, "key1", std::to_string(i),
                        nullptr /* kv_prot_info */));
-    ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::kTypeValue, "keyN" + std::to_string(i), "valueN",
+    ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::TypeValue, "keyN" + std::to_string(i), "valueN",
                        nullptr /* kv_prot_info */));
-    ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::kTypeValue, "keyX" + std::to_string(i), "value",
+    ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::TypeValue, "keyX" + std::to_string(i), "value",
                        nullptr /* kv_prot_info */));
-    ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::kTypeValue, "keyM" + std::to_string(i), "valueM",
+    ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::TypeValue, "keyM" + std::to_string(i), "valueM",
                        nullptr /* kv_prot_info */));
-    ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::kTypeDeletion, "keyX" + std::to_string(i), "",
+    ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::TypeDeletion, "keyX" + std::to_string(i), "",
                        nullptr /* kv_prot_info */));
 
     tables.push_back(mem);
@@ -919,15 +919,15 @@ TEST_F(MemTableListTest, AtomicFlusTest) {
 
       std::string value;
 
-      ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::kTypeValue, "key1", std::to_string(i),
+      ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::TypeValue, "key1", std::to_string(i),
                          nullptr /* kv_prot_info */));
-      ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::kTypeValue, "keyN" + std::to_string(i),
+      ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::TypeValue, "keyN" + std::to_string(i),
                          "valueN", nullptr /* kv_prot_info */));
-      ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::kTypeValue, "keyX" + std::to_string(i), "value",
+      ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::TypeValue, "keyX" + std::to_string(i), "value",
                          nullptr /* kv_prot_info */));
-      ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::kTypeValue, "keyM" + std::to_string(i),
+      ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::TypeValue, "keyM" + std::to_string(i),
                          "valueM", nullptr /* kv_prot_info */));
-      ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::kTypeDeletion, "keyX" + std::to_string(i), "",
+      ASSERT_OK(mem->Add(++seq, rs::db::dbformat::ValueType::TypeDeletion, "keyX" + std::to_string(i), "",
                          nullptr /* kv_prot_info */));
 
       elem.push_back(mem);

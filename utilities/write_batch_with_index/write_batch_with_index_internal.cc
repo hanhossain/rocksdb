@@ -479,36 +479,36 @@ Status ReadableWriteBatch::GetEntryFromDataOffset(size_t data_offset,
   }
 
   switch ((rs::db::dbformat::ValueType)tag) {
-    case rs::db::dbformat::ValueType::kTypeColumnFamilyValue:
-    case rs::db::dbformat::ValueType::kTypeValue:
+    case rs::db::dbformat::ValueType::TypeColumnFamilyValue:
+    case rs::db::dbformat::ValueType::TypeValue:
       *type = kPutRecord;
       break;
-    case rs::db::dbformat::ValueType::kTypeColumnFamilyDeletion:
-    case rs::db::dbformat::ValueType::kTypeDeletion:
+    case rs::db::dbformat::ValueType::TypeColumnFamilyDeletion:
+    case rs::db::dbformat::ValueType::TypeDeletion:
       *type = kDeleteRecord;
       break;
-    case rs::db::dbformat::ValueType::kTypeColumnFamilySingleDeletion:
-    case rs::db::dbformat::ValueType::kTypeSingleDeletion:
+    case rs::db::dbformat::ValueType::TypeColumnFamilySingleDeletion:
+    case rs::db::dbformat::ValueType::TypeSingleDeletion:
       *type = kSingleDeleteRecord;
       break;
-    case rs::db::dbformat::ValueType::kTypeColumnFamilyRangeDeletion:
-    case rs::db::dbformat::ValueType::kTypeRangeDeletion:
+    case rs::db::dbformat::ValueType::TypeColumnFamilyRangeDeletion:
+    case rs::db::dbformat::ValueType::TypeRangeDeletion:
       *type = kDeleteRangeRecord;
       break;
-    case rs::db::dbformat::ValueType::kTypeColumnFamilyMerge:
-    case rs::db::dbformat::ValueType::kTypeMerge:
+    case rs::db::dbformat::ValueType::TypeColumnFamilyMerge:
+    case rs::db::dbformat::ValueType::TypeMerge:
       *type = kMergeRecord;
       break;
-    case rs::db::dbformat::ValueType::kTypeLogData:
+    case rs::db::dbformat::ValueType::TypeLogData:
       *type = kLogDataRecord;
       break;
-    case rs::db::dbformat::ValueType::kTypeNoop:
-    case rs::db::dbformat::ValueType::kTypeBeginPrepareXID:
-    case rs::db::dbformat::ValueType::kTypeBeginPersistedPrepareXID:
-    case rs::db::dbformat::ValueType::kTypeBeginUnprepareXID:
-    case rs::db::dbformat::ValueType::kTypeEndPrepareXID:
-    case rs::db::dbformat::ValueType::kTypeCommitXID:
-    case rs::db::dbformat::ValueType::kTypeRollbackXID:
+    case rs::db::dbformat::ValueType::TypeNoop:
+    case rs::db::dbformat::ValueType::TypeBeginPrepareXID:
+    case rs::db::dbformat::ValueType::TypeBeginPersistedPrepareXID:
+    case rs::db::dbformat::ValueType::TypeBeginUnprepareXID:
+    case rs::db::dbformat::ValueType::TypeEndPrepareXID:
+    case rs::db::dbformat::ValueType::TypeCommitXID:
+    case rs::db::dbformat::ValueType::TypeRollbackXID:
       *type = kXIDRecord;
       break;
     default:

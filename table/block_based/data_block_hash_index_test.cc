@@ -269,7 +269,7 @@ TEST(DataBlockHashIndex, BlockRestartIndexExceedMax) {
   // #restarts <= 253. HashIndex is valid
   for (int i = 0; i <= 253; i++) {
     std::string ukey = "key" + std::to_string(i);
-    InternalKey ikey(ukey, 0, rs::db::dbformat::ValueType::kTypeValue);
+    InternalKey ikey(ukey, 0, rs::db::dbformat::ValueType::TypeValue);
     builder.Add(ikey.Encode().ToString(), "value");
   }
 
@@ -291,7 +291,7 @@ TEST(DataBlockHashIndex, BlockRestartIndexExceedMax) {
   // #restarts > 253. HashIndex is not used
   for (int i = 0; i <= 254; i++) {
     std::string ukey = "key" + std::to_string(i);
-    InternalKey ikey(ukey, 0, rs::db::dbformat::ValueType::kTypeValue);
+    InternalKey ikey(ukey, 0, rs::db::dbformat::ValueType::TypeValue);
     builder.Add(ikey.Encode().ToString(), "value");
   }
 
@@ -312,7 +312,7 @@ TEST(DataBlockHashIndex, BlockRestartIndexExceedMax) {
 TEST(DataBlockHashIndex, BlockSizeExceedMax) {
   Options options = Options();
   std::string ukey(10, 'k');
-  InternalKey ikey(ukey, 0, rs::db::dbformat::ValueType::kTypeValue);
+  InternalKey ikey(ukey, 0, rs::db::dbformat::ValueType::TypeValue);
 
   BlockBuilder builder(1 /* block_restart_interval */,
                        false /* use_delta_encoding */,
@@ -375,7 +375,7 @@ TEST(DataBlockHashIndex, BlockTestSingleKey) {
 
   std::string ukey("gopher");
   std::string value("gold");
-  InternalKey ikey(ukey, 10, rs::db::dbformat::ValueType::kTypeValue);
+  InternalKey ikey(ukey, 10, rs::db::dbformat::ValueType::TypeValue);
   builder.Add(ikey.Encode().ToString(), value /*value*/);
 
   // read serialized contents of the block
@@ -456,7 +456,7 @@ TEST(DataBlockHashIndex, BlockTestLarge) {
   // non-existent keys.
   for (int i = 0; i < num_records; i++) {
     std::string ukey(keys[i] + "1" /* existing key marker */);
-    InternalKey ikey(ukey, 0, rs::db::dbformat::ValueType::kTypeValue);
+    InternalKey ikey(ukey, 0, rs::db::dbformat::ValueType::TypeValue);
     builder.Add(ikey.Encode().ToString(), values[i]);
   }
 
@@ -476,7 +476,7 @@ TEST(DataBlockHashIndex, BlockTestLarge) {
     // find a random key in the lookaside array
     int index = rnd.Uniform(num_records);
     std::string ukey(keys[index] + "1" /* existing key marker */);
-    InternalKey ikey(ukey, 0, rs::db::dbformat::ValueType::kTypeValue);
+    InternalKey ikey(ukey, 0, rs::db::dbformat::ValueType::TypeValue);
 
     // search in block for this key
     bool may_exist = iter->SeekForGet(ikey.Encode().ToString());
@@ -514,7 +514,7 @@ TEST(DataBlockHashIndex, BlockTestLarge) {
     // find a random key in the lookaside array
     int index = rnd.Uniform(num_records);
     std::string ukey(keys[index] + "0" /* non-existing key marker */);
-    InternalKey ikey(ukey, 0, rs::db::dbformat::ValueType::kTypeValue);
+    InternalKey ikey(ukey, 0, rs::db::dbformat::ValueType::TypeValue);
 
     // search in block for this key
     bool may_exist = iter->SeekForGet(ikey.Encode().ToString());
@@ -614,16 +614,16 @@ TEST(DataBlockHashIndex, BlockBoundary) {
     // | Block  N  ][ Block N+1 ]
     // seek for "axy"@60
     std::string uk1("aab");
-    InternalKey ik1(uk1, 100, rs::db::dbformat::ValueType::kTypeValue);
+    InternalKey ik1(uk1, 100, rs::db::dbformat::ValueType::TypeValue);
     std::string v1(4100, '1');  // large value
 
     std::string uk2("axy");
-    InternalKey ik2(uk2, 10, rs::db::dbformat::ValueType::kTypeValue);
+    InternalKey ik2(uk2, 10, rs::db::dbformat::ValueType::TypeValue);
     std::string v2(4100, '2');  // large value
 
     PinnableSlice value;
     std::string seek_ukey("axy");
-    InternalKey seek_ikey(seek_ukey, 60, rs::db::dbformat::ValueType::kTypeValue);
+    InternalKey seek_ikey(seek_ukey, 60, rs::db::dbformat::ValueType::TypeValue);
     GetContext get_context(options.comparator, nullptr, nullptr, nullptr,
                            GetContext::kNotFound, seek_ukey, &value, nullptr,
                            nullptr, nullptr, true, nullptr, nullptr);
@@ -639,16 +639,16 @@ TEST(DataBlockHashIndex, BlockBoundary) {
     // | Block  N  ][ Block N+1 ]
     // seek for "axy"@60
     std::string uk1("axy");
-    InternalKey ik1(uk1, 100, rs::db::dbformat::ValueType::kTypeValue);
+    InternalKey ik1(uk1, 100, rs::db::dbformat::ValueType::TypeValue);
     std::string v1(4100, '1');  // large value
 
     std::string uk2("axy");
-    InternalKey ik2(uk2, 10, rs::db::dbformat::ValueType::kTypeValue);
+    InternalKey ik2(uk2, 10, rs::db::dbformat::ValueType::TypeValue);
     std::string v2(4100, '2');  // large value
 
     PinnableSlice value;
     std::string seek_ukey("axy");
-    InternalKey seek_ikey(seek_ukey, 60, rs::db::dbformat::ValueType::kTypeValue);
+    InternalKey seek_ikey(seek_ukey, 60, rs::db::dbformat::ValueType::TypeValue);
     GetContext get_context(options.comparator, nullptr, nullptr, nullptr,
                            GetContext::kNotFound, seek_ukey, &value, nullptr,
                            nullptr, nullptr, true, nullptr, nullptr);
@@ -664,16 +664,16 @@ TEST(DataBlockHashIndex, BlockBoundary) {
     // | Block  N  ][ Block N+1 ]
     // seek for "axy"@120
     std::string uk1("axy");
-    InternalKey ik1(uk1, 100, rs::db::dbformat::ValueType::kTypeValue);
+    InternalKey ik1(uk1, 100, rs::db::dbformat::ValueType::TypeValue);
     std::string v1(4100, '1');  // large value
 
     std::string uk2("axy");
-    InternalKey ik2(uk2, 10, rs::db::dbformat::ValueType::kTypeValue);
+    InternalKey ik2(uk2, 10, rs::db::dbformat::ValueType::TypeValue);
     std::string v2(4100, '2');  // large value
 
     PinnableSlice value;
     std::string seek_ukey("axy");
-    InternalKey seek_ikey(seek_ukey, 120, rs::db::dbformat::ValueType::kTypeValue);
+    InternalKey seek_ikey(seek_ukey, 120, rs::db::dbformat::ValueType::TypeValue);
     GetContext get_context(options.comparator, nullptr, nullptr, nullptr,
                            GetContext::kNotFound, seek_ukey, &value, nullptr,
                            nullptr, nullptr, true, nullptr, nullptr);
@@ -689,16 +689,16 @@ TEST(DataBlockHashIndex, BlockBoundary) {
     // | Block  N  ][ Block N+1 ]
     // seek for "axy"@5
     std::string uk1("axy");
-    InternalKey ik1(uk1, 100, rs::db::dbformat::ValueType::kTypeValue);
+    InternalKey ik1(uk1, 100, rs::db::dbformat::ValueType::TypeValue);
     std::string v1(4100, '1');  // large value
 
     std::string uk2("axy");
-    InternalKey ik2(uk2, 10, rs::db::dbformat::ValueType::kTypeValue);
+    InternalKey ik2(uk2, 10, rs::db::dbformat::ValueType::TypeValue);
     std::string v2(4100, '2');  // large value
 
     PinnableSlice value;
     std::string seek_ukey("axy");
-    InternalKey seek_ikey(seek_ukey, 5, rs::db::dbformat::ValueType::kTypeValue);
+    InternalKey seek_ikey(seek_ukey, 5, rs::db::dbformat::ValueType::TypeValue);
     GetContext get_context(options.comparator, nullptr, nullptr, nullptr,
                            GetContext::kNotFound, seek_ukey, &value, nullptr,
                            nullptr, nullptr, true, nullptr, nullptr);

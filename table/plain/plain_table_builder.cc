@@ -143,7 +143,7 @@ void PlainTableBuilder::Add(const Slice& key, const Slice& value) {
     assert(false);
     return;
   }
-  if (internal_key.type == rs::db::dbformat::ValueType::kTypeRangeDeletion) {
+  if (internal_key.type == rs::db::dbformat::ValueType::TypeRangeDeletion) {
     status_ = Status::NotSupported("Range deletion unsupported");
     return;
   }
@@ -189,10 +189,10 @@ void PlainTableBuilder::Add(const Slice& key, const Slice& value) {
     properties_.num_entries++;
     properties_.raw_key_size += key.size();
     properties_.raw_value_size += value.size();
-    if (internal_key.type == rs::db::dbformat::ValueType::kTypeDeletion ||
-        internal_key.type == rs::db::dbformat::ValueType::kTypeSingleDeletion) {
+    if (internal_key.type == rs::db::dbformat::ValueType::TypeDeletion ||
+        internal_key.type == rs::db::dbformat::ValueType::TypeSingleDeletion) {
       properties_.num_deletions++;
-    } else if (internal_key.type == rs::db::dbformat::ValueType::kTypeMerge) {
+    } else if (internal_key.type == rs::db::dbformat::ValueType::TypeMerge) {
       properties_.num_merge_operands++;
     }
   }

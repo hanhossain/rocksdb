@@ -53,7 +53,7 @@ class BlobDBTest : public testing::Test {
     uint64_t file_number = kInvalidBlobFileNumber;
     uint64_t expiration = kNoExpiration;
     SequenceNumber sequence = 0;
-    rs::db::dbformat::ValueType type = rs::db::dbformat::ValueType::kTypeValue;
+    rs::db::dbformat::ValueType type = rs::db::dbformat::ValueType::TypeValue;
   };
 
   BlobDBTest()
@@ -245,10 +245,10 @@ class BlobDBTest : public testing::Test {
       ASSERT_EQ(expected_version.user_key, versions[i].user_key);
       ASSERT_EQ(expected_version.sequence, versions[i].sequence);
       ASSERT_EQ(expected_version.type, versions[i].type);
-      if (versions[i].type == rs::db::dbformat::ValueType::kTypeValue) {
+      if (versions[i].type == rs::db::dbformat::ValueType::TypeValue) {
         ASSERT_EQ(expected_version.value, versions[i].value);
       } else {
-        ASSERT_EQ(rs::db::dbformat::ValueType::kTypeBlobIndex, versions[i].type);
+        ASSERT_EQ(rs::db::dbformat::ValueType::TypeBlobIndex, versions[i].type);
         PinnableSlice value;
         ASSERT_OK(bdb_impl->TEST_GetBlobValue(versions[i].user_key,
                                               versions[i].value, &value));
@@ -273,7 +273,7 @@ class BlobDBTest : public testing::Test {
       ASSERT_EQ(versions[i].user_key, expected_version.user_key);
       ASSERT_EQ(versions[i].sequence, expected_version.sequence);
       ASSERT_EQ(versions[i].type, expected_version.type);
-      if (versions[i].type != rs::db::dbformat::ValueType::kTypeBlobIndex) {
+      if (versions[i].type != rs::db::dbformat::ValueType::TypeBlobIndex) {
         ASSERT_EQ(kInvalidBlobFileNumber, expected_version.file_number);
         ASSERT_EQ(kNoExpiration, expected_version.expiration);
 
@@ -1316,7 +1316,7 @@ TEST_F(BlobDBTest, InlineSmallValues) {
     ASSERT_EQ(blob_db_->GetLatestSequenceNumber(), sequence);
     versions[key] =
         KeyVersion(key, value, sequence,
-                   (is_small_value && !has_ttl) ? rs::db::dbformat::ValueType::kTypeValue : rs::db::dbformat::ValueType::kTypeBlobIndex);
+                   (is_small_value && !has_ttl) ? rs::db::dbformat::ValueType::TypeValue : rs::db::dbformat::ValueType::TypeBlobIndex);
   }
   VerifyDB(data);
   VerifyBaseDB(versions);
@@ -1791,10 +1791,10 @@ TEST_F(BlobDBTest, GarbageCollection) {
     ASSERT_EQ(blob_db_->GetLatestSequenceNumber(), sequence);
 
     data[key] = value;
-    blob_value_versions[key] = KeyVersion(key, value, sequence, rs::db::dbformat::ValueType::kTypeBlobIndex);
+    blob_value_versions[key] = KeyVersion(key, value, sequence, rs::db::dbformat::ValueType::TypeBlobIndex);
     blob_index_versions[key] =
         BlobIndexVersion(key, /* file_number */ (i >> 3) + 1, kNoExpiration,
-                         sequence, rs::db::dbformat::ValueType::kTypeBlobIndex);
+                         sequence, rs::db::dbformat::ValueType::TypeBlobIndex);
   }
 
   // Add some small and/or TTL values that will be ignored during GC.
@@ -1808,10 +1808,10 @@ TEST_F(BlobDBTest, GarbageCollection) {
     ASSERT_EQ(blob_db_->GetLatestSequenceNumber(), sequence);
 
     data[key] = value;
-    blob_value_versions[key] = KeyVersion(key, value, sequence, rs::db::dbformat::ValueType::kTypeBlobIndex);
+    blob_value_versions[key] = KeyVersion(key, value, sequence, rs::db::dbformat::ValueType::TypeBlobIndex);
     blob_index_versions[key] =
         BlobIndexVersion(key, /* file_number */ kNumBlobFiles + 1, kExpiration,
-                         sequence, rs::db::dbformat::ValueType::kTypeBlobIndex);
+                         sequence, rs::db::dbformat::ValueType::TypeBlobIndex);
   }
 
   // Now add a small TTL value (which will be inlined).
@@ -1824,9 +1824,9 @@ TEST_F(BlobDBTest, GarbageCollection) {
     ASSERT_EQ(blob_db_->GetLatestSequenceNumber(), sequence);
 
     data[key] = value;
-    blob_value_versions[key] = KeyVersion(key, value, sequence, rs::db::dbformat::ValueType::kTypeBlobIndex);
+    blob_value_versions[key] = KeyVersion(key, value, sequence, rs::db::dbformat::ValueType::TypeBlobIndex);
     blob_index_versions[key] = BlobIndexVersion(
-        key, kInvalidBlobFileNumber, kExpiration, sequence, rs::db::dbformat::ValueType::kTypeBlobIndex);
+        key, kInvalidBlobFileNumber, kExpiration, sequence, rs::db::dbformat::ValueType::TypeBlobIndex);
   }
 
   // Finally, add a small non-TTL value (which will be stored as a regular
@@ -1840,9 +1840,9 @@ TEST_F(BlobDBTest, GarbageCollection) {
     ASSERT_EQ(blob_db_->GetLatestSequenceNumber(), sequence);
 
     data[key] = value;
-    blob_value_versions[key] = KeyVersion(key, value, sequence, rs::db::dbformat::ValueType::kTypeValue);
+    blob_value_versions[key] = KeyVersion(key, value, sequence, rs::db::dbformat::ValueType::TypeValue);
     blob_index_versions[key] = BlobIndexVersion(
-        key, kInvalidBlobFileNumber, kNoExpiration, sequence, rs::db::dbformat::ValueType::kTypeValue);
+        key, kInvalidBlobFileNumber, kNoExpiration, sequence, rs::db::dbformat::ValueType::TypeValue);
   }
 
   VerifyDB(data);

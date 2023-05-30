@@ -102,7 +102,7 @@ void GetContext::MarkKeyMayExist() {
 
 void GetContext::SaveValue(const Slice& value, SequenceNumber /*seq*/) {
   assert(state_ == kNotFound);
-  appendToReplayLog(replay_log_, rs::db::dbformat::ValueType::kTypeValue, value);
+  appendToReplayLog(replay_log_, rs::db::dbformat::ValueType::TypeValue, value);
 
   state_ = kFound;
   if (LIKELY(pinnable_val_ != nullptr)) {
@@ -219,7 +219,7 @@ bool GetContext::SaveValue(const ParsedInternalKey& parsed_key,
                            const Slice& value, bool* matched,
                            Cleanable* value_pinner) {
   assert(matched);
-  assert((state_ != kMerge && parsed_key.type != rs::db::dbformat::ValueType::kTypeMerge) ||
+  assert((state_ != kMerge && parsed_key.type != rs::db::dbformat::ValueType::TypeMerge) ||
          merge_context_ != nullptr);
   if (ucmp_->EqualWithoutTimestamp(parsed_key.user_key, user_key_)) {
     *matched = true;
@@ -270,22 +270,22 @@ bool GetContext::SaveValue(const ParsedInternalKey& parsed_key,
 
     auto type = parsed_key.type;
     // Key matches. Process it
-    if ((type == rs::db::dbformat::ValueType::kTypeValue || type == rs::db::dbformat::ValueType::kTypeMerge || type == rs::db::dbformat::ValueType::kTypeBlobIndex ||
-         type == rs::db::dbformat::ValueType::kTypeWideColumnEntity || type == rs::db::dbformat::ValueType::kTypeDeletion ||
-         type == rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp || type == rs::db::dbformat::ValueType::kTypeSingleDeletion) &&
+    if ((type == rs::db::dbformat::ValueType::TypeValue || type == rs::db::dbformat::ValueType::TypeMerge || type == rs::db::dbformat::ValueType::TypeBlobIndex ||
+         type == rs::db::dbformat::ValueType::TypeWideColumnEntity || type == rs::db::dbformat::ValueType::TypeDeletion ||
+         type == rs::db::dbformat::ValueType::TypeDeletionWithTimestamp || type == rs::db::dbformat::ValueType::TypeSingleDeletion) &&
         max_covering_tombstone_seq_ != nullptr &&
         *max_covering_tombstone_seq_ > parsed_key.sequence) {
       // Note that deletion types are also considered, this is for the case
       // when we need to return timestamp to user. If a range tombstone has a
       // higher seqno than point tombstone, its timestamp should be returned.
-      type = rs::db::dbformat::ValueType::kTypeRangeDeletion;
+      type = rs::db::dbformat::ValueType::TypeRangeDeletion;
     }
     switch (type) {
-      case rs::db::dbformat::ValueType::kTypeValue:
-      case rs::db::dbformat::ValueType::kTypeBlobIndex:
-      case rs::db::dbformat::ValueType::kTypeWideColumnEntity:
+      case rs::db::dbformat::ValueType::TypeValue:
+      case rs::db::dbformat::ValueType::TypeBlobIndex:
+      case rs::db::dbformat::ValueType::TypeWideColumnEntity:
         assert(state_ == kNotFound || state_ == kMerge);
-        if (type == rs::db::dbformat::ValueType::kTypeBlobIndex) {
+        if (type == rs::db::dbformat::ValueType::TypeBlobIndex) {
           if (is_blob_index_ == nullptr) {
             // Blob value not supported. Stop.
             state_ = kUnexpectedBlobIndex;
@@ -294,19 +294,19 @@ bool GetContext::SaveValue(const ParsedInternalKey& parsed_key,
         }
 
         if (is_blob_index_ != nullptr) {
-          *is_blob_index_ = (type == rs::db::dbformat::ValueType::kTypeBlobIndex);
+          *is_blob_index_ = (type == rs::db::dbformat::ValueType::TypeBlobIndex);
         }
 
         if (kNotFound == state_) {
           state_ = kFound;
           if (do_merge_) {
-            if (type == rs::db::dbformat::ValueType::kTypeBlobIndex && ucmp_->timestamp_size() != 0) {
+            if (type == rs::db::dbformat::ValueType::TypeBlobIndex && ucmp_->timestamp_size() != 0) {
               ukey_with_ts_found_.PinSelf(parsed_key.user_key);
             }
             if (LIKELY(pinnable_val_ != nullptr)) {
               Slice value_to_use = value;
 
-              if (type == rs::db::dbformat::ValueType::kTypeWideColumnEntity) {
+              if (type == rs::db::dbformat::ValueType::TypeWideColumnEntity) {
                 Slice value_copy = value;
 
                 if (!WideColumnSerialization::GetValueOfDefaultColumn(
@@ -327,7 +327,7 @@ bool GetContext::SaveValue(const ParsedInternalKey& parsed_key,
                 pinnable_val_->PinSelf(value_to_use);
               }
             } else if (columns_ != nullptr) {
-              if (type == rs::db::dbformat::ValueType::kTypeWideColumnEntity) {
+              if (type == rs::db::dbformat::ValueType::TypeWideColumnEntity) {
                 if (!columns_->SetWideColumnValue(value, value_pinner).ok()) {
                   state_ = kCorrupt;
                   return false;
@@ -340,14 +340,14 @@ bool GetContext::SaveValue(const ParsedInternalKey& parsed_key,
             // It means this function is called as part of DB GetMergeOperands
             // API and the current value should be part of
             // merge_context_->operand_list
-            if (type == rs::db::dbformat::ValueType::kTypeBlobIndex) {
+            if (type == rs::db::dbformat::ValueType::TypeBlobIndex) {
               PinnableSlice pin_val;
               if (GetBlobValue(parsed_key.user_key, value, &pin_val) == false) {
                 return false;
               }
               Slice blob_value(pin_val);
               push_operand(blob_value, nullptr);
-            } else if (type == rs::db::dbformat::ValueType::kTypeWideColumnEntity) {
+            } else if (type == rs::db::dbformat::ValueType::TypeWideColumnEntity) {
               Slice value_copy = value;
               Slice value_of_default;
 
@@ -360,13 +360,13 @@ bool GetContext::SaveValue(const ParsedInternalKey& parsed_key,
 
               push_operand(value_of_default, value_pinner);
             } else {
-              assert(type == rs::db::dbformat::ValueType::kTypeValue);
+              assert(type == rs::db::dbformat::ValueType::TypeValue);
               push_operand(value, value_pinner);
             }
           }
         } else if (kMerge == state_) {
           assert(merge_operator_ != nullptr);
-          if (type == rs::db::dbformat::ValueType::kTypeBlobIndex) {
+          if (type == rs::db::dbformat::ValueType::TypeBlobIndex) {
             PinnableSlice pin_val;
             if (GetBlobValue(parsed_key.user_key, value, &pin_val) == false) {
               return false;
@@ -381,7 +381,7 @@ bool GetContext::SaveValue(const ParsedInternalKey& parsed_key,
               // merge_context_->operand_list
               push_operand(blob_value, nullptr);
             }
-          } else if (type == rs::db::dbformat::ValueType::kTypeWideColumnEntity) {
+          } else if (type == rs::db::dbformat::ValueType::TypeWideColumnEntity) {
             state_ = kFound;
 
             if (do_merge_) {
@@ -403,7 +403,7 @@ bool GetContext::SaveValue(const ParsedInternalKey& parsed_key,
               push_operand(value_of_default, value_pinner);
             }
           } else {
-            assert(type == rs::db::dbformat::ValueType::kTypeValue);
+            assert(type == rs::db::dbformat::ValueType::TypeValue);
 
             state_ = kFound;
             if (do_merge_) {
@@ -418,10 +418,10 @@ bool GetContext::SaveValue(const ParsedInternalKey& parsed_key,
         }
         return false;
 
-      case rs::db::dbformat::ValueType::kTypeDeletion:
-      case rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp:
-      case rs::db::dbformat::ValueType::kTypeSingleDeletion:
-      case rs::db::dbformat::ValueType::kTypeRangeDeletion:
+      case rs::db::dbformat::ValueType::TypeDeletion:
+      case rs::db::dbformat::ValueType::TypeDeletionWithTimestamp:
+      case rs::db::dbformat::ValueType::TypeSingleDeletion:
+      case rs::db::dbformat::ValueType::TypeRangeDeletion:
         // TODO(noetzli): Verify correctness once merge of single-deletes
         // is supported
         assert(state_ == kNotFound || state_ == kMerge);
@@ -437,7 +437,7 @@ bool GetContext::SaveValue(const ParsedInternalKey& parsed_key,
         }
         return false;
 
-      case rs::db::dbformat::ValueType::kTypeMerge:
+      case rs::db::dbformat::ValueType::TypeMerge:
         assert(state_ == kNotFound || state_ == kMerge);
         state_ = kMerge;
         // value_pinner is not set from plain_table_reader.cc for example.

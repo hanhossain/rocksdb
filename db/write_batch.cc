@@ -358,103 +358,103 @@ Status ReadRecordFromWriteBatch(Slice* input, char* tag,
   input->remove_prefix(1);
   *column_family = 0;  // default
   switch ((rs::db::dbformat::ValueType)*tag) {
-    case rs::db::dbformat::ValueType::kTypeColumnFamilyValue:
+    case rs::db::dbformat::ValueType::TypeColumnFamilyValue:
       if (!GetVarint32(input, column_family)) {
         return Status::Corruption("bad WriteBatch Put");
       }
       FALLTHROUGH_INTENDED;
-    case rs::db::dbformat::ValueType::kTypeValue:
+    case rs::db::dbformat::ValueType::TypeValue:
       if (!GetLengthPrefixedSlice(input, key) ||
           !GetLengthPrefixedSlice(input, value)) {
         return Status::Corruption("bad WriteBatch Put");
       }
       break;
-    case rs::db::dbformat::ValueType::kTypeColumnFamilyDeletion:
-    case rs::db::dbformat::ValueType::kTypeColumnFamilySingleDeletion:
+    case rs::db::dbformat::ValueType::TypeColumnFamilyDeletion:
+    case rs::db::dbformat::ValueType::TypeColumnFamilySingleDeletion:
       if (!GetVarint32(input, column_family)) {
         return Status::Corruption("bad WriteBatch Delete");
       }
       FALLTHROUGH_INTENDED;
-    case rs::db::dbformat::ValueType::kTypeDeletion:
-    case rs::db::dbformat::ValueType::kTypeSingleDeletion:
+    case rs::db::dbformat::ValueType::TypeDeletion:
+    case rs::db::dbformat::ValueType::TypeSingleDeletion:
       if (!GetLengthPrefixedSlice(input, key)) {
         return Status::Corruption("bad WriteBatch Delete");
       }
       break;
-    case rs::db::dbformat::ValueType::kTypeColumnFamilyRangeDeletion:
+    case rs::db::dbformat::ValueType::TypeColumnFamilyRangeDeletion:
       if (!GetVarint32(input, column_family)) {
         return Status::Corruption("bad WriteBatch DeleteRange");
       }
       FALLTHROUGH_INTENDED;
-    case rs::db::dbformat::ValueType::kTypeRangeDeletion:
+    case rs::db::dbformat::ValueType::TypeRangeDeletion:
       // for range delete, "key" is begin_key, "value" is end_key
       if (!GetLengthPrefixedSlice(input, key) ||
           !GetLengthPrefixedSlice(input, value)) {
         return Status::Corruption("bad WriteBatch DeleteRange");
       }
       break;
-    case rs::db::dbformat::ValueType::kTypeColumnFamilyMerge:
+    case rs::db::dbformat::ValueType::TypeColumnFamilyMerge:
       if (!GetVarint32(input, column_family)) {
         return Status::Corruption("bad WriteBatch Merge");
       }
       FALLTHROUGH_INTENDED;
-    case rs::db::dbformat::ValueType::kTypeMerge:
+    case rs::db::dbformat::ValueType::TypeMerge:
       if (!GetLengthPrefixedSlice(input, key) ||
           !GetLengthPrefixedSlice(input, value)) {
         return Status::Corruption("bad WriteBatch Merge");
       }
       break;
-    case rs::db::dbformat::ValueType::kTypeColumnFamilyBlobIndex:
+    case rs::db::dbformat::ValueType::TypeColumnFamilyBlobIndex:
       if (!GetVarint32(input, column_family)) {
         return Status::Corruption("bad WriteBatch BlobIndex");
       }
       FALLTHROUGH_INTENDED;
-    case rs::db::dbformat::ValueType::kTypeBlobIndex:
+    case rs::db::dbformat::ValueType::TypeBlobIndex:
       if (!GetLengthPrefixedSlice(input, key) ||
           !GetLengthPrefixedSlice(input, value)) {
         return Status::Corruption("bad WriteBatch BlobIndex");
       }
       break;
-    case rs::db::dbformat::ValueType::kTypeLogData:
+    case rs::db::dbformat::ValueType::TypeLogData:
       assert(blob != nullptr);
       if (!GetLengthPrefixedSlice(input, blob)) {
         return Status::Corruption("bad WriteBatch Blob");
       }
       break;
-    case rs::db::dbformat::ValueType::kTypeNoop:
-    case rs::db::dbformat::ValueType::kTypeBeginPrepareXID:
+    case rs::db::dbformat::ValueType::TypeNoop:
+    case rs::db::dbformat::ValueType::TypeBeginPrepareXID:
       // This indicates that the prepared batch is also persisted in the db.
       // This is used in WritePreparedTxn
-    case rs::db::dbformat::ValueType::kTypeBeginPersistedPrepareXID:
+    case rs::db::dbformat::ValueType::TypeBeginPersistedPrepareXID:
       // This is used in WriteUnpreparedTxn
-    case rs::db::dbformat::ValueType::kTypeBeginUnprepareXID:
+    case rs::db::dbformat::ValueType::TypeBeginUnprepareXID:
       break;
-    case rs::db::dbformat::ValueType::kTypeEndPrepareXID:
+    case rs::db::dbformat::ValueType::TypeEndPrepareXID:
       if (!GetLengthPrefixedSlice(input, xid)) {
         return Status::Corruption("bad EndPrepare XID");
       }
       break;
-    case rs::db::dbformat::ValueType::kTypeCommitXIDAndTimestamp:
+    case rs::db::dbformat::ValueType::TypeCommitXIDAndTimestamp:
       if (!GetLengthPrefixedSlice(input, key)) {
         return Status::Corruption("bad commit timestamp");
       }
       FALLTHROUGH_INTENDED;
-    case rs::db::dbformat::ValueType::kTypeCommitXID:
+    case rs::db::dbformat::ValueType::TypeCommitXID:
       if (!GetLengthPrefixedSlice(input, xid)) {
         return Status::Corruption("bad Commit XID");
       }
       break;
-    case rs::db::dbformat::ValueType::kTypeRollbackXID:
+    case rs::db::dbformat::ValueType::TypeRollbackXID:
       if (!GetLengthPrefixedSlice(input, xid)) {
         return Status::Corruption("bad Rollback XID");
       }
       break;
-    case rs::db::dbformat::ValueType::kTypeColumnFamilyWideColumnEntity:
+    case rs::db::dbformat::ValueType::TypeColumnFamilyWideColumnEntity:
       if (!GetVarint32(input, column_family)) {
         return Status::Corruption("bad WriteBatch PutEntity");
       }
       FALLTHROUGH_INTENDED;
-    case rs::db::dbformat::ValueType::kTypeWideColumnEntity:
+    case rs::db::dbformat::ValueType::TypeWideColumnEntity:
       if (!GetLengthPrefixedSlice(input, key) ||
           !GetLengthPrefixedSlice(input, value)) {
         return Status::Corruption("bad WriteBatch PutEntity");
@@ -528,8 +528,8 @@ Status WriteBatchInternal::Iterate(const WriteBatch* wb,
     }
 
     switch ((rs::db::dbformat::ValueType)tag) {
-      case rs::db::dbformat::ValueType::kTypeColumnFamilyValue:
-      case rs::db::dbformat::ValueType::kTypeValue:
+      case rs::db::dbformat::ValueType::TypeColumnFamilyValue:
+      case rs::db::dbformat::ValueType::TypeValue:
         assert(wb->content_flags_.load(std::memory_order_relaxed) &
                (ContentFlags::DEFERRED | ContentFlags::HAS_PUT));
         s = handler->PutCF(column_family, key, value);
@@ -538,8 +538,8 @@ Status WriteBatchInternal::Iterate(const WriteBatch* wb,
           found++;
         }
         break;
-      case rs::db::dbformat::ValueType::kTypeColumnFamilyDeletion:
-      case rs::db::dbformat::ValueType::kTypeDeletion:
+      case rs::db::dbformat::ValueType::TypeColumnFamilyDeletion:
+      case rs::db::dbformat::ValueType::TypeDeletion:
         assert(wb->content_flags_.load(std::memory_order_relaxed) &
                (ContentFlags::DEFERRED | ContentFlags::HAS_DELETE));
         s = handler->DeleteCF(column_family, key);
@@ -548,8 +548,8 @@ Status WriteBatchInternal::Iterate(const WriteBatch* wb,
           found++;
         }
         break;
-      case rs::db::dbformat::ValueType::kTypeColumnFamilySingleDeletion:
-      case rs::db::dbformat::ValueType::kTypeSingleDeletion:
+      case rs::db::dbformat::ValueType::TypeColumnFamilySingleDeletion:
+      case rs::db::dbformat::ValueType::TypeSingleDeletion:
         assert(wb->content_flags_.load(std::memory_order_relaxed) &
                (ContentFlags::DEFERRED | ContentFlags::HAS_SINGLE_DELETE));
         s = handler->SingleDeleteCF(column_family, key);
@@ -558,8 +558,8 @@ Status WriteBatchInternal::Iterate(const WriteBatch* wb,
           found++;
         }
         break;
-      case rs::db::dbformat::ValueType::kTypeColumnFamilyRangeDeletion:
-      case rs::db::dbformat::ValueType::kTypeRangeDeletion:
+      case rs::db::dbformat::ValueType::TypeColumnFamilyRangeDeletion:
+      case rs::db::dbformat::ValueType::TypeRangeDeletion:
         assert(wb->content_flags_.load(std::memory_order_relaxed) &
                (ContentFlags::DEFERRED | ContentFlags::HAS_DELETE_RANGE));
         s = handler->DeleteRangeCF(column_family, key, value);
@@ -568,8 +568,8 @@ Status WriteBatchInternal::Iterate(const WriteBatch* wb,
           found++;
         }
         break;
-      case rs::db::dbformat::ValueType::kTypeColumnFamilyMerge:
-      case rs::db::dbformat::ValueType::kTypeMerge:
+      case rs::db::dbformat::ValueType::TypeColumnFamilyMerge:
+      case rs::db::dbformat::ValueType::TypeMerge:
         assert(wb->content_flags_.load(std::memory_order_relaxed) &
                (ContentFlags::DEFERRED | ContentFlags::HAS_MERGE));
         s = handler->MergeCF(column_family, key, value);
@@ -578,8 +578,8 @@ Status WriteBatchInternal::Iterate(const WriteBatch* wb,
           found++;
         }
         break;
-      case rs::db::dbformat::ValueType::kTypeColumnFamilyBlobIndex:
-      case rs::db::dbformat::ValueType::kTypeBlobIndex:
+      case rs::db::dbformat::ValueType::TypeColumnFamilyBlobIndex:
+      case rs::db::dbformat::ValueType::TypeBlobIndex:
         assert(wb->content_flags_.load(std::memory_order_relaxed) &
                (ContentFlags::DEFERRED | ContentFlags::HAS_BLOB_INDEX));
         s = handler->PutBlobIndexCF(column_family, key, value);
@@ -587,12 +587,12 @@ Status WriteBatchInternal::Iterate(const WriteBatch* wb,
           found++;
         }
         break;
-      case rs::db::dbformat::ValueType::kTypeLogData:
+      case rs::db::dbformat::ValueType::TypeLogData:
         handler->LogData(blob);
         // A batch might have nothing but LogData. It is still a batch.
         empty_batch = false;
         break;
-      case rs::db::dbformat::ValueType::kTypeBeginPrepareXID:
+      case rs::db::dbformat::ValueType::TypeBeginPrepareXID:
         assert(wb->content_flags_.load(std::memory_order_relaxed) &
                (ContentFlags::DEFERRED | ContentFlags::HAS_BEGIN_PREPARE));
         s = handler->MarkBeginPrepare();
@@ -614,7 +614,7 @@ Status WriteBatchInternal::Iterate(const WriteBatch* wb,
               "WAL must be emptied before changing the WritePolicy.");
         }
         break;
-      case rs::db::dbformat::ValueType::kTypeBeginPersistedPrepareXID:
+      case rs::db::dbformat::ValueType::TypeBeginPersistedPrepareXID:
         assert(wb->content_flags_.load(std::memory_order_relaxed) &
                (ContentFlags::DEFERRED | ContentFlags::HAS_BEGIN_PREPARE));
         s = handler->MarkBeginPrepare();
@@ -629,7 +629,7 @@ Status WriteBatchInternal::Iterate(const WriteBatch* wb,
               "WritePolicy.");
         }
         break;
-      case rs::db::dbformat::ValueType::kTypeBeginUnprepareXID:
+      case rs::db::dbformat::ValueType::TypeBeginUnprepareXID:
         assert(wb->content_flags_.load(std::memory_order_relaxed) &
                (ContentFlags::DEFERRED | ContentFlags::HAS_BEGIN_UNPREPARE));
         s = handler->MarkBeginPrepare(true /* unprepared */);
@@ -651,21 +651,21 @@ Status WriteBatchInternal::Iterate(const WriteBatch* wb,
               "WritePolicy.");
         }
         break;
-      case rs::db::dbformat::ValueType::kTypeEndPrepareXID:
+      case rs::db::dbformat::ValueType::TypeEndPrepareXID:
         assert(wb->content_flags_.load(std::memory_order_relaxed) &
                (ContentFlags::DEFERRED | ContentFlags::HAS_END_PREPARE));
         s = handler->MarkEndPrepare(xid);
         assert(s.ok());
         empty_batch = true;
         break;
-      case rs::db::dbformat::ValueType::kTypeCommitXID:
+      case rs::db::dbformat::ValueType::TypeCommitXID:
         assert(wb->content_flags_.load(std::memory_order_relaxed) &
                (ContentFlags::DEFERRED | ContentFlags::HAS_COMMIT));
         s = handler->MarkCommit(xid);
         assert(s.ok());
         empty_batch = true;
         break;
-      case rs::db::dbformat::ValueType::kTypeCommitXIDAndTimestamp:
+      case rs::db::dbformat::ValueType::TypeCommitXIDAndTimestamp:
         assert(wb->content_flags_.load(std::memory_order_relaxed) &
                (ContentFlags::DEFERRED | ContentFlags::HAS_COMMIT));
         // key stores the commit timestamp.
@@ -675,20 +675,20 @@ Status WriteBatchInternal::Iterate(const WriteBatch* wb,
           empty_batch = true;
         }
         break;
-      case rs::db::dbformat::ValueType::kTypeRollbackXID:
+      case rs::db::dbformat::ValueType::TypeRollbackXID:
         assert(wb->content_flags_.load(std::memory_order_relaxed) &
                (ContentFlags::DEFERRED | ContentFlags::HAS_ROLLBACK));
         s = handler->MarkRollback(xid);
         assert(s.ok());
         empty_batch = true;
         break;
-      case rs::db::dbformat::ValueType::kTypeNoop:
+      case rs::db::dbformat::ValueType::TypeNoop:
         s = handler->MarkNoop(empty_batch);
         assert(s.ok());
         empty_batch = true;
         break;
-      case rs::db::dbformat::ValueType::kTypeWideColumnEntity:
-      case rs::db::dbformat::ValueType::kTypeColumnFamilyWideColumnEntity:
+      case rs::db::dbformat::ValueType::TypeWideColumnEntity:
+      case rs::db::dbformat::ValueType::TypeColumnFamilyWideColumnEntity:
         assert(wb->content_flags_.load(std::memory_order_relaxed) &
                (ContentFlags::DEFERRED | ContentFlags::HAS_PUT_ENTITY));
         s = handler->PutEntityCF(column_family, key, value);
@@ -791,9 +791,9 @@ Status WriteBatchInternal::Put(WriteBatch* b, uint32_t column_family_id,
   LocalSavePoint save(b);
   WriteBatchInternal::SetCount(b, WriteBatchInternal::Count(b) + 1);
   if (column_family_id == 0) {
-    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeValue));
+    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeValue));
   } else {
-    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeColumnFamilyValue));
+    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeColumnFamilyValue));
     PutVarint32(&b->rep_, column_family_id);
   }
   PutLengthPrefixedSlice(&b->rep_, key);
@@ -802,14 +802,14 @@ Status WriteBatchInternal::Put(WriteBatch* b, uint32_t column_family_id,
       b->content_flags_.load(std::memory_order_relaxed) | ContentFlags::HAS_PUT,
       std::memory_order_relaxed);
   if (b->prot_info_ != nullptr) {
-    // Technically the optype could've been `rs::db::dbformat::ValueType::kTypeColumnFamilyValue` with the
+    // Technically the optype could've been `rs::db::dbformat::ValueType::TypeColumnFamilyValue` with the
     // CF ID encoded in the `WriteBatch`. That distinction is unimportant
     // however since we verify CF ID is correct, as well as all other fields
     // (a missing/extra encoded CF ID would corrupt another field). It is
-    // convenient to consolidate on `rs::db::dbformat::ValueType::kTypeValue` here as that is what will be
+    // convenient to consolidate on `rs::db::dbformat::ValueType::TypeValue` here as that is what will be
     // inserted into memtable.
     b->prot_info_->entries_.emplace_back(ProtectionInfo64()
-                                             .ProtectKVO(key, value, rs::db::dbformat::ValueType::kTypeValue)
+                                             .ProtectKVO(key, value, rs::db::dbformat::ValueType::TypeValue)
                                              .ProtectC(column_family_id));
   }
   return save.commit();
@@ -885,9 +885,9 @@ Status WriteBatchInternal::Put(WriteBatch* b, uint32_t column_family_id,
   LocalSavePoint save(b);
   WriteBatchInternal::SetCount(b, WriteBatchInternal::Count(b) + 1);
   if (column_family_id == 0) {
-    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeValue));
+    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeValue));
   } else {
-    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeColumnFamilyValue));
+    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeColumnFamilyValue));
     PutVarint32(&b->rep_, column_family_id);
   }
   PutLengthPrefixedSliceParts(&b->rep_, key);
@@ -899,7 +899,7 @@ Status WriteBatchInternal::Put(WriteBatch* b, uint32_t column_family_id,
     // See comment in first `WriteBatchInternal::Put()` overload concerning the
     // `rs::db::dbformat::ValueType` argument passed to `ProtectKVO()`.
     b->prot_info_->entries_.emplace_back(ProtectionInfo64()
-                                             .ProtectKVO(key, value, rs::db::dbformat::ValueType::kTypeValue)
+                                             .ProtectKVO(key, value, rs::db::dbformat::ValueType::TypeValue)
                                              .ProtectC(column_family_id));
   }
   return save.commit();
@@ -957,9 +957,9 @@ Status WriteBatchInternal::PutEntity(WriteBatch* b, uint32_t column_family_id,
   WriteBatchInternal::SetCount(b, WriteBatchInternal::Count(b) + 1);
 
   if (column_family_id == 0) {
-    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeWideColumnEntity));
+    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeWideColumnEntity));
   } else {
-    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeColumnFamilyWideColumnEntity));
+    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeColumnFamilyWideColumnEntity));
     PutVarint32(&b->rep_, column_family_id);
   }
 
@@ -973,7 +973,7 @@ Status WriteBatchInternal::PutEntity(WriteBatch* b, uint32_t column_family_id,
   if (b->prot_info_ != nullptr) {
     b->prot_info_->entries_.emplace_back(
         ProtectionInfo64()
-            .ProtectKVO(key, entity, rs::db::dbformat::ValueType::kTypeWideColumnEntity)
+            .ProtectKVO(key, entity, rs::db::dbformat::ValueType::TypeWideColumnEntity)
             .ProtectC(column_family_id));
   }
 
@@ -1008,7 +1008,7 @@ Status WriteBatch::PutEntity(ColumnFamilyHandle* column_family,
 }
 
 Status WriteBatchInternal::InsertNoop(WriteBatch* b) {
-  b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeNoop));
+  b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeNoop));
   return Status::OK();
 }
 
@@ -1016,7 +1016,7 @@ Status WriteBatchInternal::MarkEndPrepare(WriteBatch* b, const Slice& xid,
                                           bool write_after_commit,
                                           bool unprepared_batch) {
   // a manually constructed batch can only contain one prepare section
-  assert(b->rep_[12] == static_cast<char>(rs::db::dbformat::ValueType::kTypeNoop));
+  assert(b->rep_[12] == static_cast<char>(rs::db::dbformat::ValueType::TypeNoop));
 
   // all savepoints up to this point are cleared
   if (b->save_points_ != nullptr) {
@@ -1027,10 +1027,10 @@ Status WriteBatchInternal::MarkEndPrepare(WriteBatch* b, const Slice& xid,
 
   // rewrite noop as begin marker
   b->rep_[12] = static_cast<char>(
-      write_after_commit ? rs::db::dbformat::ValueType::kTypeBeginPrepareXID
-                         : (unprepared_batch ? rs::db::dbformat::ValueType::kTypeBeginUnprepareXID
-                                             : rs::db::dbformat::ValueType::kTypeBeginPersistedPrepareXID));
-  b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeEndPrepareXID));
+      write_after_commit ? rs::db::dbformat::ValueType::TypeBeginPrepareXID
+                         : (unprepared_batch ? rs::db::dbformat::ValueType::TypeBeginUnprepareXID
+                                             : rs::db::dbformat::ValueType::TypeBeginPersistedPrepareXID));
+  b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeEndPrepareXID));
   PutLengthPrefixedSlice(&b->rep_, xid);
   b->content_flags_.store(b->content_flags_.load(std::memory_order_relaxed) |
                               ContentFlags::HAS_END_PREPARE |
@@ -1045,7 +1045,7 @@ Status WriteBatchInternal::MarkEndPrepare(WriteBatch* b, const Slice& xid,
 }
 
 Status WriteBatchInternal::MarkCommit(WriteBatch* b, const Slice& xid) {
-  b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeCommitXID));
+  b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeCommitXID));
   PutLengthPrefixedSlice(&b->rep_, xid);
   b->content_flags_.store(b->content_flags_.load(std::memory_order_relaxed) |
                               ContentFlags::HAS_COMMIT,
@@ -1057,7 +1057,7 @@ Status WriteBatchInternal::MarkCommitWithTimestamp(WriteBatch* b,
                                                    const Slice& xid,
                                                    const Slice& commit_ts) {
   assert(!commit_ts.empty());
-  b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeCommitXIDAndTimestamp));
+  b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeCommitXIDAndTimestamp));
   PutLengthPrefixedSlice(&b->rep_, commit_ts);
   PutLengthPrefixedSlice(&b->rep_, xid);
   b->content_flags_.store(b->content_flags_.load(std::memory_order_relaxed) |
@@ -1067,7 +1067,7 @@ Status WriteBatchInternal::MarkCommitWithTimestamp(WriteBatch* b,
 }
 
 Status WriteBatchInternal::MarkRollback(WriteBatch* b, const Slice& xid) {
-  b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeRollbackXID));
+  b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeRollbackXID));
   PutLengthPrefixedSlice(&b->rep_, xid);
   b->content_flags_.store(b->content_flags_.load(std::memory_order_relaxed) |
                               ContentFlags::HAS_ROLLBACK,
@@ -1080,9 +1080,9 @@ Status WriteBatchInternal::Delete(WriteBatch* b, uint32_t column_family_id,
   LocalSavePoint save(b);
   WriteBatchInternal::SetCount(b, WriteBatchInternal::Count(b) + 1);
   if (column_family_id == 0) {
-    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeDeletion));
+    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeDeletion));
   } else {
-    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeColumnFamilyDeletion));
+    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeColumnFamilyDeletion));
     PutVarint32(&b->rep_, column_family_id);
   }
   PutLengthPrefixedSlice(&b->rep_, key);
@@ -1094,7 +1094,7 @@ Status WriteBatchInternal::Delete(WriteBatch* b, uint32_t column_family_id,
     // `rs::db::dbformat::ValueType` argument passed to `ProtectKVO()`.
     b->prot_info_->entries_.emplace_back(
         ProtectionInfo64()
-            .ProtectKVO(key, "" /* value */, rs::db::dbformat::ValueType::kTypeDeletion)
+            .ProtectKVO(key, "" /* value */, rs::db::dbformat::ValueType::TypeDeletion)
             .ProtectC(column_family_id));
   }
   return save.commit();
@@ -1144,9 +1144,9 @@ Status WriteBatchInternal::Delete(WriteBatch* b, uint32_t column_family_id,
   LocalSavePoint save(b);
   WriteBatchInternal::SetCount(b, WriteBatchInternal::Count(b) + 1);
   if (column_family_id == 0) {
-    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeDeletion));
+    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeDeletion));
   } else {
-    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeColumnFamilyDeletion));
+    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeColumnFamilyDeletion));
     PutVarint32(&b->rep_, column_family_id);
   }
   PutLengthPrefixedSliceParts(&b->rep_, key);
@@ -1160,7 +1160,7 @@ Status WriteBatchInternal::Delete(WriteBatch* b, uint32_t column_family_id,
         ProtectionInfo64()
             .ProtectKVO(key,
                         SliceParts(nullptr /* _parts */, 0 /* _num_parts */),
-                        rs::db::dbformat::ValueType::kTypeDeletion)
+                        rs::db::dbformat::ValueType::TypeDeletion)
             .ProtectC(column_family_id));
   }
   return save.commit();
@@ -1194,9 +1194,9 @@ Status WriteBatchInternal::SingleDelete(WriteBatch* b,
   LocalSavePoint save(b);
   WriteBatchInternal::SetCount(b, WriteBatchInternal::Count(b) + 1);
   if (column_family_id == 0) {
-    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeSingleDeletion));
+    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeSingleDeletion));
   } else {
-    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeColumnFamilySingleDeletion));
+    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeColumnFamilySingleDeletion));
     PutVarint32(&b->rep_, column_family_id);
   }
   PutLengthPrefixedSlice(&b->rep_, key);
@@ -1208,7 +1208,7 @@ Status WriteBatchInternal::SingleDelete(WriteBatch* b,
     // `rs::db::dbformat::ValueType` argument passed to `ProtectKVO()`.
     b->prot_info_->entries_.emplace_back(
         ProtectionInfo64()
-            .ProtectKVO(key, "" /* value */, rs::db::dbformat::ValueType::kTypeSingleDeletion)
+            .ProtectKVO(key, "" /* value */, rs::db::dbformat::ValueType::TypeSingleDeletion)
             .ProtectC(column_family_id));
   }
   return save.commit();
@@ -1260,9 +1260,9 @@ Status WriteBatchInternal::SingleDelete(WriteBatch* b,
   LocalSavePoint save(b);
   WriteBatchInternal::SetCount(b, WriteBatchInternal::Count(b) + 1);
   if (column_family_id == 0) {
-    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeSingleDeletion));
+    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeSingleDeletion));
   } else {
-    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeColumnFamilySingleDeletion));
+    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeColumnFamilySingleDeletion));
     PutVarint32(&b->rep_, column_family_id);
   }
   PutLengthPrefixedSliceParts(&b->rep_, key);
@@ -1277,7 +1277,7 @@ Status WriteBatchInternal::SingleDelete(WriteBatch* b,
             .ProtectKVO(key,
                         SliceParts(nullptr /* _parts */,
                                    0 /* _num_parts */) /* value */,
-                        rs::db::dbformat::ValueType::kTypeSingleDeletion)
+                        rs::db::dbformat::ValueType::TypeSingleDeletion)
             .ProtectC(column_family_id));
   }
   return save.commit();
@@ -1311,9 +1311,9 @@ Status WriteBatchInternal::DeleteRange(WriteBatch* b, uint32_t column_family_id,
   LocalSavePoint save(b);
   WriteBatchInternal::SetCount(b, WriteBatchInternal::Count(b) + 1);
   if (column_family_id == 0) {
-    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeRangeDeletion));
+    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeRangeDeletion));
   } else {
-    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeColumnFamilyRangeDeletion));
+    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeColumnFamilyRangeDeletion));
     PutVarint32(&b->rep_, column_family_id);
   }
   PutLengthPrefixedSlice(&b->rep_, begin_key);
@@ -1327,7 +1327,7 @@ Status WriteBatchInternal::DeleteRange(WriteBatch* b, uint32_t column_family_id,
     // In `DeleteRange()`, the end key is treated as the value.
     b->prot_info_->entries_.emplace_back(
         ProtectionInfo64()
-            .ProtectKVO(begin_key, end_key, rs::db::dbformat::ValueType::kTypeRangeDeletion)
+            .ProtectKVO(begin_key, end_key, rs::db::dbformat::ValueType::TypeRangeDeletion)
             .ProtectC(column_family_id));
   }
   return save.commit();
@@ -1384,9 +1384,9 @@ Status WriteBatchInternal::DeleteRange(WriteBatch* b, uint32_t column_family_id,
   LocalSavePoint save(b);
   WriteBatchInternal::SetCount(b, WriteBatchInternal::Count(b) + 1);
   if (column_family_id == 0) {
-    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeRangeDeletion));
+    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeRangeDeletion));
   } else {
-    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeColumnFamilyRangeDeletion));
+    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeColumnFamilyRangeDeletion));
     PutVarint32(&b->rep_, column_family_id);
   }
   PutLengthPrefixedSliceParts(&b->rep_, begin_key);
@@ -1400,7 +1400,7 @@ Status WriteBatchInternal::DeleteRange(WriteBatch* b, uint32_t column_family_id,
     // In `DeleteRange()`, the end key is treated as the value.
     b->prot_info_->entries_.emplace_back(
         ProtectionInfo64()
-            .ProtectKVO(begin_key, end_key, rs::db::dbformat::ValueType::kTypeRangeDeletion)
+            .ProtectKVO(begin_key, end_key, rs::db::dbformat::ValueType::TypeRangeDeletion)
             .ProtectC(column_family_id));
   }
   return save.commit();
@@ -1441,9 +1441,9 @@ Status WriteBatchInternal::Merge(WriteBatch* b, uint32_t column_family_id,
   LocalSavePoint save(b);
   WriteBatchInternal::SetCount(b, WriteBatchInternal::Count(b) + 1);
   if (column_family_id == 0) {
-    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeMerge));
+    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeMerge));
   } else {
-    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeColumnFamilyMerge));
+    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeColumnFamilyMerge));
     PutVarint32(&b->rep_, column_family_id);
   }
   PutLengthPrefixedSlice(&b->rep_, key);
@@ -1455,7 +1455,7 @@ Status WriteBatchInternal::Merge(WriteBatch* b, uint32_t column_family_id,
     // See comment in first `WriteBatchInternal::Put()` overload concerning the
     // `rs::db::dbformat::ValueType` argument passed to `ProtectKVO()`.
     b->prot_info_->entries_.emplace_back(ProtectionInfo64()
-                                             .ProtectKVO(key, value, rs::db::dbformat::ValueType::kTypeMerge)
+                                             .ProtectKVO(key, value, rs::db::dbformat::ValueType::TypeMerge)
                                              .ProtectC(column_family_id));
   }
   return save.commit();
@@ -1513,9 +1513,9 @@ Status WriteBatchInternal::Merge(WriteBatch* b, uint32_t column_family_id,
   LocalSavePoint save(b);
   WriteBatchInternal::SetCount(b, WriteBatchInternal::Count(b) + 1);
   if (column_family_id == 0) {
-    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeMerge));
+    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeMerge));
   } else {
-    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeColumnFamilyMerge));
+    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeColumnFamilyMerge));
     PutVarint32(&b->rep_, column_family_id);
   }
   PutLengthPrefixedSliceParts(&b->rep_, key);
@@ -1527,7 +1527,7 @@ Status WriteBatchInternal::Merge(WriteBatch* b, uint32_t column_family_id,
     // See comment in first `WriteBatchInternal::Put()` overload concerning the
     // `rs::db::dbformat::ValueType` argument passed to `ProtectKVO()`.
     b->prot_info_->entries_.emplace_back(ProtectionInfo64()
-                                             .ProtectKVO(key, value, rs::db::dbformat::ValueType::kTypeMerge)
+                                             .ProtectKVO(key, value, rs::db::dbformat::ValueType::TypeMerge)
                                              .ProtectC(column_family_id));
   }
   return save.commit();
@@ -1561,9 +1561,9 @@ Status WriteBatchInternal::PutBlobIndex(WriteBatch* b,
   LocalSavePoint save(b);
   WriteBatchInternal::SetCount(b, WriteBatchInternal::Count(b) + 1);
   if (column_family_id == 0) {
-    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeBlobIndex));
+    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeBlobIndex));
   } else {
-    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeColumnFamilyBlobIndex));
+    b->rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeColumnFamilyBlobIndex));
     PutVarint32(&b->rep_, column_family_id);
   }
   PutLengthPrefixedSlice(&b->rep_, key);
@@ -1576,7 +1576,7 @@ Status WriteBatchInternal::PutBlobIndex(WriteBatch* b,
     // `rs::db::dbformat::ValueType` argument passed to `ProtectKVO()`.
     b->prot_info_->entries_.emplace_back(
         ProtectionInfo64()
-            .ProtectKVO(key, value, rs::db::dbformat::ValueType::kTypeBlobIndex)
+            .ProtectKVO(key, value, rs::db::dbformat::ValueType::TypeBlobIndex)
             .ProtectC(column_family_id));
   }
   return save.commit();
@@ -1584,7 +1584,7 @@ Status WriteBatchInternal::PutBlobIndex(WriteBatch* b,
 
 Status WriteBatch::PutLogData(const Slice& blob) {
   LocalSavePoint save(this);
-  rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::kTypeLogData));
+  rep_.push_back(static_cast<char>(rs::db::dbformat::ValueType::TypeLogData));
   PutLengthPrefixedSlice(&rep_, blob);
   return save.commit();
 }
@@ -1674,49 +1674,49 @@ Status WriteBatch::VerifyChecksum() const {
     }
     checksum_protected = true;
     // Write batch checksum uses op_type without ColumnFamily (e.g., if op_type
-    // in the write batch is rs::db::dbformat::ValueType::kTypeColumnFamilyValue, rs::db::dbformat::ValueType::kTypeValue is used to
+    // in the write batch is rs::db::dbformat::ValueType::TypeColumnFamilyValue, rs::db::dbformat::ValueType::TypeValue is used to
     // compute the checksum), and encodes column family id separately. See
     // comment in first `WriteBatchInternal::Put()` for more detail.
     switch ((rs::db::dbformat::ValueType)tag) {
-      case rs::db::dbformat::ValueType::kTypeColumnFamilyValue:
-      case rs::db::dbformat::ValueType::kTypeValue:
-        tag = (char)rs::db::dbformat::ValueType::kTypeValue;
+      case rs::db::dbformat::ValueType::TypeColumnFamilyValue:
+      case rs::db::dbformat::ValueType::TypeValue:
+        tag = (char)rs::db::dbformat::ValueType::TypeValue;
         break;
-      case rs::db::dbformat::ValueType::kTypeColumnFamilyDeletion:
-      case rs::db::dbformat::ValueType::kTypeDeletion:
-        tag = (char)rs::db::dbformat::ValueType::kTypeDeletion;
+      case rs::db::dbformat::ValueType::TypeColumnFamilyDeletion:
+      case rs::db::dbformat::ValueType::TypeDeletion:
+        tag = (char)rs::db::dbformat::ValueType::TypeDeletion;
         break;
-      case rs::db::dbformat::ValueType::kTypeColumnFamilySingleDeletion:
-      case rs::db::dbformat::ValueType::kTypeSingleDeletion:
-        tag = (char)rs::db::dbformat::ValueType::kTypeSingleDeletion;
+      case rs::db::dbformat::ValueType::TypeColumnFamilySingleDeletion:
+      case rs::db::dbformat::ValueType::TypeSingleDeletion:
+        tag = (char)rs::db::dbformat::ValueType::TypeSingleDeletion;
         break;
-      case rs::db::dbformat::ValueType::kTypeColumnFamilyRangeDeletion:
-      case rs::db::dbformat::ValueType::kTypeRangeDeletion:
-        tag = (char)rs::db::dbformat::ValueType::kTypeRangeDeletion;
+      case rs::db::dbformat::ValueType::TypeColumnFamilyRangeDeletion:
+      case rs::db::dbformat::ValueType::TypeRangeDeletion:
+        tag = (char)rs::db::dbformat::ValueType::TypeRangeDeletion;
         break;
-      case rs::db::dbformat::ValueType::kTypeColumnFamilyMerge:
-      case rs::db::dbformat::ValueType::kTypeMerge:
-        tag = (char)rs::db::dbformat::ValueType::kTypeMerge;
+      case rs::db::dbformat::ValueType::TypeColumnFamilyMerge:
+      case rs::db::dbformat::ValueType::TypeMerge:
+        tag = (char)rs::db::dbformat::ValueType::TypeMerge;
         break;
-      case rs::db::dbformat::ValueType::kTypeColumnFamilyBlobIndex:
-      case rs::db::dbformat::ValueType::kTypeBlobIndex:
-        tag = (char)rs::db::dbformat::ValueType::kTypeBlobIndex;
+      case rs::db::dbformat::ValueType::TypeColumnFamilyBlobIndex:
+      case rs::db::dbformat::ValueType::TypeBlobIndex:
+        tag = (char)rs::db::dbformat::ValueType::TypeBlobIndex;
         break;
-      case rs::db::dbformat::ValueType::kTypeLogData:
-      case rs::db::dbformat::ValueType::kTypeBeginPrepareXID:
-      case rs::db::dbformat::ValueType::kTypeEndPrepareXID:
-      case rs::db::dbformat::ValueType::kTypeCommitXID:
-      case rs::db::dbformat::ValueType::kTypeRollbackXID:
-      case rs::db::dbformat::ValueType::kTypeNoop:
-      case rs::db::dbformat::ValueType::kTypeBeginPersistedPrepareXID:
-      case rs::db::dbformat::ValueType::kTypeBeginUnprepareXID:
-      case rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp:
-      case rs::db::dbformat::ValueType::kTypeCommitXIDAndTimestamp:
+      case rs::db::dbformat::ValueType::TypeLogData:
+      case rs::db::dbformat::ValueType::TypeBeginPrepareXID:
+      case rs::db::dbformat::ValueType::TypeEndPrepareXID:
+      case rs::db::dbformat::ValueType::TypeCommitXID:
+      case rs::db::dbformat::ValueType::TypeRollbackXID:
+      case rs::db::dbformat::ValueType::TypeNoop:
+      case rs::db::dbformat::ValueType::TypeBeginPersistedPrepareXID:
+      case rs::db::dbformat::ValueType::TypeBeginUnprepareXID:
+      case rs::db::dbformat::ValueType::TypeDeletionWithTimestamp:
+      case rs::db::dbformat::ValueType::TypeCommitXIDAndTimestamp:
         checksum_protected = false;
         break;
-      case rs::db::dbformat::ValueType::kTypeColumnFamilyWideColumnEntity:
-      case rs::db::dbformat::ValueType::kTypeWideColumnEntity:
-        tag = (char)rs::db::dbformat::ValueType::kTypeWideColumnEntity;
+      case rs::db::dbformat::ValueType::TypeColumnFamilyWideColumnEntity:
+      case rs::db::dbformat::ValueType::TypeWideColumnEntity:
+        tag = (char)rs::db::dbformat::ValueType::TypeWideColumnEntity;
         break;
       default:
         return Status::Corruption(
@@ -1917,8 +1917,8 @@ class MemTableInserter : public WriteBatch::Handler {
   // have two policies to advance the seq: i) seq_per_key (default) and ii)
   // seq_per_batch. To implement the latter we need to mark the boundary between
   // the individual batches. The approach is this: 1) Use the terminating
-  // markers to indicate the boundary (rs::db::dbformat::ValueType::kTypeEndPrepareXID, rs::db::dbformat::ValueType::kTypeCommitXID,
-  // rs::db::dbformat::ValueType::kTypeRollbackXID) 2) Terminate a batch with rs::db::dbformat::ValueType::kTypeNoop in the absence of a
+  // markers to indicate the boundary (rs::db::dbformat::ValueType::TypeEndPrepareXID, rs::db::dbformat::ValueType::TypeCommitXID,
+  // rs::db::dbformat::ValueType::TypeRollbackXID) 2) Terminate a batch with rs::db::dbformat::ValueType::TypeNoop in the absence of a
   // natural boundary marker.
   void MaybeAdvanceSeq(bool batch_boundry = false) {
     if (batch_boundry == seq_per_batch_) {
@@ -2025,12 +2025,12 @@ class MemTableInserter : public WriteBatch::Handler {
                    concurrent_memtable_writes_, get_post_process_info(mem),
                    hint_per_batch_ ? &GetHintMap()[mem] : nullptr);
     } else if (moptions->inplace_callback == nullptr ||
-               value_type != rs::db::dbformat::ValueType::kTypeValue) {
+               value_type != rs::db::dbformat::ValueType::TypeValue) {
       assert(!concurrent_memtable_writes_);
       ret_status = mem->Update(sequence_, value_type, key, value, kv_prot_info);
     } else {
       assert(!concurrent_memtable_writes_);
-      assert(value_type == rs::db::dbformat::ValueType::kTypeValue);
+      assert(value_type == rs::db::dbformat::ValueType::TypeValue);
       ret_status = mem->UpdateCallback(sequence_, key, value, kv_prot_info);
       if (ret_status.IsNotFound()) {
         // key not found in memtable. Do sst get, update, add
@@ -2141,10 +2141,10 @@ class MemTableInserter : public WriteBatch::Handler {
       // Memtable needs seqno, doesn't need CF ID
       auto mem_kv_prot_info =
           kv_prot_info->StripC(column_family_id).ProtectS(sequence_);
-      ret_status = PutCFImpl(column_family_id, key, value, rs::db::dbformat::ValueType::kTypeValue,
+      ret_status = PutCFImpl(column_family_id, key, value, rs::db::dbformat::ValueType::TypeValue,
                              &mem_kv_prot_info);
     } else {
-      ret_status = PutCFImpl(column_family_id, key, value, rs::db::dbformat::ValueType::kTypeValue,
+      ret_status = PutCFImpl(column_family_id, key, value, rs::db::dbformat::ValueType::TypeValue,
                              nullptr /* kv_prot_info */);
     }
     // TODO: this assumes that if TryAgain status is returned to the caller,
@@ -2166,10 +2166,10 @@ class MemTableInserter : public WriteBatch::Handler {
       // Memtable needs seqno, doesn't need CF ID
       auto mem_kv_prot_info =
           kv_prot_info->StripC(column_family_id).ProtectS(sequence_);
-      s = PutCFImpl(column_family_id, key, value, rs::db::dbformat::ValueType::kTypeWideColumnEntity,
+      s = PutCFImpl(column_family_id, key, value, rs::db::dbformat::ValueType::TypeWideColumnEntity,
                     &mem_kv_prot_info);
     } else {
-      s = PutCFImpl(column_family_id, key, value, rs::db::dbformat::ValueType::kTypeWideColumnEntity,
+      s = PutCFImpl(column_family_id, key, value, rs::db::dbformat::ValueType::TypeWideColumnEntity,
                     /* kv_prot_info */ nullptr);
     }
 
@@ -2236,11 +2236,11 @@ class MemTableInserter : public WriteBatch::Handler {
                              ? cfd->user_comparator()->timestamp_size()
                              : 0;
     const rs::db::dbformat::ValueType delete_type =
-        (0 == ts_sz) ? rs::db::dbformat::ValueType::kTypeDeletion : rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp;
+        (0 == ts_sz) ? rs::db::dbformat::ValueType::TypeDeletion : rs::db::dbformat::ValueType::TypeDeletionWithTimestamp;
     if (kv_prot_info != nullptr) {
       auto mem_kv_prot_info =
           kv_prot_info->StripC(column_family_id).ProtectS(sequence_);
-      mem_kv_prot_info.UpdateO(rs::db::dbformat::ValueType::kTypeDeletion, delete_type);
+      mem_kv_prot_info.UpdateO(rs::db::dbformat::ValueType::TypeDeletion, delete_type);
       ret_status = DeleteImpl(column_family_id, key, Slice(), delete_type,
                               &mem_kv_prot_info);
     } else {
@@ -2300,10 +2300,10 @@ class MemTableInserter : public WriteBatch::Handler {
       auto mem_kv_prot_info =
           kv_prot_info->StripC(column_family_id).ProtectS(sequence_);
       ret_status = DeleteImpl(column_family_id, key, Slice(),
-                              rs::db::dbformat::ValueType::kTypeSingleDeletion, &mem_kv_prot_info);
+                              rs::db::dbformat::ValueType::TypeSingleDeletion, &mem_kv_prot_info);
     } else {
       ret_status = DeleteImpl(column_family_id, key, Slice(),
-                              rs::db::dbformat::ValueType::kTypeSingleDeletion, nullptr /* kv_prot_info */);
+                              rs::db::dbformat::ValueType::TypeSingleDeletion, nullptr /* kv_prot_info */);
     }
     // optimize for non-recovery mode
     // If `ret_status` is `TryAgain` then the next (successful) try will add
@@ -2390,10 +2390,10 @@ class MemTableInserter : public WriteBatch::Handler {
       auto mem_kv_prot_info =
           kv_prot_info->StripC(column_family_id).ProtectS(sequence_);
       ret_status = DeleteImpl(column_family_id, begin_key, end_key,
-                              rs::db::dbformat::ValueType::kTypeRangeDeletion, &mem_kv_prot_info);
+                              rs::db::dbformat::ValueType::TypeRangeDeletion, &mem_kv_prot_info);
     } else {
       ret_status = DeleteImpl(column_family_id, begin_key, end_key,
-                              rs::db::dbformat::ValueType::kTypeRangeDeletion, nullptr /* kv_prot_info */);
+                              rs::db::dbformat::ValueType::TypeRangeDeletion, nullptr /* kv_prot_info */);
     }
     // optimize for non-recovery mode
     // If `ret_status` is `TryAgain` then the next (successful) try will add
@@ -2521,11 +2521,11 @@ class MemTableInserter : public WriteBatch::Handler {
             auto merged_kv_prot_info =
                 kv_prot_info->StripC(column_family_id).ProtectS(sequence_);
             merged_kv_prot_info.UpdateV(value, new_value);
-            merged_kv_prot_info.UpdateO(rs::db::dbformat::ValueType::kTypeMerge, rs::db::dbformat::ValueType::kTypeValue);
-            ret_status = mem->Add(sequence_, rs::db::dbformat::ValueType::kTypeValue, key, new_value,
+            merged_kv_prot_info.UpdateO(rs::db::dbformat::ValueType::TypeMerge, rs::db::dbformat::ValueType::TypeValue);
+            ret_status = mem->Add(sequence_, rs::db::dbformat::ValueType::TypeValue, key, new_value,
                                   &merged_kv_prot_info);
           } else {
-            ret_status = mem->Add(sequence_, rs::db::dbformat::ValueType::kTypeValue, key, new_value,
+            ret_status = mem->Add(sequence_, rs::db::dbformat::ValueType::TypeValue, key, new_value,
                                   nullptr /* kv_prot_info */);
           }
         }
@@ -2539,11 +2539,11 @@ class MemTableInserter : public WriteBatch::Handler {
         auto mem_kv_prot_info =
             kv_prot_info->StripC(column_family_id).ProtectS(sequence_);
         ret_status =
-            mem->Add(sequence_, rs::db::dbformat::ValueType::kTypeMerge, key, value, &mem_kv_prot_info,
+            mem->Add(sequence_, rs::db::dbformat::ValueType::TypeMerge, key, value, &mem_kv_prot_info,
                      concurrent_memtable_writes_, get_post_process_info(mem));
       } else {
         ret_status = mem->Add(
-            sequence_, rs::db::dbformat::ValueType::kTypeMerge, key, value, nullptr /* kv_prot_info */,
+            sequence_, rs::db::dbformat::ValueType::TypeMerge, key, value, nullptr /* kv_prot_info */,
             concurrent_memtable_writes_, get_post_process_info(mem));
       }
     }
@@ -2582,10 +2582,10 @@ class MemTableInserter : public WriteBatch::Handler {
       auto mem_kv_prot_info =
           kv_prot_info->StripC(column_family_id).ProtectS(sequence_);
       // Same as PutCF except for value type.
-      ret_status = PutCFImpl(column_family_id, key, value, rs::db::dbformat::ValueType::kTypeBlobIndex,
+      ret_status = PutCFImpl(column_family_id, key, value, rs::db::dbformat::ValueType::TypeBlobIndex,
                              &mem_kv_prot_info);
     } else {
-      ret_status = PutCFImpl(column_family_id, key, value, rs::db::dbformat::ValueType::kTypeBlobIndex,
+      ret_status = PutCFImpl(column_family_id, key, value, rs::db::dbformat::ValueType::TypeBlobIndex,
                              nullptr /* kv_prot_info */);
     }
     if (UNLIKELY(ret_status.IsTryAgain())) {
@@ -2635,7 +2635,7 @@ class MemTableInserter : public WriteBatch::Handler {
   }
 
   // The write batch handler calls MarkBeginPrepare with unprepare set to true
-  // if it encounters the rs::db::dbformat::ValueType::kTypeBeginUnprepareXID marker.
+  // if it encounters the rs::db::dbformat::ValueType::TypeBeginUnprepareXID marker.
   Status MarkBeginPrepare(bool unprepare) override {
     assert(rebuilding_trx_ == nullptr);
     assert(db_);
@@ -2699,7 +2699,7 @@ class MemTableInserter : public WriteBatch::Handler {
     // A hack in pessimistic transaction could result into a noop at the start
     // of the write batch, that should be ignored.
     if (!empty_batch) {
-      // In the absence of Prepare markers, a rs::db::dbformat::ValueType::kTypeNoop tag indicates the end of
+      // In the absence of Prepare markers, a rs::db::dbformat::ValueType::TypeNoop tag indicates the end of
       // a batch. This happens when write batch commits skipping the prepare
       // phase.
       const bool batch_boundry = true;
@@ -2969,34 +2969,34 @@ class ProtectionInfoUpdater : public WriteBatch::Handler {
   ~ProtectionInfoUpdater() override {}
 
   Status PutCF(uint32_t cf, const Slice& key, const Slice& val) override {
-    return UpdateProtInfo(cf, key, val, rs::db::dbformat::ValueType::kTypeValue);
+    return UpdateProtInfo(cf, key, val, rs::db::dbformat::ValueType::TypeValue);
   }
 
   Status PutEntityCF(uint32_t cf, const Slice& key,
                      const Slice& entity) override {
-    return UpdateProtInfo(cf, key, entity, rs::db::dbformat::ValueType::kTypeWideColumnEntity);
+    return UpdateProtInfo(cf, key, entity, rs::db::dbformat::ValueType::TypeWideColumnEntity);
   }
 
   Status DeleteCF(uint32_t cf, const Slice& key) override {
-    return UpdateProtInfo(cf, key, "", rs::db::dbformat::ValueType::kTypeDeletion);
+    return UpdateProtInfo(cf, key, "", rs::db::dbformat::ValueType::TypeDeletion);
   }
 
   Status SingleDeleteCF(uint32_t cf, const Slice& key) override {
-    return UpdateProtInfo(cf, key, "", rs::db::dbformat::ValueType::kTypeSingleDeletion);
+    return UpdateProtInfo(cf, key, "", rs::db::dbformat::ValueType::TypeSingleDeletion);
   }
 
   Status DeleteRangeCF(uint32_t cf, const Slice& begin_key,
                        const Slice& end_key) override {
-    return UpdateProtInfo(cf, begin_key, end_key, rs::db::dbformat::ValueType::kTypeRangeDeletion);
+    return UpdateProtInfo(cf, begin_key, end_key, rs::db::dbformat::ValueType::TypeRangeDeletion);
   }
 
   Status MergeCF(uint32_t cf, const Slice& key, const Slice& val) override {
-    return UpdateProtInfo(cf, key, val, rs::db::dbformat::ValueType::kTypeMerge);
+    return UpdateProtInfo(cf, key, val, rs::db::dbformat::ValueType::TypeMerge);
   }
 
   Status PutBlobIndexCF(uint32_t cf, const Slice& key,
                         const Slice& val) override {
-    return UpdateProtInfo(cf, key, val, rs::db::dbformat::ValueType::kTypeBlobIndex);
+    return UpdateProtInfo(cf, key, val, rs::db::dbformat::ValueType::TypeBlobIndex);
   }
 
   Status MarkBeginPrepare(bool /* unprepare */) override {

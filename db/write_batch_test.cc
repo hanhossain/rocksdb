@@ -73,7 +73,7 @@ static std::string PrintContents(WriteBatch* b,
       ikey.clear();
       EXPECT_OK(ParseInternalKey(iter->key(), &ikey, true /* log_err_key */));
       switch (ikey.type) {
-        case rs::db::dbformat::ValueType::kTypeValue:
+        case rs::db::dbformat::ValueType::TypeValue:
           state.append("Put(");
           state.append(ikey.user_key.ToString());
           state.append(", ");
@@ -82,21 +82,21 @@ static std::string PrintContents(WriteBatch* b,
           count++;
           put_count++;
           break;
-        case rs::db::dbformat::ValueType::kTypeDeletion:
+        case rs::db::dbformat::ValueType::TypeDeletion:
           state.append("Delete(");
           state.append(ikey.user_key.ToString());
           state.append(")");
           count++;
           delete_count++;
           break;
-        case rs::db::dbformat::ValueType::kTypeSingleDeletion:
+        case rs::db::dbformat::ValueType::TypeSingleDeletion:
           state.append("SingleDelete(");
           state.append(ikey.user_key.ToString());
           state.append(")");
           count++;
           single_delete_count++;
           break;
-        case rs::db::dbformat::ValueType::kTypeRangeDeletion:
+        case rs::db::dbformat::ValueType::TypeRangeDeletion:
           state.append("DeleteRange(");
           state.append(ikey.user_key.ToString());
           state.append(", ");
@@ -105,7 +105,7 @@ static std::string PrintContents(WriteBatch* b,
           count++;
           delete_range_count++;
           break;
-        case rs::db::dbformat::ValueType::kTypeMerge:
+        case rs::db::dbformat::ValueType::TypeMerge:
           state.append("Merge(");
           state.append(ikey.user_key.ToString());
           state.append(", ");

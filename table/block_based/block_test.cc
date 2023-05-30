@@ -42,7 +42,7 @@ std::string GenerateInternalKey(int primary_key, int secondary_key,
   if (padding_size) {
     k += rnd->RandomString(padding_size);
   }
-  AppendInternalKeyFooter(&k, 0 /* seqno */, rs::db::dbformat::ValueType::kTypeValue);
+  AppendInternalKeyFooter(&k, 0 /* seqno */, rs::db::dbformat::ValueType::TypeValue);
 
   return k;
 }
@@ -517,7 +517,7 @@ void GenerateRandomIndexEntries(std::vector<std::string> *separators,
     // Keys need to be at least 8 bytes long to look like internal keys.
     std::string new_key = test::RandomKey(&rnd, 12);
     if (zero_seqno) {
-      AppendInternalKeyFooter(&new_key, 0 /* seqno */, rs::db::dbformat::ValueType::kTypeValue);
+      AppendInternalKeyFooter(&new_key, 0 /* seqno */, rs::db::dbformat::ValueType::TypeValue);
     }
     keys.insert(std::move(new_key));
   }

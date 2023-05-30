@@ -516,12 +516,12 @@ class WritePreparedTransactionTestBase : public TransactionTestBase {
       ASSERT_EQ(expected_versions[i].user_key, versions[i].user_key);
       ASSERT_EQ(expected_versions[i].sequence, versions[i].sequence);
       ASSERT_EQ(expected_versions[i].type, versions[i].type);
-      if (static_cast<rs::db::dbformat::ValueType>(versions[i].type) != rs::db::dbformat::ValueType::kTypeDeletion &&
-          static_cast<rs::db::dbformat::ValueType>(versions[i].type) != rs::db::dbformat::ValueType::kTypeSingleDeletion) {
+      if (static_cast<rs::db::dbformat::ValueType>(versions[i].type) != rs::db::dbformat::ValueType::TypeDeletion &&
+          static_cast<rs::db::dbformat::ValueType>(versions[i].type) != rs::db::dbformat::ValueType::TypeSingleDeletion) {
         ASSERT_EQ(expected_versions[i].value, versions[i].value);
       }
       // Range delete not supported.
-      ASSERT_NE(expected_versions[i].type, rs::db::dbformat::ValueType::kTypeRangeDeletion);
+      ASSERT_NE(expected_versions[i].type, rs::db::dbformat::ValueType::TypeRangeDeletion);
     }
   }
 };
@@ -2336,7 +2336,7 @@ TEST_P(WritePreparedTransactionTest, DisableGCDuringRecovery) {
     ASSERT_OK(db->Put(WriteOptions(), "foo", v));
     VerifyKeys({{"foo", v}});
     seq++;  // one for the key/value
-    KeyVersion kv = {"foo", v, seq, rs::db::dbformat::ValueType::kTypeValue};
+    KeyVersion kv = {"foo", v, seq, rs::db::dbformat::ValueType::TypeValue};
     if (options.two_write_queues) {
       seq++;  // one for the commit
     }
@@ -2367,7 +2367,7 @@ TEST_P(WritePreparedTransactionTest, SequenceNumberZero) {
   // visible to any snapshot.
   VerifyKeys({{"foo", "bar"}});
   VerifyKeys({{"foo", "bar"}}, snapshot);
-  VerifyInternalKeys({{"foo", "bar", 0, rs::db::dbformat::ValueType::kTypeValue}});
+  VerifyInternalKeys({{"foo", "bar", 0, rs::db::dbformat::ValueType::TypeValue}});
   db->ReleaseSnapshot(snapshot);
 }
 
@@ -2436,18 +2436,18 @@ TEST_P(WritePreparedTransactionTest, CompactionShouldKeepUncommittedKeys) {
       {"key7", "NOT_FOUND"},
   });
   VerifyInternalKeys({
-      {"key1", "value1_2", expected_seq, rs::db::dbformat::ValueType::kTypeValue},
-      {"key1", "value1_1", 0, rs::db::dbformat::ValueType::kTypeValue},
-      {"key2", "", expected_seq, rs::db::dbformat::ValueType::kTypeDeletion},
-      {"key2", "value2_1", 0, rs::db::dbformat::ValueType::kTypeValue},
-      {"key3", "", expected_seq, rs::db::dbformat::ValueType::kTypeSingleDeletion},
-      {"key3", "value3_1", 0, rs::db::dbformat::ValueType::kTypeValue},
-      {"key4", "value4_2", expected_seq, rs::db::dbformat::ValueType::kTypeMerge},
-      {"key4", "value4_1", 0, rs::db::dbformat::ValueType::kTypeValue},
-      {"key5", "value5_3", expected_seq, rs::db::dbformat::ValueType::kTypeMerge},
-      {"key5", "value5_1,value5_2", 0, rs::db::dbformat::ValueType::kTypeValue},
-      {"key6", "value6_2", expected_seq, rs::db::dbformat::ValueType::kTypeValue},
-      {"key7", "value7_2", expected_seq, rs::db::dbformat::ValueType::kTypeValue},
+      {"key1", "value1_2", expected_seq, rs::db::dbformat::ValueType::TypeValue},
+      {"key1", "value1_1", 0, rs::db::dbformat::ValueType::TypeValue},
+      {"key2", "", expected_seq, rs::db::dbformat::ValueType::TypeDeletion},
+      {"key2", "value2_1", 0, rs::db::dbformat::ValueType::TypeValue},
+      {"key3", "", expected_seq, rs::db::dbformat::ValueType::TypeSingleDeletion},
+      {"key3", "value3_1", 0, rs::db::dbformat::ValueType::TypeValue},
+      {"key4", "value4_2", expected_seq, rs::db::dbformat::ValueType::TypeMerge},
+      {"key4", "value4_1", 0, rs::db::dbformat::ValueType::TypeValue},
+      {"key5", "value5_3", expected_seq, rs::db::dbformat::ValueType::TypeMerge},
+      {"key5", "value5_1,value5_2", 0, rs::db::dbformat::ValueType::TypeValue},
+      {"key6", "value6_2", expected_seq, rs::db::dbformat::ValueType::TypeValue},
+      {"key7", "value7_2", expected_seq, rs::db::dbformat::ValueType::TypeValue},
   });
   ASSERT_OK(transaction->Commit());
   VerifyKeys({
@@ -2518,11 +2518,11 @@ TEST_P(WritePreparedTransactionTest, CompactionShouldKeepSnapshotVisibleKeys) {
   VerifyKeys({{"key1", "value1_2"}, {"key2", "value2_2"}});
   VerifyKeys({{"key1", "value1_1"}, {"key2", "NOT_FOUND"}}, snapshot2);
   VerifyInternalKeys({
-      {"key1", "value1_2", seq1, rs::db::dbformat::ValueType::kTypeValue},
+      {"key1", "value1_2", seq1, rs::db::dbformat::ValueType::TypeValue},
       // "value1_1" is visible to snapshot2. Also keys at bottom level visible
       // to earliest snapshot will output with seq = 0.
-      {"key1", "value1_1", 0, rs::db::dbformat::ValueType::kTypeValue},
-      {"key2", "value2_2", seq2, rs::db::dbformat::ValueType::kTypeValue},
+      {"key1", "value1_1", 0, rs::db::dbformat::ValueType::TypeValue},
+      {"key2", "value2_2", seq2, rs::db::dbformat::ValueType::TypeValue},
   });
   db->ReleaseSnapshot(snapshot2);
 }
@@ -2670,7 +2670,7 @@ TEST_P(WritePreparedTransactionTest, ReleaseSnapshotDuringCompaction2) {
 
   ASSERT_OK(db->Flush(FlushOptions()));
   // value1 should be compact out.
-  VerifyInternalKeys({{"key1", "value2", v2_seq, rs::db::dbformat::ValueType::kTypeValue}});
+  VerifyInternalKeys({{"key1", "value2", v2_seq, rs::db::dbformat::ValueType::TypeValue}});
 
   // cleanup
   db->ReleaseSnapshot(s2);
@@ -2738,7 +2738,7 @@ TEST_P(WritePreparedTransactionTest, ReleaseSnapshotDuringCompaction3) {
 
   ASSERT_OK(db->Flush(FlushOptions()));
   // value1 should be compact out.
-  VerifyInternalKeys({{"key1", "value2", v2_seq, rs::db::dbformat::ValueType::kTypeValue}});
+  VerifyInternalKeys({{"key1", "value2", v2_seq, rs::db::dbformat::ValueType::TypeValue}});
 
   db->ReleaseSnapshot(s2);
   SyncPoint::GetInstance()->ClearAllCallBacks();
@@ -2793,8 +2793,8 @@ TEST_P(WritePreparedTransactionTest, ReleaseEarliestSnapshotDuringCompaction) {
   // Only verify for key1. Both the put and delete for the key should be kept.
   // Since the delete tombstone is not visible to snapshot2, we need to keep
   // at least one version of the key, for write-conflict check.
-  VerifyInternalKeys({{"key1", "", del_seq, rs::db::dbformat::ValueType::kTypeDeletion},
-                      {"key1", "value1", put_seq, rs::db::dbformat::ValueType::kTypeValue}});
+  VerifyInternalKeys({{"key1", "", del_seq, rs::db::dbformat::ValueType::TypeDeletion},
+                      {"key1", "value1", put_seq, rs::db::dbformat::ValueType::TypeValue}});
   db->ReleaseSnapshot(snapshot2);
   SyncPoint::GetInstance()->ClearAllCallBacks();
 }
@@ -3103,7 +3103,7 @@ TEST_P(WritePreparedTransactionTest, ReleaseEarliestSnapshotAfterSeqZeroing) {
             reinterpret_cast<const ParsedInternalKey*>(arg);
         assert(ikey);
         if (ikey->user_key == "b") {
-          assert(ikey->type == rs::db::dbformat::ValueType::kTypeValue);
+          assert(ikey->type == rs::db::dbformat::ValueType::TypeValue);
           db->ReleaseSnapshot(snapshot);
 
           // Bump max_evicted_seq.
@@ -3177,7 +3177,7 @@ TEST_P(WritePreparedTransactionTest, ReleaseEarliestSnapshotAfterSeqZeroing2) {
             reinterpret_cast<const ParsedInternalKey*>(arg);
         assert(ikey);
         if (ikey->user_key == "b") {
-          assert(ikey->type == rs::db::dbformat::ValueType::kTypeValue);
+          assert(ikey->type == rs::db::dbformat::ValueType::TypeValue);
           db->ReleaseSnapshot(snapshot);
 
           // Bump max_evicted_seq.
@@ -3390,9 +3390,9 @@ TEST_P(WritePreparedTransactionTest,
   });
   VerifyInternalKeys({
       // "key1" has not been committed. It keeps its sequence number.
-      {"key1", "value1", seq1, rs::db::dbformat::ValueType::kTypeValue},
+      {"key1", "value1", seq1, rs::db::dbformat::ValueType::TypeValue},
       // "key2" is committed and output with seq = 0.
-      {"key2", "value2", 0, rs::db::dbformat::ValueType::kTypeValue},
+      {"key2", "value2", 0, rs::db::dbformat::ValueType::TypeValue},
   });
   ASSERT_OK(transaction->Commit());
   VerifyKeys({

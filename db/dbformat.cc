@@ -26,27 +26,27 @@ namespace ROCKSDB_NAMESPACE {
 // and the value type is embedded as the low 8 bits in the sequence
 // number in internal keys, we need to use the highest-numbered
 // ValueType, not the lowest).
-const rs::db::dbformat::ValueType kValueTypeForSeek = rs::db::dbformat::ValueType::kTypeWideColumnEntity;
-const rs::db::dbformat::ValueType kValueTypeForSeekForPrev = rs::db::dbformat::ValueType::kTypeDeletion;
+const rs::db::dbformat::ValueType kValueTypeForSeek = rs::db::dbformat::ValueType::TypeWideColumnEntity;
+const rs::db::dbformat::ValueType kValueTypeForSeekForPrev = rs::db::dbformat::ValueType::TypeDeletion;
 const std::string kDisableUserTimestamp("");
 
 rs::types::EntryType GetEntryType(rs::db::dbformat::ValueType value_type) {
   switch (value_type) {
-    case rs::db::dbformat::ValueType::kTypeValue:
+    case rs::db::dbformat::ValueType::TypeValue:
       return rs::types::EntryType::Put;
-    case rs::db::dbformat::ValueType::kTypeDeletion:
+    case rs::db::dbformat::ValueType::TypeDeletion:
       return rs::types::EntryType::Delete;
-    case rs::db::dbformat::ValueType::kTypeDeletionWithTimestamp:
+    case rs::db::dbformat::ValueType::TypeDeletionWithTimestamp:
       return rs::types::EntryType::DeleteWithTimestamp;
-    case rs::db::dbformat::ValueType::kTypeSingleDeletion:
+    case rs::db::dbformat::ValueType::TypeSingleDeletion:
       return rs::types::EntryType::SingleDelete;
-    case rs::db::dbformat::ValueType::kTypeMerge:
+    case rs::db::dbformat::ValueType::TypeMerge:
       return rs::types::EntryType::Merge;
-    case rs::db::dbformat::ValueType::kTypeRangeDeletion:
+    case rs::db::dbformat::ValueType::TypeRangeDeletion:
       return rs::types::EntryType::RangeDeletion;
-    case rs::db::dbformat::ValueType::kTypeBlobIndex:
+    case rs::db::dbformat::ValueType::TypeBlobIndex:
       return rs::types::EntryType::BlobIndex;
-    case rs::db::dbformat::ValueType::kTypeWideColumnEntity:
+    case rs::db::dbformat::ValueType::TypeWideColumnEntity:
       return rs::types::EntryType::WideColumnEntity;
     default:
       return rs::types::EntryType::Other;
