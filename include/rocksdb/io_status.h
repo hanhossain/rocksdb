@@ -38,7 +38,7 @@ class IOStatus : public Status {
   };
 
   // Create a success status.
-  IOStatus() : IOStatus(rs::status::Code::kOk, rs::status::SubCode::kNone) {}
+  IOStatus() : IOStatus(rs::status::Code::Ok, rs::status::SubCode::kNone) {}
   ~IOStatus() {}
 
   // Copy the specified status.
@@ -63,75 +63,75 @@ class IOStatus : public Status {
   static IOStatus OK() { return IOStatus(); }
 
   static IOStatus NotSupported(const Slice& msg, const Slice& msg2 = Slice()) {
-    return IOStatus(rs::status::Code::kNotSupported, msg, msg2);
+    return IOStatus(rs::status::Code::NotSupported, msg, msg2);
   }
   static IOStatus NotSupported(SubCode msg = rs::status::SubCode::kNone) {
-    return IOStatus(rs::status::Code::kNotSupported, msg);
+    return IOStatus(rs::status::Code::NotSupported, msg);
   }
 
   // Return error status of an appropriate type.
   static IOStatus NotFound(const Slice& msg, const Slice& msg2 = Slice()) {
-    return IOStatus(rs::status::Code::kNotFound, msg, msg2);
+    return IOStatus(rs::status::Code::NotFound, msg, msg2);
   }
   // Fast path for not found without malloc;
   static IOStatus NotFound(SubCode msg = rs::status::SubCode::kNone) {
-    return IOStatus(rs::status::Code::kNotFound, msg);
+    return IOStatus(rs::status::Code::NotFound, msg);
   }
 
   static IOStatus Corruption(const Slice& msg, const Slice& msg2 = Slice()) {
-    return IOStatus(rs::status::Code::kCorruption, msg, msg2);
+    return IOStatus(rs::status::Code::Corruption, msg, msg2);
   }
   static IOStatus Corruption(SubCode msg = rs::status::SubCode::kNone) {
-    return IOStatus(rs::status::Code::kCorruption, msg);
+    return IOStatus(rs::status::Code::Corruption, msg);
   }
 
   static IOStatus InvalidArgument(const Slice& msg,
                                   const Slice& msg2 = Slice()) {
-    return IOStatus(rs::status::Code::kInvalidArgument, msg, msg2);
+    return IOStatus(rs::status::Code::InvalidArgument, msg, msg2);
   }
   static IOStatus InvalidArgument(SubCode msg = rs::status::SubCode::kNone) {
-    return IOStatus(rs::status::Code::kInvalidArgument, msg);
+    return IOStatus(rs::status::Code::InvalidArgument, msg);
   }
 
   static IOStatus IOError(const Slice& msg, const Slice& msg2 = Slice()) {
-    return IOStatus(rs::status::Code::kIOError, msg, msg2);
+    return IOStatus(rs::status::Code::IOError, msg, msg2);
   }
   static IOStatus IOError(SubCode msg = rs::status::SubCode::kNone) {
-    return IOStatus(rs::status::Code::kIOError, msg);
+    return IOStatus(rs::status::Code::IOError, msg);
   }
 
-  static IOStatus Busy(SubCode msg = rs::status::SubCode::kNone) { return IOStatus(rs::status::Code::kBusy, msg); }
+  static IOStatus Busy(SubCode msg = rs::status::SubCode::kNone) { return IOStatus(rs::status::Code::Busy, msg); }
   static IOStatus Busy(const Slice& msg, const Slice& msg2 = Slice()) {
-    return IOStatus(rs::status::Code::kBusy, msg, msg2);
+    return IOStatus(rs::status::Code::Busy, msg, msg2);
   }
 
   static IOStatus TimedOut(SubCode msg = rs::status::SubCode::kNone) {
-    return IOStatus(rs::status::Code::kTimedOut, msg);
+    return IOStatus(rs::status::Code::TimedOut, msg);
   }
   static IOStatus TimedOut(const Slice& msg, const Slice& msg2 = Slice()) {
-    return IOStatus(rs::status::Code::kTimedOut, msg, msg2);
+    return IOStatus(rs::status::Code::TimedOut, msg, msg2);
   }
 
-  static IOStatus NoSpace() { return IOStatus(rs::status::Code::kIOError, rs::status::SubCode::kNoSpace); }
+  static IOStatus NoSpace() { return IOStatus(rs::status::Code::IOError, rs::status::SubCode::kNoSpace); }
   static IOStatus NoSpace(const Slice& msg, const Slice& msg2 = Slice()) {
-    return IOStatus(rs::status::Code::kIOError, rs::status::SubCode::kNoSpace, msg, msg2);
+    return IOStatus(rs::status::Code::IOError, rs::status::SubCode::kNoSpace, msg, msg2);
   }
 
-  static IOStatus PathNotFound() { return IOStatus(rs::status::Code::kIOError, rs::status::SubCode::kPathNotFound); }
+  static IOStatus PathNotFound() { return IOStatus(rs::status::Code::IOError, rs::status::SubCode::kPathNotFound); }
   static IOStatus PathNotFound(const Slice& msg, const Slice& msg2 = Slice()) {
-    return IOStatus(rs::status::Code::kIOError, rs::status::SubCode::kPathNotFound, msg, msg2);
+    return IOStatus(rs::status::Code::IOError, rs::status::SubCode::kPathNotFound, msg, msg2);
   }
 
-  static IOStatus IOFenced() { return IOStatus(rs::status::Code::kIOError, rs::status::SubCode::kIOFenced); }
+  static IOStatus IOFenced() { return IOStatus(rs::status::Code::IOError, rs::status::SubCode::kIOFenced); }
   static IOStatus IOFenced(const Slice& msg, const Slice& msg2 = Slice()) {
-    return IOStatus(rs::status::Code::kIOError, rs::status::SubCode::kIOFenced, msg, msg2);
+    return IOStatus(rs::status::Code::IOError, rs::status::SubCode::kIOFenced, msg, msg2);
   }
 
   static IOStatus Aborted(SubCode msg = rs::status::SubCode::kNone) {
-    return IOStatus(rs::status::Code::kAborted, msg);
+    return IOStatus(rs::status::Code::Aborted, msg);
   }
   static IOStatus Aborted(const Slice& msg, const Slice& msg2 = Slice()) {
-    return IOStatus(rs::status::Code::kAborted, msg, msg2);
+    return IOStatus(rs::status::Code::Aborted, msg, msg2);
   }
 
   // Return a string representation of this status suitable for printing.
@@ -152,7 +152,7 @@ class IOStatus : public Status {
 inline IOStatus::IOStatus(Code _code, SubCode _subcode, const Slice& msg,
                           const Slice& msg2)
     : Status(_code, _subcode, false, false, kIOErrorScopeFileSystem) {
-  assert(code_ != rs::status::Code::kOk);
+  assert(code_ != rs::status::Code::Ok);
   assert(subcode_ != rs::status::SubCode::kMaxSubCode);
   const size_t len1 = msg.size();
   const size_t len2 = msg2.size();
@@ -206,7 +206,7 @@ inline IOStatus& IOStatus::operator=(IOStatus&& s) noexcept {
     checked_ = false;
 #endif  // ROCKSDB_ASSERT_STATUS_CHECKED
     code_ = std::move(s.code_);
-    s.code_ = rs::status::Code::kOk;
+    s.code_ = rs::status::Code::Ok;
     subcode_ = std::move(s.subcode_);
     s.subcode_ = rs::status::SubCode::kNone;
     retryable_ = s.retryable_;

@@ -530,7 +530,7 @@ TEST_P(BlockBasedTableReaderTestVerifyChecksum, ChecksumMismatch) {
   NewBlockBasedTableReader(foptions, ioptions, comparator, table_name, &table);
   Status s = table->VerifyChecksum(ReadOptions(),
                                    TableReaderCaller::kUserVerifyChecksum);
-  ASSERT_EQ(s.code(), rs::status::Code::kCorruption);
+  ASSERT_EQ(s.code(), rs::status::Code::Corruption);
 }
 
 // Param 1: compression type

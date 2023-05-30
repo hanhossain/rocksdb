@@ -83,54 +83,54 @@ std::string Status::ToString() const {
 #endif  // ROCKSDB_ASSERT_STATUS_CHECKED
   const char* type = nullptr;
   switch (code_) {
-    case rs::status::Code::kOk:
+    case rs::status::Code::Ok:
       return "OK";
-    case rs::status::Code::kNotFound:
+    case rs::status::Code::NotFound:
       type = "NotFound: ";
       break;
-    case rs::status::Code::kCorruption:
+    case rs::status::Code::Corruption:
       type = "Corruption: ";
       break;
-    case rs::status::Code::kNotSupported:
+    case rs::status::Code::NotSupported:
       type = "Not implemented: ";
       break;
-    case rs::status::Code::kInvalidArgument:
+    case rs::status::Code::InvalidArgument:
       type = "Invalid argument: ";
       break;
-    case rs::status::Code::kIOError:
+    case rs::status::Code::IOError:
       type = "IO error: ";
       break;
-    case rs::status::Code::kMergeInProgress:
+    case rs::status::Code::MergeInProgress:
       type = "Merge in progress: ";
       break;
-    case rs::status::Code::kIncomplete:
+    case rs::status::Code::Incomplete:
       type = "Result incomplete: ";
       break;
-    case rs::status::Code::kShutdownInProgress:
+    case rs::status::Code::ShutdownInProgress:
       type = "Shutdown in progress: ";
       break;
-    case rs::status::Code::kTimedOut:
+    case rs::status::Code::TimedOut:
       type = "Operation timed out: ";
       break;
-    case rs::status::Code::kAborted:
+    case rs::status::Code::Aborted:
       type = "Operation aborted: ";
       break;
-    case rs::status::Code::kBusy:
+    case rs::status::Code::Busy:
       type = "Resource busy: ";
       break;
-    case rs::status::Code::kExpired:
+    case rs::status::Code::Expired:
       type = "Operation expired: ";
       break;
-    case rs::status::Code::kTryAgain:
+    case rs::status::Code::TryAgain:
       type = "Operation failed. Try again.: ";
       break;
-    case rs::status::Code::kCompactionTooLarge:
+    case rs::status::Code::CompactionTooLarge:
       type = "Compaction too large: ";
       break;
-    case rs::status::Code::kColumnFamilyDropped:
+    case rs::status::Code::ColumnFamilyDropped:
       type = "Column family dropped: ";
       break;
-    case rs::status::Code::kMaxCode:
+    case rs::status::Code::MaxCode:
       assert(false);
       break;
   }
