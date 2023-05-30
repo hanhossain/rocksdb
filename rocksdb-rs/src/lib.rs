@@ -11,6 +11,7 @@ use crate::options::new_live_files_storage_info_options;
 #[cxx::bridge]
 mod ffi {
     #[namespace = "rs::types"]
+    #[derive(Debug)]
     enum TableFileCreationReason {
         Flush,
         Compaction,
@@ -19,6 +20,7 @@ mod ffi {
     }
 
     #[namespace = "rs::types"]
+    #[derive(Debug)]
     enum BlobFileCreationReason {
         Flush,
         Compaction,
@@ -29,6 +31,7 @@ mod ffi {
     /// advanced options.)
     #[repr(i32)]
     #[namespace = "rs::types"]
+    #[derive(Debug)]
     enum FileType {
         WalFile,
         DBLockFile,
@@ -47,6 +50,7 @@ mod ffi {
     /// User-oriented representation of internal key types.
     /// Ordering of this enum entries should not change.
     #[namespace = "rs::types"]
+    #[derive(Debug)]
     enum EntryType {
         Put,
         Delete,
@@ -60,6 +64,7 @@ mod ffi {
     }
 
     #[namespace = "rs::types"]
+    #[derive(Debug)]
     enum WriteStallCause {
         // Beginning of CF-scope write stall causes
         // Always keep `MemtableLimit` as the first stat in this section
@@ -81,6 +86,7 @@ mod ffi {
     }
 
     #[namespace = "rs::types"]
+    #[derive(Debug)]
     enum WriteStallCondition {
         Delayed,
         Stopped,
@@ -94,6 +100,7 @@ mod ffi {
     // The highest bit of the value type needs to be reserved to SST tables
     // for them to do more flexible encoding.
     #[namespace = "rs::db::dbformat"]
+    #[derive(Debug)]
     enum ValueType {
         kTypeDeletion = 0x0,
         kTypeValue = 0x1,
@@ -154,6 +161,7 @@ mod ffi {
     /// The underlying "class/type" of the option. This enum is used to determine how the option
     /// should be converted to/from strings and compared.
     #[namespace = "rs::options_type"]
+    #[derive(Debug)]
     enum OptionType {
         Boolean,
         Int,
@@ -185,6 +193,7 @@ mod ffi {
     }
 
     #[namespace = "rs::options_type"]
+    #[derive(Debug)]
     enum OptionVerificationType {
         Normal,
         /// The option is pointer typed so we can only verify
@@ -225,6 +234,7 @@ mod ffi {
     ///               the string representation.
     /// DontPrepare   means do not call PrepareOptions for this pointer value.
     #[namespace = "rs::options_type"]
+    #[derive(Debug)]
     enum OptionTypeFlags {
         /// No flags
         None = 0x00,
@@ -256,6 +266,7 @@ mod ffi {
 
     /// This enum defines the RocksDB options sanity level.
     #[namespace = "rs::convenience"]
+    #[derive(Debug)]
     enum SanityLevel {
         /// Performs no sanity check at all.
         None = 0x01,
@@ -267,6 +278,7 @@ mod ffi {
     }
 
     #[namespace = "rs::convenience"]
+    #[derive(Debug)]
     enum Depth {
         /// Traverse nested options that are not flagged as "shallow"
         Default,
@@ -277,6 +289,7 @@ mod ffi {
     }
 
     #[namespace = "rs::advanced_options"]
+    #[derive(Debug)]
     enum CompactionStyle {
         /// Level based compaction style
         Level = 0x0,
@@ -292,6 +305,7 @@ mod ffi {
     /// picked to merge to the next level. We suggest people try
     /// [`CompactionPri::MinOverlappingRatio`] first when you tune your database.
     #[namespace = "rs::advanced_options"]
+    #[derive(Debug)]
     enum CompactionPri {
         /// Slightly prioritize larger files by size compensated by #deletes
         ByCompensatedSize = 0x0,
@@ -316,6 +330,7 @@ mod ffi {
     /// Temperature of a file. Used to pass to FileSystem for a different placement and/or coding.
     /// Reserve some numbers in the middle, in case we need to insert new tier there.
     #[namespace = "rs::advanced_options"]
+    #[derive(Debug)]
     enum Temperature {
         Unknown = 0,
         Hot = 0x04,
@@ -328,6 +343,7 @@ mod ffi {
     /// support block cache (volatile tier), secondary cache (non-volatile tier).
     /// In the future, we may add more caching layers.
     #[namespace = "rs::advanced_options"]
+    #[derive(Debug)]
     enum CacheTier {
         VolatileTier = 0,
         NonVolatileBlockTier = 0x01,
@@ -335,6 +351,7 @@ mod ffi {
 
     /// Return status For inplace update callback
     #[namespace = "rs::advanced_options"]
+    #[derive(Debug)]
     enum UpdateStatus {
         /// Nothing to update
         Failed = 0,
@@ -345,6 +362,7 @@ mod ffi {
     }
 
     #[namespace = "rs::advanced_options"]
+    #[derive(Debug)]
     enum PrepopulateBlobCache {
         // Disable prepopulate blob cache
         Disable = 0x0,
@@ -353,6 +371,7 @@ mod ffi {
     }
 
     #[namespace = "rs::advanced_options"]
+    #[derive(Debug)]
     struct CompactionOptionsFIFO {
         /// Once the total sum of table files reaches this, we will delete the oldest table file.
         /// Default: 1GB
@@ -369,6 +388,7 @@ mod ffi {
     }
 
     #[namespace = "rs::options"]
+    #[derive(Debug)]
     enum CompactionServiceJobStatus {
         Success = 0,
         Failure = 1,
@@ -376,6 +396,7 @@ mod ffi {
     }
 
     #[namespace = "rs::options"]
+    #[derive(Debug)]
     enum WALRecoveryMode {
         /// Original levelDB recovery
         ///
@@ -422,6 +443,7 @@ mod ffi {
     /// the block cache. It will not page in data from the OS cache or data that
     /// resides in storage.
     #[namespace = "rs::options"]
+    #[derive(Debug)]
     enum ReadTier {
         /// Data in memtable, block cache, OS cache or storage
         ReadAllTier = 0x0,
@@ -437,6 +459,7 @@ mod ffi {
     /// For level based compaction, we can configure if we want to skip/force
     /// bottommost level compaction.
     #[namespace = "rs::options"]
+    #[derive(Debug)]
     enum BottommostLevelCompaction {
         /// Skip bottommost level compaction
         Skip,
@@ -453,6 +476,7 @@ mod ffi {
     /// For manual compaction, we can configure if we want to skip/force garbage collection of blob
     /// files.
     #[namespace = "rs::options"]
+    #[derive(Debug)]
     enum BlobGarbageCollectionPolicy {
         /// Force blob file garbage collection.
         Force,
@@ -463,6 +487,7 @@ mod ffi {
     }
 
     #[namespace = "rs::options"]
+    #[derive(Debug)]
     enum TraceFilterType {
         /// Trace all the operations
         None = 0x0,
@@ -479,6 +504,7 @@ mod ffi {
     }
 
     #[namespace = "rs::options"]
+    #[derive(Debug)]
     struct LiveFilesStorageInfoOptions {
         /// Whether to populate FileStorageInfo::file_checksum* or leave blank
         include_checksum_info: bool,
@@ -489,6 +515,7 @@ mod ffi {
     }
 
     #[namespace = "rs::status"]
+    #[derive(Debug)]
     enum Severity {
         kNoError = 0,
         kSoftError = 1,
@@ -499,6 +526,7 @@ mod ffi {
     }
 
     #[namespace = "rs::status"]
+    #[derive(Debug)]
     enum Code {
         kOk = 0,
         kNotFound = 1,
@@ -520,6 +548,7 @@ mod ffi {
     }
 
     #[namespace = "rs::status"]
+    #[derive(Debug)]
     enum SubCode {
         kNone = 0,
         kMutexTimeout = 1,
