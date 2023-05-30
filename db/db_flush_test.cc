@@ -2191,7 +2191,7 @@ TEST_F(DBFlushTest, FlushWithChecksumHandoff1) {
   SyncPoint::GetInstance()->EnableProcessing();
   Status s = Flush();
   ASSERT_EQ(s.severity(),
-            rs::status::Severity::kUnrecoverableError);
+            rs::status::Severity::UnrecoverableError);
   SyncPoint::GetInstance()->DisableProcessing();
   Destroy(options);
   Reopen(options);
@@ -2215,7 +2215,7 @@ TEST_F(DBFlushTest, FlushWithChecksumHandoff1) {
   SyncPoint::GetInstance()->EnableProcessing();
   s = Flush();
   ASSERT_EQ(s.severity(),
-            rs::status::Severity::kUnrecoverableError);
+            rs::status::Severity::UnrecoverableError);
   SyncPoint::GetInstance()->DisableProcessing();
 
   Destroy(options);
@@ -2310,7 +2310,7 @@ TEST_F(DBFlushTest, FlushWithChecksumHandoffManifest1) {
   ASSERT_OK(Put("key4", "value4"));
   SyncPoint::GetInstance()->EnableProcessing();
   Status s = Flush();
-  ASSERT_EQ(s.severity(), rs::status::Severity::kFatalError);
+  ASSERT_EQ(s.severity(), rs::status::Severity::FatalError);
   SyncPoint::GetInstance()->DisableProcessing();
   Destroy(options);
 }
@@ -2349,7 +2349,7 @@ TEST_F(DBFlushTest, FlushWithChecksumHandoffManifest2) {
   ASSERT_OK(Put("key8", "value8"));
   SyncPoint::GetInstance()->EnableProcessing();
   Status s = Flush();
-  ASSERT_EQ(s.severity(), rs::status::Severity::kFatalError);
+  ASSERT_EQ(s.severity(), rs::status::Severity::FatalError);
   SyncPoint::GetInstance()->DisableProcessing();
 
   Destroy(options);

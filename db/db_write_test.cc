@@ -599,7 +599,7 @@ TEST_P(DBWriteTest, IOErrorOnSwitchMemtable) {
       break;
     }
   }
-  ASSERT_EQ(s.severity(), rs::status::Severity::kFatalError);
+  ASSERT_EQ(s.severity(), rs::status::Severity::FatalError);
 
   mock_env->SetFilesystemActive(true);
   // Close before mock_env destruct.

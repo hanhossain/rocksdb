@@ -65,7 +65,7 @@ class ErrorHandler {
     assert(db_mutex_);
     db_mutex_->AssertHeld();
     return !bg_error_.ok() &&
-           (bg_error_.severity() >= rs::status::Severity::kHardError ||
+           (bg_error_.severity() >= rs::status::Severity::HardError ||
             !auto_recovery_ || soft_error_no_bg_work_);
   }
 

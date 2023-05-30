@@ -144,7 +144,7 @@ class SstFileManagerImpl : public SstFileManager {
 
   void ClearError();
   bool CheckFreeSpace() {
-    return bg_err_.severity() == rs::status::Severity::kSoftError;
+    return bg_err_.severity() == rs::status::Severity::SoftError;
   }
 
   std::shared_ptr<SystemClock> clock_;

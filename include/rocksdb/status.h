@@ -35,7 +35,7 @@ class Status {
   Status()
       : code_(rs::status::Code::kOk),
         subcode_(rs::status::SubCode::kNone),
-        sev_(rs::status::Severity::kNoError),
+        sev_(rs::status::Severity::NoError),
         retryable_(false),
         data_loss_(false),
         scope_(0),
@@ -397,7 +397,7 @@ class Status {
   explicit Status(rs::status::Code _code, rs::status::SubCode _subcode = rs::status::SubCode::kNone)
       : code_(_code),
         subcode_(_subcode),
-        sev_(rs::status::Severity::kNoError),
+        sev_(rs::status::Severity::NoError),
         retryable_(false),
         data_loss_(false),
         scope_(0) {}
@@ -406,13 +406,13 @@ class Status {
                   unsigned char scope)
       : code_(_code),
         subcode_(_subcode),
-        sev_(rs::status::Severity::kNoError),
+        sev_(rs::status::Severity::NoError),
         retryable_(retryable),
         data_loss_(data_loss),
         scope_(scope) {}
 
   Status(rs::status::Code _code, rs::status::SubCode _subcode, const Slice& msg, const Slice& msg2,
-         rs::status::Severity sev = rs::status::Severity::kNoError);
+         rs::status::Severity sev = rs::status::Severity::NoError);
   Status(rs::status::Code _code, const Slice& msg, const Slice& msg2)
       : Status(_code, rs::status::SubCode::kNone, msg, msg2) {}
 
@@ -474,7 +474,7 @@ inline Status& Status::operator=(Status&& s) noexcept {
     subcode_ = s.subcode_;
     s.subcode_ = rs::status::SubCode::kNone;
     sev_ = s.sev_;
-    s.sev_ = rs::status::Severity::kNoError;
+    s.sev_ = rs::status::Severity::NoError;
     retryable_ = s.retryable_;
     s.retryable_ = false;
     data_loss_ = s.data_loss_;

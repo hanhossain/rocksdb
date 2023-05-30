@@ -517,12 +517,12 @@ mod ffi {
     #[namespace = "rs::status"]
     #[derive(Debug)]
     enum Severity {
-        kNoError = 0,
-        kSoftError = 1,
-        kHardError = 2,
-        kFatalError = 3,
-        kUnrecoverableError = 4,
-        kMaxSeverity,
+        NoError = 0,
+        SoftError = 1,
+        HardError = 2,
+        FatalError = 3,
+        UnrecoverableError = 4,
+        MaxSeverity,
     }
 
     #[namespace = "rs::status"]

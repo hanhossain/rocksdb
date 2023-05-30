@@ -2501,7 +2501,7 @@ Status DBImpl::WaitForFlushMemTables(
     // If BGWorkStopped, which indicate that there is a BG error and
     // 1) soft error but requires no BG work, 2) no in auto_recovery_
     if (!resuming_from_bg_err && error_handler_.IsBGWorkStopped() &&
-        error_handler_.GetBGError().severity() < rs::status::Severity::kHardError) {
+        error_handler_.GetBGError().severity() < rs::status::Severity::HardError) {
       s = error_handler_.GetBGError();
       return s;
     }
