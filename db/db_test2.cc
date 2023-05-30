@@ -3448,7 +3448,7 @@ TEST_F(DBTest2, CancelManualCompactionWithListener) {
   // manual compaction in the callback function, 3 Compaction not run,
   // 4 Notify compaction end.
   listener->code_ = rs::status::Code::Incomplete;
-  listener->subcode_ = rs::status::SubCode::kManualCompactionPaused;
+  listener->subcode_ = rs::status::SubCode::ManualCompactionPaused;
 
   compact_options.canceled->store(false, std::memory_order_release);
   ASSERT_TRUE(dbfull()
@@ -3487,7 +3487,7 @@ TEST_F(DBTest2, CancelManualCompactionWithListener) {
       });
 
   listener->code_ = rs::status::Code::Ok;
-  listener->subcode_ = rs::status::SubCode::kNone;
+  listener->subcode_ = rs::status::SubCode::None;
 
   compact_options.canceled->store(false, std::memory_order_release);
   ASSERT_OK(dbfull()->CompactRange(compact_options, nullptr, nullptr));
@@ -3538,7 +3538,7 @@ TEST_F(DBTest2, CompactionOnBottomPriorityWithListener) {
       [&](void* /*arg*/) { num_compaction_jobs++; });
 
   listener->code_ = rs::status::Code::Ok;
-  listener->subcode_ = rs::status::SubCode::kNone;
+  listener->subcode_ = rs::status::SubCode::None;
 
   Random rnd(301);
   for (int i = 0; i < 1; ++i) {

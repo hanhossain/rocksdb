@@ -159,7 +159,7 @@ DEFINE_SYNC_AND_ASYNC(Status, Version::MultiGetFromSST)
         file_range.MarkKeyDone(iter);
         continue;
       case GetContext::kMergeOperatorFailed:
-        *status = Status::Corruption(rs::status::SubCode::kMergeOperatorFailed);
+        *status = Status::Corruption(rs::status::SubCode::MergeOperatorFailed);
         file_range.MarkKeyDone(iter);
         continue;
     }

@@ -24,111 +24,111 @@ std::map<std::tuple<BackgroundErrorReason, rs::status::Code, rs::status::SubCode
     ErrorSeverityMap = {
         // Errors during BG compaction
         {std::make_tuple(BackgroundErrorReason::kCompaction,
-                         rs::status::Code::IOError, rs::status::SubCode::kNoSpace,
+                         rs::status::Code::IOError, rs::status::SubCode::NoSpace,
                          true),
          rs::status::Severity::SoftError},
         {std::make_tuple(BackgroundErrorReason::kCompaction,
-                         rs::status::Code::IOError, rs::status::SubCode::kNoSpace,
+                         rs::status::Code::IOError, rs::status::SubCode::NoSpace,
                          false),
          rs::status::Severity::NoError},
         {std::make_tuple(BackgroundErrorReason::kCompaction,
-                         rs::status::Code::IOError, rs::status::SubCode::kSpaceLimit,
+                         rs::status::Code::IOError, rs::status::SubCode::SpaceLimit,
                          true),
          rs::status::Severity::HardError},
         {std::make_tuple(BackgroundErrorReason::kCompaction,
-                         rs::status::Code::IOError, rs::status::SubCode::kIOFenced,
+                         rs::status::Code::IOError, rs::status::SubCode::IOFenced,
                          true),
          rs::status::Severity::FatalError},
         {std::make_tuple(BackgroundErrorReason::kCompaction,
-                         rs::status::Code::IOError, rs::status::SubCode::kIOFenced,
+                         rs::status::Code::IOError, rs::status::SubCode::IOFenced,
                          false),
          rs::status::Severity::FatalError},
         // Errors during BG flush
         {std::make_tuple(BackgroundErrorReason::kFlush, rs::status::Code::IOError,
-                         rs::status::SubCode::kNoSpace, true),
+                         rs::status::SubCode::NoSpace, true),
          rs::status::Severity::HardError},
         {std::make_tuple(BackgroundErrorReason::kFlush, rs::status::Code::IOError,
-                         rs::status::SubCode::kNoSpace, false),
+                         rs::status::SubCode::NoSpace, false),
          rs::status::Severity::NoError},
         {std::make_tuple(BackgroundErrorReason::kFlush, rs::status::Code::IOError,
-                         rs::status::SubCode::kSpaceLimit, true),
+                         rs::status::SubCode::SpaceLimit, true),
          rs::status::Severity::HardError},
         {std::make_tuple(BackgroundErrorReason::kFlush, rs::status::Code::IOError,
-                         rs::status::SubCode::kIOFenced, true),
+                         rs::status::SubCode::IOFenced, true),
          rs::status::Severity::FatalError},
         {std::make_tuple(BackgroundErrorReason::kFlush, rs::status::Code::IOError,
-                         rs::status::SubCode::kIOFenced, false),
+                         rs::status::SubCode::IOFenced, false),
          rs::status::Severity::FatalError},
         // Errors during Write
         {std::make_tuple(BackgroundErrorReason::kWriteCallback,
-                         rs::status::Code::IOError, rs::status::SubCode::kNoSpace,
+                         rs::status::Code::IOError, rs::status::SubCode::NoSpace,
                          true),
          rs::status::Severity::HardError},
         {std::make_tuple(BackgroundErrorReason::kWriteCallback,
-                         rs::status::Code::IOError, rs::status::SubCode::kNoSpace,
+                         rs::status::Code::IOError, rs::status::SubCode::NoSpace,
                          false),
          rs::status::Severity::HardError},
         {std::make_tuple(BackgroundErrorReason::kWriteCallback,
-                         rs::status::Code::IOError, rs::status::SubCode::kIOFenced,
+                         rs::status::Code::IOError, rs::status::SubCode::IOFenced,
                          true),
          rs::status::Severity::FatalError},
         {std::make_tuple(BackgroundErrorReason::kWriteCallback,
-                         rs::status::Code::IOError, rs::status::SubCode::kIOFenced,
+                         rs::status::Code::IOError, rs::status::SubCode::IOFenced,
                          false),
          rs::status::Severity::FatalError},
         // Errors during MANIFEST write
         {std::make_tuple(BackgroundErrorReason::kManifestWrite,
-                         rs::status::Code::IOError, rs::status::SubCode::kNoSpace,
+                         rs::status::Code::IOError, rs::status::SubCode::NoSpace,
                          true),
          rs::status::Severity::HardError},
         {std::make_tuple(BackgroundErrorReason::kManifestWrite,
-                         rs::status::Code::IOError, rs::status::SubCode::kNoSpace,
+                         rs::status::Code::IOError, rs::status::SubCode::NoSpace,
                          false),
          rs::status::Severity::HardError},
         {std::make_tuple(BackgroundErrorReason::kManifestWrite,
-                         rs::status::Code::IOError, rs::status::SubCode::kIOFenced,
+                         rs::status::Code::IOError, rs::status::SubCode::IOFenced,
                          true),
          rs::status::Severity::FatalError},
         {std::make_tuple(BackgroundErrorReason::kManifestWrite,
-                         rs::status::Code::IOError, rs::status::SubCode::kIOFenced,
+                         rs::status::Code::IOError, rs::status::SubCode::IOFenced,
                          false),
          rs::status::Severity::FatalError},
         // Errors during BG flush with WAL disabled
         {std::make_tuple(BackgroundErrorReason::kFlushNoWAL,
-                         rs::status::Code::IOError, rs::status::SubCode::kNoSpace,
+                         rs::status::Code::IOError, rs::status::SubCode::NoSpace,
                          true),
          rs::status::Severity::HardError},
         {std::make_tuple(BackgroundErrorReason::kFlushNoWAL,
-                         rs::status::Code::IOError, rs::status::SubCode::kNoSpace,
+                         rs::status::Code::IOError, rs::status::SubCode::NoSpace,
                          false),
          rs::status::Severity::NoError},
         {std::make_tuple(BackgroundErrorReason::kFlushNoWAL,
-                         rs::status::Code::IOError, rs::status::SubCode::kSpaceLimit,
+                         rs::status::Code::IOError, rs::status::SubCode::SpaceLimit,
                          true),
          rs::status::Severity::HardError},
         {std::make_tuple(BackgroundErrorReason::kFlushNoWAL,
-                         rs::status::Code::IOError, rs::status::SubCode::kIOFenced,
+                         rs::status::Code::IOError, rs::status::SubCode::IOFenced,
                          true),
          rs::status::Severity::FatalError},
         {std::make_tuple(BackgroundErrorReason::kFlushNoWAL,
-                         rs::status::Code::IOError, rs::status::SubCode::kIOFenced,
+                         rs::status::Code::IOError, rs::status::SubCode::IOFenced,
                          false),
          rs::status::Severity::FatalError},
         // Errors during MANIFEST write when WAL is disabled
         {std::make_tuple(BackgroundErrorReason::kManifestWriteNoWAL,
-                         rs::status::Code::IOError, rs::status::SubCode::kNoSpace,
+                         rs::status::Code::IOError, rs::status::SubCode::NoSpace,
                          true),
          rs::status::Severity::HardError},
         {std::make_tuple(BackgroundErrorReason::kManifestWriteNoWAL,
-                         rs::status::Code::IOError, rs::status::SubCode::kNoSpace,
+                         rs::status::Code::IOError, rs::status::SubCode::NoSpace,
                          false),
          rs::status::Severity::HardError},
         {std::make_tuple(BackgroundErrorReason::kManifestWriteNoWAL,
-                         rs::status::Code::IOError, rs::status::SubCode::kIOFenced,
+                         rs::status::Code::IOError, rs::status::SubCode::IOFenced,
                          true),
          rs::status::Severity::FatalError},
         {std::make_tuple(BackgroundErrorReason::kManifestWriteNoWAL,
-                         rs::status::Code::IOError, rs::status::SubCode::kIOFenced,
+                         rs::status::Code::IOError, rs::status::SubCode::IOFenced,
                          false),
          rs::status::Severity::FatalError},
 
@@ -328,8 +328,8 @@ const Status& ErrorHandler::HandleKnownErrors(const Status& bg_err,
   }
 
   // Allow some error specific overrides
-  if (new_bg_err.subcode() == IOStatus::SubCode::kNoSpace ||
-      new_bg_err.subcode() == IOStatus::SubCode::kSpaceLimit) {
+  if (new_bg_err.subcode() == rs::status::SubCode::NoSpace ||
+      new_bg_err.subcode() == rs::status::SubCode::SpaceLimit) {
     new_bg_err = OverrideNoSpaceError(new_bg_err, &auto_recovery);
   }
 
@@ -351,8 +351,8 @@ const Status& ErrorHandler::HandleKnownErrors(const Status& bg_err,
     recovery_in_prog_ = true;
 
     // Kick-off error specific recovery
-    if (new_bg_err.subcode() == IOStatus::SubCode::kNoSpace ||
-        new_bg_err.subcode() == IOStatus::SubCode::kSpaceLimit) {
+    if (new_bg_err.subcode() == rs::status::SubCode::NoSpace ||
+        new_bg_err.subcode() == rs::status::SubCode::SpaceLimit) {
       RecoverFromNoSpace();
     }
   }
@@ -425,7 +425,7 @@ const Status& ErrorHandler::SetBGError(const Status& bg_status,
                                           &bg_err, db_mutex_, &auto_recovery);
     recover_context_ = context;
     return bg_error_;
-  } else if (bg_io_err.subcode() != IOStatus::SubCode::kNoSpace &&
+  } else if (bg_io_err.subcode() != rs::status::SubCode::NoSpace &&
              (bg_io_err.GetScope() ==
                   IOStatus::IOErrorScope::kIOErrorScopeFile ||
               bg_io_err.GetRetryable())) {

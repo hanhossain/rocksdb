@@ -50,7 +50,7 @@ Status GetLatestOptionsFileName(const std::string& dbpath, Env* env,
   std::vector<std::string> file_names;
   s = env->GetChildren(dbpath, &file_names);
   if (s.IsNotFound()) {
-    return Status::NotFound(rs::status::SubCode::kPathNotFound,
+    return Status::NotFound(rs::status::SubCode::PathNotFound,
                             "No options files found in the DB directory.",
                             dbpath);
   } else if (!s.ok()) {
@@ -67,7 +67,7 @@ Status GetLatestOptionsFileName(const std::string& dbpath, Env* env,
     }
   }
   if (latest_file_name.size() == 0) {
-    return Status::NotFound(rs::status::SubCode::kPathNotFound,
+    return Status::NotFound(rs::status::SubCode::PathNotFound,
                             "No options files found in the DB directory.",
                             dbpath);
   }

@@ -26,7 +26,7 @@ std::unique_ptr<const char[]> Status::CopyState(const char* s) {
   return std::unique_ptr<const char[]>(rv);
 }
 
-static const char* msgs[static_cast<int>(rs::status::SubCode::kMaxSubCode)] = {
+static const char* msgs[static_cast<int>(rs::status::SubCode::MaxSubCode)] = {
     "",                                                   // kNone
     "Timeout Acquiring Mutex",                            // kMutexTimeout
     "Timeout waiting to lock key",                        // kLockTimeout
@@ -55,7 +55,7 @@ Status::Status(rs::status::Code _code, rs::status::SubCode _subcode, const Slice
       retryable_(false),
       data_loss_(false),
       scope_(0) {
-  assert(subcode_ != rs::status::SubCode::kMaxSubCode);
+  assert(subcode_ != rs::status::SubCode::MaxSubCode);
   const size_t len1 = msg.size();
   const size_t len2 = msg2.size();
   const size_t size = len1 + (len2 ? (2 + len2) : 0);
@@ -144,14 +144,14 @@ std::string Status::ToString() const {
     type = tmp;
   }
   std::string result(type);
-  if (subcode_ != rs::status::SubCode::kNone) {
+  if (subcode_ != rs::status::SubCode::None) {
     uint32_t index = static_cast<int32_t>(subcode_);
     assert(sizeof(msgs) / sizeof(msgs[0]) > index);
     result.append(msgs[index]);
   }
 
   if (state_ != nullptr) {
-    if (subcode_ != rs::status::SubCode::kNone) {
+    if (subcode_ != rs::status::SubCode::None) {
       result.append(": ");
     }
     result.append(state_.get());

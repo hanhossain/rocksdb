@@ -185,7 +185,7 @@ class FaultInjectionTestEnv : public EnvWrapper {
   virtual Status GetFreeSpace(const std::string& path,
                               uint64_t* disk_free) override {
     if (!IsFilesystemActive() &&
-        error_.subcode() == IOStatus::SubCode::kNoSpace) {
+        error_.subcode() == rs::status::SubCode::NoSpace) {
       *disk_free = 0;
       return Status::OK();
     } else {

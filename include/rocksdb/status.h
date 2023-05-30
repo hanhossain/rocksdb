@@ -34,7 +34,7 @@ class Status {
   // Create a success status.
   Status()
       : code_(rs::status::Code::Ok),
-        subcode_(rs::status::SubCode::kNone),
+        subcode_(rs::status::SubCode::None),
         sev_(rs::status::Severity::NoError),
         retryable_(false),
         data_loss_(false),
@@ -104,7 +104,7 @@ class Status {
   // Note: using variants of OK status for program logic is discouraged,
   // but it can be useful for communicating statistical information without
   // changing public APIs.
-  static Status OkOverwritten() { return Status(rs::status::Code::Ok, rs::status::SubCode::kOverwritten); }
+  static Status OkOverwritten() { return Status(rs::status::Code::Ok, rs::status::SubCode::Overwritten); }
 
   // Return error status of an appropriate type.
   static Status NotFound(const Slice& msg, const Slice& msg2 = Slice()) {
@@ -112,7 +112,7 @@ class Status {
   }
 
   // Fast path for not found without malloc;
-  static Status NotFound(rs::status::SubCode msg = rs::status::SubCode::kNone) { return Status(rs::status::Code::NotFound, msg); }
+  static Status NotFound(rs::status::SubCode msg = rs::status::SubCode::None) { return Status(rs::status::Code::NotFound, msg); }
 
   static Status NotFound(rs::status::SubCode sc, const Slice& msg,
                          const Slice& msg2 = Slice()) {
@@ -122,74 +122,74 @@ class Status {
   static Status Corruption(const Slice& msg, const Slice& msg2 = Slice()) {
     return Status(rs::status::Code::Corruption, msg, msg2);
   }
-  static Status Corruption(rs::status::SubCode msg = rs::status::SubCode::kNone) {
+  static Status Corruption(rs::status::SubCode msg = rs::status::SubCode::None) {
     return Status(rs::status::Code::Corruption, msg);
   }
 
   static Status NotSupported(const Slice& msg, const Slice& msg2 = Slice()) {
     return Status(rs::status::Code::NotSupported, msg, msg2);
   }
-  static Status NotSupported(rs::status::SubCode msg = rs::status::SubCode::kNone) {
+  static Status NotSupported(rs::status::SubCode msg = rs::status::SubCode::None) {
     return Status(rs::status::Code::NotSupported, msg);
   }
 
   static Status InvalidArgument(const Slice& msg, const Slice& msg2 = Slice()) {
     return Status(rs::status::Code::InvalidArgument, msg, msg2);
   }
-  static Status InvalidArgument(rs::status::SubCode msg = rs::status::SubCode::kNone) {
+  static Status InvalidArgument(rs::status::SubCode msg = rs::status::SubCode::None) {
     return Status(rs::status::Code::InvalidArgument, msg);
   }
 
   static Status IOError(const Slice& msg, const Slice& msg2 = Slice()) {
     return Status(rs::status::Code::IOError, msg, msg2);
   }
-  static Status IOError(rs::status::SubCode msg = rs::status::SubCode::kNone) { return Status(rs::status::Code::IOError, msg); }
+  static Status IOError(rs::status::SubCode msg = rs::status::SubCode::None) { return Status(rs::status::Code::IOError, msg); }
 
   static Status MergeInProgress(const Slice& msg, const Slice& msg2 = Slice()) {
     return Status(rs::status::Code::MergeInProgress, msg, msg2);
   }
-  static Status MergeInProgress(rs::status::SubCode msg = rs::status::SubCode::kNone) {
+  static Status MergeInProgress(rs::status::SubCode msg = rs::status::SubCode::None) {
     return Status(rs::status::Code::MergeInProgress, msg);
   }
 
   static Status Incomplete(const Slice& msg, const Slice& msg2 = Slice()) {
     return Status(rs::status::Code::Incomplete, msg, msg2);
   }
-  static Status Incomplete(rs::status::SubCode msg = rs::status::SubCode::kNone) {
+  static Status Incomplete(rs::status::SubCode msg = rs::status::SubCode::None) {
     return Status(rs::status::Code::Incomplete, msg);
   }
 
-  static Status ShutdownInProgress(rs::status::SubCode msg = rs::status::SubCode::kNone) {
+  static Status ShutdownInProgress(rs::status::SubCode msg = rs::status::SubCode::None) {
     return Status(rs::status::Code::ShutdownInProgress, msg);
   }
   static Status ShutdownInProgress(const Slice& msg,
                                    const Slice& msg2 = Slice()) {
     return Status(rs::status::Code::ShutdownInProgress, msg, msg2);
   }
-  static Status Aborted(rs::status::SubCode msg = rs::status::SubCode::kNone) { return Status(rs::status::Code::Aborted, msg); }
+  static Status Aborted(rs::status::SubCode msg = rs::status::SubCode::None) { return Status(rs::status::Code::Aborted, msg); }
   static Status Aborted(const Slice& msg, const Slice& msg2 = Slice()) {
     return Status(rs::status::Code::Aborted, msg, msg2);
   }
 
-  static Status Busy(rs::status::SubCode msg = rs::status::SubCode::kNone) { return Status(rs::status::Code::Busy, msg); }
+  static Status Busy(rs::status::SubCode msg = rs::status::SubCode::None) { return Status(rs::status::Code::Busy, msg); }
   static Status Busy(const Slice& msg, const Slice& msg2 = Slice()) {
     return Status(rs::status::Code::Busy, msg, msg2);
   }
 
-  static Status TimedOut(rs::status::SubCode msg = rs::status::SubCode::kNone) { return Status(rs::status::Code::TimedOut, msg); }
+  static Status TimedOut(rs::status::SubCode msg = rs::status::SubCode::None) { return Status(rs::status::Code::TimedOut, msg); }
 
-  static Status Expired(rs::status::SubCode msg = rs::status::SubCode::kNone) { return Status(rs::status::Code::Expired, msg); }
+  static Status Expired(rs::status::SubCode msg = rs::status::SubCode::None) { return Status(rs::status::Code::Expired, msg); }
 
-  static Status TryAgain(rs::status::SubCode msg = rs::status::SubCode::kNone) { return Status(rs::status::Code::TryAgain, msg); }
+  static Status TryAgain(rs::status::SubCode msg = rs::status::SubCode::None) { return Status(rs::status::Code::TryAgain, msg); }
   static Status TryAgain(const Slice& msg, const Slice& msg2 = Slice()) {
     return Status(rs::status::Code::TryAgain, msg, msg2);
   }
 
-  static Status CompactionTooLarge(rs::status::SubCode msg = rs::status::SubCode::kNone) {
+  static Status CompactionTooLarge(rs::status::SubCode msg = rs::status::SubCode::None) {
     return Status(rs::status::Code::CompactionTooLarge, msg);
   }
 
-  static Status ColumnFamilyDropped(rs::status::SubCode msg = rs::status::SubCode::kNone) {
+  static Status ColumnFamilyDropped(rs::status::SubCode msg = rs::status::SubCode::None) {
     return Status(rs::status::Code::ColumnFamilyDropped, msg);
   }
 
@@ -198,26 +198,26 @@ class Status {
     return Status(rs::status::Code::ColumnFamilyDropped, msg, msg2);
   }
 
-  static Status NoSpace() { return Status(rs::status::Code::IOError, rs::status::SubCode::kNoSpace); }
+  static Status NoSpace() { return Status(rs::status::Code::IOError, rs::status::SubCode::NoSpace); }
   static Status NoSpace(const Slice& msg, const Slice& msg2 = Slice()) {
-    return Status(rs::status::Code::IOError, rs::status::SubCode::kNoSpace, msg, msg2);
+    return Status(rs::status::Code::IOError, rs::status::SubCode::NoSpace, msg, msg2);
   }
 
-  static Status MemoryLimit() { return Status(rs::status::Code::Aborted, rs::status::SubCode::kMemoryLimit); }
+  static Status MemoryLimit() { return Status(rs::status::Code::Aborted, rs::status::SubCode::MemoryLimit); }
   static Status MemoryLimit(const Slice& msg, const Slice& msg2 = Slice()) {
-    return Status(rs::status::Code::Aborted, rs::status::SubCode::kMemoryLimit, msg, msg2);
+    return Status(rs::status::Code::Aborted, rs::status::SubCode::MemoryLimit, msg, msg2);
   }
 
   static Status SpaceLimit(const Slice& msg, const Slice& msg2 = Slice()) {
-    return Status(rs::status::Code::IOError, rs::status::SubCode::kSpaceLimit, msg, msg2);
+    return Status(rs::status::Code::IOError, rs::status::SubCode::SpaceLimit, msg, msg2);
   }
 
   static Status PathNotFound(const Slice& msg, const Slice& msg2 = Slice()) {
-    return Status(rs::status::Code::IOError, rs::status::SubCode::kPathNotFound, msg, msg2);
+    return Status(rs::status::Code::IOError, rs::status::SubCode::PathNotFound, msg, msg2);
   }
 
   static Status TxnNotPrepared() {
-    return Status(rs::status::Code::InvalidArgument, rs::status::SubCode::kTxnNotPrepared);
+    return Status(rs::status::Code::InvalidArgument, rs::status::SubCode::TxnNotPrepared);
   }
 
   // Returns true iff the status indicates success.
@@ -230,7 +230,7 @@ class Status {
   // overwritten
   bool IsOkOverwritten() const {
     MarkChecked();
-    return code() == rs::status::Code::Ok && subcode() == rs::status::SubCode::kOverwritten;
+    return code() == rs::status::Code::Ok && subcode() == rs::status::SubCode::Overwritten;
   }
 
   // Returns true iff the status indicates a NotFound error.
@@ -300,7 +300,7 @@ class Status {
 
   bool IsDeadlock() const {
     MarkChecked();
-    return code() == rs::status::Code::Busy && subcode() == rs::status::SubCode::kDeadlock;
+    return code() == rs::status::Code::Busy && subcode() == rs::status::SubCode::Deadlock;
   }
 
   // Returns true iff the status indicated that the operation has Expired.
@@ -336,7 +336,7 @@ class Status {
   // if needed
   bool IsNoSpace() const {
     MarkChecked();
-    return (code() == rs::status::Code::IOError) && (subcode() == rs::status::SubCode::kNoSpace);
+    return (code() == rs::status::Code::IOError) && (subcode() == rs::status::SubCode::NoSpace);
   }
 
   // Returns true iff the status indicates a memory limit error.  There may be
@@ -344,7 +344,7 @@ class Status {
   // of a write batch) in order to avoid out of memory exceptions.
   bool IsMemoryLimit() const {
     MarkChecked();
-    return (code() == rs::status::Code::Aborted) && (subcode() == rs::status::SubCode::kMemoryLimit);
+    return (code() == rs::status::Code::Aborted) && (subcode() == rs::status::SubCode::MemoryLimit);
   }
 
   // Returns true iff the status indicates a PathNotFound error
@@ -354,26 +354,26 @@ class Status {
   bool IsPathNotFound() const {
     MarkChecked();
     return (code() == rs::status::Code::IOError || code() == rs::status::Code::NotFound) &&
-           (subcode() == rs::status::SubCode::kPathNotFound);
+           (subcode() == rs::status::SubCode::PathNotFound);
   }
 
   // Returns true iff the status indicates manual compaction paused. This
   // is caused by a call to PauseManualCompaction
   bool IsManualCompactionPaused() const {
     MarkChecked();
-    return (code() == rs::status::Code::Incomplete) && (subcode() == rs::status::SubCode::kManualCompactionPaused);
+    return (code() == rs::status::Code::Incomplete) && (subcode() == rs::status::SubCode::ManualCompactionPaused);
   }
 
   // Returns true iff the status indicates a TxnNotPrepared error.
   bool IsTxnNotPrepared() const {
     MarkChecked();
-    return (code() == rs::status::Code::InvalidArgument) && (subcode() == rs::status::SubCode::kTxnNotPrepared);
+    return (code() == rs::status::Code::InvalidArgument) && (subcode() == rs::status::SubCode::TxnNotPrepared);
   }
 
   // Returns true iff the status indicates a IOFenced error.
   bool IsIOFenced() const {
     MarkChecked();
-    return (code() == rs::status::Code::IOError) && (subcode() == rs::status::SubCode::kIOFenced);
+    return (code() == rs::status::Code::IOError) && (subcode() == rs::status::SubCode::IOFenced);
   }
 
   // Return a string representation of this status suitable for printing.
@@ -394,7 +394,7 @@ class Status {
   mutable bool checked_ = false;
 #endif  // ROCKSDB_ASSERT_STATUS_CHECKED
 
-  explicit Status(rs::status::Code _code, rs::status::SubCode _subcode = rs::status::SubCode::kNone)
+  explicit Status(rs::status::Code _code, rs::status::SubCode _subcode = rs::status::SubCode::None)
       : code_(_code),
         subcode_(_subcode),
         sev_(rs::status::Severity::NoError),
@@ -414,7 +414,7 @@ class Status {
   Status(rs::status::Code _code, rs::status::SubCode _subcode, const Slice& msg, const Slice& msg2,
          rs::status::Severity sev = rs::status::Severity::NoError);
   Status(rs::status::Code _code, const Slice& msg, const Slice& msg2)
-      : Status(_code, rs::status::SubCode::kNone, msg, msg2) {}
+      : Status(_code, rs::status::SubCode::None, msg, msg2) {}
 
   static std::unique_ptr<const char[]> CopyState(const char* s);
 
@@ -472,7 +472,7 @@ inline Status& Status::operator=(Status&& s) noexcept {
     code_ = s.code_;
     s.code_ = rs::status::Code::Ok;
     subcode_ = s.subcode_;
-    s.subcode_ = rs::status::SubCode::kNone;
+    s.subcode_ = rs::status::SubCode::None;
     sev_ = s.sev_;
     s.sev_ = rs::status::Severity::NoError;
     retryable_ = s.retryable_;

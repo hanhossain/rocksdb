@@ -2217,7 +2217,7 @@ Status DBImpl::GetImpl(const ReadOptions& read_options, const Slice& key,
             get_impl_options.get_merge_operands_options
                 ->expected_max_number_of_operands) {
           s = Status::Incomplete(
-              rs::status::SubCode::KMergeOperandsInsufficientCapacity);
+              rs::status::SubCode::MergeOperandsInsufficientCapacity);
         } else {
           // Each operand depends on one of the following resources: `sv`,
           // `pinned_iters_mgr`, or `merge_context`. It would be crazy expensive
