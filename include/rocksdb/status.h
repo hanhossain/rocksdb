@@ -24,7 +24,7 @@
 #include <memory>
 #include <string>
 
-#include "rocksdb-rs-cxx/lib.h"
+#include "rocksdb-sys-cxx/lib.h"
 #include "rocksdb/slice.h"
 
 namespace ROCKSDB_NAMESPACE {

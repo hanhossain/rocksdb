@@ -8,7 +8,7 @@
 #include <unordered_map>
 
 #include "port/port.h"
-#include "rocksdb-rs-cxx/lib.h"
+#include "rocksdb-sys-cxx/lib.h"
 #include "rocksdb/env.h"
 #include "rocksdb/file_checksum.h"
 #include "rocksdb/status.h"

@@ -915,16 +915,16 @@ string(REGEX REPLACE "[^0-9: /-]+" "" GIT_DATE "${GIT_DATE}")
 set(BUILD_VERSION_CC ${CMAKE_BINARY_DIR}/build_version.cc)
 configure_file(util/build_version.cc.in ${BUILD_VERSION_CC} @ONLY)
 
-corrosion_import_crate(MANIFEST_PATH rocksdb-rs/Cargo.toml)
+corrosion_import_crate(MANIFEST_PATH rocksdb-sys/Cargo.toml)
 corrosion_add_cxxbridge(
-    rocksdb-rs-cxx
-    CRATE rocksdb-rs
+    rocksdb-sys-cxx
+    CRATE rocksdb-sys
     FILES lib.rs)
 
 add_library(${ROCKSDB_STATIC_LIB} STATIC ${SOURCES} ${BUILD_VERSION_CC})
 target_link_libraries(
     ${ROCKSDB_STATIC_LIB}
-    PUBLIC rocksdb-rs-cxx
+    PUBLIC rocksdb-sys-cxx
     PRIVATE ${THIRDPARTY_LIBS} ${SYSTEM_LIBS}
 )
 
@@ -949,7 +949,7 @@ if(WITH_TESTS)
   test_util/mock_time_env.cc
   test_util/secondary_cache_test_util.cc
   test_util/testharness.cc)
-  target_link_libraries(testharness gtest rocksdb-rs-cxx)
+  target_link_libraries(testharness gtest rocksdb-sys-cxx)
 endif()
 
 if(WITH_TESTS)

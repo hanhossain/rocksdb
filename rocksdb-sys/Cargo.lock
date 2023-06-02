@@ -102,7 +102,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "rocksdb-rs"
+name = "rocksdb-sys"
 version = "0.1.0"
 dependencies = [
  "cxx",

@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "rocksdb-rs-cxx/lib.h"
+#include "rocksdb-sys-cxx/lib.h"
 #include "util/coding_lean.h"
 
 #ifdef TEST_UINT128_COMPAT

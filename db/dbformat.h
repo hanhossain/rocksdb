@@ -14,7 +14,7 @@
 #include <string>
 #include <utility>
 
-#include "rocksdb-rs-cxx/lib.h"
+#include "rocksdb-sys-cxx/lib.h"
 #include "rocksdb/comparator.h"
 #include "rocksdb/slice.h"
 #include "rocksdb/slice_transform.h"

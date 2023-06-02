@@ -13,7 +13,7 @@
 #include <cstdint>
 #include <memory>
 
-#include "rocksdb-rs-cxx/lib.h"
+#include "rocksdb-sys-cxx/lib.h"
 #include "util/hash.h"
 #include "util/mutexlock.h"
 

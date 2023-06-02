@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-#include "rocksdb-rs-cxx/lib.h"
+#include "rocksdb-sys-cxx/lib.h"
 #include "rocksdb/advanced_options.h"
 #include "rocksdb/compression_type.h"
 #include "rocksdb/env.h"

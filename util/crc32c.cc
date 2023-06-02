@@ -20,7 +20,7 @@
 #include <wmmintrin.h>
 #endif
 
-#include "rocksdb-rs-cxx/lib.h"
+#include "rocksdb-sys-cxx/lib.h"
 #include "port/lang.h"
 #include "util/coding.h"
 #include "util/crc32c_arm64.h"
