@@ -38,7 +38,7 @@ Writer::Writer(std::unique_ptr<WritableFileWriter>&& dest, uint64_t log_number,
 
 Writer::~Writer() {
   if (dest_) {
-    WriteBuffer().PermitUncheckedError();
+    WriteBuffer().inner_status.PermitUncheckedError();
   }
   if (compress_) {
     delete compress_;
@@ -93,7 +93,7 @@ IOStatus Writer::AddRecord(const Slice& slice,
         s = dest_->Append(Slice("\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00",
                                 static_cast<size_t>(leftover)),
                           0 /* crc32c_checksum */, rate_limiter_priority);
-        if (!s.ok()) {
+        if (!s.inner_status.ok()) {
           break;
         }
       }
@@ -146,9 +146,9 @@ IOStatus Writer::AddRecord(const Slice& slice,
     ptr += fragment_length;
     left -= fragment_length;
     begin = false;
-  } while (s.ok() && (left > 0 || compress_remaining > 0));
+  } while (s.inner_status.ok() && (left > 0 || compress_remaining > 0));
 
-  if (s.ok()) {
+  if (s.inner_status.ok()) {
     if (!manual_flush_) {
       s = dest_->Flush(rate_limiter_priority);
     }
@@ -171,7 +171,7 @@ IOStatus Writer::AddCompressionTypeRecord() {
   record.EncodeTo(&encode);
   IOStatus s =
       EmitPhysicalRecord(RecordType::kSetCompressionType, encode.data(), encode.size());
-  if (s.ok()) {
+  if (s.inner_status.ok()) {
     if (!manual_flush_) {
       s = dest_->Flush();
     }
@@ -238,7 +238,7 @@ IOStatus Writer::EmitPhysicalRecord(RecordType t, const char* ptr, size_t n,
   // Write the header and the payload
   IOStatus s = dest_->Append(Slice(buf, header_size), 0 /* crc32c_checksum */,
                              rate_limiter_priority);
-  if (s.ok()) {
+  if (s.inner_status.ok()) {
     s = dest_->Append(Slice(ptr, n), payload_crc, rate_limiter_priority);
   }
   block_offset_ += header_size + n;

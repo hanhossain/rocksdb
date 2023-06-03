@@ -112,7 +112,7 @@ class CountedWritableFile : public FSWritableFileOwnerWrapper {
 
   IOStatus Close(const IOOptions& options, IODebugContext* dbg) override {
     IOStatus rv = target()->Close(options, dbg);
-    if (rv.ok()) {
+    if (rv.inner_status.ok()) {
       fs_->counters()->closes++;
     }
     return rv;
@@ -120,7 +120,7 @@ class CountedWritableFile : public FSWritableFileOwnerWrapper {
 
   IOStatus Flush(const IOOptions& options, IODebugContext* dbg) override {
     IOStatus rv = target()->Flush(options, dbg);
-    if (rv.ok()) {
+    if (rv.inner_status.ok()) {
       fs_->counters()->flushes++;
     }
     return rv;
@@ -128,7 +128,7 @@ class CountedWritableFile : public FSWritableFileOwnerWrapper {
 
   IOStatus Sync(const IOOptions& options, IODebugContext* dbg) override {
     IOStatus rv = target()->Sync(options, dbg);
-    if (rv.ok()) {
+    if (rv.inner_status.ok()) {
       fs_->counters()->syncs++;
     }
     return rv;
@@ -136,7 +136,7 @@ class CountedWritableFile : public FSWritableFileOwnerWrapper {
 
   IOStatus Fsync(const IOOptions& options, IODebugContext* dbg) override {
     IOStatus rv = target()->Fsync(options, dbg);
-    if (rv.ok()) {
+    if (rv.inner_status.ok()) {
       fs_->counters()->fsyncs++;
     }
     return rv;
@@ -145,7 +145,7 @@ class CountedWritableFile : public FSWritableFileOwnerWrapper {
   IOStatus RangeSync(uint64_t offset, uint64_t nbytes, const IOOptions& options,
                      IODebugContext* dbg) override {
     IOStatus rv = target()->RangeSync(offset, nbytes, options, dbg);
-    if (rv.ok()) {
+    if (rv.inner_status.ok()) {
       fs_->counters()->syncs++;
     }
     return rv;
@@ -177,7 +177,7 @@ class CountedRandomRWFile : public FSRandomRWFileOwnerWrapper {
 
   IOStatus Flush(const IOOptions& options, IODebugContext* dbg) override {
     IOStatus rv = target()->Flush(options, dbg);
-    if (rv.ok()) {
+    if (rv.inner_status.ok()) {
       fs_->counters()->flushes++;
     }
     return rv;
@@ -185,7 +185,7 @@ class CountedRandomRWFile : public FSRandomRWFileOwnerWrapper {
 
   IOStatus Sync(const IOOptions& options, IODebugContext* dbg) override {
     IOStatus rv = target()->Sync(options, dbg);
-    if (rv.ok()) {
+    if (rv.inner_status.ok()) {
       fs_->counters()->syncs++;
     }
     return rv;
@@ -193,7 +193,7 @@ class CountedRandomRWFile : public FSRandomRWFileOwnerWrapper {
 
   IOStatus Fsync(const IOOptions& options, IODebugContext* dbg) override {
     IOStatus rv = target()->Fsync(options, dbg);
-    if (rv.ok()) {
+    if (rv.inner_status.ok()) {
       fs_->counters()->fsyncs++;
     }
     return rv;
@@ -201,7 +201,7 @@ class CountedRandomRWFile : public FSRandomRWFileOwnerWrapper {
 
   IOStatus Close(const IOOptions& options, IODebugContext* dbg) override {
     IOStatus rv = target()->Close(options, dbg);
-    if (rv.ok()) {
+    if (rv.inner_status.ok()) {
       fs_->counters()->closes++;
     }
     return rv;
@@ -219,7 +219,7 @@ class CountedDirectory : public FSDirectoryWrapper {
 
   IOStatus Fsync(const IOOptions& options, IODebugContext* dbg) override {
     IOStatus rv = FSDirectoryWrapper::Fsync(options, dbg);
-    if (rv.ok()) {
+    if (rv.inner_status.ok()) {
       fs_->counters()->dsyncs++;
     }
     return rv;
@@ -227,7 +227,7 @@ class CountedDirectory : public FSDirectoryWrapper {
 
   IOStatus Close(const IOOptions& options, IODebugContext* dbg) override {
     IOStatus rv = FSDirectoryWrapper::Close(options, dbg);
-    if (rv.ok()) {
+    if (rv.inner_status.ok()) {
       fs_->counters()->closes++;
       fs_->counters()->dir_closes++;
       closed_ = true;
@@ -239,7 +239,7 @@ class CountedDirectory : public FSDirectoryWrapper {
                                const DirFsyncOptions& dir_options) override {
     IOStatus rv =
         FSDirectoryWrapper::FsyncWithDirOptions(options, dbg, dir_options);
-    if (rv.ok()) {
+    if (rv.inner_status.ok()) {
       fs_->counters()->dsyncs++;
     }
     return rv;
@@ -292,7 +292,7 @@ IOStatus CountedFileSystem::NewSequentialFile(
     std::unique_ptr<FSSequentialFile>* r, IODebugContext* dbg) {
   std::unique_ptr<FSSequentialFile> base;
   IOStatus s = target()->NewSequentialFile(f, options, &base, dbg);
-  if (s.ok()) {
+  if (s.inner_status.ok()) {
     counters_.opens++;
     r->reset(new CountedSequentialFile(std::move(base), this));
   }
@@ -304,7 +304,7 @@ IOStatus CountedFileSystem::NewRandomAccessFile(
     std::unique_ptr<FSRandomAccessFile>* r, IODebugContext* dbg) {
   std::unique_ptr<FSRandomAccessFile> base;
   IOStatus s = target()->NewRandomAccessFile(f, options, &base, dbg);
-  if (s.ok()) {
+  if (s.inner_status.ok()) {
     counters_.opens++;
     r->reset(new CountedRandomAccessFile(std::move(base), this));
   }
@@ -317,7 +317,7 @@ IOStatus CountedFileSystem::NewWritableFile(const std::string& f,
                                             IODebugContext* dbg) {
   std::unique_ptr<FSWritableFile> base;
   IOStatus s = target()->NewWritableFile(f, options, &base, dbg);
-  if (s.ok()) {
+  if (s.inner_status.ok()) {
     counters_.opens++;
     r->reset(new CountedWritableFile(std::move(base), this));
   }
@@ -329,7 +329,7 @@ IOStatus CountedFileSystem::ReopenWritableFile(
     std::unique_ptr<FSWritableFile>* result, IODebugContext* dbg) {
   std::unique_ptr<FSWritableFile> base;
   IOStatus s = target()->ReopenWritableFile(fname, options, &base, dbg);
-  if (s.ok()) {
+  if (s.inner_status.ok()) {
     counters_.opens++;
     result->reset(new CountedWritableFile(std::move(base), this));
   }
@@ -343,7 +343,7 @@ IOStatus CountedFileSystem::ReuseWritableFile(
   std::unique_ptr<FSWritableFile> base;
   IOStatus s =
       target()->ReuseWritableFile(fname, old_fname, options, &base, dbg);
-  if (s.ok()) {
+  if (s.inner_status.ok()) {
     counters_.opens++;
     result->reset(new CountedWritableFile(std::move(base), this));
   }
@@ -355,7 +355,7 @@ IOStatus CountedFileSystem::NewRandomRWFile(
     std::unique_ptr<FSRandomRWFile>* result, IODebugContext* dbg) {
   std::unique_ptr<FSRandomRWFile> base;
   IOStatus s = target()->NewRandomRWFile(name, options, &base, dbg);
-  if (s.ok()) {
+  if (s.inner_status.ok()) {
     counters_.opens++;
     result->reset(new CountedRandomRWFile(std::move(base), this));
   }
@@ -368,7 +368,7 @@ IOStatus CountedFileSystem::NewDirectory(const std::string& name,
                                          IODebugContext* dbg) {
   std::unique_ptr<FSDirectory> base;
   IOStatus s = target()->NewDirectory(name, options, &base, dbg);
-  if (s.ok()) {
+  if (s.inner_status.ok()) {
     counters_.opens++;
     counters_.dir_opens++;
     result->reset(new CountedDirectory(std::move(base), this));

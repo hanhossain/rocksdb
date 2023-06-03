@@ -26,10 +26,10 @@ struct OpCounter {
     bytes = 0;
   }
   void RecordOp(const IOStatus& io_s, size_t added_bytes) {
-    if (!io_s.IsNotSupported()) {
+    if (!io_s.inner_status.IsNotSupported()) {
       ops.fetch_add(1, std::memory_order_relaxed);
     }
-    if (io_s.ok()) {
+    if (io_s.inner_status.ok()) {
       bytes.fetch_add(added_bytes, std::memory_order_relaxed);
     }
   }
@@ -124,7 +124,7 @@ class CountedFileSystem : public FileSystemWrapper {
   IOStatus DeleteFile(const std::string& fname, const IOOptions& options,
                       IODebugContext* dbg) override {
     IOStatus s = target()->DeleteFile(fname, options, dbg);
-    if (s.ok()) {
+    if (s.inner_status.ok()) {
       counters_.deletes++;
     }
     return s;
@@ -133,7 +133,7 @@ class CountedFileSystem : public FileSystemWrapper {
   IOStatus RenameFile(const std::string& s, const std::string& t,
                       const IOOptions& options, IODebugContext* dbg) override {
     IOStatus st = target()->RenameFile(s, t, options, dbg);
-    if (st.ok()) {
+    if (st.inner_status.ok()) {
       counters_.renames++;
     }
     return st;

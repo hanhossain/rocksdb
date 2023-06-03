@@ -167,7 +167,7 @@ class MemFile {
     {
       IOStatus s;
       TEST_SYNC_POINT_CALLBACK("MemFile::Read:IOStatus", &s);
-      if (!s.ok()) {
+      if (!s.inner_status.ok()) {
         // with sync point only
         *result = Slice();
         return s;
@@ -267,7 +267,7 @@ class MockSequentialFile : public FSSequentialFile {
                 char* scratch, IODebugContext* dbg) override {
     IOStatus s = file_->Read(pos_, n, options, result,
                              (use_mmap_read_) ? nullptr : scratch, dbg);
-    if (s.ok()) {
+    if (s.inner_status.ok()) {
       pos_ += result->size();
     }
     return s;
@@ -383,7 +383,7 @@ class MockWritableFile : public FSWritableFile {
       auto bytes = RequestToken(data.size() - bytes_written);
       IOStatus s = file_->Append(Slice(data.data() + bytes_written, bytes),
                                  options, dbg);
-      if (!s.ok()) {
+      if (!s.inner_status.ok()) {
         return s;
       }
       bytes_written += bytes;
@@ -680,7 +680,7 @@ IOStatus MockFileSystem::ReuseWritableFile(
     const FileOptions& options, std::unique_ptr<FSWritableFile>* result,
     IODebugContext* dbg) {
   auto s = RenameFile(old_fname, fname, IOOptions(), dbg);
-  if (!s.ok()) {
+  if (!s.inner_status.ok()) {
     return s;
   } else {
     result->reset();
@@ -849,7 +849,7 @@ IOStatus MockFileSystem::CreateDir(const std::string& dirname,
 IOStatus MockFileSystem::CreateDirIfMissing(const std::string& dirname,
                                             const IOOptions& options,
                                             IODebugContext* dbg) {
-  CreateDir(dirname, options, dbg).PermitUncheckedError();
+  CreateDir(dirname, options, dbg).inner_status.PermitUncheckedError();
   return IOStatus::OK();
 }
 

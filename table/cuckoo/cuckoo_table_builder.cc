@@ -85,7 +85,7 @@ CuckooTableBuilder::CuckooTableBuilder(
   properties_.db_session_id = db_session_id;
   properties_.orig_file_number = file_number;
   status_.PermitUncheckedError();
-  io_status_.PermitUncheckedError();
+  io_status_.inner_status.PermitUncheckedError();
 }
 
 void CuckooTableBuilder::Add(const Slice& key, const Slice& value) {
@@ -325,13 +325,13 @@ Status CuckooTableBuilder::Finish() {
     } else {
       ++num_added;
       io_status_ = file_->Append(GetKey(bucket.vector_idx));
-      if (io_status_.ok()) {
+      if (io_status_.inner_status.ok()) {
         if (value_size_ > 0) {
           io_status_ = file_->Append(GetValue(bucket.vector_idx));
         }
       }
     }
-    if (!io_status_.ok()) {
+    if (!io_status_.inner_status.ok()) {
       status_ = io_status_;
       return status_;
     }
@@ -385,7 +385,7 @@ Status CuckooTableBuilder::Finish() {
   property_block_handle.set_size(property_block.size());
   io_status_ = file_->Append(property_block);
   offset += property_block.size();
-  if (!io_status_.ok()) {
+  if (!io_status_.inner_status.ok()) {
     status_ = io_status_;
     return status_;
   }
@@ -397,7 +397,7 @@ Status CuckooTableBuilder::Finish() {
   meta_index_block_handle.set_offset(offset);
   meta_index_block_handle.set_size(meta_index_block.size());
   io_status_ = file_->Append(meta_index_block);
-  if (!io_status_.ok()) {
+  if (!io_status_.inner_status.ok()) {
     status_ = io_status_;
     return status_;
   }

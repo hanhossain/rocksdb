@@ -149,7 +149,7 @@ Status BuildTable(
       IOStatus io_s = NewWritableFile(fs, fname, &file, file_options);
       assert(s.ok());
       s = io_s;
-      if (io_status->ok()) {
+      if (io_status->inner_status.ok()) {
         *io_status = io_s;
       }
       if (!s.ok()) {
@@ -284,7 +284,7 @@ Status BuildTable(
               : meta->oldest_ancester_time);
       s = builder->Finish();
     }
-    if (io_status->ok()) {
+    if (io_status->inner_status.ok()) {
       *io_status = builder->io_status();
     }
 
@@ -327,10 +327,10 @@ Status BuildTable(
       *io_status = file_writer->Sync(ioptions.use_fsync);
     }
     TEST_SYNC_POINT("BuildTable:BeforeCloseTableFile");
-    if (s.ok() && io_status->ok() && !empty) {
+    if (s.ok() && io_status->inner_status.ok() && !empty) {
       *io_status = file_writer->Close();
     }
-    if (s.ok() && io_status->ok() && !empty) {
+    if (s.ok() && io_status->inner_status.ok() && !empty) {
       // Add the checksum information to file metadata.
       meta->file_checksum = file_writer->GetFileChecksum();
       meta->file_checksum_func_name = file_writer->GetFileChecksumFuncName();

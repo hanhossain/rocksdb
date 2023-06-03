@@ -60,7 +60,7 @@ class ErrorHandlerFSListener : public EventListener {
         file_count_(0),
         fault_fs_(nullptr) {}
   ~ErrorHandlerFSListener() {
-    file_creation_error_.PermitUncheckedError();
+    file_creation_error_.inner_status.PermitUncheckedError();
     bg_error_.PermitUncheckedError();
     new_bg_error_.PermitUncheckedError();
   }

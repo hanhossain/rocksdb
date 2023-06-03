@@ -392,7 +392,7 @@ Status ReadFooterFromFile(const IOOptions& opts, RandomAccessFileReader* file,
   if (footer_input.size() < Footer::kMinEncodedLength) {
     uint64_t size_on_disk = 0;
     if (fs.GetFileSize(file->file_name(), IOOptions(), &size_on_disk, nullptr)
-            .ok()) {
+            .inner_status.ok()) {
       // Similar to CheckConsistency message, but not completely sure the
       // expected size always came from manifest.
       return Status::Corruption("Sst file size mismatch: " + file->file_name() +

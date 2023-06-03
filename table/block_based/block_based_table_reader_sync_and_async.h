@@ -139,7 +139,7 @@ DEFINE_SYNC_AND_ASYNC(void, BlockBasedTable::RetrieveMultipleBlocks)
   {
     IOOptions opts;
     IOStatus s = file->PrepareIOOptions(options, opts);
-    if (s.ok()) {
+    if (s.inner_status.ok()) {
 #if defined(WITH_COROUTINES)
       if (file->use_direct_io()) {
 #endif  // WITH_COROUTINES
@@ -152,7 +152,7 @@ DEFINE_SYNC_AND_ASYNC(void, BlockBasedTable::RetrieveMultipleBlocks)
       }
 #endif  // WITH_COROUTINES
     }
-    if (!s.ok()) {
+    if (!s.inner_status.ok()) {
       // Discard all the results in this batch if there is any time out
       // or overall MultiRead error
       for (FSReadRequest& req : read_reqs) {

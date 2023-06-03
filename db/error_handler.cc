@@ -389,13 +389,13 @@ const Status& ErrorHandler::SetBGError(const Status& bg_status,
   Status tmp_status = bg_status;
   IOStatus bg_io_err = status_to_io_status(std::move(tmp_status));
 
-  if (bg_io_err.ok()) {
+  if (bg_io_err.inner_status.ok()) {
     return kOkStatus;
   }
   ROCKS_LOG_WARN(db_options_.info_log, "Background IO error %s",
-                 bg_io_err.ToString().c_str());
+                 bg_io_err.inner_status.ToString().c_str());
 
-  if (recovery_in_prog_ && recovery_io_error_.ok()) {
+  if (recovery_in_prog_ && recovery_io_error_.inner_status.ok()) {
     recovery_io_error_ = bg_io_err;
   }
   if (BackgroundErrorReason::kManifestWrite == reason ||
@@ -425,7 +425,7 @@ const Status& ErrorHandler::SetBGError(const Status& bg_status,
                                           &bg_err, db_mutex_, &auto_recovery);
     recover_context_ = context;
     return bg_error_;
-  } else if (bg_io_err.subcode() != rs::status::SubCode::NoSpace &&
+  } else if (bg_io_err.inner_status.subcode() != rs::status::SubCode::NoSpace &&
              (bg_io_err.GetScope() ==
                   IOStatus::IOErrorScope::kIOErrorScopeFile ||
               bg_io_err.GetRetryable())) {
@@ -490,7 +490,7 @@ const Status& ErrorHandler::SetBGError(const Status& bg_status,
     // HandleKnownErrors() will use recovery_error_, so ignore
     // recovery_io_error_.
     // TODO: Do some refactoring and use only one recovery_error_
-    recovery_io_error_.PermitUncheckedError();
+    recovery_io_error_.inner_status.PermitUncheckedError();
     return HandleKnownErrors(new_bg_io_err, reason);
   }
 }
@@ -549,7 +549,7 @@ Status ErrorHandler::ClearBGError() {
     bg_error_ = Status::OK();
     recovery_io_error_ = IOStatus::OK();
     bg_error_.PermitUncheckedError();
-    recovery_io_error_.PermitUncheckedError();
+    recovery_io_error_.inner_status.PermitUncheckedError();
     recovery_in_prog_ = false;
     soft_error_no_bg_work_ = false;
     EventHelpers::NotifyOnErrorRecoveryEnd(db_options_.listeners, old_bg_error,
@@ -618,7 +618,7 @@ const Status& ErrorHandler::StartRecoverFromRetryableBGIOError(
   db_mutex_->AssertHeld();
   if (bg_error_.ok()) {
     return bg_error_;
-  } else if (io_error.ok()) {
+  } else if (io_error.inner_status.ok()) {
     return kOkStatus;
   } else if (db_options_.max_bgerror_resume_count <= 0 || recovery_in_prog_) {
     // Auto resume BG error is not enabled, directly return bg_error_.
@@ -643,7 +643,7 @@ const Status& ErrorHandler::StartRecoverFromRetryableBGIOError(
   recovery_thread_.reset(
       new port::Thread(&ErrorHandler::RecoverFromRetryableBGIOError, this));
 
-  if (recovery_io_error_.ok() && recovery_error_.ok()) {
+  if (recovery_io_error_.inner_status.ok() && recovery_error_.ok()) {
     return recovery_error_;
   } else {
     return bg_error_;
@@ -696,7 +696,7 @@ void ErrorHandler::RecoverFromRetryableBGIOError() {
                                              bg_error_, db_mutex_);
       return;
     }
-    if (!recovery_io_error_.ok() &&
+    if (!recovery_io_error_.inner_status.ok() &&
         recovery_error_.severity() <= rs::status::Severity::HardError &&
         recovery_io_error_.GetRetryable()) {
       // If new BG IO error happens during auto recovery and it is retryable
@@ -710,7 +710,7 @@ void ErrorHandler::RecoverFromRetryableBGIOError() {
       // There are three possibility: 1) recover_io_error is set during resume
       // and the error is not retryable, 2) recover is successful, 3) other
       // error happens during resume and cannot be resumed here.
-      if (recovery_io_error_.ok() && recovery_error_.ok() && s.ok()) {
+      if (recovery_io_error_.inner_status.ok() && recovery_error_.ok() && s.ok()) {
         // recover from the retryable IO error and no other BG errors. Clean
         // the bg_error and notify user.
         TEST_SYNC_POINT("RecoverFromRetryableBGIOError:RecoverSuccess");
@@ -741,7 +741,7 @@ void ErrorHandler::RecoverFromRetryableBGIOError() {
         }
         EventHelpers::NotifyOnErrorRecoveryEnd(
             db_options_.listeners, bg_error_,
-            !recovery_io_error_.ok()
+            !recovery_io_error_.inner_status.ok()
                 ? recovery_io_error_
                 : (!recovery_error_.ok() ? recovery_error_ : s),
             db_mutex_);

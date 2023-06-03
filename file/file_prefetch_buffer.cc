@@ -125,7 +125,7 @@ Status FilePrefetchBuffer::ReadAsync(const IOOptions& opts,
       reader->ReadAsync(req, opts, fp, &(bufs_[index].pos_),
                         &(bufs_[index].io_handle_), &(bufs_[index].del_fn_),
                         /*aligned_buf=*/nullptr);
-  req.status.PermitUncheckedError();
+  req.status.inner_status.PermitUncheckedError();
   if (s.ok()) {
     bufs_[index].async_read_in_progress_ = true;
   }
@@ -316,7 +316,7 @@ void FilePrefetchBuffer::PollAndUpdateBuffersIfNeeded(uint64_t offset) {
       std::vector<void*> handles;
       handles.emplace_back(bufs_[curr_].io_handle_);
       StopWatch sw(clock_, stats_, POLL_WAIT_MICROS);
-      fs_->Poll(handles, 1).PermitUncheckedError();
+      fs_->Poll(handles, 1).inner_status.PermitUncheckedError();
     }
 
     // Reset and Release io_handle after the Poll API as request has been
@@ -798,7 +798,7 @@ void FilePrefetchBuffer::PrefetchAsyncCallback(const FSReadRequest& req,
   IGNORE_STATUS_IF_ERROR(req.status);
 #endif
 
-  if (req.status.ok()) {
+  if (req.status.inner_status.ok()) {
     if (req.offset + req.result.size() <=
         bufs_[index].offset_ + bufs_[index].buffer_.CurrentSize()) {
       // All requested bytes are already in the buffer or no data is read

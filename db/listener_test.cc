@@ -721,7 +721,7 @@ class TableFileCreationListener : public EventListener {
                              std::unique_ptr<FSWritableFile>* result,
                              IODebugContext* dbg) override {
       if (fname.size() > 4 && fname.substr(fname.size() - 4) == ".sst") {
-        if (!status_.ok()) {
+        if (!status_.inner_status.ok()) {
           return status_;
         }
       }

@@ -131,7 +131,7 @@ UniqueIdVerifier::UniqueIdVerifier(const std::string& db_name, Env* env)
 
 UniqueIdVerifier::~UniqueIdVerifier() {
   IOStatus s = data_file_writer_->Close();
-  assert(s.ok());
+  assert(s.inner_status.ok());
 }
 
 void UniqueIdVerifier::VerifyNoWrite(const std::string& id) {
@@ -154,15 +154,15 @@ void UniqueIdVerifier::Verify(const std::string& id) {
     return;
   }
   IOStatus s = data_file_writer_->Append(Slice(id));
-  if (!s.ok()) {
+  if (!s.inner_status.ok()) {
     fprintf(stderr, "Error writing to unique id file: %s\n",
-            s.ToString().c_str());
+            s.inner_status.ToString().c_str());
     assert(false);
   }
   s = data_file_writer_->Flush();
-  if (!s.ok()) {
+  if (!s.inner_status.ok()) {
     fprintf(stderr, "Error flushing unique id file: %s\n",
-            s.ToString().c_str());
+            s.inner_status.ToString().c_str());
     assert(false);
   }
   VerifyNoWrite(id);

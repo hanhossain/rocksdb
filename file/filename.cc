@@ -396,20 +396,20 @@ IOStatus SetCurrentFile(FileSystem* fs, const std::string& dbname,
   std::string tmp = TempFileName(dbname, descriptor_number);
   IOStatus s = WriteStringToFile(fs, contents.ToString() + "\n", tmp, true);
   TEST_SYNC_POINT_CALLBACK("SetCurrentFile:BeforeRename", &s);
-  if (s.ok()) {
+  if (s.inner_status.ok()) {
     TEST_KILL_RANDOM_WITH_WEIGHT("SetCurrentFile:0", REDUCE_ODDS2);
     s = fs->RenameFile(tmp, CurrentFileName(dbname), IOOptions(), nullptr);
     TEST_KILL_RANDOM_WITH_WEIGHT("SetCurrentFile:1", REDUCE_ODDS2);
     TEST_SYNC_POINT_CALLBACK("SetCurrentFile:AfterRename", &s);
   }
-  if (s.ok()) {
+  if (s.inner_status.ok()) {
     if (dir_contains_current_file != nullptr) {
       s = dir_contains_current_file->FsyncWithDirOptions(
           IOOptions(), nullptr, DirFsyncOptions(CurrentFileName(dbname)));
     }
   } else {
     fs->DeleteFile(tmp, IOOptions(), nullptr)
-        .PermitUncheckedError();  // NOTE: PermitUncheckedError is acceptable
+        .inner_status.PermitUncheckedError();  // NOTE: PermitUncheckedError is acceptable
                                   // here as we are already handling an error
                                   // case, and this is just a best-attempt
                                   // effort at some cleanup

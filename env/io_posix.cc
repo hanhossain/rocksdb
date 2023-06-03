@@ -1113,7 +1113,7 @@ PosixMmapFile::PosixMmapFile(const std::string& fname, int fd, size_t page_size,
 PosixMmapFile::~PosixMmapFile() {
   if (fd_ >= 0) {
     IOStatus s = PosixMmapFile::Close(IOOptions(), nullptr);
-    s.PermitUncheckedError();
+    s.inner_status.PermitUncheckedError();
   }
 }
 
@@ -1127,11 +1127,11 @@ IOStatus PosixMmapFile::Append(const Slice& data, const IOOptions& /*opts*/,
     size_t avail = limit_ - dst_;
     if (avail == 0) {
       IOStatus s = UnmapCurrentRegion();
-      if (!s.ok()) {
+      if (!s.inner_status.ok()) {
         return s;
       }
       s = MapNewRegion();
-      if (!s.ok()) {
+      if (!s.inner_status.ok()) {
         return s;
       }
       TEST_KILL_RANDOM("PosixMmapFile::Append:0");
@@ -1153,7 +1153,7 @@ IOStatus PosixMmapFile::Close(const IOOptions& /*opts*/,
   size_t unused = limit_ - dst_;
 
   s = UnmapCurrentRegion();
-  if (!s.ok()) {
+  if (!s.inner_status.ok()) {
     s = IOError("While closing mmapped file", filename_, errno);
   } else if (unused > 0) {
     // Trim the extra space at the end of the file
@@ -1163,7 +1163,7 @@ IOStatus PosixMmapFile::Close(const IOOptions& /*opts*/,
   }
 
   if (close(fd_) < 0) {
-    if (s.ok()) {
+    if (s.inner_status.ok()) {
       s = IOError("While closing mmapped file", filename_, errno);
     }
   }
@@ -1288,7 +1288,7 @@ PosixWritableFile::PosixWritableFile(const std::string& fname, int fd,
 PosixWritableFile::~PosixWritableFile() {
   if (fd_ >= 0) {
     IOStatus s = PosixWritableFile::Close(IOOptions(), nullptr);
-    s.PermitUncheckedError();
+    s.inner_status.PermitUncheckedError();
   }
 }
 
@@ -1538,7 +1538,7 @@ PosixRandomRWFile::PosixRandomRWFile(const std::string& fname, int fd,
 PosixRandomRWFile::~PosixRandomRWFile() {
   if (fd_ >= 0) {
     IOStatus s = Close(IOOptions(), nullptr);
-    s.PermitUncheckedError();
+    s.inner_status.PermitUncheckedError();
   }
 }
 
@@ -1655,7 +1655,7 @@ PosixDirectory::PosixDirectory(int fd, const std::string& directory_name)
 PosixDirectory::~PosixDirectory() {
   if (fd_ >= 0) {
     IOStatus s = PosixDirectory::Close(IOOptions(), nullptr);
-    s.PermitUncheckedError();
+    s.inner_status.PermitUncheckedError();
   }
 }
 

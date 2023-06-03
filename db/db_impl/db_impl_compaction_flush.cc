@@ -107,7 +107,7 @@ IOStatus DBImpl::SyncClosedLogs(JobContext* job_context,
         log->file()->reset_seen_error();
       }
       io_s = log->file()->Sync(immutable_db_options_.use_fsync);
-      if (!io_s.ok()) {
+      if (!io_s.inner_status.ok()) {
         break;
       }
 
@@ -116,12 +116,12 @@ IOStatus DBImpl::SyncClosedLogs(JobContext* job_context,
           log->file()->reset_seen_error();
         }
         io_s = log->Close();
-        if (!io_s.ok()) {
+        if (!io_s.inner_status.ok()) {
           break;
         }
       }
     }
-    if (io_s.ok()) {
+    if (io_s.inner_status.ok()) {
       io_s = directories_.GetWalDir()->FsyncWithDirOptions(
           IOOptions(), nullptr,
           DirFsyncOptions(DirFsyncOptions::FsyncReason::kNewFileSynced));
@@ -133,12 +133,12 @@ IOStatus DBImpl::SyncClosedLogs(JobContext* job_context,
 
     // "number <= current_log_number - 1" is equivalent to
     // "number < current_log_number".
-    if (io_s.ok()) {
+    if (io_s.inner_status.ok()) {
       MarkLogsSynced(current_log_number - 1, true, synced_wals);
     } else {
       MarkLogsNotSynced(current_log_number - 1);
     }
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       TEST_SYNC_POINT("DBImpl::SyncClosedLogs:Failed");
       return io_s;
     }
@@ -228,7 +228,7 @@ Status DBImpl::FlushMemTableToOutputFile(
     mutex_.Unlock();
     log_io_s = SyncClosedLogs(job_context, &synced_wals);
     mutex_.Lock();
-    if (log_io_s.ok() && synced_wals.IsWalAddition()) {
+    if (log_io_s.inner_status.ok() && synced_wals.IsWalAddition()) {
       const ReadOptions read_options(Env::IOActivity::kFlush);
       log_io_s =
           status_to_io_status(ApplyWALToManifest(read_options, &synced_wals));
@@ -236,8 +236,8 @@ Status DBImpl::FlushMemTableToOutputFile(
                                nullptr);
     }
 
-    if (!log_io_s.ok() && !log_io_s.IsShutdownInProgress() &&
-        !log_io_s.IsColumnFamilyDropped()) {
+    if (!log_io_s.inner_status.ok() && !log_io_s.inner_status.IsShutdownInProgress() &&
+        !log_io_s.inner_status.IsColumnFamilyDropped()) {
       error_handler_.SetBGError(log_io_s, BackgroundErrorReason::kFlush);
     }
   } else {
@@ -310,13 +310,13 @@ Status DBImpl::FlushMemTableToOutputFile(
   }
 
   if (!s.ok() && !s.IsShutdownInProgress() && !s.IsColumnFamilyDropped()) {
-    if (log_io_s.ok()) {
+    if (log_io_s.inner_status.ok()) {
       // Error while writing to MANIFEST.
       // In fact, versions_->io_status() can also be the result of renaming
       // CURRENT file. With current code, it's just difficult to tell. So just
       // be pessimistic and try write to a new MANIFEST.
       // TODO: distinguish between MANIFEST write and CURRENT renaming
-      if (!versions_->io_status().ok()) {
+      if (!versions_->io_status().inner_status.ok()) {
         // If WAL sync is successful (either WAL size is 0 or there is no IO
         // error), all the Manifest write will be map to soft error.
         // TODO: kManifestWriteNoWAL and kFlushNoWAL are misleading. Refactor is
@@ -493,14 +493,14 @@ Status DBImpl::AtomicFlushMemTablesToOutputFiles(
     mutex_.Unlock();
     log_io_s = SyncClosedLogs(job_context, &synced_wals);
     mutex_.Lock();
-    if (log_io_s.ok() && synced_wals.IsWalAddition()) {
+    if (log_io_s.inner_status.ok() && synced_wals.IsWalAddition()) {
       const ReadOptions read_options(Env::IOActivity::kFlush);
       log_io_s =
           status_to_io_status(ApplyWALToManifest(read_options, &synced_wals));
     }
 
-    if (!log_io_s.ok() && !log_io_s.IsShutdownInProgress() &&
-        !log_io_s.IsColumnFamilyDropped()) {
+    if (!log_io_s.inner_status.ok() && !log_io_s.inner_status.IsShutdownInProgress() &&
+        !log_io_s.inner_status.IsColumnFamilyDropped()) {
       if (total_log_size_ > 0) {
         error_handler_.SetBGError(log_io_s, BackgroundErrorReason::kFlush);
       } else {
@@ -607,7 +607,7 @@ Status DBImpl::AtomicFlushMemTablesToOutputFiles(
   if (s.ok()) {
     const auto wait_to_install_func =
         [&]() -> std::pair<Status, bool /*continue to wait*/> {
-      if (!versions_->io_status().ok()) {
+      if (!versions_->io_status().inner_status.ok()) {
         // Something went wrong elsewhere, we cannot count on waiting for our
         // turn to write/sync to MANIFEST or CURRENT. Just return.
         return std::make_pair(versions_->io_status(), false);
@@ -783,13 +783,13 @@ Status DBImpl::AtomicFlushMemTablesToOutputFiles(
   // Need to undo atomic flush if something went wrong, i.e. s is not OK and
   // it is not because of CF drop.
   if (!s.ok() && !s.IsColumnFamilyDropped()) {
-    if (log_io_s.ok()) {
+    if (log_io_s.inner_status.ok()) {
       // Error while writing to MANIFEST.
       // In fact, versions_->io_status() can also be the result of renaming
       // CURRENT file. With current code, it's just difficult to tell. So just
       // be pessimistic and try write to a new MANIFEST.
       // TODO: distinguish between MANIFEST write and CURRENT renaming
-      if (!versions_->io_status().ok()) {
+      if (!versions_->io_status().inner_status.ok()) {
         // If WAL sync is successful (either WAL size is 0 or there is no IO
         // error), all the Manifest write will be map to soft error.
         // TODO: kManifestWriteNoWAL and kFlushNoWAL are misleading. Refactor
@@ -1471,7 +1471,7 @@ Status DBImpl::CompactFilesImpl(
 
   Status status = compaction_job.Install(*c->mutable_cf_options());
   if (status.ok()) {
-    assert(compaction_job.io_status().ok());
+    assert(compaction_job.io_status().inner_status.ok());
     InstallSuperVersionAndScheduleWork(c->column_family_data(),
                                        &job_context->superversion_contexts[0],
                                        *c->mutable_cf_options());
@@ -1479,7 +1479,7 @@ Status DBImpl::CompactFilesImpl(
   // status above captures any error during compaction_job.Install, so its ok
   // not check compaction_job.io_status() explicitly if we're not calling
   // SetBGError
-  compaction_job.io_status().PermitUncheckedError();
+  compaction_job.io_status().inner_status.PermitUncheckedError();
   c->ReleaseCompactionFiles(s);
   // Need to make sure SstFileManager does its bookkeeping
   auto sfm = static_cast<SstFileManagerImpl*>(
@@ -1511,7 +1511,7 @@ Status DBImpl::CompactFilesImpl(
                    c->column_family_data()->GetName().c_str(),
                    job_context->job_id, status.ToString().c_str());
     IOStatus io_s = compaction_job.io_status();
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       error_handler_.SetBGError(io_s, BackgroundErrorReason::kCompaction);
     } else {
       error_handler_.SetBGError(status, BackgroundErrorReason::kCompaction);
@@ -3586,10 +3586,10 @@ Status DBImpl::BackgroundCompaction(bool* made_progress,
                              c->column_family_data());
   }
 
-  if (status.ok() && !io_s.ok()) {
+  if (status.ok() && !io_s.inner_status.ok()) {
     status = io_s;
   } else {
-    io_s.PermitUncheckedError();
+    io_s.inner_status.PermitUncheckedError();
   }
 
   if (c != nullptr) {
@@ -3615,13 +3615,13 @@ Status DBImpl::BackgroundCompaction(bool* made_progress,
   } else {
     ROCKS_LOG_WARN(immutable_db_options_.info_log, "Compaction error: %s",
                    status.ToString().c_str());
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       // Error while writing to MANIFEST.
       // In fact, versions_->io_status() can also be the result of renaming
       // CURRENT file. With current code, it's just difficult to tell. So just
       // be pessimistic and try write to a new MANIFEST.
       // TODO: distinguish between MANIFEST write and CURRENT renaming
-      auto err_reason = versions_->io_status().ok()
+      auto err_reason = versions_->io_status().inner_status.ok()
                             ? BackgroundErrorReason::kCompaction
                             : BackgroundErrorReason::kManifestWrite;
       error_handler_.SetBGError(io_s, err_reason);

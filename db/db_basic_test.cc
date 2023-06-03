@@ -4156,11 +4156,11 @@ IOStatus DeadlineRandomAccessFile::Read(uint64_t offset, size_t len,
   if (deadline.count() || io_timeout.count()) {
     fs_.AssertDeadline(deadline, io_timeout, opts);
   }
-  if (s.ok()) {
+  if (s.inner_status.ok()) {
     s = FSRandomAccessFileWrapper::Read(offset, len, opts, result, scratch,
                                         dbg);
   }
-  if (s.ok()) {
+  if (s.inner_status.ok()) {
     s = fs_.ShouldDelay(opts);
   }
   return s;
@@ -4176,11 +4176,11 @@ IOStatus DeadlineRandomAccessFile::ReadAsync(
   if (deadline.count() || io_timeout.count()) {
     fs_.AssertDeadline(deadline, io_timeout, opts);
   }
-  if (s.ok()) {
+  if (s.inner_status.ok()) {
     s = FSRandomAccessFileWrapper::ReadAsync(req, opts, cb, cb_arg, io_handle,
                                              del_fn, dbg);
   }
-  if (s.ok()) {
+  if (s.inner_status.ok()) {
     s = fs_.ShouldDelay(opts);
   }
   return s;
@@ -4196,10 +4196,10 @@ IOStatus DeadlineRandomAccessFile::MultiRead(FSReadRequest* reqs,
   if (deadline.count() || io_timeout.count()) {
     fs_.AssertDeadline(deadline, io_timeout, options);
   }
-  if (s.ok()) {
+  if (s.inner_status.ok()) {
     s = FSRandomAccessFileWrapper::MultiRead(reqs, num_reqs, options, dbg);
   }
-  if (s.ok()) {
+  if (s.inner_status.ok()) {
     s = fs_.ShouldDelay(options);
   }
   return s;

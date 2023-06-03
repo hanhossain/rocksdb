@@ -771,14 +771,14 @@ TEST(LineFileReaderTest, LineFileReaderTest) {
       ++count;
       ASSERT_EQ(static_cast<int>(reader->GetLineNumber()), count);
     }
-    ASSERT_TRUE(reader->GetStatus().IsCorruption());
+    ASSERT_TRUE(reader->GetStatus().inner_status.IsCorruption());
     ASSERT_LT(count, nlines / 2);
     ASSERT_EQ(callback_count, 1);
 
     // Still get error & no retry
     ASSERT_FALSE(
         reader->ReadLine(&line, Env::IO_TOTAL /* rate_limiter_priority */));
-    ASSERT_TRUE(reader->GetStatus().IsCorruption());
+    ASSERT_TRUE(reader->GetStatus().inner_status.IsCorruption());
     ASSERT_EQ(callback_count, 1);
 
     SyncPoint::GetInstance()->DisableProcessing();
@@ -793,7 +793,7 @@ class IOErrorEventListener : public EventListener {
   void OnIOError(const IOErrorInfo& io_error_info) override {
     notify_error_++;
     EXPECT_FALSE(io_error_info.file_path.empty());
-    EXPECT_FALSE(io_error_info.io_status.ok());
+    EXPECT_FALSE(io_error_info.io_status.inner_status.ok());
   }
 
   size_t NotifyErrorCount() { return notify_error_; }

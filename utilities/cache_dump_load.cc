@@ -23,7 +23,7 @@ IOStatus NewToFileCacheDumpWriter(const std::shared_ptr<FileSystem>& fs,
   std::unique_ptr<WritableFileWriter> file_writer;
   IOStatus io_s = WritableFileWriter::Create(fs, file_name, file_opts,
                                              &file_writer, nullptr);
-  if (!io_s.ok()) {
+  if (!io_s.inner_status.ok()) {
     return io_s;
   }
   writer->reset(new ToFileCacheDumpWriter(std::move(file_writer)));
@@ -37,7 +37,7 @@ IOStatus NewFromFileCacheDumpReader(const std::shared_ptr<FileSystem>& fs,
   std::unique_ptr<RandomAccessFileReader> file_reader;
   IOStatus io_s = RandomAccessFileReader::Create(fs, file_name, file_opts,
                                                  &file_reader, nullptr);
-  if (!io_s.ok()) {
+  if (!io_s.inner_status.ok()) {
     return io_s;
   }
   reader->reset(new FromFileCacheDumpReader(std::move(file_reader)));

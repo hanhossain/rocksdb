@@ -43,7 +43,7 @@ class ErrorHandler {
     // Clear the checked flag for uninitialized errors
     bg_error_.PermitUncheckedError();
     recovery_error_.PermitUncheckedError();
-    recovery_io_error_.PermitUncheckedError();
+    recovery_io_error_.inner_status.PermitUncheckedError();
   }
 
   void EnableAutoRecovery() { auto_recovery_ = true; }

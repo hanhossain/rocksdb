@@ -713,7 +713,7 @@ class FileTemperatureTestFS : public FileSystemWrapper {
         type == rs::types::FileType::TableFile) {
       MutexLock lock(&mu_);
       requested_sst_file_temperatures_.emplace_back(number, opts.temperature);
-      if (s.ok()) {
+      if (s.inner_status.ok()) {
         if (opts.temperature != rs::advanced_options::Temperature::Unknown) {
           // Be extra picky and don't open if a wrong non-unknown temperature is
           // provided
@@ -742,7 +742,7 @@ class FileTemperatureTestFS : public FileSystemWrapper {
         type == rs::types::FileType::TableFile) {
       MutexLock lock(&mu_);
       requested_sst_file_temperatures_.emplace_back(number, opts.temperature);
-      if (s.ok()) {
+      if (s.inner_status.ok()) {
         if (opts.temperature != rs::advanced_options::Temperature::Unknown) {
           // Be extra picky and don't open if a wrong non-unknown temperature is
           // provided

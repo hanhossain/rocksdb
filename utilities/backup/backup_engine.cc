@@ -304,7 +304,7 @@ class BackupEngineImpl {
                          std::vector<std::string>* result,
                          IODebugContext* dbg) override {
       IOStatus s = RemapFileSystem::GetChildren(dir, options, result, dbg);
-      if (s.ok() && (dir == dst_dir_ || dir == dst_dir_slash_)) {
+      if (s.inner_status.ok() && (dir == dst_dir_ || dir == dst_dir_slash_)) {
         // Assume remapped files exist
         for (auto& r : remaps_) {
           result->push_back(r.first);
@@ -320,7 +320,7 @@ class BackupEngineImpl {
                                        IODebugContext* dbg) override {
       IOStatus s =
           RemapFileSystem::GetChildrenFileAttributes(dir, options, result, dbg);
-      if (s.ok() && (dir == dst_dir_ || dir == dst_dir_slash_)) {
+      if (s.inner_status.ok() && (dir == dst_dir_ || dir == dst_dir_slash_)) {
         // Assume remapped files exist with recorded size
         for (auto& r : remaps_) {
           result->emplace_back();  // clean up with C++20
@@ -603,7 +603,7 @@ class BackupEngineImpl {
       // channel when the BackupEngineImpl is shutdown, these will also have
       // Status that have not been checked.  This
       // TODO: Fix those issues so that the Status
-      io_status.PermitUncheckedError();
+      io_status.inner_status.PermitUncheckedError();
     }
     uint64_t size;
     std::string checksum_hex;
@@ -1015,7 +1015,7 @@ IOStatus BackupEngine::Open(const BackupEngineOptions& options, Env* env,
   std::unique_ptr<BackupEngineImplThreadSafe> backup_engine(
       new BackupEngineImplThreadSafe(options, env));
   auto s = backup_engine->Initialize();
-  if (!s.ok()) {
+  if (!s.inner_status.ok()) {
     *backup_engine_ptr = nullptr;
     return s;
   }
@@ -1056,7 +1056,7 @@ BackupEngineImpl::~BackupEngineImpl() {
   }
   LogFlush(options_.info_log);
   for (const auto& it : corrupt_backups_) {
-    it.second.first.PermitUncheckedError();
+    it.second.first.inner_status.PermitUncheckedError();
   }
 }
 
@@ -1104,11 +1104,11 @@ IOStatus BackupEngineImpl::Initialize() {
     for (const auto& d : directories) {
       IOStatus io_s =
           backup_fs_->CreateDirIfMissing(d.first, io_options_, nullptr);
-      if (io_s.ok()) {
+      if (io_s.inner_status.ok()) {
         io_s =
             backup_fs_->NewDirectory(d.first, io_options_, d.second, nullptr);
       }
-      if (!io_s.ok()) {
+      if (!io_s.inner_status.ok()) {
         return io_s;
       }
     }
@@ -1118,9 +1118,9 @@ IOStatus BackupEngineImpl::Initialize() {
   {
     IOStatus io_s = backup_fs_->GetChildren(meta_path, io_options_,
                                             &backup_meta_files, nullptr);
-    if (io_s.IsNotFound()) {
+    if (io_s.inner_status.IsNotFound()) {
       return IOStatus::NotFound(meta_path + " is missing");
-    } else if (!io_s.ok()) {
+    } else if (!io_s.inner_status.ok()) {
       return io_s;
     }
   }
@@ -1157,10 +1157,10 @@ IOStatus BackupEngineImpl::Initialize() {
         "Backup Engine started with destroy_old_data == true, deleting all "
         "backups");
     IOStatus io_s = PurgeOldBackups(0);
-    if (io_s.ok()) {
+    if (io_s.inner_status.ok()) {
       io_s = GarbageCollect();
     }
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     }
   } else {  // Load data from storage
@@ -1174,7 +1174,7 @@ IOStatus BackupEngineImpl::Initialize() {
       const auto abs_dir = GetAbsolutePath(rel_dir);
       IOStatus io_s =
           ReadChildFileCurrentSizes(abs_dir, backup_fs_, &abs_path_to_size);
-      if (!io_s.ok()) {
+      if (!io_s.inner_status.ok()) {
         // I/O error likely impacting all backups
         return io_s;
       }
@@ -1197,19 +1197,19 @@ IOStatus BackupEngineImpl::Initialize() {
       IOStatus io_s = ReadChildFileCurrentSizes(
           GetAbsolutePath(GetPrivateFileRel(backup_iter->first)), backup_fs_,
           &abs_path_to_size);
-      if (io_s.ok()) {
+      if (io_s.inner_status.ok()) {
         io_s = backup_iter->second->LoadFromFile(
             options_.backup_dir, abs_path_to_size,
             options_.backup_rate_limiter.get(), options_.info_log,
             &reported_ignored_fields_);
       }
-      if (io_s.IsCorruption() || io_s.IsNotSupported()) {
+      if (io_s.inner_status.IsCorruption() || io_s.inner_status.IsNotSupported()) {
         ROCKS_LOG_INFO(options_.info_log, "Backup %u corrupted -- %s",
-                       backup_iter->first, io_s.ToString().c_str());
+                       backup_iter->first, io_s.inner_status.ToString().c_str());
         corrupt_backups_.insert(std::make_pair(
             backup_iter->first,
             std::make_pair(io_s, std::move(backup_iter->second))));
-      } else if (!io_s.ok()) {
+      } else if (!io_s.inner_status.ok()) {
         // Distinguish corruption errors from errors in the backup Env.
         // Errors in the backup Env (i.e., this code path) will cause Open() to
         // fail, whereas corruption errors would not cause Open() failures.
@@ -1296,7 +1296,7 @@ IOStatus BackupEngineImpl::Initialize() {
         result.db_session_id = work_item.db_session_id;
         result.expected_src_temperature = work_item.src_temperature;
         result.current_src_temperature = temp;
-        if (result.io_status.ok() && !work_item.src_checksum_hex.empty()) {
+        if (result.io_status.inner_status.ok() && !work_item.src_checksum_hex.empty()) {
           // unknown checksum function name implies no db table file checksum in
           // db manifest; work_item.src_checksum_hex not empty means
           // backup engine has calculated its crc32c checksum for the table
@@ -1366,7 +1366,7 @@ IOStatus BackupEngineImpl::CreateNewBackupWithMetadata(
 
   auto private_dir = GetAbsolutePath(GetPrivateFileRel(new_backup_id));
   IOStatus io_s = backup_fs_->FileExists(private_dir, io_options_, nullptr);
-  if (io_s.ok()) {
+  if (io_s.inner_status.ok()) {
     // maybe last backup failed and left partial state behind, clean it up.
     // need to do this before updating backups_ such that a private dir
     // named after new_backup_id will be cleaned up.
@@ -1375,7 +1375,7 @@ IOStatus BackupEngineImpl::CreateNewBackupWithMetadata(
     // id with a private dir, the last thing to be deleted in delete
     // backup, but all will be cleaned up with a GarbageCollect.)
     io_s = GarbageCollect();
-  } else if (io_s.IsNotFound()) {
+  } else if (io_s.inner_status.IsNotFound()) {
     // normal case, the new backup's private dir doesn't exist yet
     io_s = IOStatus::OK();
   }
@@ -1402,7 +1402,7 @@ IOStatus BackupEngineImpl::CreateNewBackupWithMetadata(
                    "DEPRECATED and could lead to data loss.");
   }
 
-  if (io_s.ok()) {
+  if (io_s.inner_status.ok()) {
     io_s = backup_fs_->CreateDir(private_dir, io_options_, nullptr);
   }
 
@@ -1418,7 +1418,7 @@ IOStatus BackupEngineImpl::CreateNewBackupWithMetadata(
   Status disabled = db->DisableFileDeletions();
   DBOptions db_options = db->GetDBOptions();
   Statistics* stats = db_options.statistics.get();
-  if (io_s.ok()) {
+  if (io_s.inner_status.ok()) {
     CheckpointImpl checkpoint(db);
     uint64_t sequence_number = 0;
     FileChecksumGenFactory* db_checksum_factory =
@@ -1453,9 +1453,9 @@ IOStatus BackupEngineImpl::CreateNewBackupWithMetadata(
           if (type == rs::types::FileType::TableFile || type == rs::types::FileType::BlobFile) {
             io_st = db_fs_->GetFileSize(src_dirname + "/" + fname, io_options_,
                                         &size_bytes, nullptr);
-            if (!io_st.ok()) {
+            if (!io_st.inner_status.ok()) {
               Log(options_.info_log, "GetFileSize is failed: %s",
-                  io_st.ToString().c_str());
+                  io_st.inner_status.ToString().c_str());
               return io_st;
             }
           }
@@ -1511,12 +1511,12 @@ IOStatus BackupEngineImpl::CreateNewBackupWithMetadata(
         &sequence_number,
         options.flush_before_backup ? 0 : std::numeric_limits<uint64_t>::max(),
         compare_checksum));
-    if (io_s.ok()) {
+    if (io_s.inner_status.ok()) {
       new_backup->SetSequenceNumber(sequence_number);
     }
   }
   ROCKS_LOG_INFO(options_.info_log, "add files for backup done.");
-  if (io_s.ok() && maybe_exclude_items) {
+  if (io_s.inner_status.ok() && maybe_exclude_items) {
     assert(options.exclude_files_callback);
     size_t count = excludable_items.size();
     std::vector<MaybeExcludeBackupFile> maybe_exclude_files;
@@ -1537,7 +1537,7 @@ IOStatus BackupEngineImpl::CreateNewBackupWithMetadata(
         io_s = IOStatus::Aborted("Unknown exception in exclude_files_callback");
       }
     }
-    if (io_s.ok()) {
+    if (io_s.inner_status.ok()) {
       for (size_t i = 0; i < count; ++i) {
         auto& e = excludable_items[i];
         if (maybe_exclude_files[i].exclude_decision) {
@@ -1566,16 +1566,16 @@ IOStatus BackupEngineImpl::CreateNewBackupWithMetadata(
          options_.current_temperatures_override_manifest)) {
       temp = result.current_src_temperature;
     }
-    if (item_io_status.ok() && item.shared && item.needed_to_copy) {
+    if (item_io_status.inner_status.ok() && item.shared && item.needed_to_copy) {
       item_io_status = item.backup_env->GetFileSystem()->RenameFile(
           item.dst_path_tmp, item.dst_path, io_options_, nullptr);
     }
-    if (item_io_status.ok()) {
+    if (item_io_status.inner_status.ok()) {
       item_io_status = new_backup.get()->AddFile(std::make_shared<FileInfo>(
           item.dst_relative, result.size, result.checksum_hex, result.db_id,
           result.db_session_id, temp));
     }
-    if (!item_io_status.ok()) {
+    if (!item_io_status.inner_status.ok()) {
       io_s = item_io_status;
     }
   }
@@ -1586,40 +1586,40 @@ IOStatus BackupEngineImpl::CreateNewBackupWithMetadata(
   }
   auto backup_time = backup_env_->NowMicros() - start_backup;
 
-  if (io_s.ok()) {
+  if (io_s.inner_status.ok()) {
     // persist the backup metadata on the disk
     io_s = new_backup->StoreToFile(options_.sync, options_.schema_version,
                                    schema_test_options_.get());
   }
-  if (io_s.ok() && options_.sync) {
+  if (io_s.inner_status.ok() && options_.sync) {
     std::unique_ptr<FSDirectory> backup_private_directory;
     backup_fs_
         ->NewDirectory(GetAbsolutePath(GetPrivateFileRel(new_backup_id, false)),
                        io_options_, &backup_private_directory, nullptr)
-        .PermitUncheckedError();
+        .inner_status.PermitUncheckedError();
     if (backup_private_directory != nullptr) {
       io_s = backup_private_directory->FsyncWithDirOptions(io_options_, nullptr,
                                                            DirFsyncOptions());
     }
-    if (io_s.ok() && private_directory_ != nullptr) {
+    if (io_s.inner_status.ok() && private_directory_ != nullptr) {
       io_s = private_directory_->FsyncWithDirOptions(io_options_, nullptr,
                                                      DirFsyncOptions());
     }
-    if (io_s.ok() && meta_directory_ != nullptr) {
+    if (io_s.inner_status.ok() && meta_directory_ != nullptr) {
       io_s = meta_directory_->FsyncWithDirOptions(io_options_, nullptr,
                                                   DirFsyncOptions());
     }
-    if (io_s.ok() && shared_directory_ != nullptr) {
+    if (io_s.inner_status.ok() && shared_directory_ != nullptr) {
       io_s = shared_directory_->FsyncWithDirOptions(io_options_, nullptr,
                                                     DirFsyncOptions());
     }
-    if (io_s.ok() && backup_directory_ != nullptr) {
+    if (io_s.inner_status.ok() && backup_directory_ != nullptr) {
       io_s = backup_directory_->FsyncWithDirOptions(io_options_, nullptr,
                                                     DirFsyncOptions());
     }
   }
 
-  if (io_s.ok()) {
+  if (io_s.inner_status.ok()) {
     backup_statistics_.IncrementNumberSuccessBackup();
     // here we know that we succeeded and installed the new backup
     latest_backup_id_ = new_backup_id;
@@ -1645,12 +1645,12 @@ IOStatus BackupEngineImpl::CreateNewBackupWithMetadata(
     backup_statistics_.IncrementNumberFailBackup();
     // clean all the files we might have created
     ROCKS_LOG_INFO(options_.info_log, "Backup failed -- %s",
-                   io_s.ToString().c_str());
+                   io_s.inner_status.ToString().c_str());
     ROCKS_LOG_INFO(options_.info_log, "Backup Statistics %s\n",
                    backup_statistics_.ToString().c_str());
     // delete files that we might have already written
     might_need_garbage_collect_ = true;
-    DeleteBackup(new_backup_id).PermitUncheckedError();
+    DeleteBackup(new_backup_id).inner_status.PermitUncheckedError();
   }
 
   RecordTick(stats, BACKUP_READ_BYTES, IOSTATS(bytes_read) - prev_bytes_read);
@@ -1677,7 +1677,7 @@ IOStatus BackupEngineImpl::PurgeOldBackups(uint32_t num_backups_to_keep) {
   for (auto backup_id : to_delete) {
     // Do not GC until end
     IOStatus io_s = DeleteBackupNoGC(backup_id);
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       overall_status = io_s;
     }
   }
@@ -1685,7 +1685,7 @@ IOStatus BackupEngineImpl::PurgeOldBackups(uint32_t num_backups_to_keep) {
   // earlier session.
   if (might_need_garbage_collect_) {
     IOStatus io_s = GarbageCollect();
-    if (!io_s.ok() && overall_status.ok()) {
+    if (!io_s.inner_status.ok() && overall_status.inner_status.ok()) {
       overall_status = io_s;
     }
   }
@@ -1702,10 +1702,10 @@ IOStatus BackupEngineImpl::DeleteBackup(BackupID backup_id) {
     s2 = GarbageCollect();
   }
 
-  if (!s1.ok()) {
+  if (!s1.inner_status.ok()) {
     // Any failure in the primary objective trumps any failure in the
     // secondary objective.
-    s2.PermitUncheckedError();
+    s2.inner_status.PermitUncheckedError();
     return s1;
   } else {
     return s2;
@@ -1721,7 +1721,7 @@ IOStatus BackupEngineImpl::DeleteBackupNoGC(BackupID backup_id) {
   auto backup = backups_.find(backup_id);
   if (backup != backups_.end()) {
     IOStatus io_s = backup->second->Delete();
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     }
     backups_.erase(backup);
@@ -1736,10 +1736,10 @@ IOStatus BackupEngineImpl::DeleteBackupNoGC(BackupID backup_id) {
       return IOStatus::NotFound("Backup not found");
     }
     IOStatus io_s = corrupt->second.second->Delete();
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     }
-    corrupt->second.first.PermitUncheckedError();
+    corrupt->second.first.inner_status.PermitUncheckedError();
     corrupt_backups_.erase(corrupt);
   }
 
@@ -1752,9 +1752,9 @@ IOStatus BackupEngineImpl::DeleteBackupNoGC(BackupID backup_id) {
       IOStatus io_s = backup_fs_->DeleteFile(GetAbsolutePath(itr.first),
                                              io_options_, nullptr);
       ROCKS_LOG_INFO(options_.info_log, "Deleting %s -- %s", itr.first.c_str(),
-                     io_s.ToString().c_str());
+                     io_s.inner_status.ToString().c_str());
       to_delete.push_back(itr.first);
-      if (!io_s.ok()) {
+      if (!io_s.inner_status.ok()) {
         // Trying again later might work
         might_need_garbage_collect_ = true;
       }
@@ -1770,8 +1770,8 @@ IOStatus BackupEngineImpl::DeleteBackupNoGC(BackupID backup_id) {
   IOStatus io_s =
       backup_fs_->DeleteDir(GetAbsolutePath(private_dir), io_options_, nullptr);
   ROCKS_LOG_INFO(options_.info_log, "Deleting private dir %s -- %s",
-                 private_dir.c_str(), io_s.ToString().c_str());
-  if (!io_s.ok()) {
+                 private_dir.c_str(), io_s.inner_status.ToString().c_str());
+  if (!io_s.inner_status.ok()) {
     // Full gc or trying again later might work
     might_need_garbage_collect_ = true;
   }
@@ -1821,7 +1821,7 @@ Status BackupEngineImpl::GetBackupInfo(BackupID backup_id,
   }
   auto corrupt_itr = corrupt_backups_.find(backup_id);
   if (corrupt_itr != corrupt_backups_.end()) {
-    return Status::Corruption(corrupt_itr->second.first.ToString());
+    return Status::Corruption(corrupt_itr->second.first.inner_status.ToString());
   }
   auto backup_itr = backups_.find(backup_id);
   if (backup_itr == backups_.end()) {
@@ -1888,9 +1888,9 @@ IOStatus BackupEngineImpl::RestoreDBFromBackup(
 
   // just in case. Ignore errors
   db_fs_->CreateDirIfMissing(db_dir, io_options_, nullptr)
-      .PermitUncheckedError();
+      .inner_status.PermitUncheckedError();
   db_fs_->CreateDirIfMissing(wal_dir, io_options_, nullptr)
-      .PermitUncheckedError();
+      .inner_status.PermitUncheckedError();
 
   if (options.keep_log_files) {
     // delete files in db_dir, but keep all the log files
@@ -1899,7 +1899,7 @@ IOStatus BackupEngineImpl::RestoreDBFromBackup(
     std::string archive_dir = ArchivalDirectory(wal_dir);
     std::vector<std::string> archive_files;
     db_fs_->GetChildren(archive_dir, io_options_, &archive_files, nullptr)
-        .PermitUncheckedError();  // ignore errors
+        .inner_status.PermitUncheckedError();  // ignore errors
     for (const auto& f : archive_files) {
       uint64_t number;
       rs::types::FileType type;
@@ -1910,7 +1910,7 @@ IOStatus BackupEngineImpl::RestoreDBFromBackup(
                        f.c_str());
         IOStatus io_s = db_fs_->RenameFile(
             archive_dir + "/" + f, wal_dir + "/" + f, io_options_, nullptr);
-        if (!io_s.ok()) {
+        if (!io_s.inner_status.ok()) {
           // if we can't move log file from archive_dir to wal_dir,
           // we should fail, since it might mean data loss
           return io_s;
@@ -1986,7 +1986,7 @@ IOStatus BackupEngineImpl::RestoreDBFromBackup(
       if (options_.sync && !wal_dir_for_fsync) {
         io_s = db_fs_->NewDirectory(wal_dir, io_options_, &wal_dir_for_fsync,
                                     nullptr);
-        if (!io_s.ok()) {
+        if (!io_s.inner_status.ok()) {
           return io_s;
         }
       }
@@ -1995,7 +1995,7 @@ IOStatus BackupEngineImpl::RestoreDBFromBackup(
       if (options_.sync && !db_dir_for_fsync) {
         io_s = db_fs_->NewDirectory(db_dir, io_options_, &db_dir_for_fsync,
                                     nullptr);
-        if (!io_s.ok()) {
+        if (!io_s.inner_status.ok()) {
           return io_s;
         }
       }
@@ -2030,7 +2030,7 @@ IOStatus BackupEngineImpl::RestoreDBFromBackup(
     item_io_status = result.io_status;
     // Note: It is possible that both of the following bad-status cases occur
     // during copying. But, we only return one status.
-    if (!item_io_status.ok()) {
+    if (!item_io_status.inner_status.ok()) {
       io_s = item_io_status;
       break;
     } else if (!item.checksum_hex.empty() &&
@@ -2045,25 +2045,25 @@ IOStatus BackupEngineImpl::RestoreDBFromBackup(
 
   // When enabled, the first FsyncWithDirOptions is to ensure all files are
   // fully persisted before renaming CURRENT.tmp
-  if (io_s.ok() && db_dir_for_fsync) {
+  if (io_s.inner_status.ok() && db_dir_for_fsync) {
     ROCKS_LOG_INFO(options_.info_log, "Restore: fsync\n");
     io_s = db_dir_for_fsync->FsyncWithDirOptions(io_options_, nullptr,
                                                  DirFsyncOptions());
   }
 
-  if (io_s.ok() && wal_dir_for_fsync) {
+  if (io_s.inner_status.ok() && wal_dir_for_fsync) {
     io_s = wal_dir_for_fsync->FsyncWithDirOptions(io_options_, nullptr,
                                                   DirFsyncOptions());
   }
 
-  if (io_s.ok() && !temporary_current_file.empty()) {
+  if (io_s.inner_status.ok() && !temporary_current_file.empty()) {
     ROCKS_LOG_INFO(options_.info_log, "Restore: atomic rename CURRENT.tmp\n");
     assert(!final_current_file.empty());
     io_s = db_fs_->RenameFile(temporary_current_file, final_current_file,
                               io_options_, nullptr);
   }
 
-  if (io_s.ok() && db_dir_for_fsync && !temporary_current_file.empty()) {
+  if (io_s.inner_status.ok() && db_dir_for_fsync && !temporary_current_file.empty()) {
     // Second FsyncWithDirOptions is to ensure the final atomic rename of DB
     // restore is fully persisted even if power goes out right after restore
     // operation returns success
@@ -2073,7 +2073,7 @@ IOStatus BackupEngineImpl::RestoreDBFromBackup(
   }
 
   ROCKS_LOG_INFO(options_.info_log, "Restoring done -- %s\n",
-                 io_s.ToString().c_str());
+                 io_s.inner_status.ToString().c_str());
   return io_s;
 }
 
@@ -2106,7 +2106,7 @@ IOStatus BackupEngineImpl::VerifyBackup(BackupID backup_id,
     // Shared directories allowed to be missing in some cases. Expected but
     // missing files will be reported a few lines down.
     ReadChildFileCurrentSizes(abs_dir, backup_fs_, &curr_abs_path_to_size)
-        .PermitUncheckedError();
+        .inner_status.PermitUncheckedError();
   }
 
   // For all files registered in backup
@@ -2133,7 +2133,7 @@ IOStatus BackupEngineImpl::VerifyBackup(BackupID backup_id,
       IOStatus io_s = ReadFileAndComputeChecksum(
           abs_path, backup_fs_, EnvOptions(), 0 /* size_limit */, &checksum_hex,
           rs::advanced_options::Temperature::Unknown);
-      if (!io_s.ok()) {
+      if (!io_s.inner_status.ok()) {
         return io_s;
       } else if (file_info->checksum_hex != checksum_hex) {
         std::string checksum_info(
@@ -2174,19 +2174,19 @@ IOStatus BackupEngineImpl::CopyOrCreateFile(
 
   io_s = dst_env->GetFileSystem()->NewWritableFile(dst, dst_file_options,
                                                    &dst_file, nullptr);
-  if (io_s.ok() && !src.empty()) {
+  if (io_s.inner_status.ok() && !src.empty()) {
     auto src_file_options = FileOptions(src_env_options);
     src_file_options.temperature = *src_temperature;
     io_s = src_env->GetFileSystem()->NewSequentialFile(src, src_file_options,
                                                        &src_file, nullptr);
   }
-  if (io_s.IsPathNotFound() && *src_temperature != rs::advanced_options::Temperature::Unknown) {
+  if (io_s.inner_status.IsPathNotFound() && *src_temperature != rs::advanced_options::Temperature::Unknown) {
     // Retry without temperature hint in case the FileSystem is strict with
     // non-kUnknown temperature option
     io_s = src_env->GetFileSystem()->NewSequentialFile(
         src, FileOptions(src_env_options), &src_file, nullptr);
   }
-  if (!io_s.ok()) {
+  if (!io_s.inner_status.ok()) {
     return io_s;
   }
 
@@ -2227,7 +2227,7 @@ IOStatus BackupEngineImpl::CopyOrCreateFile(
         (src.length() > 4 && src.rfind(".sst") == src.length() - 4) ? &data
                                                                     : nullptr);
 
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     }
 
@@ -2266,17 +2266,17 @@ IOStatus BackupEngineImpl::CopyOrCreateFile(
         }
       }
     }
-  } while (io_s.ok() && contents.empty() && data.size() > 0 && size_limit > 0);
+  } while (io_s.inner_status.ok() && contents.empty() && data.size() > 0 && size_limit > 0);
 
   // Convert uint32_t checksum to hex checksum
   if (checksum_hex != nullptr) {
     checksum_hex->assign(ChecksumInt32ToHex(checksum_value));
   }
 
-  if (io_s.ok() && sync) {
+  if (io_s.inner_status.ok() && sync) {
     io_s = dest_writer->Sync(false);
   }
-  if (io_s.ok()) {
+  if (io_s.inner_status.ok()) {
     io_s = dest_writer->Close();
   }
   return io_s;
@@ -2342,7 +2342,7 @@ IOStatus BackupEngineImpl::AddBackupFileWorkItem(
       IOStatus io_s = ReadFileAndComputeChecksum(
           src_path, db_fs_, src_env_options, size_limit, &checksum_hex,
           src_temperature);
-      if (!io_s.ok()) {
+      if (!io_s.inner_status.ok()) {
         return io_s;
       }
     }
@@ -2403,9 +2403,9 @@ IOStatus BackupEngineImpl::AddBackupFileWorkItem(
     // shared directory
     IOStatus exist =
         backup_fs_->FileExists(final_dest_path, io_options_, nullptr);
-    if (exist.ok()) {
+    if (exist.inner_status.ok()) {
       file_exists = true;
-    } else if (exist.IsNotFound()) {
+    } else if (exist.inner_status.IsNotFound()) {
       file_exists = false;
     } else {
       return exist;
@@ -2427,7 +2427,7 @@ IOStatus BackupEngineImpl::AddBackupFileWorkItem(
       need_to_copy = true;
       // Defer any failure reporting to when we try to write the file
       backup_fs_->DeleteFile(final_dest_path, io_options_, nullptr)
-          .PermitUncheckedError();
+          .inner_status.PermitUncheckedError();
     } else {
       // file exists and referenced
       if (checksum_hex.empty()) {
@@ -2462,7 +2462,7 @@ IOStatus BackupEngineImpl::AddBackupFileWorkItem(
           IOStatus io_s = ReadFileAndComputeChecksum(
               src_path, db_fs_, src_env_options, size_limit, &checksum_hex,
               src_temperature);
-          if (!io_s.ok()) {
+          if (!io_s.inner_status.ok()) {
             return io_s;
           }
         }
@@ -2543,14 +2543,14 @@ IOStatus BackupEngineImpl::ReadFileAndComputeChecksum(
   RateLimiter* rate_limiter = options_.backup_rate_limiter.get();
   IOStatus io_s = SequentialFileReader::Create(
       src_fs, src, file_options, &src_reader, nullptr /* dbg */, rate_limiter);
-  if (io_s.IsPathNotFound() && src_temperature != rs::advanced_options::Temperature::Unknown) {
+  if (io_s.inner_status.IsPathNotFound() && src_temperature != rs::advanced_options::Temperature::Unknown) {
     // Retry without temperature hint in case the FileSystem is strict with
     // non-kUnknown temperature option
     file_options.temperature = rs::advanced_options::Temperature::Unknown;
     io_s = SequentialFileReader::Create(src_fs, src, file_options, &src_reader,
                                         nullptr /* dbg */, rate_limiter);
   }
-  if (!io_s.ok()) {
+  if (!io_s.inner_status.ok()) {
     return io_s;
   }
 
@@ -2566,7 +2566,7 @@ IOStatus BackupEngineImpl::ReadFileAndComputeChecksum(
         (buf_size < size_limit) ? buf_size : static_cast<size_t>(size_limit);
     io_s = src_reader->Read(buffer_to_read, &data, buf.get(),
                             Env::IO_LOW /* rate_limiter_priority */);
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     }
 
@@ -2660,7 +2660,7 @@ void BackupEngineImpl::DeleteChildren(const std::string& dir,
                                       uint32_t file_type_filter) const {
   std::vector<std::string> children;
   db_fs_->GetChildren(dir, io_options_, &children, nullptr)
-      .PermitUncheckedError();  // ignore errors
+      .inner_status.PermitUncheckedError();  // ignore errors
 
   for (const auto& f : children) {
     uint64_t number;
@@ -2671,7 +2671,7 @@ void BackupEngineImpl::DeleteChildren(const std::string& dir,
       continue;
     }
     db_fs_->DeleteFile(dir + "/" + f, io_options_, nullptr)
-        .PermitUncheckedError();  // ignore errors
+        .inner_status.PermitUncheckedError();  // ignore errors
   }
 }
 
@@ -2681,10 +2681,10 @@ IOStatus BackupEngineImpl::ReadChildFileCurrentSizes(
   assert(result != nullptr);
   std::vector<Env::FileAttributes> files_attrs;
   IOStatus io_status = fs->FileExists(dir, io_options_, nullptr);
-  if (io_status.ok()) {
+  if (io_status.inner_status.ok()) {
     io_status =
         fs->GetChildrenFileAttributes(dir, io_options_, &files_attrs, nullptr);
-  } else if (io_status.IsNotFound()) {
+  } else if (io_status.inner_status.IsNotFound()) {
     // Insert no entries can be considered success
     io_status = IOStatus::OK();
   }
@@ -2718,13 +2718,13 @@ IOStatus BackupEngineImpl::GarbageCollect() {
         shared_path = GetAbsolutePath(GetSharedFileRel());
       }
       IOStatus io_s = backup_fs_->FileExists(shared_path, io_options_, nullptr);
-      if (io_s.ok()) {
+      if (io_s.inner_status.ok()) {
         io_s = backup_fs_->GetChildren(shared_path, io_options_,
                                        &shared_children, nullptr);
-      } else if (io_s.IsNotFound()) {
+      } else if (io_s.inner_status.IsNotFound()) {
         io_s = IOStatus::OK();
       }
-      if (!io_s.ok()) {
+      if (!io_s.inner_status.ok()) {
         overall_status = io_s;
         // Trying again later might work
         might_need_garbage_collect_ = true;
@@ -2746,9 +2746,9 @@ IOStatus BackupEngineImpl::GarbageCollect() {
         IOStatus io_s = backup_fs_->DeleteFile(GetAbsolutePath(rel_fname),
                                                io_options_, nullptr);
         ROCKS_LOG_INFO(options_.info_log, "Deleting %s -- %s",
-                       rel_fname.c_str(), io_s.ToString().c_str());
+                       rel_fname.c_str(), io_s.inner_status.ToString().c_str());
         backuped_file_infos_.erase(rel_fname);
-        if (!io_s.ok()) {
+        if (!io_s.inner_status.ok()) {
           // Trying again later might work
           might_need_garbage_collect_ = true;
         }
@@ -2762,7 +2762,7 @@ IOStatus BackupEngineImpl::GarbageCollect() {
     IOStatus io_s =
         backup_fs_->GetChildren(GetAbsolutePath(kPrivateDirName), io_options_,
                                 &private_children, nullptr);
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       overall_status = io_s;
       // Trying again later might work
       might_need_garbage_collect_ = true;
@@ -2783,14 +2783,14 @@ IOStatus BackupEngineImpl::GarbageCollect() {
     std::vector<std::string> subchildren;
     if (backup_fs_
             ->GetChildren(full_private_path, io_options_, &subchildren, nullptr)
-            .ok()) {
+            .inner_status.ok()) {
       for (auto& subchild : subchildren) {
         IOStatus io_s = backup_fs_->DeleteFile(full_private_path + subchild,
                                                io_options_, nullptr);
         ROCKS_LOG_INFO(options_.info_log, "Deleting %s -- %s",
                        (full_private_path + subchild).c_str(),
-                       io_s.ToString().c_str());
-        if (!io_s.ok()) {
+                       io_s.inner_status.ToString().c_str());
+        if (!io_s.inner_status.ok()) {
           // Trying again later might work
           might_need_garbage_collect_ = true;
         }
@@ -2800,14 +2800,14 @@ IOStatus BackupEngineImpl::GarbageCollect() {
     IOStatus io_s =
         backup_fs_->DeleteDir(full_private_path, io_options_, nullptr);
     ROCKS_LOG_INFO(options_.info_log, "Deleting dir %s -- %s",
-                   full_private_path.c_str(), io_s.ToString().c_str());
-    if (!io_s.ok()) {
+                   full_private_path.c_str(), io_s.inner_status.ToString().c_str());
+    if (!io_s.inner_status.ok()) {
       // Trying again later might work
       might_need_garbage_collect_ = true;
     }
   }
 
-  assert(overall_status.ok() || might_need_garbage_collect_);
+  assert(overall_status.inner_status.ok() || might_need_garbage_collect_);
   return overall_status;
 }
 
@@ -2878,9 +2878,9 @@ IOStatus BackupEngineImpl::BackupMeta::Delete(bool delete_meta) {
   // delete meta file
   if (delete_meta) {
     io_s = fs_->FileExists(meta_filename_, iooptions_, nullptr);
-    if (io_s.ok()) {
+    if (io_s.inner_status.ok()) {
       io_s = fs_->DeleteFile(meta_filename_, iooptions_, nullptr);
-    } else if (io_s.IsNotFound()) {
+    } else if (io_s.inner_status.IsNotFound()) {
       io_s = IOStatus::OK();  // nothing to delete
     }
   }
@@ -2970,7 +2970,7 @@ IOStatus BackupEngineImpl::BackupMeta::LoadFromFile(
     IOStatus io_s = LineFileReader::Create(fs_, meta_filename_, FileOptions(),
                                            &backup_meta_reader,
                                            nullptr /* dbg */, rate_limiter);
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     }
   }
@@ -3185,7 +3185,7 @@ IOStatus BackupEngineImpl::BackupMeta::LoadFromFile(
 
   {
     IOStatus io_s = backup_meta_reader->GetStatus();
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     }
   }
@@ -3199,7 +3199,7 @@ IOStatus BackupEngineImpl::BackupMeta::LoadFromFile(
   files_.reserve(files.size());
   for (const auto& file_info : files) {
     IOStatus io_s = AddFile(file_info);
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     }
   }
@@ -3237,7 +3237,7 @@ IOStatus BackupEngineImpl::BackupMeta::StoreToFile(
   file_options.use_direct_writes = false;
   io_s = fs_->NewWritableFile(meta_tmp_filename_, file_options,
                               &backup_meta_file, nullptr);
-  if (!io_s.ok()) {
+  if (!io_s.inner_status.ok()) {
     return io_s;
   }
 
@@ -3302,13 +3302,13 @@ IOStatus BackupEngineImpl::BackupMeta::StoreToFile(
 
   io_s = backup_meta_file->Append(Slice(buf.str()), iooptions_, nullptr);
   IOSTATS_ADD(bytes_written, buf.str().size());
-  if (io_s.ok() && sync) {
+  if (io_s.inner_status.ok() && sync) {
     io_s = backup_meta_file->Sync(iooptions_, nullptr);
   }
-  if (io_s.ok()) {
+  if (io_s.inner_status.ok()) {
     io_s = backup_meta_file->Close(iooptions_, nullptr);
   }
-  if (io_s.ok()) {
+  if (io_s.inner_status.ok()) {
     io_s = fs_->RenameFile(meta_tmp_filename_, meta_filename_, iooptions_,
                            nullptr);
   }
@@ -3326,7 +3326,7 @@ IOStatus BackupEngineReadOnly::Open(const BackupEngineOptions& options,
   std::unique_ptr<BackupEngineImplThreadSafe> backup_engine(
       new BackupEngineImplThreadSafe(options, env, true /*read_only*/));
   auto s = backup_engine->Initialize();
-  if (!s.ok()) {
+  if (!s.inner_status.ok()) {
     *backup_engine_ptr = nullptr;
     return s;
   }

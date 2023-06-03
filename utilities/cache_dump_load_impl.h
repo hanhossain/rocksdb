@@ -155,7 +155,7 @@ class ToFileCacheDumpWriter : public CacheDumpWriter {
       std::unique_ptr<WritableFileWriter>&& file_writer)
       : file_writer_(std::move(file_writer)) {}
 
-  ~ToFileCacheDumpWriter() { Close().PermitUncheckedError(); }
+  ~ToFileCacheDumpWriter() { Close().inner_status.PermitUncheckedError(); }
 
   // Write the serialized metadata to the file
   virtual IOStatus WriteMetadata(const Slice& metadata) override {
@@ -163,7 +163,7 @@ class ToFileCacheDumpWriter : public CacheDumpWriter {
     std::string prefix;
     PutFixed32(&prefix, static_cast<uint32_t>(metadata.size()));
     IOStatus io_s = file_writer_->Append(Slice(prefix));
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     }
     io_s = file_writer_->Append(metadata);
@@ -176,7 +176,7 @@ class ToFileCacheDumpWriter : public CacheDumpWriter {
     std::string prefix;
     PutFixed32(&prefix, static_cast<uint32_t>(data.size()));
     IOStatus io_s = file_writer_->Append(Slice(prefix));
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     }
     io_s = file_writer_->Append(data);
@@ -209,7 +209,7 @@ class FromFileCacheDumpReader : public CacheDumpReader {
   virtual IOStatus ReadMetadata(std::string* metadata) override {
     uint32_t metadata_len = 0;
     IOStatus io_s = ReadSizePrefix(&metadata_len);
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     }
     return Read(metadata_len, metadata);
@@ -218,7 +218,7 @@ class FromFileCacheDumpReader : public CacheDumpReader {
   virtual IOStatus ReadPacket(std::string* data) override {
     uint32_t data_len = 0;
     IOStatus io_s = ReadSizePrefix(&data_len);
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     }
     return Read(data_len, data);
@@ -228,7 +228,7 @@ class FromFileCacheDumpReader : public CacheDumpReader {
   IOStatus ReadSizePrefix(uint32_t* len) {
     std::string prefix;
     IOStatus io_s = Read(kSizePrefixLen, &prefix);
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     }
     Slice encoded_slice(prefix);
@@ -251,7 +251,7 @@ class FromFileCacheDumpReader : public CacheDumpReader {
       io_s = file_reader_->Read(IOOptions(), offset_, to_read, &result_,
                                 buffer_, nullptr,
                                 Env::IO_TOTAL /* rate_limiter_priority */);
-      if (!io_s.ok()) {
+      if (!io_s.inner_status.ok()) {
         return io_s;
       }
       if (result_.size() < to_read) {

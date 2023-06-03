@@ -72,7 +72,7 @@ IOStatus CacheDumperImpl::DumpCacheEntriesToWriter() {
 
   // Dump stage, first, we write the hader
   IOStatus io_s = WriteHeader();
-  if (!io_s.ok()) {
+  if (!io_s.inner_status.ok()) {
     return io_s;
   }
 
@@ -83,7 +83,7 @@ IOStatus CacheDumperImpl::DumpCacheEntriesToWriter() {
 
   // Finally, write the footer
   io_s = WriteFooter();
-  if (!io_s.ok()) {
+  if (!io_s.inner_status.ok()) {
     return io_s;
   }
   io_s = writer_->Close();
@@ -154,7 +154,7 @@ CacheDumperImpl::DumpOneBlockCallBack(std::string& buf) {
 
     if (s.ok()) {
       // Write it out
-      WriteBlock(type, key, buf).PermitUncheckedError();
+      WriteBlock(type, key, buf).inner_status.PermitUncheckedError();
     }
   };
 }
@@ -198,7 +198,7 @@ IOStatus CacheDumperImpl::WriteBlock(CacheDumpUnitType type, const Slice& key,
   // We write the metadata first.
   assert(writer_ != nullptr);
   IOStatus io_s = writer_->WriteMetadata(encoded_meta);
-  if (!io_s.ok()) {
+  if (!io_s.inner_status.ok()) {
     return io_s;
   }
   // followed by the dump unit.
@@ -251,18 +251,18 @@ IOStatus CacheDumpedLoaderImpl::RestoreCacheEntriesToSecondaryCache() {
   DumpUnit dump_unit;
   std::string data;
   io_s = ReadHeader(&data, &dump_unit);
-  if (!io_s.ok()) {
+  if (!io_s.inner_status.ok()) {
     return io_s;
   }
 
   // Step 3: read out the rest of the blocks from the reader. The loop will stop
   // either I/O status is not ok or we reach to the the end.
-  while (io_s.ok()) {
+  while (io_s.inner_status.ok()) {
     dump_unit.reset();
     data.clear();
     // read the content and store in the dump_unit
     io_s = ReadCacheBlock(&data, &dump_unit);
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       break;
     }
     if (dump_unit.type == CacheDumpUnitType::kFooter) {
@@ -292,7 +292,7 @@ IOStatus CacheDumpedLoaderImpl::ReadDumpUnitMeta(std::string* data,
   assert(data != nullptr);
   assert(unit_meta != nullptr);
   IOStatus io_s = reader_->ReadMetadata(data);
-  if (!io_s.ok()) {
+  if (!io_s.inner_status.ok()) {
     return io_s;
   }
   return status_to_io_status(
@@ -307,7 +307,7 @@ IOStatus CacheDumpedLoaderImpl::ReadDumpUnit(size_t len, std::string* data,
   assert(data != nullptr);
   assert(unit != nullptr);
   IOStatus io_s = reader_->ReadPacket(data);
-  if (!io_s.ok()) {
+  if (!io_s.inner_status.ok()) {
     return io_s;
   }
   if (data->size() != len) {
@@ -325,12 +325,12 @@ IOStatus CacheDumpedLoaderImpl::ReadHeader(std::string* data,
   header_meta.reset();
   std::string meta_string;
   IOStatus io_s = ReadDumpUnitMeta(&meta_string, &header_meta);
-  if (!io_s.ok()) {
+  if (!io_s.inner_status.ok()) {
     return io_s;
   }
 
   io_s = ReadDumpUnit(header_meta.dump_unit_size, data, dump_unit);
-  if (!io_s.ok()) {
+  if (!io_s.inner_status.ok()) {
     return io_s;
   }
   uint32_t unit_checksum = crc32c::Value(data->data(), data->size());
@@ -348,14 +348,14 @@ IOStatus CacheDumpedLoaderImpl::ReadCacheBlock(std::string* data,
   unit_meta.reset();
   std::string unit_string;
   IOStatus io_s = ReadDumpUnitMeta(&unit_string, &unit_meta);
-  if (!io_s.ok()) {
+  if (!io_s.inner_status.ok()) {
     return io_s;
   }
 
   // Based on the information in the dump_unit_metadata, we read the dump_unit
   // and verify if its content is correct.
   io_s = ReadDumpUnit(unit_meta.dump_unit_size, data, dump_unit);
-  if (!io_s.ok()) {
+  if (!io_s.inner_status.ok()) {
     return io_s;
   }
   uint32_t unit_checksum = crc32c::Value(data->data(), data->size());

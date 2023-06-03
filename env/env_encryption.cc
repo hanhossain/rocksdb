@@ -43,7 +43,7 @@ IOStatus EncryptedSequentialFile::Read(size_t n, const IOOptions& options,
                                        IODebugContext* dbg) {
   assert(scratch);
   IOStatus io_s = file_->Read(n, options, result, scratch, dbg);
-  if (!io_s.ok()) {
+  if (!io_s.inner_status.ok()) {
     return io_s;
   }
   {
@@ -51,7 +51,7 @@ IOStatus EncryptedSequentialFile::Read(size_t n, const IOOptions& options,
     io_s = status_to_io_status(
         stream_->Decrypt(offset_, (char*)result->data(), result->size()));
   }
-  if (io_s.ok()) {
+  if (io_s.inner_status.ok()) {
     offset_ += result->size();  // We've already ready data from disk, so update
                                 // offset_ even if decryption fails.
   }
@@ -67,7 +67,7 @@ IOStatus EncryptedSequentialFile::Read(size_t n, const IOOptions& options,
 // REQUIRES: External synchronization
 IOStatus EncryptedSequentialFile::Skip(uint64_t n) {
   auto status = file_->Skip(n);
-  if (!status.ok()) {
+  if (!status.inner_status.ok()) {
     return status;
   }
   offset_ += n;
@@ -103,7 +103,7 @@ IOStatus EncryptedSequentialFile::PositionedRead(uint64_t offset, size_t n,
   assert(scratch);
   offset += prefixLength_;  // Skip prefix
   auto io_s = file_->PositionedRead(offset, n, options, result, scratch, dbg);
-  if (!io_s.ok()) {
+  if (!io_s.inner_status.ok()) {
     return io_s;
   }
   offset_ = offset + result->size();
@@ -132,7 +132,7 @@ IOStatus EncryptedRandomAccessFile::Read(uint64_t offset, size_t n,
   assert(scratch);
   offset += prefixLength_;
   auto io_s = file_->Read(offset, n, options, result, scratch, dbg);
-  if (!io_s.ok()) {
+  if (!io_s.inner_status.ok()) {
     return io_s;
   }
   {
@@ -217,7 +217,7 @@ IOStatus EncryptedWritableFile::Append(const Slice& data,
       io_s = status_to_io_status(
           stream_->Encrypt(offset, buf.BufferStart(), buf.CurrentSize()));
     }
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     }
     dataToAppend = Slice(buf.BufferStart(), buf.CurrentSize());
@@ -244,7 +244,7 @@ IOStatus EncryptedWritableFile::PositionedAppend(const Slice& data,
       io_s = status_to_io_status(
           stream_->Encrypt(offset, buf.BufferStart(), buf.CurrentSize()));
     }
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     }
     dataToAppend = Slice(buf.BufferStart(), buf.CurrentSize());
@@ -386,7 +386,7 @@ IOStatus EncryptedRandomRWFile::Write(uint64_t offset, const Slice& data,
       io_s = status_to_io_status(
           stream_->Encrypt(offset, buf.BufferStart(), buf.CurrentSize()));
     }
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     }
     dataToWrite = Slice(buf.BufferStart(), buf.CurrentSize());
@@ -403,7 +403,7 @@ IOStatus EncryptedRandomRWFile::Read(uint64_t offset, size_t n,
   assert(scratch);
   offset += prefixLength_;
   auto status = file_->Read(offset, n, options, result, scratch, dbg);
-  if (!status.ok()) {
+  if (!status.inner_status.ok()) {
     return status;
   }
   {
@@ -494,7 +494,7 @@ class EncryptedFileSystemImpl : public EncryptedFileSystem {
     EncryptionProvider* provider = nullptr;
     *prefix_length = 0;
     IOStatus status = GetWritableProvider(fname, &provider);
-    if (!status.ok()) {
+    if (!status.inner_status.ok()) {
       return status;
     } else if (provider != nullptr) {
       // Initialize & write prefix (if needed)
@@ -507,13 +507,13 @@ class EncryptedFileSystemImpl : public EncryptedFileSystem {
         buffer.AllocateNewBuffer(*prefix_length);
         status = status_to_io_status(provider->CreateNewPrefix(
             fname, buffer.BufferStart(), *prefix_length));
-        if (status.ok()) {
+        if (status.inner_status.ok()) {
           buffer.Size(*prefix_length);
           prefix = Slice(buffer.BufferStart(), buffer.CurrentSize());
           // Write prefix
           status = underlying->Append(prefix, options.io_options, dbg);
         }
-        if (!status.ok()) {
+        if (!status.inner_status.ok()) {
           return status;
         }
       }
@@ -535,7 +535,7 @@ class EncryptedFileSystemImpl : public EncryptedFileSystem {
     size_t prefix_length;
     IOStatus status = CreateWritableCipherStream(fname, underlying, options,
                                                  &prefix_length, &stream, dbg);
-    if (status.ok()) {
+    if (status.inner_status.ok()) {
       if (stream) {
         result->reset(new EncryptedWritableFile(
             std::move(underlying), std::move(stream), prefix_length));
@@ -565,7 +565,7 @@ class EncryptedFileSystemImpl : public EncryptedFileSystem {
     EncryptionProvider* provider = nullptr;
     *prefix_length = 0;
     IOStatus io_s = GetWritableProvider(fname, &provider);
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     } else if (provider != nullptr) {
       // Initialize & write prefix (if needed)
@@ -578,13 +578,13 @@ class EncryptedFileSystemImpl : public EncryptedFileSystem {
         buffer.AllocateNewBuffer(*prefix_length);
         io_s = status_to_io_status(provider->CreateNewPrefix(
             fname, buffer.BufferStart(), *prefix_length));
-        if (io_s.ok()) {
+        if (io_s.inner_status.ok()) {
           buffer.Size(*prefix_length);
           prefix = Slice(buffer.BufferStart(), buffer.CurrentSize());
           // Write prefix
           io_s = underlying->Write(0, prefix, options.io_options, dbg);
         }
-        if (!io_s.ok()) {
+        if (!io_s.inner_status.ok()) {
           return io_s;
         }
       }
@@ -621,7 +621,7 @@ class EncryptedFileSystemImpl : public EncryptedFileSystem {
       buffer.AllocateNewBuffer(*prefix_length);
       IOStatus status = underlying->Read(*prefix_length, options.io_options,
                                          &prefix, buffer.BufferStart(), dbg);
-      if (!status.ok()) {
+      if (!status.inner_status.ok()) {
         return status;
       }
       buffer.Size(*prefix_length);
@@ -656,7 +656,7 @@ class EncryptedFileSystemImpl : public EncryptedFileSystem {
       buffer.AllocateNewBuffer(*prefix_length);
       IOStatus status = underlying->Read(0, *prefix_length, options.io_options,
                                          &prefix, buffer.BufferStart(), dbg);
-      if (!status.ok()) {
+      if (!status.inner_status.ok()) {
         return status;
       }
       buffer.Size(*prefix_length);
@@ -691,13 +691,13 @@ class EncryptedFileSystemImpl : public EncryptedFileSystem {
     std::unique_ptr<FSSequentialFile> underlying;
     auto status =
         FileSystemWrapper::NewSequentialFile(fname, options, &underlying, dbg);
-    if (!status.ok()) {
+    if (!status.inner_status.ok()) {
       return status;
     }
     uint64_t file_size;
     status = FileSystemWrapper::GetFileSize(fname, options.io_options,
                                             &file_size, dbg);
-    if (!status.ok()) {
+    if (!status.inner_status.ok()) {
       return status;
     }
     if (!file_size) {
@@ -709,7 +709,7 @@ class EncryptedFileSystemImpl : public EncryptedFileSystem {
     size_t prefix_length;
     status = CreateSequentialCipherStream(fname, underlying, options,
                                           &prefix_length, &stream, dbg);
-    if (status.ok()) {
+    if (status.inner_status.ok()) {
       result->reset(new EncryptedSequentialFile(
           std::move(underlying), std::move(stream), prefix_length));
     }
@@ -729,14 +729,14 @@ class EncryptedFileSystemImpl : public EncryptedFileSystem {
     std::unique_ptr<FSRandomAccessFile> underlying;
     auto status = FileSystemWrapper::NewRandomAccessFile(fname, options,
                                                          &underlying, dbg);
-    if (!status.ok()) {
+    if (!status.inner_status.ok()) {
       return status;
     }
     std::unique_ptr<BlockAccessCipherStream> stream;
     size_t prefix_length;
     status = CreateRandomReadCipherStream(fname, underlying, options,
                                           &prefix_length, &stream, dbg);
-    if (status.ok()) {
+    if (status.inner_status.ok()) {
       if (stream) {
         result->reset(new EncryptedRandomAccessFile(
             std::move(underlying), std::move(stream), prefix_length));
@@ -759,7 +759,7 @@ class EncryptedFileSystemImpl : public EncryptedFileSystem {
     std::unique_ptr<FSWritableFile> underlying;
     IOStatus status =
         FileSystemWrapper::NewWritableFile(fname, options, &underlying, dbg);
-    if (!status.ok()) {
+    if (!status.inner_status.ok()) {
       return status;
     }
     return CreateWritableEncryptedFile(fname, underlying, options, result, dbg);
@@ -784,7 +784,7 @@ class EncryptedFileSystemImpl : public EncryptedFileSystem {
     std::unique_ptr<FSWritableFile> underlying;
     IOStatus status =
         FileSystemWrapper::ReopenWritableFile(fname, options, &underlying, dbg);
-    if (!status.ok()) {
+    if (!status.inner_status.ok()) {
       return status;
     }
     return CreateWritableEncryptedFile(fname, underlying, options, result, dbg);
@@ -804,7 +804,7 @@ class EncryptedFileSystemImpl : public EncryptedFileSystem {
     std::unique_ptr<FSWritableFile> underlying;
     auto status = FileSystemWrapper::ReuseWritableFile(
         fname, old_fname, options, &underlying, dbg);
-    if (!status.ok()) {
+    if (!status.inner_status.ok()) {
       return status;
     }
     return CreateWritableEncryptedFile(fname, underlying, options, result, dbg);
@@ -823,13 +823,13 @@ class EncryptedFileSystemImpl : public EncryptedFileSystem {
       return IOStatus::InvalidArgument();
     }
     // Check file exists
-    bool isNewFile = !FileExists(fname, options.io_options, dbg).ok();
+    bool isNewFile = !FileExists(fname, options.io_options, dbg).inner_status.ok();
 
     // Open file using underlying Env implementation
     std::unique_ptr<FSRandomRWFile> underlying;
     auto status =
         FileSystemWrapper::NewRandomRWFile(fname, options, &underlying, dbg);
-    if (!status.ok()) {
+    if (!status.inner_status.ok()) {
       return status;
     }
     // Create cipher stream
@@ -843,7 +843,7 @@ class EncryptedFileSystemImpl : public EncryptedFileSystem {
       status = CreateRandomWriteCipherStream(fname, underlying, options,
                                              &prefix_length, &stream, dbg);
     }
-    if (status.ok()) {
+    if (status.inner_status.ok()) {
       if (stream) {
         result->reset(new EncryptedRandomRWFile(
             std::move(underlying), std::move(stream), prefix_length));
@@ -874,7 +874,7 @@ class EncryptedFileSystemImpl : public EncryptedFileSystem {
                                      IODebugContext* dbg) override {
     auto status =
         FileSystemWrapper::GetChildrenFileAttributes(dir, options, result, dbg);
-    if (!status.ok()) {
+    if (!status.inner_status.ok()) {
       return status;
     }
     for (auto it = std::begin(*result); it != std::end(*result); ++it) {
@@ -885,7 +885,7 @@ class EncryptedFileSystemImpl : public EncryptedFileSystem {
       // FileAttributes does not identify directories
       EncryptionProvider* provider;
       status = GetReadableProvider(it->name, &provider);
-      if (!status.ok()) {
+      if (!status.inner_status.ok()) {
         return status;
       } else if (provider != nullptr) {
         it->size_bytes -= provider->GetPrefixLength();
@@ -899,12 +899,12 @@ class EncryptedFileSystemImpl : public EncryptedFileSystem {
                        uint64_t* file_size, IODebugContext* dbg) override {
     auto status =
         FileSystemWrapper::GetFileSize(fname, options, file_size, dbg);
-    if (!status.ok() || !(*file_size)) {
+    if (!status.inner_status.ok() || !(*file_size)) {
       return status;
     }
     EncryptionProvider* provider;
     status = GetReadableProvider(fname, &provider);
-    if (provider != nullptr && status.ok()) {
+    if (provider != nullptr && status.inner_status.ok()) {
       size_t prefixLength = provider->GetPrefixLength();
       assert(*file_size >= prefixLength);
       *file_size -= prefixLength;

@@ -125,7 +125,7 @@ class WritableFileWriter {
     for (auto& listener : listeners_) {
       listener->OnIOError(io_error_info);
     }
-    io_error_info.io_status.PermitUncheckedError();
+    io_error_info.io_status.inner_status.PermitUncheckedError();
   }
 
   bool ShouldNotifyListeners() const { return !listeners_.empty(); }
@@ -228,7 +228,7 @@ class WritableFileWriter {
 
   ~WritableFileWriter() {
     auto s = Close();
-    s.PermitUncheckedError();
+    s.inner_status.PermitUncheckedError();
   }
 
   std::string file_name() const { return file_name_; }

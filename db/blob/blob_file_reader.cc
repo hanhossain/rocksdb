@@ -473,7 +473,7 @@ void BlobFileReader::MultiGetBlob(
                               read_options.rate_limiter_priority);
   if (!s.ok()) {
     for (auto& req : read_reqs) {
-      req.status.PermitUncheckedError();
+      req.status.inner_status.PermitUncheckedError();
     }
     for (auto& blob_req : blob_reqs) {
       BlobReadRequest* const req = blob_req.first;
@@ -504,7 +504,7 @@ void BlobFileReader::MultiGetBlob(
     assert(j < read_reqs.size());
     auto& read_req = read_reqs[j++];
     const auto& record_slice = read_req.result;
-    if (read_req.status.ok() && record_slice.size() != read_req.len) {
+    if (read_req.status.inner_status.ok() && record_slice.size() != read_req.len) {
       read_req.status =
           IOStatus::Corruption("Failed to read data from blob file");
     }

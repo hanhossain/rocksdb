@@ -4935,7 +4935,7 @@ VersionSet::~VersionSet() {
     file.DeleteMetadata();
   }
   obsolete_files_.clear();
-  io_status_.PermitUncheckedError();
+  io_status_.inner_status.PermitUncheckedError();
 }
 
 void VersionSet::Reset() {
@@ -5254,7 +5254,7 @@ Status VersionSet::ProcessManifestWrites(
       std::unique_ptr<FSWritableFile> descriptor_file;
       io_s = NewWritableFile(fs_.get(), descriptor_fname, &descriptor_file,
                              opt_file_opts);
-      if (io_s.ok()) {
+      if (io_s.inner_status.ok()) {
         descriptor_file->SetPreallocationBlockSize(
             db_options_->manifest_preallocation_size);
         FileTypeSet tmp_set = db_options_->checksum_handoff_file_types;
@@ -5307,7 +5307,7 @@ Status VersionSet::ProcessManifestWrites(
         ++idx;
 #endif /* !NDEBUG */
         io_s = descriptor_log_->AddRecord(record);
-        if (!io_s.ok()) {
+        if (!io_s.inner_status.ok()) {
           s = io_s;
           manifest_io_status = io_s;
           break;
@@ -5320,7 +5320,7 @@ Status VersionSet::ProcessManifestWrites(
         TEST_SYNC_POINT_CALLBACK(
             "VersionSet::ProcessManifestWrites:AfterSyncManifest", &io_s);
       }
-      if (!io_s.ok()) {
+      if (!io_s.inner_status.ok()) {
         s = io_s;
         ROCKS_LOG_ERROR(db_options_->info_log, "MANIFEST write %s\n",
                         s.ToString().c_str());
@@ -5330,12 +5330,12 @@ Status VersionSet::ProcessManifestWrites(
     // If we just created a new descriptor file, install it by writing a
     // new CURRENT file that points to it.
     if (s.ok()) {
-      assert(manifest_io_status.ok());
+      assert(manifest_io_status.inner_status.ok());
     }
     if (s.ok() && new_descriptor_log) {
       io_s = SetCurrentFile(fs_.get(), dbname_, pending_manifest_file_number_,
                             dir_contains_current_file);
-      if (!io_s.ok()) {
+      if (!io_s.inner_status.ok()) {
         s = io_s;
       }
     }
@@ -5370,11 +5370,11 @@ Status VersionSet::ProcessManifestWrites(
     }
   }
 
-  if (!io_s.ok()) {
-    if (io_status_.ok()) {
+  if (!io_s.inner_status.ok()) {
+    if (io_status_.inner_status.ok()) {
       io_status_ = io_s;
     }
-  } else if (!io_status_.ok()) {
+  } else if (!io_status_.inner_status.ok()) {
     io_status_ = io_s;
   }
 
@@ -5450,7 +5450,7 @@ Status VersionSet::ProcessManifestWrites(
     for (auto v : versions) {
       delete v;
     }
-    if (manifest_io_status.ok()) {
+    if (manifest_io_status.inner_status.ok()) {
       manifest_file_number_ = pending_manifest_file_number_;
       manifest_file_size_ = new_manifest_file_size;
     }
@@ -5484,7 +5484,7 @@ Status VersionSet::ProcessManifestWrites(
     // a) CURRENT points to the new MANIFEST, and the new MANIFEST is present.
     // b) CURRENT points to the original MANIFEST, and the original MANIFEST
     //    also exists.
-    if (new_descriptor_log && !manifest_io_status.ok()) {
+    if (new_descriptor_log && !manifest_io_status.inner_status.ok()) {
       ROCKS_LOG_INFO(db_options_->info_log,
                      "Deleting manifest %" PRIu64 " current manifest %" PRIu64
                      "\n",
@@ -6253,7 +6253,7 @@ Status VersionSet::WriteCurrentStateToManifest(
   // LogAndApply. Column family manipulations can only happen within LogAndApply
   // (the same single thread), so we're safe to iterate.
 
-  assert(io_s.ok());
+  assert(io_s.inner_status.ok());
   if (db_options_->write_dbid_to_manifest) {
     VersionEdit edit_for_db_id;
     assert(!db_id_.empty());
@@ -6264,7 +6264,7 @@ Status VersionSet::WriteCurrentStateToManifest(
                                 edit_for_db_id.DebugString(true));
     }
     io_s = log->AddRecord(db_id_record);
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     }
   }
@@ -6279,7 +6279,7 @@ Status VersionSet::WriteCurrentStateToManifest(
                                 wal_additions.DebugString(true));
     }
     io_s = log->AddRecord(record);
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     }
   }
@@ -6296,7 +6296,7 @@ Status VersionSet::WriteCurrentStateToManifest(
                               wal_deletions.DebugString(true));
   }
   io_s = log->AddRecord(wal_deletions_record);
-  if (!io_s.ok()) {
+  if (!io_s.inner_status.ok()) {
     return io_s;
   }
 
@@ -6324,7 +6324,7 @@ Status VersionSet::WriteCurrentStateToManifest(
                                   edit.DebugString(true));
       }
       io_s = log->AddRecord(record);
-      if (!io_s.ok()) {
+      if (!io_s.inner_status.ok()) {
         return io_s;
       }
     }
@@ -6403,7 +6403,7 @@ Status VersionSet::WriteCurrentStateToManifest(
                                   edit.DebugString(true));
       }
       io_s = log->AddRecord(record);
-      if (!io_s.ok()) {
+      if (!io_s.inner_status.ok()) {
         return io_s;
       }
     }

@@ -73,7 +73,7 @@ class RandomAccessFileReader {
     for (auto& listener : listeners_) {
       listener->OnIOError(io_error_info);
     }
-    io_status.PermitUncheckedError();
+    io_status.inner_status.PermitUncheckedError();
   }
 
 

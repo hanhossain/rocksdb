@@ -28,7 +28,7 @@ IOStatus SequentialFileReader::Create(
     IODebugContext* dbg, RateLimiter* rate_limiter) {
   std::unique_ptr<FSSequentialFile> file;
   IOStatus io_s = fs->NewSequentialFile(fname, file_opts, &file, dbg);
-  if (io_s.ok()) {
+  if (io_s.inner_status.ok()) {
     reader->reset(new SequentialFileReader(std::move(file), fname, nullptr, {},
                                            rate_limiter));
   }
@@ -84,12 +84,12 @@ IOStatus SequentialFileReader::Read(size_t n, Slice* result, char* scratch,
                                io_s);
       }
       buf.Size(buf.CurrentSize() + tmp.size());
-      if (!io_s.ok() || tmp.size() < allowed) {
+      if (!io_s.inner_status.ok() || tmp.size() < allowed) {
         break;
       }
     }
 
-    if (io_s.ok() && offset_advance < buf.CurrentSize()) {
+    if (io_s.inner_status.ok() && offset_advance < buf.CurrentSize()) {
       r = buf.Read(scratch, offset_advance,
                    std::min(buf.CurrentSize() - offset_advance, n));
     }
@@ -127,7 +127,7 @@ IOStatus SequentialFileReader::Read(size_t n, Slice* result, char* scratch,
         NotifyOnFileReadFinish(offset, tmp.size(), start_ts, finish_ts, io_s);
       }
       read += tmp.size();
-      if (!io_s.ok() || tmp.size() < allowed) {
+      if (!io_s.inner_status.ok() || tmp.size() < allowed) {
         break;
       }
     }
@@ -189,7 +189,7 @@ class ReadaheadSequentialFile : public FSSequentialFile {
     // Read-ahead only make sense if we have some slack left after reading
     if (n + alignment_ >= readahead_size_) {
       s = file_->Read(n, opts, result, scratch + cached_len, dbg);
-      if (s.ok()) {
+      if (s.inner_status.ok()) {
         read_offset_ += result->size();
         *result = Slice(scratch, cached_len + result->size());
       }
@@ -198,7 +198,7 @@ class ReadaheadSequentialFile : public FSSequentialFile {
     }
 
     s = ReadIntoBuffer(readahead_size_, opts, dbg);
-    if (s.ok()) {
+    if (s.inner_status.ok()) {
       // The data we need is now in cache, so we can safely read it
       size_t remaining_len;
       TryReadFromCache(n, &remaining_len, scratch + cached_len);
@@ -226,7 +226,7 @@ class ReadaheadSequentialFile : public FSSequentialFile {
     if (n > 0) {
       // We still need to skip more, so call the file API for skipping
       s = file_->Skip(n);
-      if (s.ok()) {
+      if (s.inner_status.ok()) {
         read_offset_ += n;
       }
       buffer_.Clear();
@@ -278,7 +278,7 @@ class ReadaheadSequentialFile : public FSSequentialFile {
     assert(IsFileSectorAligned(n, alignment_));
     Slice result;
     IOStatus s = file_->Read(n, opts, &result, buffer_.BufferStart(), dbg);
-    if (s.ok()) {
+    if (s.inner_status.ok()) {
       buffer_offset_ = read_offset_;
       buffer_.Size(result.size());
       assert(result.size() == 0 || buffer_.BufferStart() == result.data());

@@ -226,7 +226,7 @@ Status ExternalSstFileIngestionJob::Prepare(
             db_options_.allow_mmap_reads, io_tracer_,
             db_options_.rate_limiter.get(),
             Env::IO_TOTAL /* rate_limiter_priority */);
-        if (!io_s.ok()) {
+        if (!io_s.inner_status.ok()) {
           status = io_s;
           ROCKS_LOG_WARN(db_options_.info_log,
                          "Sst file checksum generation of file: %s failed: %s",
@@ -1050,7 +1050,7 @@ IOStatus ExternalSstFileIngestionJob::GenerateChecksumForIngestedFile(
       ingestion_options_.verify_checksums_readahead_size,
       db_options_.allow_mmap_reads, io_tracer_, db_options_.rate_limiter.get(),
       Env::IO_TOTAL /* rate_limiter_priority */);
-  if (!io_s.ok()) {
+  if (!io_s.inner_status.ok()) {
     return io_s;
   }
   file_to_ingest->file_checksum = file_checksum;

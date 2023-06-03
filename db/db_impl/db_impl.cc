@@ -353,7 +353,7 @@ Status DBImpl::ResumeImpl(DBRecoverContext context) {
   bool file_deletion_disabled = !IsFileDeletionsEnabled();
   if (s.ok()) {
     IOStatus io_s = versions_->io_status();
-    if (io_s.IsIOError()) {
+    if (io_s.inner_status.IsIOError()) {
       // If resuming from IOError resulted from MANIFEST write, then assert
       // that we must have already set the MANIFEST writer to nullptr during
       // clean-up phase MANIFEST writing. We must have also disabled file
@@ -375,7 +375,7 @@ Status DBImpl::ResumeImpl(DBRecoverContext context) {
                                  directories_.GetDbDir());
       if (!s.ok()) {
         io_s = versions_->io_status();
-        if (!io_s.ok()) {
+        if (!io_s.inner_status.ok()) {
           s = error_handler_.SetBGError(io_s,
                                         BackgroundErrorReason::kManifestWrite);
         }
@@ -423,7 +423,7 @@ Status DBImpl::ResumeImpl(DBRecoverContext context) {
   job_context.Clean();
 
   if (s.ok()) {
-    assert(versions_->io_status().ok());
+    assert(versions_->io_status().inner_status.ok());
     // If we reach here, we should re-enable file deletions if it was disabled
     // during previous error handling.
     if (file_deletion_disabled) {
@@ -716,7 +716,7 @@ Status DBImpl::CloseHelper() {
   }
 
   IOStatus io_s = directories_.Close(IOOptions(), nullptr /* dbg */);
-  if (!io_s.ok()) {
+  if (!io_s.inner_status.ok()) {
     ret = io_s;
   }
   if (ret.IsAborted()) {
@@ -1408,9 +1408,9 @@ Status DBImpl::FlushWAL(bool sync) {
       log::Writer* cur_log_writer = logs_.back().writer;
       io_s = cur_log_writer->WriteBuffer();
     }
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       ROCKS_LOG_ERROR(immutable_db_options_.info_log, "WAL flush error %s",
-                      io_s.ToString().c_str());
+                      io_s.inner_status.ToString().c_str());
       // In case there is a fs error we should set it globally to prevent the
       // future writes
       IOStatusCheck(io_s);
@@ -1481,14 +1481,14 @@ Status DBImpl::SyncWAL() {
   IOStatus io_s;
   for (log::Writer* log : logs_to_sync) {
     io_s = log->file()->SyncWithoutFlush(immutable_db_options_.use_fsync);
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       status = io_s;
       break;
     }
   }
-  if (!io_s.ok()) {
+  if (!io_s.inner_status.ok()) {
     ROCKS_LOG_ERROR(immutable_db_options_.info_log, "WAL Sync error %s",
-                    io_s.ToString().c_str());
+                    io_s.inner_status.ToString().c_str());
     // In case there is a fs error we should set it globally to prevent the
     // future writes
     IOStatusCheck(io_s);
@@ -1529,7 +1529,7 @@ Status DBImpl::ApplyWALToManifest(const ReadOptions& read_options,
 
   Status status = versions_->LogAndApplyToDefaultColumnFamily(
       read_options, synced_wals, &mutex_, directories_.GetDbDir());
-  if (!status.ok() && versions_->io_status().IsIOError()) {
+  if (!status.ok() && versions_->io_status().inner_status.IsIOError()) {
     status = error_handler_.SetBGError(versions_->io_status(),
                                        BackgroundErrorReason::kManifestWrite);
   }
@@ -4737,7 +4737,7 @@ Status DestroyDB(const std::string& dbname, const Options& options,
   soptions.fs
       ->GetChildren(dbname, io_opts, &filenames,
                     /*IODebugContext*=*/nullptr)
-      .PermitUncheckedError();
+      .inner_status.PermitUncheckedError();
 
   FileLock* lock;
   const std::string lockname = LockFileName(dbname);
@@ -4782,7 +4782,7 @@ Status DestroyDB(const std::string& dbname, const Options& options,
       if (soptions.fs
               ->GetChildren(path, io_opts, &filenames,
                             /*IODebugContext*=*/nullptr)
-              .ok()) {
+              .inner_status.ok()) {
         for (const auto& fname : filenames) {
           if (ParseFileName(fname, &number, &type) &&
               (type == rs::types::FileType::TableFile ||
@@ -4808,7 +4808,7 @@ Status DestroyDB(const std::string& dbname, const Options& options,
           soptions.fs
               ->GetChildren(soptions.wal_dir, io_opts, &walDirFiles,
                             /*IODebugContext*=*/nullptr)
-              .ok();
+              .inner_status.ok();
       archivedir = ArchivalDirectory(soptions.wal_dir);
     }
 
@@ -4819,7 +4819,7 @@ Status DestroyDB(const std::string& dbname, const Options& options,
     if (soptions.fs
             ->GetChildren(archivedir, io_opts, &archiveFiles,
                           /*IODebugContext*=*/nullptr)
-            .ok()) {
+            .inner_status.ok()) {
       // Delete archival files.
       for (const auto& file : archiveFiles) {
         if (ParseFileName(file, &number, &type) && type == rs::types::FileType::WalFile) {
@@ -5511,7 +5511,7 @@ Status DBImpl::IngestExternalFiles(
 #endif  // !NDEBUG
         }
       }
-    } else if (versions_->io_status().IsIOError()) {
+    } else if (versions_->io_status().inner_status.IsIOError()) {
       // Error while writing to MANIFEST.
       // In fact, versions_->io_status() can also be the result of renaming
       // CURRENT file. With current code, it's just difficult to tell. So just

@@ -2604,7 +2604,7 @@ void StressTest::Open(SharedState* shared) {
            FLAGS_open_write_fault_one_in || FLAGS_open_read_fault_one_in) &&
           fault_fs_guard
               ->FileExists(FLAGS_db + "/CURRENT", IOOptions(), nullptr)
-              .ok()) {
+              .inner_status.ok()) {
         if (!FLAGS_sync) {
           // When DB Stress is not sync mode, we expect all WAL writes to
           // WAL is durable. Buffering unsynced writes will cause false

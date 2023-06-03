@@ -61,11 +61,11 @@ IOStatus CompactionOutputs::WriterSyncClose(const Status& input_status,
     StopWatch sw(clock, statistics, COMPACTION_OUTFILE_SYNC_MICROS);
     io_s = file_writer_->Sync(use_fsync);
   }
-  if (input_status.ok() && io_s.ok()) {
+  if (input_status.ok() && io_s.inner_status.ok()) {
     io_s = file_writer_->Close();
   }
 
-  if (input_status.ok() && io_s.ok()) {
+  if (input_status.ok() && io_s.inner_status.ok()) {
     FileMetaData* meta = GetMetaData();
     meta->file_checksum = file_writer_->GetFileChecksum();
     meta->file_checksum_func_name = file_writer_->GetFileChecksumFuncName();

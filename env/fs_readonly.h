@@ -69,7 +69,7 @@ class ReadOnlyFileSystem : public FileSystemWrapper {
     // Allow if dir already exists
     bool is_dir = false;
     IOStatus s = IsDirectory(dirname, options, &is_dir, dbg);
-    if (s.ok() && is_dir) {
+    if (s.inner_status.ok() && is_dir) {
       return s;
     } else {
       return FailReadOnly();

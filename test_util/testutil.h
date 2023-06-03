@@ -564,16 +564,16 @@ class StringFS : public FileSystemWrapper {
     IOOptions io_opts;
 
     auto s = NewWritableFile(file_name, file_opts, &r, nullptr);
-    if (s.ok()) {
+    if (s.inner_status.ok()) {
       s = r->Append(content, io_opts, nullptr);
     }
-    if (s.ok()) {
+    if (s.inner_status.ok()) {
       s = r->Flush(io_opts, nullptr);
     }
-    if (s.ok()) {
+    if (s.inner_status.ok()) {
       s = r->Close(io_opts, nullptr);
     }
-    assert(!s.ok() || files_[file_name] == content);
+    assert(!s.inner_status.ok() || files_[file_name] == content);
     return s;
   }
 

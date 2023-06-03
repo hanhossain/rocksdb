@@ -731,7 +731,7 @@ Status BlobDBImpl::CreateWriterLocked(const std::shared_ptr<BlobFile>& bfile) {
                     " exists: '%s'",
                     fpath.c_str(), s.ToString().c_str(),
                     fs->FileExists(fpath, file_options_.io_options, nullptr)
-                        .ToString()
+                        .inner_status.ToString()
                         .c_str());
     return s;
   }

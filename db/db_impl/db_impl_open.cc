@@ -316,8 +316,8 @@ Status DBImpl::NewDB(std::vector<std::string>* new_filenames) {
   ROCKS_LOG_INFO(immutable_db_options_.info_log, "Creating manifest 1 \n");
   const std::string manifest = DescriptorFileName(dbname_, 1);
   {
-    if (fs_->FileExists(manifest, IOOptions(), nullptr).ok()) {
-      fs_->DeleteFile(manifest, IOOptions(), nullptr).PermitUncheckedError();
+    if (fs_->FileExists(manifest, IOOptions(), nullptr).inner_status.ok()) {
+      fs_->DeleteFile(manifest, IOOptions(), nullptr).inner_status.PermitUncheckedError();
     }
     std::unique_ptr<FSWritableFile> file;
     FileOptions file_options = fs_->OptimizeForManifestWrite(file_options_);
@@ -349,7 +349,7 @@ Status DBImpl::NewDB(std::vector<std::string>* new_filenames) {
           manifest.substr(manifest.find_last_of("/\\") + 1));
     }
   } else {
-    fs_->DeleteFile(manifest, IOOptions(), nullptr).PermitUncheckedError();
+    fs_->DeleteFile(manifest, IOOptions(), nullptr).inner_status.PermitUncheckedError();
   }
   return s;
 }
@@ -365,7 +365,7 @@ IOStatus DBImpl::CreateAndNewDirectory(
   // env->CreateDirIfMissing() doesn't create intermediate directories, e.g.
   // when dbname_ is "dir/db" but when "dir" doesn't exist.
   IOStatus io_s = fs->CreateDirIfMissing(dirname, IOOptions(), nullptr);
-  if (!io_s.ok()) {
+  if (!io_s.inner_status.ok()) {
     return io_s;
   }
   return fs->NewDirectory(dirname, IOOptions(), directory, nullptr);
@@ -375,12 +375,12 @@ IOStatus Directories::SetDirectories(FileSystem* fs, const std::string& dbname,
                                      const std::string& wal_dir,
                                      const std::vector<DbPath>& data_paths) {
   IOStatus io_s = DBImpl::CreateAndNewDirectory(fs, dbname, &db_dir_);
-  if (!io_s.ok()) {
+  if (!io_s.inner_status.ok()) {
     return io_s;
   }
   if (!wal_dir.empty() && dbname != wal_dir) {
     io_s = DBImpl::CreateAndNewDirectory(fs, wal_dir, &wal_dir_);
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     }
   }
@@ -393,7 +393,7 @@ IOStatus Directories::SetDirectories(FileSystem* fs, const std::string& dbname,
     } else {
       std::unique_ptr<FSDirectory> path_directory;
       io_s = DBImpl::CreateAndNewDirectory(fs, db_path, &path_directory);
-      if (!io_s.ok()) {
+      if (!io_s.inner_status.ok()) {
         return io_s;
       }
       data_dirs_.emplace_back(path_directory.release());
@@ -1659,7 +1659,7 @@ Status DBImpl::WriteLevel0TableForRecovery(int job_id, ColumnFamilyData* cfd,
       mutex_.Lock();
 
       // TODO(AR) is this ok?
-      if (!io_s.ok() && s.ok()) {
+      if (!io_s.inner_status.ok() && s.ok()) {
         s = io_s;
       }
     }
@@ -1843,7 +1843,7 @@ IOStatus DBImpl::CreateWAL(uint64_t log_file_num, uint64_t recycle_log_number,
     io_s = NewWritableFile(fs_.get(), log_fname, &lfile, opt_file_options);
   }
 
-  if (io_s.ok()) {
+  if (io_s.inner_status.ok()) {
     lfile->SetWriteLifeTimeHint(CalculateWALWriteHint());
     lfile->SetPreallocationBlockSize(preallocate_block_size);
 
@@ -2128,7 +2128,7 @@ Status DBImpl::Open(const DBOptions& db_options, const std::string& dbname,
       impl->immutable_db_options_.fs
           ->GetChildren(path, io_opts, &existing_files,
                         /*IODebugContext*=*/nullptr)
-          .PermitUncheckedError();  //**TODO: What do to on error?
+          .inner_status.PermitUncheckedError();  //**TODO: What do to on error?
       for (auto& file_name : existing_files) {
         uint64_t file_number;
         rs::types::FileType file_type;

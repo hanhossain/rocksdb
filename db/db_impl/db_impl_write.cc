@@ -580,12 +580,12 @@ Status DBImpl::WriteImpl(const WriteOptions& write_options,
   }
   PERF_TIMER_START(write_pre_and_post_process_time);
 
-  if (!io_s.ok()) {
+  if (!io_s.inner_status.ok()) {
     // Check WriteToWAL status
     IOStatusCheck(io_s);
   }
   if (!w.CallbackFailed()) {
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       assert(pre_release_cb_status.ok());
     } else {
       WriteStatusCheck(pre_release_cb_status);
@@ -729,7 +729,7 @@ Status DBImpl::PipelinedWriteImpl(const WriteOptions& write_options,
     PERF_TIMER_STOP(write_pre_and_post_process_time);
 
     IOStatus io_s;
-    io_s.PermitUncheckedError();  // Allow io_s to be uninitialized
+    io_s.inner_status.PermitUncheckedError();  // Allow io_s to be uninitialized
 
     if (w.status.ok() && !write_options.disableWAL) {
       PERF_TIMER_GUARD(write_wal_time);
@@ -750,7 +750,7 @@ Status DBImpl::PipelinedWriteImpl(const WriteOptions& write_options,
       w.status = io_s;
     }
 
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       // Check WriteToWAL status
       IOStatusCheck(io_s);
     } else if (!w.CallbackFailed()) {
@@ -1012,7 +1012,7 @@ Status DBImpl::WriteImplWALOnly(
     // last_sequence may not be set if there is an error
     // This error checking and return is moved up to avoid using uninitialized
     // last_sequence.
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       IOStatusCheck(io_s);
       write_thread->ExitAsBatchGroupLeader(write_group, status);
       return status;
@@ -1114,9 +1114,9 @@ void DBImpl::WriteStatusCheck(const Status& status) {
 void DBImpl::IOStatusCheck(const IOStatus& io_status) {
   // Is setting bg_error_ enough here?  This will at least stop
   // compaction and fail any further writes.
-  if ((immutable_db_options_.paranoid_checks && !io_status.ok() &&
-       !io_status.IsBusy() && !io_status.IsIncomplete()) ||
-      io_status.IsIOFenced()) {
+  if ((immutable_db_options_.paranoid_checks && !io_status.inner_status.ok() &&
+       !io_status.inner_status.IsBusy() && !io_status.inner_status.IsIncomplete()) ||
+      io_status.inner_status.IsIOFenced()) {
     mutex_.Lock();
     // Maybe change the return status to void?
     error_handler_.SetBGError(io_status, BackgroundErrorReason::kWriteCallback);
@@ -1356,7 +1356,7 @@ IOStatus DBImpl::WriteToWAL(const WriteThread::WriteGroup& write_group,
   WriteBatch* merged_batch;
   io_s = status_to_io_status(MergeBatch(write_group, &tmp_batch_, &merged_batch,
                                         &write_with_wal, &to_be_cached_state));
-  if (UNLIKELY(!io_s.ok())) {
+  if (UNLIKELY(!io_s.inner_status.ok())) {
     return io_s;
   }
 
@@ -1379,7 +1379,7 @@ IOStatus DBImpl::WriteToWAL(const WriteThread::WriteGroup& write_group,
     cached_recoverable_state_empty_ = false;
   }
 
-  if (io_s.ok() && need_log_sync) {
+  if (io_s.inner_status.ok() && need_log_sync) {
     StopWatch sw(immutable_db_options_.clock, stats_, WAL_FILE_SYNC_MICROS);
     // It's safe to access logs_ with unlocked mutex_ here because:
     //  - we've set getting_synced=true for all logs,
@@ -1402,7 +1402,7 @@ IOStatus DBImpl::WriteToWAL(const WriteThread::WriteGroup& write_group,
 
     for (auto& log : logs_) {
       io_s = log.writer->file()->Sync(immutable_db_options_.use_fsync);
-      if (!io_s.ok()) {
+      if (!io_s.inner_status.ok()) {
         break;
       }
     }
@@ -1411,7 +1411,7 @@ IOStatus DBImpl::WriteToWAL(const WriteThread::WriteGroup& write_group,
       log_write_mutex_.Unlock();
     }
 
-    if (io_s.ok() && need_log_dir_sync) {
+    if (io_s.inner_status.ok() && need_log_dir_sync) {
       // We only sync WAL directory the first time WAL syncing is
       // requested, so that in case users never turn on WAL sync,
       // we can avoid the disk I/O in the write code path.
@@ -1424,7 +1424,7 @@ IOStatus DBImpl::WriteToWAL(const WriteThread::WriteGroup& write_group,
   if (merged_batch == &tmp_batch_) {
     tmp_batch_.Clear();
   }
-  if (io_s.ok()) {
+  if (io_s.inner_status.ok()) {
     auto stats = default_cf_internal_stats_;
     if (need_log_sync) {
       stats->AddDBStats(InternalStats::InternalDBStatsType::kIntStatsWalFileSynced, 1);
@@ -1452,7 +1452,7 @@ IOStatus DBImpl::ConcurrentWriteToWAL(
   WriteBatch* merged_batch;
   io_s = status_to_io_status(MergeBatch(write_group, &tmp_batch, &merged_batch,
                                         &write_with_wal, &to_be_cached_state));
-  if (UNLIKELY(!io_s.ok())) {
+  if (UNLIKELY(!io_s.inner_status.ok())) {
     return io_s;
   }
 
@@ -1485,7 +1485,7 @@ IOStatus DBImpl::ConcurrentWriteToWAL(
   }
   log_write_mutex_.Unlock();
 
-  if (io_s.ok()) {
+  if (io_s.inner_status.ok()) {
     const bool concurrent = true;
     auto stats = default_cf_internal_stats_;
     stats->AddDBStats(InternalStats::InternalDBStatsType::kIntStatsWalFileBytes, log_size,
@@ -2205,7 +2205,7 @@ Status DBImpl::SwitchMemtable(ColumnFamilyData* cfd, WriteContext* context) {
     context->superversion_context.new_superversion.reset();
     // We may have lost data from the WritableFileBuffer in-memory buffer for
     // the current log, so treat it as a fatal error and set bg_error
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       error_handler_.SetBGError(io_s, BackgroundErrorReason::kMemTable);
     } else {
       error_handler_.SetBGError(s, BackgroundErrorReason::kMemTable);
@@ -2245,7 +2245,7 @@ Status DBImpl::SwitchMemtable(ColumnFamilyData* cfd, WriteContext* context) {
       wal_deletion.DeleteWalsBefore(min_wal_number_to_keep);
       s = versions_->LogAndApplyToDefaultColumnFamily(
           read_options, &wal_deletion, &mutex_, directories_.GetDbDir());
-      if (!s.ok() && versions_->io_status().IsIOError()) {
+      if (!s.ok() && versions_->io_status().inner_status.IsIOError()) {
         s = error_handler_.SetBGError(versions_->io_status(),
                                       BackgroundErrorReason::kManifestWrite);
       }
@@ -2293,7 +2293,7 @@ Status DBImpl::SwitchMemtable(ColumnFamilyData* cfd, WriteContext* context) {
   // It is possible that we got here without checking the value of i_os, but
   // that is okay.  If we did, it most likely means that s was already an error.
   // In any case, ignore any unchecked error for i_os here.
-  io_s.PermitUncheckedError();
+  io_s.inner_status.PermitUncheckedError();
   return s;
 }
 

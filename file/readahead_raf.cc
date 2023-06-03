@@ -64,7 +64,7 @@ class ReadaheadRandomAccessFile : public FSRandomAccessFile {
     size_t chunk_offset = TruncateToPageBoundary(alignment_, advanced_offset);
 
     IOStatus s = ReadIntoBuffer(chunk_offset, readahead_size_, options, dbg);
-    if (s.ok()) {
+    if (s.inner_status.ok()) {
       // The data we need is now in cache, so we can safely read it
       size_t remaining_len;
       TryReadFromCache(advanced_offset, n - cached_len, &remaining_len,
@@ -140,7 +140,7 @@ class ReadaheadRandomAccessFile : public FSRandomAccessFile {
     Slice result;
     IOStatus s =
         file_->Read(offset, n, options, &result, buffer_.BufferStart(), dbg);
-    if (s.ok()) {
+    if (s.inner_status.ok()) {
       buffer_offset_ = offset;
       buffer_.Size(result.size());
       assert(result.size() == 0 || buffer_.BufferStart() == result.data());

@@ -190,7 +190,7 @@ class TestFs : public FileSystemWrapper {
       return IOStatus::OK();
     } else {
       IOStatus s = FileSystemWrapper::NewSequentialFile(f, file_opts, r, dbg);
-      if (s.ok()) {
+      if (s.inner_status.ok()) {
         if ((*r)->use_direct_io()) {
           ++num_direct_seq_readers_;
         }
@@ -210,7 +210,7 @@ class TestFs : public FileSystemWrapper {
     }
     limit_written_files_--;
     IOStatus s = FileSystemWrapper::NewWritableFile(f, file_opts, r, dbg);
-    if (s.ok()) {
+    if (s.inner_status.ok()) {
       if ((*r)->use_direct_io()) {
         ++num_direct_writers_;
       }
@@ -225,7 +225,7 @@ class TestFs : public FileSystemWrapper {
                                IODebugContext* dbg) override {
     MutexLock l(&mutex_);
     IOStatus s = FileSystemWrapper::NewRandomAccessFile(f, file_opts, r, dbg);
-    if (s.ok()) {
+    if (s.inner_status.ok()) {
       if ((*r)->use_direct_io()) {
         ++num_direct_rand_readers_;
       }
@@ -1085,20 +1085,20 @@ TEST_P(BackupEngineTestWithParam, VerifyBackup) {
 
   OpenDBAndBackupEngine();
   // ---------- case 1. - valid backup -----------
-  ASSERT_TRUE(backup_engine_->VerifyBackup(1).ok());
+  ASSERT_TRUE(backup_engine_->VerifyBackup(1).inner_status.ok());
 
   // ---------- case 2. - delete a file -----------i
   ASSERT_OK(file_manager_->DeleteRandomFileInDir(backupdir_ + "/private/1"));
-  ASSERT_TRUE(backup_engine_->VerifyBackup(1).IsNotFound());
+  ASSERT_TRUE(backup_engine_->VerifyBackup(1).inner_status.IsNotFound());
 
   // ---------- case 3. - corrupt a file -----------
   std::string append_data = "Corrupting a random file";
   ASSERT_OK(file_manager_->AppendToRandomFileInDir(backupdir_ + "/private/2",
                                                    append_data));
-  ASSERT_TRUE(backup_engine_->VerifyBackup(2).IsCorruption());
+  ASSERT_TRUE(backup_engine_->VerifyBackup(2).inner_status.IsCorruption());
 
   // ---------- case 4. - invalid backup -----------
-  ASSERT_TRUE(backup_engine_->VerifyBackup(6).IsNotFound());
+  ASSERT_TRUE(backup_engine_->VerifyBackup(6).inner_status.IsNotFound());
   CloseDBAndBackupEngine();
 }
 
@@ -3108,11 +3108,11 @@ TEST_F(BackupEngineTest, ProgressCallbackDuringBackup) {
   OpenBackupEngine();
   ASSERT_TRUE(
       backup_engine_->CreateNewBackup(db_.get(), true, []() { throw 42; })
-          .IsAborted());
+          .inner_status.IsAborted());
   ASSERT_TRUE(backup_engine_
                   ->CreateNewBackup(db_.get(), true,
                                     []() { throw std::out_of_range("blah"); })
-                  .IsAborted());
+                  .inner_status.IsAborted());
 
   // Too big for this small DB
   engine_options_->callback_trigger_interval_size = 100000;
@@ -3390,14 +3390,14 @@ TEST_F(BackupEngineTest, MetaSchemaVersion2_SizeCorruption) {
 
   // Size corruption detected on Restore with checksum
   ASSERT_TRUE(backup_engine_->RestoreDBFromBackup(1 /*id*/, dbname_, dbname_)
-                  .IsCorruption());
+                  .inner_status.IsCorruption());
 
   // Size corruption not detected without checksums nor sizes
   ASSERT_OK(backup_engine_->RestoreDBFromBackup(2 /*id*/, dbname_, dbname_));
 
   // Non-size corruption detected on Restore with checksum
   ASSERT_TRUE(backup_engine_->RestoreDBFromBackup(4 /*id*/, dbname_, dbname_)
-                  .IsCorruption());
+                  .inner_status.IsCorruption());
 
   CloseBackupEngine();
 }
@@ -4262,12 +4262,12 @@ TEST_F(BackupEngineTest, ExcludeFiles) {
                                   MaybeExcludeBackupFile* /*files_end*/) {
     throw 42;
   };
-  ASSERT_TRUE(backup_engine_->CreateNewBackup(cbo, db).IsAborted());
+  ASSERT_TRUE(backup_engine_->CreateNewBackup(cbo, db).inner_status.IsAborted());
   cbo.exclude_files_callback = [](MaybeExcludeBackupFile* /*files_begin*/,
                                   MaybeExcludeBackupFile* /*files_end*/) {
     throw std::out_of_range("blah");
   };
-  ASSERT_TRUE(backup_engine_->CreateNewBackup(cbo, db).IsAborted());
+  ASSERT_TRUE(backup_engine_->CreateNewBackup(cbo, db).inner_status.IsAborted());
 
   // Include files only in given bucket, based on modulus and remainder
   constexpr int modulus = 4;
@@ -4311,7 +4311,7 @@ TEST_F(BackupEngineTest, ExcludeFiles) {
     RestoreOptions ro;
     // Fails without alternate dir
     ASSERT_TRUE(be_pair.first->RestoreDBFromLatestBackup(dbname_, dbname_, ro)
-                    .IsInvalidArgument());
+                    .inner_status.IsInvalidArgument());
 
     DestroyDB(dbname_, options_);
     // Works with alternate dir
@@ -4363,7 +4363,7 @@ TEST_F(BackupEngineTest, ExcludeFiles) {
     RestoreOptions ro;
     ro.alternate_dirs.push_front(be_pair.second);
     ASSERT_TRUE(be_pair.first->RestoreDBFromLatestBackup(dbname_, dbname_, ro)
-                    .IsInvalidArgument());
+                    .inner_status.IsInvalidArgument());
   }
 
   // Close & Re-open (no crash, etc.)
@@ -4379,7 +4379,7 @@ TEST_F(BackupEngineTest, ExcludeFiles) {
     RestoreOptions ro;
     ro.alternate_dirs.push_front(be_pair.second);
     ASSERT_TRUE(be_pair.first->RestoreDBFromLatestBackup(dbname_, dbname_, ro)
-                    .IsInvalidArgument());
+                    .inner_status.IsInvalidArgument());
   }
 
   // Ensure files are not leaked after removing everything.

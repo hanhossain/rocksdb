@@ -672,7 +672,7 @@ Status CompactionJob::Run() {
     }
   }
 
-  if (io_status_.ok()) {
+  if (io_status_.inner_status.ok()) {
     io_status_ = io_s;
   }
   if (status.ok()) {
@@ -684,14 +684,14 @@ Status CompactionJob::Run() {
           DirFsyncOptions(DirFsyncOptions::FsyncReason::kNewFileSynced));
     }
 
-    if (io_s.ok() && wrote_new_blob_files && blob_output_directory_ &&
+    if (io_s.inner_status.ok() && wrote_new_blob_files && blob_output_directory_ &&
         blob_output_directory_ != output_directory_) {
       io_s = blob_output_directory_->FsyncWithDirOptions(
           IOOptions(), dbg,
           DirFsyncOptions(DirFsyncOptions::FsyncReason::kNewFileSynced));
     }
   }
-  if (io_status_.ok()) {
+  if (io_status_.inner_status.ok()) {
     io_status_ = io_s;
   }
   if (status.ok()) {
@@ -831,7 +831,7 @@ Status CompactionJob::Install(const MutableCFOptions& mutable_cf_options) {
   if (status.ok()) {
     status = InstallCompactionResults(mutable_cf_options);
   }
-  if (!versions_->io_status().ok()) {
+  if (!versions_->io_status().inner_status.ok()) {
     io_status_ = versions_->io_status();
   }
 
@@ -1537,7 +1537,7 @@ Status CompactionJob::FinishCompactionOutputFile(
   IOStatus io_s = outputs.WriterSyncClose(s, db_options_.clock, stats_,
                                           db_options_.use_fsync);
 
-  if (s.ok() && io_s.ok()) {
+  if (s.ok() && io_s.inner_status.ok()) {
     file_checksum = meta->file_checksum;
     file_checksum_func_name = meta->file_checksum_func_name;
   }
@@ -1545,11 +1545,11 @@ Status CompactionJob::FinishCompactionOutputFile(
   if (s.ok()) {
     s = io_s;
   }
-  if (sub_compact->io_status.ok()) {
+  if (sub_compact->io_status.inner_status.ok()) {
     sub_compact->io_status = io_s;
     // Since this error is really a copy of the
     // "normal" status, it does not also need to be checked
-    sub_compact->io_status.PermitUncheckedError();
+    sub_compact->io_status.inner_status.PermitUncheckedError();
   }
 
   TableProperties tp;
@@ -1784,11 +1784,11 @@ Status CompactionJob::OpenCompactionOutputFile(SubcompactionState* sub_compact,
   Status s;
   IOStatus io_s = NewWritableFile(fs_.get(), fname, &writable_file, fo_copy);
   s = io_s;
-  if (sub_compact->io_status.ok()) {
+  if (sub_compact->io_status.inner_status.ok()) {
     sub_compact->io_status = io_s;
     // Since this error is really a copy of the io_s that is checked below as s,
     // it does not also need to be checked.
-    sub_compact->io_status.PermitUncheckedError();
+    sub_compact->io_status.inner_status.PermitUncheckedError();
   }
   if (!s.ok()) {
     ROCKS_LOG_ERROR(

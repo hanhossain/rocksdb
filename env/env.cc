@@ -1146,7 +1146,7 @@ Status NewEnvLogger(const std::string& fname, Env* env,
   std::unique_ptr<FSWritableFile> writable_file;
   const auto status = env->GetFileSystem()->NewWritableFile(
       fname, options, &writable_file, nullptr);
-  if (!status.ok()) {
+  if (!status.inner_status.ok()) {
     return status;
   }
 

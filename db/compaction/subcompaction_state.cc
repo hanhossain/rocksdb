@@ -41,7 +41,7 @@ void SubcompactionState::Cleanup(Cache* cache) {
   }
   // TODO: sub_compact.io_status is not checked like status. Not sure if thats
   // intentional. So ignoring the io_status as of now.
-  io_status.PermitUncheckedError();
+  io_status.inner_status.PermitUncheckedError();
 }
 
 Slice SubcompactionState::SmallestUserKey() const {

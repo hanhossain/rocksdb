@@ -101,7 +101,7 @@ IOStatus FileSystem::ReuseWritableFile(const std::string& fname,
                                        std::unique_ptr<FSWritableFile>* result,
                                        IODebugContext* dbg) {
   IOStatus s = RenameFile(old_fname, fname, opts.io_options, dbg);
-  if (!s.ok()) {
+  if (!s.inner_status.ok()) {
     return s;
   }
   return NewWritableFile(fname, opts, result, dbg);
@@ -117,7 +117,7 @@ IOStatus FileSystem::NewLogger(const std::string& fname,
   options.writable_file_max_buffer_size = 1024 * 1024;
   std::unique_ptr<FSWritableFile> writable_file;
   const IOStatus status = NewWritableFile(fname, options, &writable_file, dbg);
-  if (!status.ok()) {
+  if (!status.inner_status.ok()) {
     return status;
   }
 
@@ -184,14 +184,14 @@ IOStatus WriteStringToFile(FileSystem* fs, const Slice& data,
   std::unique_ptr<FSWritableFile> file;
   EnvOptions soptions;
   IOStatus s = fs->NewWritableFile(fname, soptions, &file, nullptr);
-  if (!s.ok()) {
+  if (!s.inner_status.ok()) {
     return s;
   }
   s = file->Append(data, IOOptions(), nullptr);
-  if (s.ok() && should_sync) {
+  if (s.inner_status.ok() && should_sync) {
     s = file->Sync(IOOptions(), nullptr);
   }
-  if (!s.ok()) {
+  if (!s.inner_status.ok()) {
     fs->DeleteFile(fname, IOOptions(), nullptr);
   }
   return s;
@@ -204,7 +204,7 @@ IOStatus ReadFileToString(FileSystem* fs, const std::string& fname,
   std::unique_ptr<FSSequentialFile> file;
   IOStatus s = status_to_io_status(
       fs->NewSequentialFile(fname, soptions, &file, nullptr));
-  if (!s.ok()) {
+  if (!s.inner_status.ok()) {
     return s;
   }
   static const int kBufferSize = 8192;
@@ -212,7 +212,7 @@ IOStatus ReadFileToString(FileSystem* fs, const std::string& fname,
   while (true) {
     Slice fragment;
     s = file->Read(kBufferSize, IOOptions(), &fragment, space, nullptr);
-    if (!s.ok()) {
+    if (!s.inner_status.ok()) {
       break;
     }
     data->append(fragment.data(), fragment.size());

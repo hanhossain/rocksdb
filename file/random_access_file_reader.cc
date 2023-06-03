@@ -72,7 +72,7 @@ IOStatus RandomAccessFileReader::Create(
     std::unique_ptr<RandomAccessFileReader>* reader, IODebugContext* dbg) {
   std::unique_ptr<FSRandomAccessFile> file;
   IOStatus io_s = fs->NewRandomAccessFile(fname, file_opts, &file, dbg);
-  if (io_s.ok()) {
+  if (io_s.inner_status.ok()) {
     reader->reset(new RandomAccessFileReader(std::move(file), fname));
   }
   return io_s;
@@ -149,19 +149,19 @@ IOStatus RandomAccessFileReader::Read(
           auto finish_ts = FileOperationInfo::FinishNow();
           NotifyOnFileReadFinish(orig_offset, tmp.size(), start_ts, finish_ts,
                                  io_s);
-          if (!io_s.ok()) {
+          if (!io_s.inner_status.ok()) {
             NotifyOnIOError(io_s, FileOperationType::kRead, file_name(),
                             tmp.size(), orig_offset);
           }
         }
 
         buf.Size(buf.CurrentSize() + tmp.size());
-        if (!io_s.ok() || tmp.size() < allowed) {
+        if (!io_s.inner_status.ok() || tmp.size() < allowed) {
           break;
         }
       }
       size_t res_len = 0;
-      if (io_s.ok() && offset_advance < buf.CurrentSize()) {
+      if (io_s.inner_status.ok() && offset_advance < buf.CurrentSize()) {
         res_len = std::min(buf.CurrentSize() - offset_advance, n);
         if (aligned_buf == nullptr) {
           buf.Read(scratch, offset_advance, res_len);
@@ -212,7 +212,7 @@ IOStatus RandomAccessFileReader::Read(
           NotifyOnFileReadFinish(offset + pos, tmp_result.size(), start_ts,
                                  finish_ts, io_s);
 
-          if (!io_s.ok()) {
+          if (!io_s.inner_status.ok()) {
             NotifyOnIOError(io_s, FileOperationType::kRead, file_name(),
                             tmp_result.size(), offset + pos);
           }
@@ -226,11 +226,11 @@ IOStatus RandomAccessFileReader::Read(
           assert(tmp_result.data() == res_scratch + pos);
         }
         pos += tmp_result.size();
-        if (!io_s.ok() || tmp_result.size() < allowed) {
+        if (!io_s.inner_status.ok() || tmp_result.size() < allowed) {
           break;
         }
       }
-      *result = Slice(res_scratch, io_s.ok() ? pos : 0);
+      *result = Slice(res_scratch, io_s.inner_status.ok() ? pos : 0);
     }
     RecordIOStats(stats_, file_temperature_, is_last_level_, result->size());
     SetPerfLevel(prev_perf_level);
@@ -324,7 +324,7 @@ IOStatus RandomAccessFileReader::MultiRead(
 
         } else {
           // unused
-          r.status.PermitUncheckedError();
+          r.status.inner_status.PermitUncheckedError();
         }
       }
       TEST_SYNC_POINT_CALLBACK("RandomAccessFileReader::MultiRead:AlignedReqs",
@@ -394,7 +394,7 @@ IOStatus RandomAccessFileReader::MultiRead(
         }
         const auto& fs_r = fs_reqs[aligned_i];
         r.status = fs_r.status;
-        if (r.status.ok()) {
+        if (r.status.inner_status.ok()) {
           uint64_t offset = r.offset - fs_r.offset;
           if (fs_r.result.size() <= offset) {
             // No byte in the read range is returned.
@@ -416,7 +416,7 @@ IOStatus RandomAccessFileReader::MultiRead(
         NotifyOnFileReadFinish(read_reqs[i].offset, read_reqs[i].result.size(),
                                start_ts, finish_ts, read_reqs[i].status);
       }
-      if (!read_reqs[i].status.ok()) {
+      if (!read_reqs[i].status.inner_status.ok()) {
         NotifyOnIOError(read_reqs[i].status, FileOperationType::kRead,
                         file_name(), read_reqs[i].result.size(),
                         read_reqs[i].offset);
@@ -468,7 +468,7 @@ IOStatus RandomAccessFileReader::ReadAsync(
   uint64_t elapsed = 0;
   if (use_direct_io() && is_aligned == false) {
     FSReadRequest aligned_req = Align(req, alignment);
-    aligned_req.status.PermitUncheckedError();
+    aligned_req.status.inner_status.PermitUncheckedError();
 
     // Allocate aligned buffer.
     read_async_info->buf_.Alignment(alignment);
@@ -507,7 +507,7 @@ IOStatus RandomAccessFileReader::ReadAsync(
 // ReadAsyncCallback is never called in that case. If ReadAsyncCallback is
 // called then ReadAsync should always return IOStatus::OK().
 #ifndef __clang_analyzer__
-  if (!s.ok()) {
+  if (!s.inner_status.ok()) {
     delete read_async_info;
   }
 #endif  // __clang_analyzer__
@@ -540,7 +540,7 @@ void RandomAccessFileReader::ReadAsyncCallback(const FSReadRequest& req,
         /*aligned_offset=*/req.offset);
 
     size_t res_len = 0;
-    if (req.status.ok() &&
+    if (req.status.inner_status.ok() &&
         offset_advance_len < read_async_info->buf_.CurrentSize()) {
       res_len =
           std::min(read_async_info->buf_.CurrentSize() - offset_advance_len,
@@ -577,9 +577,9 @@ void RandomAccessFileReader::ReadAsyncCallback(const FSReadRequest& req,
     uint64_t elapsed = clock_->NowMicros() - read_async_info->start_time_;
     file_read_hist_->Add(elapsed);
   }
-  if (req.status.ok()) {
+  if (req.status.inner_status.ok()) {
     RecordInHistogram(stats_, ASYNC_READ_BYTES, req.result.size());
-  } else if (!req.status.IsAborted()) {
+  } else if (!req.status.inner_status.IsAborted()) {
     RecordTick(stats_, ASYNC_READ_ERROR_COUNT, 1);
   }
   if (ShouldNotifyListeners()) {
@@ -588,7 +588,7 @@ void RandomAccessFileReader::ReadAsyncCallback(const FSReadRequest& req,
                            read_async_info->fs_start_ts_, finish_ts,
                            req.status);
   }
-  if (!req.status.ok()) {
+  if (!req.status.inner_status.ok()) {
     NotifyOnIOError(req.status, FileOperationType::kRead, file_name(),
                     req.result.size(), req.offset);
   }

@@ -438,9 +438,9 @@ bool IsPrefetchSupported(const std::shared_ptr<FileSystem>& fs,
   if (s.ok()) {
     std::unique_ptr<FSRandomAccessFile> file;
     auto io_s = fs->NewRandomAccessFile(tmp, FileOptions(), &file, nullptr);
-    if (io_s.ok()) {
+    if (io_s.inner_status.ok()) {
       supported = !(file->Prefetch(0, data.size(), IOOptions(), nullptr)
-                        .IsNotSupported());
+                        .inner_status.IsNotSupported());
     }
     s = fs->DeleteFile(tmp, IOOptions(), nullptr);
   }

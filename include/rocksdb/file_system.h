@@ -456,7 +456,7 @@ class FileSystem : public Customizable {
     assert(result != nullptr);
     std::vector<std::string> child_fnames;
     IOStatus s = GetChildren(dir, options, &child_fnames, dbg);
-    if (!s.ok()) {
+    if (!s.inner_status.ok()) {
       return s;
     }
     result->resize(child_fnames.size());
@@ -465,8 +465,8 @@ class FileSystem : public Customizable {
       const std::string path = dir + "/" + child_fnames[i];
       if (!(s = GetFileSize(path, options, &(*result)[result_size].size_bytes,
                             dbg))
-               .ok()) {
-        if (FileExists(path, options, dbg).IsNotFound()) {
+               .inner_status.ok()) {
+        if (FileExists(path, options, dbg).inner_status.IsNotFound()) {
           // The file may have been deleted since we listed the directory
           continue;
         }
@@ -1149,7 +1149,7 @@ class FSWritableFile {
           new_last_preallocated_block - last_preallocated_block_;
       Allocate(block_size * last_preallocated_block_,
                block_size * num_spanned_blocks, options, dbg)
-          .PermitUncheckedError();
+          .inner_status.PermitUncheckedError();
       last_preallocated_block_ = new_last_preallocated_block;
     }
   }

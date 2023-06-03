@@ -88,7 +88,7 @@ Status UpdateManifestForFilesState(
 
         IOStatus file_ios =
             fs->NewSequentialFile(fname, fopts, &f, /*dbg*/ nullptr);
-        if (file_ios.ok()) {
+        if (file_ios.inner_status.ok()) {
           if (opts.update_temperatures) {
             rs::advanced_options::Temperature temp = f->GetTemperature();
             if (temp != rs::advanced_options::Temperature::Unknown && temp != lf->temperature) {

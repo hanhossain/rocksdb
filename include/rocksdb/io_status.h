@@ -25,7 +25,7 @@
 
 namespace ROCKSDB_NAMESPACE {
 
-class IOStatus : public Status {
+class IOStatus {
  public:
   enum IOErrorScope : unsigned char {
     kIOErrorScopeFileSystem,
@@ -46,15 +46,15 @@ class IOStatus : public Status {
   bool operator==(const IOStatus& rhs) const;
   bool operator!=(const IOStatus& rhs) const;
 
-  void SetRetryable(bool retryable) { retryable_ = retryable; }
-  void SetDataLoss(bool data_loss) { data_loss_ = data_loss; }
+  void SetRetryable(bool retryable) { inner_status.retryable_ = retryable; }
+  void SetDataLoss(bool data_loss) { inner_status.data_loss_ = data_loss; }
   void SetScope(IOErrorScope scope) {
-    scope_ = static_cast<unsigned char>(scope);
+    inner_status.scope_ = static_cast<unsigned char>(scope);
   }
 
-  bool GetRetryable() const { return retryable_; }
-  bool GetDataLoss() const { return data_loss_; }
-  IOErrorScope GetScope() const { return static_cast<IOErrorScope>(scope_); }
+  bool GetRetryable() const { return inner_status.retryable_; }
+  bool GetDataLoss() const { return inner_status.data_loss_; }
+  IOErrorScope GetScope() const { return static_cast<IOErrorScope>(inner_status.scope_); }
 
   // Return a success status.
   static IOStatus OK() { return IOStatus(); }
@@ -135,22 +135,27 @@ class IOStatus : public Status {
   // Returns the string "OK" for success.
   // std::string ToString() const;
 
+  operator Status() const {
+      return inner_status;
+  }
+
+  Status inner_status;
+
  private:
   friend IOStatus status_to_io_status(Status&&);
 
   explicit IOStatus(rs::status::Code _code, rs::status::SubCode _subcode = rs::status::SubCode::None)
-      : Status(_code, _subcode, false, false, kIOErrorScopeFileSystem) {}
+    : inner_status(_code, _subcode, false, false, kIOErrorScopeFileSystem) {}
 
   IOStatus(rs::status::Code _code, rs::status::SubCode _subcode, const Slice& msg, const Slice& msg2);
   IOStatus(rs::status::Code _code, const Slice& msg, const Slice& msg2)
       : IOStatus(_code, rs::status::SubCode::None, msg, msg2) {}
 };
 
-inline IOStatus::IOStatus(rs::status::Code _code, rs::status::SubCode _subcode, const Slice& msg,
-                          const Slice& msg2)
-    : Status(_code, _subcode, false, false, kIOErrorScopeFileSystem) {
-  assert(code_ != rs::status::Code::Ok);
-  assert(subcode_ != rs::status::SubCode::MaxSubCode);
+inline IOStatus::IOStatus(rs::status::Code _code, rs::status::SubCode _subcode, const Slice& msg,const Slice& msg2)
+: inner_status(_code, _subcode, false, false, kIOErrorScopeFileSystem) {
+  assert(inner_status.code_ != rs::status::Code::Ok);
+  assert(inner_status.subcode_ != rs::status::SubCode::MaxSubCode);
   const size_t len1 = msg.size();
   const size_t len2 = msg2.size();
   const size_t size = len1 + (len2 ? (2 + len2) : 0);
@@ -162,32 +167,33 @@ inline IOStatus::IOStatus(rs::status::Code _code, rs::status::SubCode _subcode, 
     memcpy(result + len1 + 2, msg2.data(), len2);
   }
   result[size] = '\0';  // null terminator for C style string
-  state_.reset(result);
+  inner_status.state_.reset(result);
 }
 
-inline IOStatus::IOStatus(const IOStatus& s) : Status(s.code_, s.subcode_) {
+inline IOStatus::IOStatus(const IOStatus& s)
+    : inner_status(s.inner_status.code_, s.inner_status.subcode_) {
 #ifdef ROCKSDB_ASSERT_STATUS_CHECKED
-  s.checked_ = true;
+    s.inner_status.checked_ = true;
 #endif  // ROCKSDB_ASSERT_STATUS_CHECKED
-  retryable_ = s.retryable_;
-  data_loss_ = s.data_loss_;
-  scope_ = s.scope_;
-  state_ = (s.state_ == nullptr) ? nullptr : CopyState(s.state_.get());
+  inner_status.retryable_ = s.inner_status.retryable_;
+  inner_status.data_loss_ = s.inner_status.data_loss_;
+  inner_status.scope_ = s.inner_status.scope_;
+  inner_status.state_ = (s.inner_status.state_ == nullptr) ? nullptr : Status::CopyState(s.inner_status.state_.get());
 }
 inline IOStatus& IOStatus::operator=(const IOStatus& s) {
   // The following condition catches both aliasing (when this == &s),
   // and the common case where both s and *this are ok.
   if (this != &s) {
 #ifdef ROCKSDB_ASSERT_STATUS_CHECKED
-    s.checked_ = true;
-    checked_ = false;
+    s.inner_status.checked_ = true;
+    inner_status.checked_ = false;
 #endif  // ROCKSDB_ASSERT_STATUS_CHECKED
-    code_ = s.code_;
-    subcode_ = s.subcode_;
-    retryable_ = s.retryable_;
-    data_loss_ = s.data_loss_;
-    scope_ = s.scope_;
-    state_ = (s.state_ == nullptr) ? nullptr : CopyState(s.state_.get());
+    inner_status.code_ = s.inner_status.code_;
+    inner_status.subcode_ = s.inner_status.subcode_;
+    inner_status.retryable_ = s.inner_status.retryable_;
+    inner_status.data_loss_ = s.inner_status.data_loss_;
+    inner_status.scope_ = s.inner_status.scope_;
+    inner_status.state_ = (s.inner_status.state_ == nullptr) ? nullptr : Status::CopyState(s.inner_status.state_.get());
   }
   return *this;
 }
@@ -199,41 +205,41 @@ inline IOStatus::IOStatus(IOStatus&& s) noexcept : IOStatus() {
 inline IOStatus& IOStatus::operator=(IOStatus&& s) noexcept {
   if (this != &s) {
 #ifdef ROCKSDB_ASSERT_STATUS_CHECKED
-    s.checked_ = true;
-    checked_ = false;
+    s.inner_status.checked_ = true;
+    inner_status.checked_ = false;
 #endif  // ROCKSDB_ASSERT_STATUS_CHECKED
-    code_ = std::move(s.code_);
-    s.code_ = rs::status::Code::Ok;
-    subcode_ = std::move(s.subcode_);
-    s.subcode_ = rs::status::SubCode::None;
-    retryable_ = s.retryable_;
-    data_loss_ = s.data_loss_;
-    scope_ = s.scope_;
-    s.scope_ = kIOErrorScopeFileSystem;
-    state_ = std::move(s.state_);
+    inner_status.code_ = std::move(s.inner_status.code_);
+    s.inner_status.code_ = rs::status::Code::Ok;
+    inner_status.subcode_ = std::move(s.inner_status.subcode_);
+    s.inner_status.subcode_ = rs::status::SubCode::None;
+    inner_status.retryable_ = s.inner_status.retryable_;
+    inner_status.data_loss_ = s.inner_status.data_loss_;
+    inner_status.scope_ = s.inner_status.scope_;
+    s.inner_status.scope_ = kIOErrorScopeFileSystem;
+    inner_status.state_ = std::move(s.inner_status.state_);
   }
   return *this;
 }
 
 inline bool IOStatus::operator==(const IOStatus& rhs) const {
 #ifdef ROCKSDB_ASSERT_STATUS_CHECKED
-  checked_ = true;
-  rhs.checked_ = true;
+  inner_status.checked_ = true;
+  rhs.inner_status.checked_ = true;
 #endif  // ROCKSDB_ASSERT_STATUS_CHECKED
-  return (code_ == rhs.code_);
+  return (inner_status.code_ == rhs.inner_status.code_);
 }
 
 inline bool IOStatus::operator!=(const IOStatus& rhs) const {
 #ifdef ROCKSDB_ASSERT_STATUS_CHECKED
-  checked_ = true;
-  rhs.checked_ = true;
+  inner_status.checked_ = true;
+  rhs.inner_status.checked_ = true;
 #endif  // ROCKSDB_ASSERT_STATUS_CHECKED
   return !(*this == rhs);
 }
 
 inline IOStatus status_to_io_status(Status&& status) {
   IOStatus io_s;
-  Status& s = io_s;
+  Status& s = io_s.inner_status;
   s = std::move(status);
   return io_s;
 }

@@ -863,7 +863,7 @@ Status DBImplSecondary::CompactWithoutInstallation(
   mutex_.Lock();
 
   // clean up
-  compaction_job.io_status().PermitUncheckedError();
+  compaction_job.io_status().inner_status.PermitUncheckedError();
   compaction_job.CleanupCompaction();
   c->ReleaseCompactionFiles(s);
   c.reset();

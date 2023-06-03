@@ -48,7 +48,7 @@ AutoRollLogger::AutoRollLogger(const std::shared_ptr<FileSystem>& fs,
     status_ = s;
   }
   log_fname_ = InfoLogFileName(dbname_, db_absolute_path_, db_log_dir_);
-  if (fs_->FileExists(log_fname_, io_options_, &io_context_).ok()) {
+  if (fs_->FileExists(log_fname_, io_options_, &io_context_).inner_status.ok()) {
     RollLogFile();
   }
   GetExistingFiles();
@@ -92,7 +92,7 @@ void AutoRollLogger::RollLogFile() {
     old_fname =
         OldInfoLogFileName(dbname_, now, db_absolute_path_, db_log_dir_);
     now++;
-  } while (fs_->FileExists(old_fname, io_options_, &io_context_).ok());
+  } while (fs_->FileExists(old_fname, io_options_, &io_context_).inner_status.ok());
   // Wait for logger_ reference count to turn to 1 as it might be pinned by
   // Flush. Pinned Logger can't be closed till Flush is completed on that
   // Logger.

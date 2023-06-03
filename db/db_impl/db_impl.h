@@ -121,34 +121,34 @@ class Directories {
 
     if (db_dir_) {
       IOStatus temp_s = db_dir_->Close(options, dbg);
-      if (!temp_s.ok() && !temp_s.IsNotSupported() && s.ok()) {
+      if (!temp_s.inner_status.ok() && !temp_s.inner_status.IsNotSupported() && s.inner_status.ok()) {
         s = std::move(temp_s);
       }
     }
 
     // Attempt to close everything even if one fails
-    s.PermitUncheckedError();
+    s.inner_status.PermitUncheckedError();
 
     if (wal_dir_) {
       IOStatus temp_s = wal_dir_->Close(options, dbg);
-      if (!temp_s.ok() && !temp_s.IsNotSupported() && s.ok()) {
+      if (!temp_s.inner_status.ok() && !temp_s.inner_status.IsNotSupported() && s.inner_status.ok()) {
         s = std::move(temp_s);
       }
     }
 
-    s.PermitUncheckedError();
+    s.inner_status.PermitUncheckedError();
 
     for (auto& data_dir_ptr : data_dirs_) {
       if (data_dir_ptr) {
         IOStatus temp_s = data_dir_ptr->Close(options, dbg);
-        if (!temp_s.ok() && !temp_s.IsNotSupported() && s.ok()) {
+        if (!temp_s.inner_status.ok() && !temp_s.inner_status.IsNotSupported() && s.inner_status.ok()) {
           s = std::move(temp_s);
         }
       }
     }
 
     // Ready for caller
-    s.MustCheck();
+    s.inner_status.MustCheck();
     return s;
   }
 

@@ -30,14 +30,14 @@ IOStatus CopyFile(FileSystem* fs, const std::string& source,
     soptions.temperature = temperature;
     std::unique_ptr<FSSequentialFile> srcfile;
     io_s = fs->NewSequentialFile(source, soptions, &srcfile, nullptr);
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     }
 
     if (size == 0) {
       // default argument means copy everything
       io_s = fs->GetFileSize(source, IOOptions(), &size, nullptr);
-      if (!io_s.ok()) {
+      if (!io_s.inner_status.ok()) {
         return io_s;
       }
     }
@@ -53,14 +53,14 @@ IOStatus CopyFile(FileSystem* fs, const std::string& source,
     io_s = status_to_io_status(
         src_reader->Read(bytes_to_read, &slice, buffer,
                          Env::IO_TOTAL /* rate_limiter_priority */));
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     }
     if (slice.size() == 0) {
       return IOStatus::Corruption("file too small");
     }
     io_s = dest_writer->Append(slice);
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     }
     size -= slice.size();
@@ -80,7 +80,7 @@ IOStatus CopyFile(FileSystem* fs, const std::string& source,
     options.temperature = temperature;
     std::unique_ptr<FSWritableFile> destfile;
     io_s = fs->NewWritableFile(destination, options, &destfile, nullptr);
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     }
 
@@ -101,13 +101,13 @@ IOStatus CreateFile(FileSystem* fs, const std::string& destination,
 
   std::unique_ptr<FSWritableFile> destfile;
   io_s = fs->NewWritableFile(destination, soptions, &destfile, nullptr);
-  if (!io_s.ok()) {
+  if (!io_s.inner_status.ok()) {
     return io_s;
   }
   dest_writer.reset(
       new WritableFileWriter(std::move(destfile), destination, soptions));
   io_s = dest_writer->Append(Slice(contents));
-  if (!io_s.ok()) {
+  if (!io_s.inner_status.ok()) {
     return io_s;
   }
   return dest_writer->Sync(use_fsync);
@@ -178,11 +178,11 @@ IOStatus GenerateOneFileChecksum(
   {
     std::unique_ptr<FSRandomAccessFile> r_file;
     io_s = fs->NewRandomAccessFile(file_path, FileOptions(), &r_file, nullptr);
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     }
     io_s = fs->GetFileSize(file_path, IOOptions(), &size, nullptr);
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     }
     reader.reset(new RandomAccessFileReader(
@@ -211,9 +211,9 @@ IOStatus GenerateOneFileChecksum(
         static_cast<size_t>(std::min(uint64_t{readahead_size}, size));
     io_s = reader->Read(opts, offset, bytes_to_read, &slice, buf.get(), nullptr,
                         rate_limiter_priority);
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return IOStatus::Corruption("file read failed with error: " +
-                                  io_s.ToString());
+                                  io_s.inner_status.ToString());
     }
     if (slice.size() == 0) {
       return IOStatus::Corruption("file too small");

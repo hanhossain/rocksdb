@@ -80,10 +80,10 @@ int RandomSeed();
 
 #define ASSERT_OK(s) \
   ASSERT_PRED_FORMAT1(ROCKSDB_NAMESPACE::test::AssertStatus, s)
-#define ASSERT_NOK(s) ASSERT_FALSE((s).ok())
+#define ASSERT_NOK(s) ASSERT_FALSE(((Status)s).ok())
 #define EXPECT_OK(s) \
   EXPECT_PRED_FORMAT1(ROCKSDB_NAMESPACE::test::AssertStatus, s)
-#define EXPECT_NOK(s) EXPECT_FALSE((s).ok())
+#define EXPECT_NOK(s) EXPECT_FALSE(((Status)s).ok())
 
 // Useful for testing
 // * No need to deal with Status like in Regex public API

@@ -61,7 +61,7 @@ class IOTracerTest : public testing::Test {
       record.io_op_data |= (1 << IOTraceOp::kIOLen);
       record.io_op_data |= (1 << IOTraceOp::kIOOffset);
       record.file_operation = GetFileOperation(i);
-      record.io_status = IOStatus::OK().ToString();
+      record.io_status = IOStatus::OK().inner_status.ToString();
       record.file_name = kDummyFile + std::to_string(i);
       record.len = i;
       record.offset = i + 20;
@@ -75,7 +75,7 @@ class IOTracerTest : public testing::Test {
       IOTraceRecord record;
       ASSERT_OK(reader->ReadIOOp(&record));
       ASSERT_EQ(record.file_operation, GetFileOperation(i));
-      ASSERT_EQ(record.io_status, IOStatus::OK().ToString());
+      ASSERT_EQ(record.io_status, IOStatus::OK().inner_status.ToString());
       ASSERT_EQ(record.len, i);
       ASSERT_EQ(record.offset, i + 20);
     }
@@ -102,7 +102,7 @@ TEST_F(IOTracerTest, MultipleRecordsWithDifferentIOOpOptions) {
     // Write general record.
     IOTraceRecord record0(0, TraceType::kIOTracer, 0 /*io_op_data*/,
                           GetFileOperation(0), 155 /*latency*/,
-                          IOStatus::OK().ToString(), file_name);
+                          IOStatus::OK().inner_status.ToString(), file_name);
     writer.WriteIOOp(record0, nullptr);
 
     // Write record with FileSize.
@@ -110,7 +110,7 @@ TEST_F(IOTracerTest, MultipleRecordsWithDifferentIOOpOptions) {
     io_op_data |= (1 << IOTraceOp::kIOFileSize);
     IOTraceRecord record1(0, TraceType::kIOTracer, io_op_data,
                           GetFileOperation(1), 10 /*latency*/,
-                          IOStatus::OK().ToString(), file_name,
+                          IOStatus::OK().inner_status.ToString(), file_name,
                           256 /*file_size*/);
     writer.WriteIOOp(record1, nullptr);
 
@@ -119,7 +119,7 @@ TEST_F(IOTracerTest, MultipleRecordsWithDifferentIOOpOptions) {
     io_op_data |= (1 << IOTraceOp::kIOLen);
     IOTraceRecord record2(0, TraceType::kIOTracer, io_op_data,
                           GetFileOperation(2), 10 /*latency*/,
-                          IOStatus::OK().ToString(), file_name, 100 /*length*/,
+                          IOStatus::OK().inner_status.ToString(), file_name, 100 /*length*/,
                           200 /*offset*/);
     writer.WriteIOOp(record2, nullptr);
 
@@ -129,7 +129,7 @@ TEST_F(IOTracerTest, MultipleRecordsWithDifferentIOOpOptions) {
     io_op_data |= (1 << IOTraceOp::kIOOffset);
     IOTraceRecord record3(0, TraceType::kIOTracer, io_op_data,
                           GetFileOperation(3), 10 /*latency*/,
-                          IOStatus::OK().ToString(), file_name, 120 /*length*/,
+                          IOStatus::OK().inner_status.ToString(), file_name, 120 /*length*/,
                           17 /*offset*/);
     writer.WriteIOOp(record3, nullptr);
 
@@ -138,7 +138,7 @@ TEST_F(IOTracerTest, MultipleRecordsWithDifferentIOOpOptions) {
     io_op_data |= (1 << IOTraceOp::kIOOffset);
     IOTraceRecord record4(0, TraceType::kIOTracer, io_op_data,
                           GetFileOperation(4), 10 /*latency*/,
-                          IOStatus::OK().ToString(), file_name, 13 /*length*/,
+                          IOStatus::OK().inner_status.ToString(), file_name, 13 /*length*/,
                           50 /*offset*/);
     writer.WriteIOOp(record4, nullptr);
 
@@ -148,7 +148,7 @@ TEST_F(IOTracerTest, MultipleRecordsWithDifferentIOOpOptions) {
     dbg.SetRequestId("request_id_1");
     IOTraceRecord record5(0, TraceType::kIOTracer, io_op_data,
                           GetFileOperation(5), 10 /*latency*/,
-                          IOStatus::OK().ToString(), file_name);
+                          IOStatus::OK().inner_status.ToString(), file_name);
     writer.WriteIOOp(record5, &dbg);
 
     ASSERT_OK(env_->FileExists(trace_file_path_));
@@ -216,7 +216,7 @@ TEST_F(IOTracerTest, AtomicWrite) {
   {
     IOTraceRecord record(0, TraceType::kIOTracer, 0 /*io_op_data*/,
                          GetFileOperation(0), 10 /*latency*/,
-                         IOStatus::OK().ToString(), file_name);
+                         IOStatus::OK().inner_status.ToString(), file_name);
     TraceOptions trace_opt;
     std::unique_ptr<TraceWriter> trace_writer;
     ASSERT_OK(NewFileTraceWriter(env_, env_options_, trace_file_path_,
@@ -240,7 +240,7 @@ TEST_F(IOTracerTest, AtomicWrite) {
     IOTraceRecord access_record;
     ASSERT_OK(reader.ReadIOOp(&access_record));
     ASSERT_EQ(access_record.file_operation, GetFileOperation(0));
-    ASSERT_EQ(access_record.io_status, IOStatus::OK().ToString());
+    ASSERT_EQ(access_record.io_status, IOStatus::OK().inner_status.ToString());
     ASSERT_EQ(access_record.file_name, file_name);
     ASSERT_NOK(reader.ReadIOOp(&access_record));
   }
@@ -250,7 +250,7 @@ TEST_F(IOTracerTest, AtomicWriteBeforeStartTrace) {
   std::string file_name = kDummyFile + std::to_string(0);
   {
     IOTraceRecord record(0, TraceType::kIOTracer, 0 /*io_op_data*/,
-                         GetFileOperation(0), 0, IOStatus::OK().ToString(),
+                         GetFileOperation(0), 0, IOStatus::OK().inner_status.ToString(),
                          file_name);
     std::unique_ptr<TraceWriter> trace_writer;
     ASSERT_OK(NewFileTraceWriter(env_, env_options_, trace_file_path_,
@@ -279,7 +279,7 @@ TEST_F(IOTracerTest, AtomicNoWriteAfterEndTrace) {
     io_op_data |= (1 << IOTraceOp::kIOFileSize);
     IOTraceRecord record(
         0, TraceType::kIOTracer, io_op_data, GetFileOperation(2), 0 /*latency*/,
-        IOStatus::OK().ToString(), file_name, 10 /*file_size*/);
+        IOStatus::OK().inner_status.ToString(), file_name, 10 /*file_size*/);
     TraceOptions trace_opt;
     std::unique_ptr<TraceWriter> trace_writer;
     ASSERT_OK(NewFileTraceWriter(env_, env_options_, trace_file_path_,
@@ -307,7 +307,7 @@ TEST_F(IOTracerTest, AtomicNoWriteAfterEndTrace) {
     IOTraceRecord access_record;
     ASSERT_OK(reader.ReadIOOp(&access_record));
     ASSERT_EQ(access_record.file_operation, GetFileOperation(2));
-    ASSERT_EQ(access_record.io_status, IOStatus::OK().ToString());
+    ASSERT_EQ(access_record.io_status, IOStatus::OK().inner_status.ToString());
     ASSERT_EQ(access_record.file_size, 10);
     // No more record.
     ASSERT_NOK(reader.ReadIOOp(&access_record));

@@ -42,7 +42,7 @@ IOStatus WriteBlock(const Slice& block_contents, WritableFileWriter* file,
   block_handle->set_size(block_contents.size());
   IOStatus io_s = file->Append(block_contents);
 
-  if (io_s.ok()) {
+  if (io_s.inner_status.ok()) {
     *offset += block_contents.size();
   }
   return io_s;
@@ -129,7 +129,7 @@ PlainTableBuilder::~PlainTableBuilder() {
   // They are supposed to have been passed to users through Finish()
   // if the file succeeds.
   status_.PermitUncheckedError();
-  io_status_.PermitUncheckedError();
+  io_status_.inner_status.PermitUncheckedError();
 }
 
 void PlainTableBuilder::Add(const Slice& key, const Slice& value) {
@@ -171,7 +171,7 @@ void PlainTableBuilder::Add(const Slice& key, const Slice& value) {
 
   // Write value length
   uint32_t value_size = static_cast<uint32_t>(value.size());
-  if (io_status_.ok()) {
+  if (io_status_.inner_status.ok()) {
     char* end_ptr =
         EncodeVarint32(meta_bytes_buf + meta_bytes_buf_size, value_size);
     assert(end_ptr <= meta_bytes_buf + sizeof(meta_bytes_buf));
@@ -180,12 +180,12 @@ void PlainTableBuilder::Add(const Slice& key, const Slice& value) {
   }
 
   // Write value
-  if (io_status_.ok()) {
+  if (io_status_.inner_status.ok()) {
     io_status_ = file_->Append(value);
     offset_ += value_size + meta_bytes_buf_size;
   }
 
-  if (io_status_.ok()) {
+  if (io_status_.inner_status.ok()) {
     properties_.num_entries++;
     properties_.raw_key_size += key.size();
     properties_.raw_value_size += value.size();
@@ -239,7 +239,7 @@ Status PlainTableBuilder::Finish() {
       io_status_ =
           WriteBlock(bloom_finish_result, file_, &offset_, &bloom_block_handle);
 
-      if (!io_status_.ok()) {
+      if (!io_status_.inner_status.ok()) {
         status_ = io_status_;
         return status_;
       }
@@ -252,7 +252,7 @@ Status PlainTableBuilder::Finish() {
     io_status_ =
         WriteBlock(index_finish_result, file_, &offset_, &index_block_handle);
 
-    if (!io_status_.ok()) {
+    if (!io_status_.inner_status.ok()) {
       status_ = io_status_;
       return status_;
     }
@@ -276,7 +276,7 @@ Status PlainTableBuilder::Finish() {
   BlockHandle property_block_handle;
   IOStatus s = WriteBlock(property_block_builder.Finish(), file_, &offset_,
                           &property_block_handle);
-  if (!s.ok()) {
+  if (!s.inner_status.ok()) {
     return static_cast<Status>(s);
   }
   meta_index_builer.Add(kPropertiesBlockName, property_block_handle);
@@ -285,7 +285,7 @@ Status PlainTableBuilder::Finish() {
   BlockHandle metaindex_block_handle;
   io_status_ = WriteBlock(meta_index_builer.Finish(), file_, &offset_,
                           &metaindex_block_handle);
-  if (!io_status_.ok()) {
+  if (!io_status_.inner_status.ok()) {
     status_ = io_status_;
     return status_;
   }
@@ -296,7 +296,7 @@ Status PlainTableBuilder::Finish() {
   footer.Build(kPlainTableMagicNumber, /* format_version */ 0, offset_,
                kNoChecksum, metaindex_block_handle);
   io_status_ = file_->Append(footer.GetSlice());
-  if (io_status_.ok()) {
+  if (io_status_.inner_status.ok()) {
     offset_ += footer.GetSlice().size();
   }
   status_ = io_status_;

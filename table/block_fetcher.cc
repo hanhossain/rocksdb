@@ -71,27 +71,27 @@ inline bool BlockFetcher::TryGetFromPrefetchBuffer() {
   if (prefetch_buffer_ != nullptr) {
     IOOptions opts;
     IOStatus io_s = file_->PrepareIOOptions(read_options_, opts);
-    if (io_s.ok()) {
+    if (io_s.inner_status.ok()) {
       bool read_from_prefetch_buffer = false;
       if (read_options_.async_io && !for_compaction_) {
         read_from_prefetch_buffer = prefetch_buffer_->TryReadFromCacheAsync(
             opts, file_, handle_.offset(), block_size_with_trailer_, &slice_,
-            &io_s, read_options_.rate_limiter_priority);
+            &io_s.inner_status, read_options_.rate_limiter_priority);
       } else {
         read_from_prefetch_buffer = prefetch_buffer_->TryReadFromCache(
             opts, file_, handle_.offset(), block_size_with_trailer_, &slice_,
-            &io_s, read_options_.rate_limiter_priority, for_compaction_);
+            &io_s.inner_status, read_options_.rate_limiter_priority, for_compaction_);
       }
       if (read_from_prefetch_buffer) {
         ProcessTrailerIfPresent();
-        if (!io_status_.ok()) {
+        if (!io_status_.inner_status.ok()) {
           return true;
         }
         got_from_prefetch_buffer_ = true;
         used_buf_ = const_cast<char*>(slice_.data());
       }
     }
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       io_status_ = io_s;
       return true;
     }
@@ -105,17 +105,17 @@ inline bool BlockFetcher::TryGetSerializedBlockFromPersistentCache() {
     std::unique_ptr<char[]> buf;
     io_status_ = status_to_io_status(PersistentCacheHelper::LookupSerialized(
         cache_options_, handle_, &buf, block_size_with_trailer_));
-    if (io_status_.ok()) {
+    if (io_status_.inner_status.ok()) {
       heap_buf_ = CacheAllocationPtr(buf.release());
       used_buf_ = heap_buf_.get();
       slice_ = Slice(heap_buf_.get(), block_size_);
       ProcessTrailerIfPresent();
       return true;
-    } else if (!io_status_.IsNotFound() && ioptions_.logger) {
-      assert(!io_status_.ok());
+    } else if (!io_status_.inner_status.IsNotFound() && ioptions_.logger) {
+      assert(!io_status_.inner_status.ok());
       ROCKS_LOG_INFO(ioptions_.logger,
                      "Error reading from persistent cache. %s",
-                     io_status_.ToString().c_str());
+                     io_status_.inner_status.ToString().c_str());
     }
   }
   return false;
@@ -157,7 +157,7 @@ inline void BlockFetcher::PrepareBufferForBlockFromFile() {
 }
 
 inline void BlockFetcher::InsertCompressedBlockToPersistentCacheIfNeeded() {
-  if (io_status_.ok() && read_options_.fill_cache &&
+  if (io_status_.inner_status.ok() && read_options_.fill_cache &&
       cache_options_.persistent_cache &&
       cache_options_.persistent_cache->IsCompressed()) {
     PersistentCacheHelper::InsertSerialized(cache_options_, handle_, used_buf_,
@@ -166,7 +166,7 @@ inline void BlockFetcher::InsertCompressedBlockToPersistentCacheIfNeeded() {
 }
 
 inline void BlockFetcher::InsertUncompressedBlockToPersistentCacheIfNeeded() {
-  if (io_status_.ok() && !got_from_prefetch_buffer_ &&
+  if (io_status_.inner_status.ok() && !got_from_prefetch_buffer_ &&
       read_options_.fill_cache && cache_options_.persistent_cache &&
       !cache_options_.persistent_cache->IsCompressed()) {
     // insert to uncompressed cache
@@ -244,14 +244,14 @@ IOStatus BlockFetcher::ReadBlockContents() {
     return IOStatus::OK();
   }
   if (TryGetFromPrefetchBuffer()) {
-    if (!io_status_.ok()) {
+    if (!io_status_.inner_status.ok()) {
       return io_status_;
     }
   } else if (!TryGetSerializedBlockFromPersistentCache()) {
     IOOptions opts;
     io_status_ = file_->PrepareIOOptions(read_options_, opts);
     // Actual file read
-    if (io_status_.ok()) {
+    if (io_status_.inner_status.ok()) {
       if (file_->use_direct_io()) {
         PERF_TIMER_GUARD(block_read_time);
         PERF_CPU_TIMER_GUARD(block_read_cpu_time, nullptr);
@@ -301,7 +301,7 @@ IOStatus BlockFetcher::ReadBlockContents() {
     }
 
     PERF_COUNTER_ADD(block_read_byte, block_size_with_trailer_);
-    if (!io_status_.ok()) {
+    if (!io_status_.inner_status.ok()) {
       return io_status_;
     }
 
@@ -314,7 +314,7 @@ IOStatus BlockFetcher::ReadBlockContents() {
     }
 
     ProcessTrailerIfPresent();
-    if (io_status_.ok()) {
+    if (io_status_.inner_status.ok()) {
       InsertCompressedBlockToPersistentCacheIfNeeded();
     } else {
       return io_status_;
@@ -354,19 +354,19 @@ IOStatus BlockFetcher::ReadAsyncBlockContents() {
     if (!for_compaction_) {
       IOOptions opts;
       IOStatus io_s = file_->PrepareIOOptions(read_options_, opts);
-      if (!io_s.ok()) {
+      if (!io_s.inner_status.ok()) {
         return io_s;
       }
       io_s = status_to_io_status(prefetch_buffer_->PrefetchAsync(
           opts, file_, handle_.offset(), block_size_with_trailer_, &slice_));
-      if (io_s.IsTryAgain()) {
+      if (io_s.inner_status.IsTryAgain()) {
         return io_s;
       }
-      if (io_s.ok()) {
+      if (io_s.inner_status.ok()) {
         // Data Block is already in prefetch.
         got_from_prefetch_buffer_ = true;
         ProcessTrailerIfPresent();
-        if (!io_status_.ok()) {
+        if (!io_status_.inner_status.ok()) {
           return io_status_;
         }
         used_buf_ = const_cast<char*>(slice_.data());

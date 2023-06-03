@@ -242,7 +242,7 @@ class PosixFileSystem : public FileSystem {
       uint64_t size;
       IOOptions opts;
       s = GetFileSize(fname, opts, &size, nullptr);
-      if (s.ok()) {
+      if (s.inner_status.ok()) {
         void* base = mmap(nullptr, size, PROT_READ, MAP_SHARED, fd, 0);
         if (base != MAP_FAILED) {
           result->reset(
@@ -495,19 +495,19 @@ class PosixFileSystem : public FileSystem {
       }
     }
     uint64_t size;
-    if (status.ok()) {
+    if (status.inner_status.ok()) {
       IOOptions opts;
       status = GetFileSize(fname, opts, &size, nullptr);
     }
     void* base = nullptr;
-    if (status.ok()) {
+    if (status.inner_status.ok()) {
       base = mmap(nullptr, static_cast<size_t>(size), PROT_READ | PROT_WRITE,
                   MAP_SHARED, fd, 0);
       if (base == MAP_FAILED) {
         status = IOError("while mmap file for read", fname, errno);
       }
     }
-    if (status.ok()) {
+    if (status.inner_status.ok()) {
       result->reset(
           new PosixMemoryMappedFileBuffer(base, static_cast<size_t>(size)));
     }
@@ -792,7 +792,7 @@ class PosixFileSystem : public FileSystem {
       my_lock->filename = fname;
       *lock = my_lock;
     }
-    if (!result.ok()) {
+    if (!result.inner_status.ok()) {
       // If there is an error in locking, then remove the pathname from
       // locked_files. (If we got this far, it did not exist in locked_files
       // before this call.)
@@ -900,7 +900,7 @@ class PosixFileSystem : public FileSystem {
       io_s = IOError("While doing stat for IsDirectory()", path, errno);
     }
     close(fd);
-    if (io_s.ok() && nullptr != is_dir) {
+    if (io_s.inner_status.ok() && nullptr != is_dir) {
       *is_dir = S_ISDIR(sbuf.st_mode);
     }
     return io_s;

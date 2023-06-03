@@ -173,7 +173,7 @@ void SetupSyncPointsToMockDirectIO();
 #else
 #define IGNORE_STATUS_IF_ERROR(_status_)            \
   {                                                 \
-    if (!_status_.ok()) {                           \
+    if (!((Status)_status_).ok()) {                           \
       TEST_SYNC_POINT("FaultInjectionIgnoreError"); \
     }                                               \
   }

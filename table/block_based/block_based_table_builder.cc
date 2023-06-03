@@ -395,7 +395,7 @@ struct BlockBasedTableBuilder::Rep {
   // Never erase an existing I/O status that is not OK.
   // Calling this will also SetStatus(ios)
   void SetIOStatus(IOStatus ios) {
-    if (!ios.ok() && io_status_ok.load(std::memory_order_relaxed)) {
+    if (!ios.inner_status.ok() && io_status_ok.load(std::memory_order_relaxed)) {
       // Locking is an overkill for non compression_opts.parallel_threads
       // case but since it's unlikely that s is not OK, we take this cost
       // to be simplicity.
@@ -1253,7 +1253,7 @@ void BlockBasedTableBuilder::WriteMaybeCompressedBlock(
   handle->set_offset(r->get_offset());
   handle->set_size(block_contents.size());
   assert(status().ok());
-  assert(io_status().ok());
+  assert(io_status().inner_status.ok());
   if (uncompressed_block_data == nullptr) {
     uncompressed_block_data = &block_contents;
     assert(comp_type == kNoCompression);
@@ -1261,7 +1261,7 @@ void BlockBasedTableBuilder::WriteMaybeCompressedBlock(
 
   {
     IOStatus io_s = r->file->Append(block_contents);
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       r->SetIOStatus(io_s);
       return;
     }
@@ -1287,7 +1287,7 @@ void BlockBasedTableBuilder::WriteMaybeCompressedBlock(
       trailer.data());
   {
     IOStatus io_s = r->file->Append(Slice(trailer.data(), trailer.size()));
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       r->SetIOStatus(io_s);
       return;
     }
@@ -1324,7 +1324,7 @@ void BlockBasedTableBuilder::WriteMaybeCompressedBlock(
          ((block_contents.size() + kBlockTrailerSize) & (r->alignment - 1))) &
         (r->alignment - 1);
     IOStatus io_s = r->file->Pad(pad_bytes);
-    if (io_s.ok()) {
+    if (io_s.inner_status.ok()) {
       r->set_offset(r->get_offset() + pad_bytes);
     } else {
       r->SetIOStatus(io_s);
@@ -1722,7 +1722,7 @@ void BlockBasedTableBuilder::WriteFooter(BlockHandle& metaindex_block_handle,
                r->get_offset(), r->table_options.checksum,
                metaindex_block_handle, index_block_handle);
   IOStatus ios = r->file->Append(footer.GetSlice());
-  if (ios.ok()) {
+  if (ios.inner_status.ok()) {
     r->set_offset(r->get_offset() + footer.GetSlice().size());
   } else {
     r->SetIOStatus(ios);
@@ -1934,7 +1934,7 @@ Status BlockBasedTableBuilder::Finish() {
   r->state = Rep::State::kClosed;
   r->SetStatus(r->CopyIOStatus());
   Status ret_status = r->CopyStatus();
-  assert(!ret_status.ok() || io_status().ok());
+  assert(!ret_status.ok() || io_status().inner_status.ok());
   return ret_status;
 }
 
@@ -1945,7 +1945,7 @@ void BlockBasedTableBuilder::Abandon() {
   }
   rep_->state = Rep::State::kClosed;
   rep_->CopyStatus().PermitUncheckedError();
-  rep_->CopyIOStatus().PermitUncheckedError();
+  rep_->CopyIOStatus().inner_status.PermitUncheckedError();
 }
 
 uint64_t BlockBasedTableBuilder::NumEntries() const {

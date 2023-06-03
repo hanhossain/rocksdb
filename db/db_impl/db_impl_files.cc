@@ -503,7 +503,7 @@ void DBImpl::PurgeObsoleteFiles(JobContext& state, bool schedule_only) {
   for (const auto w : state.logs_to_free) {
     // TODO: maybe check the return value of Close.
     auto s = w->Close();
-    s.PermitUncheckedError();
+    s.inner_status.PermitUncheckedError();
   }
 
   bool own_files = OwnTablesAndLogs();

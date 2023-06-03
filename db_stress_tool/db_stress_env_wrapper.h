@@ -47,7 +47,7 @@ class DbStressFSWrapper : public FileSystemWrapper {
                                IODebugContext* dbg) override {
     std::unique_ptr<FSRandomAccessFile> file;
     IOStatus s = target()->NewRandomAccessFile(f, file_opts, &file, dbg);
-    if (s.ok()) {
+    if (s.inner_status.ok()) {
       r->reset(new DbStressRandomAccessFileWrapper(std::move(file)));
     }
     return s;

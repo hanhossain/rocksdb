@@ -98,10 +98,10 @@ Status ImportColumnFamilyJob::Prepare(uint64_t next_file_number,
       }
       const auto s =
           fs_->DeleteFile(f.internal_file_path, IOOptions(), nullptr);
-      if (!s.ok()) {
+      if (!s.inner_status.ok()) {
         ROCKS_LOG_WARN(db_options_.info_log,
                        "AddFile() clean up for file %s failed : %s",
-                       f.internal_file_path.c_str(), s.ToString().c_str());
+                       f.internal_file_path.c_str(), s.inner_status.ToString().c_str());
       }
     }
   }
@@ -191,10 +191,10 @@ void ImportColumnFamilyJob::Cleanup(const Status& status) {
     for (const auto& f : files_to_import_) {
       const auto s =
           fs_->DeleteFile(f.internal_file_path, IOOptions(), nullptr);
-      if (!s.ok()) {
+      if (!s.inner_status.ok()) {
         ROCKS_LOG_WARN(db_options_.info_log,
                        "AddFile() clean up for file %s failed : %s",
-                       f.internal_file_path.c_str(), s.ToString().c_str());
+                       f.internal_file_path.c_str(), s.inner_status.ToString().c_str());
       }
     }
   } else if (status.ok() && import_options_.move_files) {
@@ -202,12 +202,12 @@ void ImportColumnFamilyJob::Cleanup(const Status& status) {
     for (IngestedFileInfo& f : files_to_import_) {
       const auto s =
           fs_->DeleteFile(f.external_file_path, IOOptions(), nullptr);
-      if (!s.ok()) {
+      if (!s.inner_status.ok()) {
         ROCKS_LOG_WARN(
             db_options_.info_log,
             "%s was added to DB successfully but failed to remove original "
             "file link : %s",
-            f.external_file_path.c_str(), s.ToString().c_str());
+            f.external_file_path.c_str(), s.inner_status.ToString().c_str());
       }
     }
   }

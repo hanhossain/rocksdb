@@ -3465,8 +3465,8 @@ TEST_F(OptionsParserTest, IgnoreUnknownOptions) {
 
     const std::string kTestFileName = "test-rocksdb-options.ini";
     auto s = fs_->FileExists(kTestFileName, IOOptions(), nullptr);
-    ASSERT_TRUE(s.ok() || s.IsNotFound());
-    if (s.ok()) {
+    ASSERT_TRUE(s.inner_status.ok() || s.inner_status.IsNotFound());
+    if (s.inner_status.ok()) {
       ASSERT_OK(fs_->DeleteFile(kTestFileName, IOOptions(), nullptr));
     }
     ASSERT_OK(fs_->WriteToNewFile(kTestFileName, options_file_content));

@@ -102,7 +102,7 @@ IOStatus PlainTableKeyEncoder::AppendKey(const Slice& key,
       assert(ptr <= key_size_buf + sizeof(key_size_buf));
       auto len = ptr - key_size_buf;
       IOStatus io_s = file->Append(Slice(key_size_buf, len));
-      if (!io_s.ok()) {
+      if (!io_s.inner_status.ok()) {
         return io_s;
       }
       *offset += len;
@@ -120,7 +120,7 @@ IOStatus PlainTableKeyEncoder::AppendKey(const Slice& key,
       pre_prefix_.SetUserKey(prefix);
       size_bytes_pos += EncodeSize(kFullKey, user_key_size, size_bytes);
       IOStatus io_s = file->Append(Slice(size_bytes, size_bytes_pos));
-      if (!io_s.ok()) {
+      if (!io_s.inner_status.ok()) {
         return io_s;
       }
       *offset += size_bytes_pos;
@@ -138,7 +138,7 @@ IOStatus PlainTableKeyEncoder::AppendKey(const Slice& key,
       size_bytes_pos += EncodeSize(kKeySuffix, user_key_size - prefix_len,
                                    size_bytes + size_bytes_pos);
       IOStatus io_s = file->Append(Slice(size_bytes, size_bytes_pos));
-      if (!io_s.ok()) {
+      if (!io_s.inner_status.ok()) {
         return io_s;
       }
       *offset += size_bytes_pos;
@@ -153,7 +153,7 @@ IOStatus PlainTableKeyEncoder::AppendKey(const Slice& key,
   if (parsed_key.sequence == 0 && parsed_key.type == rs::db::dbformat::ValueType::TypeValue) {
     IOStatus io_s =
         file->Append(Slice(key_to_write.data(), key_to_write.size() - 8));
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     }
     *offset += key_to_write.size() - 8;
@@ -161,7 +161,7 @@ IOStatus PlainTableKeyEncoder::AppendKey(const Slice& key,
     *meta_bytes_buf_size += 1;
   } else {
     IOStatus io_s = file->Append(key_to_write);
-    if (!io_s.ok()) {
+    if (!io_s.inner_status.ok()) {
       return io_s;
     }
     *offset += key_to_write.size();

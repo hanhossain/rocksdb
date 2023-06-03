@@ -293,7 +293,7 @@ Status CompactionServiceCompactionJob::Run() {
   Status status = sub_compact->status;
   IOStatus io_s = sub_compact->io_status;
 
-  if (io_status_.ok()) {
+  if (io_status_.inner_status.ok()) {
     io_status_ = io_s;
   }
 
@@ -305,7 +305,7 @@ Status CompactionServiceCompactionJob::Run() {
                                                     DirFsyncOptions());
     }
   }
-  if (io_status_.ok()) {
+  if (io_status_.inner_status.ok()) {
     io_status_ = io_s;
   }
   if (status.ok()) {

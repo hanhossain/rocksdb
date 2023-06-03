@@ -36,7 +36,7 @@ IOStatus WritableFileWriter::Create(const std::shared_ptr<FileSystem>& fs,
   }
   std::unique_ptr<FSWritableFile> file;
   IOStatus io_s = fs->NewWritableFile(fname, file_opts, &file, dbg);
-  if (io_s.ok()) {
+  if (io_s.inner_status.ok()) {
     writer->reset(new WritableFileWriter(std::move(file), fname, file_opts));
   }
   return io_s;
@@ -89,7 +89,7 @@ IOStatus WritableFileWriter::Append(const Slice& data, uint32_t crc32c_checksum,
   if (!use_direct_io() && (buf_.Capacity() - buf_.CurrentSize()) < left) {
     if (buf_.CurrentSize() > 0) {
       s = Flush(op_rate_limiter_priority);
-      if (!s.ok()) {
+      if (!s.inner_status.ok()) {
         set_seen_error();
         return s;
       }
@@ -120,7 +120,7 @@ IOStatus WritableFileWriter::Append(const Slice& data, uint32_t crc32c_checksum,
 
           if (left > 0) {
             s = Flush(op_rate_limiter_priority);
-            if (!s.ok()) {
+            if (!s.inner_status.ok()) {
               break;
             }
           }
@@ -150,7 +150,7 @@ IOStatus WritableFileWriter::Append(const Slice& data, uint32_t crc32c_checksum,
 
         if (left > 0) {
           s = Flush(op_rate_limiter_priority);
-          if (!s.ok()) {
+          if (!s.inner_status.ok()) {
             break;
           }
         }
@@ -168,7 +168,7 @@ IOStatus WritableFileWriter::Append(const Slice& data, uint32_t crc32c_checksum,
   }
 
   TEST_KILL_RANDOM("WritableFileWriter::Append:1");
-  if (s.ok()) {
+  if (s.inner_status.ok()) {
     uint64_t cur_size = filesize_.load(std::memory_order_acquire);
     filesize_.store(cur_size + data.size(), std::memory_order_release);
   } else {
@@ -196,7 +196,7 @@ IOStatus WritableFileWriter::Pad(const size_t pad_bytes,
     left -= append_bytes;
     if (left > 0) {
       IOStatus s = Flush(op_rate_limiter_priority);
-      if (!s.ok()) {
+      if (!s.inner_status.ok()) {
         set_seen_error();
         return s;
       }
@@ -221,7 +221,7 @@ IOStatus WritableFileWriter::Close() {
       interim = writable_file_->Close(IOOptions(), nullptr);
       writable_file_.reset();
     }
-    if (interim.ok()) {
+    if (interim.inner_status.ok()) {
       return IOStatus::IOError(
           "File is closed but data not flushed as writer has previous error.");
     } else {
@@ -258,13 +258,13 @@ IOStatus WritableFileWriter::Close() {
       if (ShouldNotifyListeners()) {
         auto finish_ts = FileOperationInfo::FinishNow();
         NotifyOnFileTruncateFinish(start_ts, finish_ts, s);
-        if (!interim.ok()) {
+        if (!interim.inner_status.ok()) {
           NotifyOnIOError(interim, FileOperationType::kTruncate, file_name(),
                           filesz);
         }
       }
     }
-    if (interim.ok()) {
+    if (interim.inner_status.ok()) {
       {
         FileOperationInfo::StartTimePoint start_ts;
         if (ShouldNotifyListeners()) {
@@ -275,13 +275,13 @@ IOStatus WritableFileWriter::Close() {
           auto finish_ts = FileOperationInfo::FinishNow();
           NotifyOnFileSyncFinish(start_ts, finish_ts, s,
                                  FileOperationType::kFsync);
-          if (!interim.ok()) {
+          if (!interim.inner_status.ok()) {
             NotifyOnIOError(interim, FileOperationType::kFsync, file_name());
           }
         }
       }
     }
-    if (!interim.ok() && s.ok()) {
+    if (!interim.inner_status.ok() && s.inner_status.ok()) {
       s = interim;
     }
   }
@@ -296,19 +296,19 @@ IOStatus WritableFileWriter::Close() {
     if (ShouldNotifyListeners()) {
       auto finish_ts = FileOperationInfo::FinishNow();
       NotifyOnFileCloseFinish(start_ts, finish_ts, s);
-      if (!interim.ok()) {
+      if (!interim.inner_status.ok()) {
         NotifyOnIOError(interim, FileOperationType::kClose, file_name());
       }
     }
   }
-  if (!interim.ok() && s.ok()) {
+  if (!interim.inner_status.ok() && s.inner_status.ok()) {
     s = interim;
   }
 
   writable_file_.reset();
   TEST_KILL_RANDOM("WritableFileWriter::Close:1");
 
-  if (s.ok()) {
+  if (s.inner_status.ok()) {
     if (checksum_generator_ != nullptr && !checksum_finalized_) {
       checksum_generator_->Finalize();
       checksum_finalized_ = true;
@@ -348,7 +348,7 @@ IOStatus WritableFileWriter::Flush(Env::IOPriority op_rate_limiter_priority) {
                           op_rate_limiter_priority);
       }
     }
-    if (!s.ok()) {
+    if (!s.inner_status.ok()) {
       set_seen_error();
       return s;
     }
@@ -367,13 +367,13 @@ IOStatus WritableFileWriter::Flush(Env::IOPriority op_rate_limiter_priority) {
     if (ShouldNotifyListeners()) {
       auto finish_ts = std::chrono::steady_clock::now();
       NotifyOnFileFlushFinish(start_ts, finish_ts, s);
-      if (!s.ok()) {
+      if (!s.inner_status.ok()) {
         NotifyOnIOError(s, FileOperationType::kFlush, file_name());
       }
     }
   }
 
-  if (!s.ok()) {
+  if (!s.inner_status.ok()) {
     set_seen_error();
     return s;
   }
@@ -401,7 +401,7 @@ IOStatus WritableFileWriter::Flush(Env::IOPriority op_rate_limiter_priority) {
       if (offset_sync_to > 0 &&
           offset_sync_to - last_sync_size_ >= bytes_per_sync_) {
         s = RangeSync(last_sync_size_, offset_sync_to - last_sync_size_);
-        if (!s.ok()) {
+        if (!s.inner_status.ok()) {
           set_seen_error();
         }
         last_sync_size_ = offset_sync_to;
@@ -435,14 +435,14 @@ IOStatus WritableFileWriter::Sync(bool use_fsync) {
   }
 
   IOStatus s = Flush();
-  if (!s.ok()) {
+  if (!s.inner_status.ok()) {
     set_seen_error();
     return s;
   }
   TEST_KILL_RANDOM("WritableFileWriter::Sync:0");
   if (!use_direct_io() && pending_sync_) {
     s = SyncInternal(use_fsync);
-    if (!s.ok()) {
+    if (!s.inner_status.ok()) {
       set_seen_error();
       return s;
     }
@@ -464,7 +464,7 @@ IOStatus WritableFileWriter::SyncWithoutFlush(bool use_fsync) {
   TEST_SYNC_POINT("WritableFileWriter::SyncWithoutFlush:1");
   IOStatus s = SyncInternal(use_fsync);
   TEST_SYNC_POINT("WritableFileWriter::SyncWithoutFlush:2");
-  if (!s.ok()) {
+  if (!s.inner_status.ok()) {
 #ifndef NDEBUG
     sync_without_flush_called_ = true;
 #endif  // NDEBUG
@@ -499,7 +499,7 @@ IOStatus WritableFileWriter::SyncInternal(bool use_fsync) {
     NotifyOnFileSyncFinish(
         start_ts, finish_ts, s,
         use_fsync ? FileOperationType::kFsync : FileOperationType::kSync);
-    if (!s.ok()) {
+    if (!s.inner_status.ok()) {
       NotifyOnIOError(
           s, (use_fsync ? FileOperationType::kFsync : FileOperationType::kSync),
           file_name());
@@ -525,13 +525,13 @@ IOStatus WritableFileWriter::RangeSync(uint64_t offset, uint64_t nbytes) {
   IOOptions io_options;
   io_options.rate_limiter_priority = writable_file_->GetIOPriority();
   IOStatus s = writable_file_->RangeSync(offset, nbytes, io_options, nullptr);
-  if (!s.ok()) {
+  if (!s.inner_status.ok()) {
     set_seen_error();
   }
   if (ShouldNotifyListeners()) {
     auto finish_ts = std::chrono::steady_clock::now();
     NotifyOnFileRangeSyncFinish(offset, nbytes, start_ts, finish_ts, s);
-    if (!s.ok()) {
+    if (!s.inner_status.ok()) {
       NotifyOnIOError(s, FileOperationType::kRangeSync, file_name(), nbytes,
                       offset);
     }
@@ -590,7 +590,7 @@ IOStatus WritableFileWriter::WriteBuffered(
         } else {
           s = writable_file_->Append(Slice(src, allowed), io_options, nullptr);
         }
-        if (!s.ok()) {
+        if (!s.inner_status.ok()) {
           // If writable_file_->Append() failed, then the data may or may not
           // exist in the underlying memory buffer, OS page cache, remote file
           // system's buffer, etc. If WritableFileWriter keeps the data in
@@ -608,12 +608,12 @@ IOStatus WritableFileWriter::WriteBuffered(
       if (ShouldNotifyListeners()) {
         auto finish_ts = std::chrono::steady_clock::now();
         NotifyOnFileWriteFinish(old_size, allowed, start_ts, finish_ts, s);
-        if (!s.ok()) {
+        if (!s.inner_status.ok()) {
           NotifyOnIOError(s, FileOperationType::kAppend, file_name(), allowed,
                           old_size);
         }
       }
-      if (!s.ok()) {
+      if (!s.inner_status.ok()) {
         set_seen_error();
         return s;
       }
@@ -629,7 +629,7 @@ IOStatus WritableFileWriter::WriteBuffered(
   }
   buf_.Size(0);
   buffered_data_crc32c_checksum_ = 0;
-  if (!s.ok()) {
+  if (!s.inner_status.ok()) {
     set_seen_error();
   }
   return s;
@@ -691,12 +691,12 @@ IOStatus WritableFileWriter::WriteBufferedWithChecksum(
     if (ShouldNotifyListeners()) {
       auto finish_ts = std::chrono::steady_clock::now();
       NotifyOnFileWriteFinish(old_size, left, start_ts, finish_ts, s);
-      if (!s.ok()) {
+      if (!s.inner_status.ok()) {
         NotifyOnIOError(s, FileOperationType::kAppend, file_name(), left,
                         old_size);
       }
     }
-    if (!s.ok()) {
+    if (!s.inner_status.ok()) {
       // If writable_file_->Append() failed, then the data may or may not
       // exist in the underlying memory buffer, OS page cache, remote file
       // system's buffer, etc. If WritableFileWriter keeps the data in
@@ -722,7 +722,7 @@ IOStatus WritableFileWriter::WriteBufferedWithChecksum(
   buffered_data_crc32c_checksum_ = 0;
   uint64_t cur_size = flushed_size_.load(std::memory_order_acquire);
   flushed_size_.store(cur_size + left, std::memory_order_release);
-  if (!s.ok()) {
+  if (!s.inner_status.ok()) {
     set_seen_error();
   }
   return s;
@@ -822,12 +822,12 @@ IOStatus WritableFileWriter::WriteDirect(
       if (ShouldNotifyListeners()) {
         auto finish_ts = std::chrono::steady_clock::now();
         NotifyOnFileWriteFinish(write_offset, size, start_ts, finish_ts, s);
-        if (!s.ok()) {
+        if (!s.inner_status.ok()) {
           NotifyOnIOError(s, FileOperationType::kPositionedAppend, file_name(),
                           size, write_offset);
         }
       }
-      if (!s.ok()) {
+      if (!s.inner_status.ok()) {
         buf_.Size(file_advance + leftover_tail);
         set_seen_error();
         return s;
@@ -843,7 +843,7 @@ IOStatus WritableFileWriter::WriteDirect(
     assert((next_write_offset_ % alignment) == 0);
   }
 
-  if (s.ok()) {
+  if (s.inner_status.ok()) {
     // Move the tail to the beginning of the buffer
     // This never happens during normal Append but rather during
     // explicit call to Flush()/Sync() or Close()
@@ -931,12 +931,12 @@ IOStatus WritableFileWriter::WriteDirectWithChecksum(
     if (ShouldNotifyListeners()) {
       auto finish_ts = std::chrono::steady_clock::now();
       NotifyOnFileWriteFinish(write_offset, left, start_ts, finish_ts, s);
-      if (!s.ok()) {
+      if (!s.inner_status.ok()) {
         NotifyOnIOError(s, FileOperationType::kPositionedAppend, file_name(),
                         left, write_offset);
       }
     }
-    if (!s.ok()) {
+    if (!s.inner_status.ok()) {
       // In this case, we do not change buffered_data_crc32c_checksum_ because
       // it still aligns with the data in the buffer.
       buf_.Size(file_advance + leftover_tail);
@@ -952,7 +952,7 @@ IOStatus WritableFileWriter::WriteDirectWithChecksum(
   uint64_t cur_size = flushed_size_.load(std::memory_order_acquire);
   flushed_size_.store(cur_size + left, std::memory_order_release);
 
-  if (s.ok()) {
+  if (s.inner_status.ok()) {
     // Move the tail to the beginning of the buffer
     // This never happens during normal Append but rather during
     // explicit call to Flush()/Sync() or Close(). Also the buffer checksum will

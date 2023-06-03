@@ -212,7 +212,7 @@ class FaultInjectionTestFS : public FileSystemWrapper {
         read_error_one_in_(0),
         ingest_data_corruption_before_write_(false),
         fail_get_file_unique_id_(false) {}
-  virtual ~FaultInjectionTestFS() { error_.PermitUncheckedError(); }
+  virtual ~FaultInjectionTestFS() { error_.inner_status.PermitUncheckedError(); }
 
   static const char* kClassName() { return "FaultInjectionTestFS"; }
   const char* Name() const override { return kClassName(); }
@@ -262,7 +262,7 @@ class FaultInjectionTestFS : public FileSystemWrapper {
                                 IODebugContext* dbg) override {
     IOStatus io_s;
     if (!IsFilesystemActive() &&
-        error_.subcode() == rs::status::SubCode::NoSpace) {
+        error_.inner_status.subcode() == rs::status::SubCode::NoSpace) {
       *disk_free = 0;
     } else {
       io_s = target()->GetFreeSpace(path, options, disk_free, dbg);
@@ -328,7 +328,7 @@ class FaultInjectionTestFS : public FileSystemWrapper {
   }
   void SetFilesystemActiveNoLock(
       bool active, IOStatus error = IOStatus::Corruption("Not active")) {
-    error.PermitUncheckedError();
+    error.inner_status.PermitUncheckedError();
     filesystem_active_ = active;
     if (!active) {
       error_ = error;
@@ -337,7 +337,7 @@ class FaultInjectionTestFS : public FileSystemWrapper {
   void SetFilesystemActive(
       bool active, IOStatus error = IOStatus::Corruption("Not active")) {
     MutexLock l(&mutex_);
-    error.PermitUncheckedError();
+    error.inner_status.PermitUncheckedError();
     SetFilesystemActiveNoLock(active, error);
   }
   void SetFilesystemDirectWritable(bool writable) {
@@ -350,7 +350,7 @@ class FaultInjectionTestFS : public FileSystemWrapper {
 
   void SetFileSystemIOError(IOStatus io_error) {
     MutexLock l(&mutex_);
-    io_error.PermitUncheckedError();
+    io_error.inner_status.PermitUncheckedError();
     error_ = io_error;
   }
 
@@ -429,7 +429,7 @@ class FaultInjectionTestFS : public FileSystemWrapper {
                            const std::vector<rs::types::FileType>& types) {
     MutexLock l(&mutex_);
     Random tmp_rand(seed);
-    error.PermitUncheckedError();
+    error.inner_status.PermitUncheckedError();
     error_ = error;
     write_error_rand_ = tmp_rand;
     write_error_one_in_ = one_in;

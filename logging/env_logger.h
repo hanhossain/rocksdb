@@ -75,7 +75,7 @@ class EnvLogger : public Logger {
     mutex_.AssertHeld();
     if (flush_pending_) {
       flush_pending_ = false;
-      file_.Flush().PermitUncheckedError();
+      file_.Flush().inner_status.PermitUncheckedError();
       file_.reset_seen_error();
     }
     last_flush_micros_ = clock_->NowMicros();
@@ -95,12 +95,12 @@ class EnvLogger : public Logger {
     FileOpGuard guard(*this);
     const auto close_status = file_.Close();
 
-    if (close_status.ok()) {
+    if (close_status.inner_status.ok()) {
       return close_status;
     }
     return Status::IOError("Close of log file failed with error:" +
-                           (close_status.getState()
-                                ? std::string(close_status.getState())
+                           (close_status.inner_status.getState()
+                                ? std::string(close_status.inner_status.getState())
                                 : std::string()));
   }
 
@@ -162,7 +162,7 @@ class EnvLogger : public Logger {
       {
         FileOpGuard guard(*this);
         // We will ignore any error returned by Append().
-        file_.Append(Slice(base, p - base)).PermitUncheckedError();
+        file_.Append(Slice(base, p - base)).inner_status.PermitUncheckedError();
         file_.reset_seen_error();
         flush_pending_ = true;
         const uint64_t now_micros = clock_->NowMicros();

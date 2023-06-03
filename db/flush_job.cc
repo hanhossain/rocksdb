@@ -948,8 +948,8 @@ Status FlushJob::WriteLevel0Table() {
                      blob_callback_, base_, &num_input_entries,
                      &memtable_payload_bytes, &memtable_garbage_bytes);
       // TODO: Cleanup io_status in BuildTable and table builders
-      assert(!s.ok() || io_s.ok());
-      io_s.PermitUncheckedError();
+      assert(!s.ok() || io_s.inner_status.ok());
+      io_s.inner_status.PermitUncheckedError();
       if (num_input_entries != total_num_entries && s.ok()) {
         std::string msg = "Expected " + std::to_string(total_num_entries) +
                           " entries in memtables, but read " +

@@ -381,40 +381,41 @@ class Status {
   std::string ToString() const;
 
  protected:
-  rs::status::Code code_;
-  rs::status::SubCode subcode_;
-  rs::status::Severity sev_;
-  bool retryable_;
-  bool data_loss_;
-  unsigned char scope_;
-  // A nullptr state_ (which is at least the case for OK) means the extra
+    friend class IOStatus;
+    explicit Status(rs::status::Code _code, rs::status::SubCode _subcode = rs::status::SubCode::None)
+            : code_(_code),
+              subcode_(_subcode),
+              sev_(rs::status::Severity::NoError),
+              retryable_(false),
+              data_loss_(false),
+              scope_(0) {}
+
+    explicit Status(rs::status::Code _code, rs::status::SubCode _subcode, bool retryable, bool data_loss,
+                    unsigned char scope)
+            : code_(_code),
+              subcode_(_subcode),
+              sev_(rs::status::Severity::NoError),
+              retryable_(retryable),
+              data_loss_(data_loss),
+              scope_(scope) {}
+
+    Status(rs::status::Code _code, rs::status::SubCode _subcode, const Slice& msg, const Slice& msg2,
+           rs::status::Severity sev = rs::status::Severity::NoError);
+    Status(rs::status::Code _code, const Slice& msg, const Slice& msg2)
+            : Status(_code, rs::status::SubCode::None, msg, msg2) {}
+    rs::status::Code code_;
+    rs::status::SubCode subcode_;
+    rs::status::Severity sev_;
+    bool retryable_;
+    bool data_loss_;
+    unsigned char scope_;
+    // A nullptr state_ (which is at least the case for OK) means the extra
   // message is empty.
   std::unique_ptr<const char[]> state_;
 #ifdef ROCKSDB_ASSERT_STATUS_CHECKED
-  mutable bool checked_ = false;
+        mutable bool checked_ = false;
+
 #endif  // ROCKSDB_ASSERT_STATUS_CHECKED
-
-  explicit Status(rs::status::Code _code, rs::status::SubCode _subcode = rs::status::SubCode::None)
-      : code_(_code),
-        subcode_(_subcode),
-        sev_(rs::status::Severity::NoError),
-        retryable_(false),
-        data_loss_(false),
-        scope_(0) {}
-
-  explicit Status(rs::status::Code _code, rs::status::SubCode _subcode, bool retryable, bool data_loss,
-                  unsigned char scope)
-      : code_(_code),
-        subcode_(_subcode),
-        sev_(rs::status::Severity::NoError),
-        retryable_(retryable),
-        data_loss_(data_loss),
-        scope_(scope) {}
-
-  Status(rs::status::Code _code, rs::status::SubCode _subcode, const Slice& msg, const Slice& msg2,
-         rs::status::Severity sev = rs::status::Severity::NoError);
-  Status(rs::status::Code _code, const Slice& msg, const Slice& msg2)
-      : Status(_code, rs::status::SubCode::None, msg, msg2) {}
 
   static std::unique_ptr<const char[]> CopyState(const char* s);
 

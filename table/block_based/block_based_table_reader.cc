@@ -838,7 +838,7 @@ Status BlockBasedTable::PrefetchTail(
   // Try file system prefetch
   if (!file->use_direct_io() && !force_direct_prefetch) {
     if (!file->Prefetch(prefetch_off, prefetch_len, ro.rate_limiter_priority)
-             .IsNotSupported()) {
+             .inner_status.IsNotSupported()) {
       prefetch_buffer->reset(new FilePrefetchBuffer(
           0 /* readahead_size */, 0 /* max_readahead_size */,
           false /* enable */, true /* track_min_offset */));

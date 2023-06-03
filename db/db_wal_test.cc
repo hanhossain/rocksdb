@@ -2302,7 +2302,7 @@ TEST_F(DBWALTest, WalInManifestButNotInSortedWals) {
                          std::vector<std::string>* r,
                          IODebugContext* dbg) override {
       IOStatus s = target_->GetChildren(dir, io_opts, r, dbg);
-      if (s.ok() && *wals_go_missing_flag) {
+      if (s.inner_status.ok() && *wals_go_missing_flag) {
         for (size_t i = 0; i < r->size();) {
           if (EndsWith(r->at(i), ".log")) {
             r->erase(r->begin() + i);

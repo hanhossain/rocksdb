@@ -105,7 +105,7 @@ Status DeleteScheduler::DeleteFile(const std::string& file_path,
   uint64_t trash_file_size = 0;
   IOStatus io_s =
       fs_->GetFileSize(trash_file, IOOptions(), &trash_file_size, nullptr);
-  if (io_s.ok()) {
+  if (io_s.inner_status.ok()) {
     total_trash_size_.fetch_add(trash_file_size);
   }
   //**TODO: What should we do if we failed to
