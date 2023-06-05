@@ -256,19 +256,19 @@ void SetCpuPriority(ThreadId id, rs::port_defs::CpuPriority priority) {
   sched_param param;
   param.sched_priority = 0;
   switch (priority) {
-    case CpuPriority::kHigh:
+    case CpuPriority::High:
       sched_setscheduler(id, SCHED_OTHER, &param);
       setpriority(PRIO_PROCESS, id, -20);
       break;
-    case CpuPriority::kNormal:
+    case CpuPriority::Normal:
       sched_setscheduler(id, SCHED_OTHER, &param);
       setpriority(PRIO_PROCESS, id, 0);
       break;
-    case CpuPriority::kLow:
+    case CpuPriority::Low:
       sched_setscheduler(id, SCHED_OTHER, &param);
       setpriority(PRIO_PROCESS, id, 19);
       break;
-    case CpuPriority::kIdle:
+    case CpuPriority::Idle:
       sched_setscheduler(id, SCHED_IDLE, &param);
       break;
     default:

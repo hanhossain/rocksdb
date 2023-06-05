@@ -797,9 +797,9 @@ mod ffi {
 
     #[namespace = "rs::port_defs"]
     enum CpuPriority {
-        kIdle = 0,
-        kLow = 1,
-        kNormal = 2,
-        kHigh = 3,
+        Idle = 0,
+        Low = 1,
+        Normal = 2,
+        High = 3,
     }
 }

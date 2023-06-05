@@ -331,10 +331,10 @@ struct CreateBackupOptions final {
   // If false, background_thread_cpu_priority is ignored.
   // Otherwise, the cpu priority can be decreased,
   // if you try to increase the priority, the priority will not change.
-  // The initial priority of the threads is CpuPriority::kNormal,
+  // The initial priority of the threads is CpuPriority::Normal,
   // so you can decrease to priorities lower than kNormal.
   bool decrease_background_thread_cpu_priority = false;
-  rs::port_defs::CpuPriority background_thread_cpu_priority = rs::port_defs::CpuPriority::kNormal;
+  rs::port_defs::CpuPriority background_thread_cpu_priority = rs::port_defs::CpuPriority::Normal;
 };
 
 struct RestoreOptions final {

@@ -378,7 +378,7 @@ class PosixEnv : public CompositeEnv {
 
   void LowerThreadPoolCPUPriority(Priority pool) override {
     assert(pool >= Priority::BOTTOM && pool <= Priority::HIGH);
-    thread_pools_[pool].LowerCPUPriority(rs::port_defs::CpuPriority::kLow);
+    thread_pools_[pool].LowerCPUPriority(rs::port_defs::CpuPriority::Low);
   }
 
   Status LowerThreadPoolCPUPriority(Priority pool, rs::port_defs::CpuPriority pri) override {

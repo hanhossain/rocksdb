@@ -161,7 +161,7 @@ struct ThreadPoolImpl::Impl {
 
 inline ThreadPoolImpl::Impl::Impl()
     : low_io_priority_(false),
-      cpu_priority_(rs::port_defs::CpuPriority::kNormal),
+      cpu_priority_(rs::port_defs::CpuPriority::Normal),
       priority_(Env::LOW),
       env_(nullptr),
       total_threads_limit_(0),
@@ -215,7 +215,7 @@ inline void ThreadPoolImpl::Impl::LowerCPUPriority(rs::port_defs::CpuPriority pr
 
 void ThreadPoolImpl::Impl::BGThread(size_t thread_id) {
   bool low_io_priority = false;
-  rs::port_defs::CpuPriority current_cpu_priority = rs::port_defs::CpuPriority::kNormal;
+  rs::port_defs::CpuPriority current_cpu_priority = rs::port_defs::CpuPriority::Normal;
 
   while (true) {
     // Wait until there is an item that is ready to run

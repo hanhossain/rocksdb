@@ -1251,7 +1251,7 @@ IOStatus BackupEngineImpl::Initialize() {
 
   // set up threads perform copies from files_to_copy_or_create_ in the
   // background
-  threads_cpu_priority_ = rs::port_defs::CpuPriority::kNormal;
+  threads_cpu_priority_ = rs::port_defs::CpuPriority::Normal;
   threads_.reserve(options_.max_background_operations);
   for (int t = 0; t < options_.max_background_operations; t++) {
     threads_.emplace_back([this]() {
@@ -1260,7 +1260,7 @@ IOStatus BackupEngineImpl::Initialize() {
       pthread_setname_np(pthread_self(), "backup_engine");
 #endif
 #endif
-      rs::port_defs::CpuPriority current_priority = rs::port_defs::CpuPriority::kNormal;
+      rs::port_defs::CpuPriority current_priority = rs::port_defs::CpuPriority::Normal;
       CopyOrCreateWorkItem work_item;
       uint64_t bytes_toward_next_callback = 0;
       while (files_to_copy_or_create_.read(work_item)) {
