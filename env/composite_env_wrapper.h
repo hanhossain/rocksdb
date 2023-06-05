@@ -354,7 +354,7 @@ class CompositeEnvWrapper : public CompositeEnv {
     target_.env->LowerThreadPoolCPUPriority(pool);
   }
 
-  Status LowerThreadPoolCPUPriority(Priority pool, CpuPriority pri) override {
+  Status LowerThreadPoolCPUPriority(Priority pool, rs::port_defs::CpuPriority pri) override {
     return target_.env->LowerThreadPoolCPUPriority(pool, pri);
   }
 

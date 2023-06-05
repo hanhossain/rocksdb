@@ -794,4 +794,12 @@ mod ffi {
         #[cxx_name = "GetTypeName"]
         fn get_type_name(self: &KeyVersion) -> String;
     }
+
+    #[namespace = "rs::port_defs"]
+    enum CpuPriority {
+        kIdle = 0,
+        kLow = 1,
+        kNormal = 2,
+        kHigh = 3,
+    }
 }

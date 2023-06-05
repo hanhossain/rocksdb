@@ -58,7 +58,7 @@ struct ThreadPoolImpl::Impl {
 
   void LowerIOPriority();
 
-  void LowerCPUPriority(CpuPriority pri);
+  void LowerCPUPriority(rs::port_defs::CpuPriority pri);
 
   void WakeUpAllThreads() { bgsignal_.notify_all(); }
 
@@ -125,7 +125,7 @@ struct ThreadPoolImpl::Impl {
   static void BGThreadWrapper(void* arg);
 
   bool low_io_priority_;
-  CpuPriority cpu_priority_;
+  rs::port_defs::CpuPriority cpu_priority_;
   Env::Priority priority_;
   Env* env_;
 
@@ -161,7 +161,7 @@ struct ThreadPoolImpl::Impl {
 
 inline ThreadPoolImpl::Impl::Impl()
     : low_io_priority_(false),
-      cpu_priority_(CpuPriority::kNormal),
+      cpu_priority_(rs::port_defs::CpuPriority::kNormal),
       priority_(Env::LOW),
       env_(nullptr),
       total_threads_limit_(0),
@@ -208,14 +208,14 @@ inline void ThreadPoolImpl::Impl::LowerIOPriority() {
   low_io_priority_ = true;
 }
 
-inline void ThreadPoolImpl::Impl::LowerCPUPriority(CpuPriority pri) {
+inline void ThreadPoolImpl::Impl::LowerCPUPriority(rs::port_defs::CpuPriority pri) {
   std::lock_guard<std::mutex> lock(mu_);
   cpu_priority_ = pri;
 }
 
 void ThreadPoolImpl::Impl::BGThread(size_t thread_id) {
   bool low_io_priority = false;
-  CpuPriority current_cpu_priority = CpuPriority::kNormal;
+  rs::port_defs::CpuPriority current_cpu_priority = rs::port_defs::CpuPriority::kNormal;
 
   while (true) {
     // Wait until there is an item that is ready to run
@@ -270,7 +270,7 @@ void ThreadPoolImpl::Impl::BGThread(size_t thread_id) {
                      std::memory_order_relaxed);
 
     bool decrease_io_priority = (low_io_priority != low_io_priority_);
-    CpuPriority cpu_priority = cpu_priority_;
+    rs::port_defs::CpuPriority cpu_priority = cpu_priority_;
     lock.unlock();
 
     if (cpu_priority < current_cpu_priority) {
@@ -487,7 +487,7 @@ void ThreadPoolImpl::WaitForJobsAndJoinAllThreads() {
 
 void ThreadPoolImpl::LowerIOPriority() { impl_->LowerIOPriority(); }
 
-void ThreadPoolImpl::LowerCPUPriority(CpuPriority pri) {
+void ThreadPoolImpl::LowerCPUPriority(rs::port_defs::CpuPriority pri) {
   impl_->LowerCPUPriority(pri);
 }
 

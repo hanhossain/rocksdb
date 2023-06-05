@@ -798,7 +798,7 @@ class BackupEngineImpl {
   std::mutex byte_report_mutex_;
   mutable channel<CopyOrCreateWorkItem> files_to_copy_or_create_;
   std::vector<port::Thread> threads_;
-  std::atomic<CpuPriority> threads_cpu_priority_;
+  std::atomic<rs::port_defs::CpuPriority> threads_cpu_priority_;
 
   // Certain operations like PurgeOldBackups and DeleteBackup will trigger
   // automatic GarbageCollect (true) unless we've already done one in this
@@ -1251,7 +1251,7 @@ IOStatus BackupEngineImpl::Initialize() {
 
   // set up threads perform copies from files_to_copy_or_create_ in the
   // background
-  threads_cpu_priority_ = CpuPriority::kNormal;
+  threads_cpu_priority_ = rs::port_defs::CpuPriority::kNormal;
   threads_.reserve(options_.max_background_operations);
   for (int t = 0; t < options_.max_background_operations; t++) {
     threads_.emplace_back([this]() {
@@ -1260,11 +1260,11 @@ IOStatus BackupEngineImpl::Initialize() {
       pthread_setname_np(pthread_self(), "backup_engine");
 #endif
 #endif
-      CpuPriority current_priority = CpuPriority::kNormal;
+      rs::port_defs::CpuPriority current_priority = rs::port_defs::CpuPriority::kNormal;
       CopyOrCreateWorkItem work_item;
       uint64_t bytes_toward_next_callback = 0;
       while (files_to_copy_or_create_.read(work_item)) {
-        CpuPriority priority = threads_cpu_priority_;
+        rs::port_defs::CpuPriority priority = threads_cpu_priority_;
         if (current_priority != priority) {
           TEST_SYNC_POINT_CALLBACK(
               "BackupEngineImpl::Initialize:SetCpuPriority", &priority);

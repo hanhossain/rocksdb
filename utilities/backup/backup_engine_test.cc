@@ -3899,10 +3899,10 @@ TEST_P(BackupEngineTestWithParam, BackupUsingDirectIO) {
 }
 
 TEST_F(BackupEngineTest, BackgroundThreadCpuPriority) {
-  std::atomic<CpuPriority> priority(CpuPriority::kNormal);
+  std::atomic<rs::port_defs::CpuPriority> priority(rs::port_defs::CpuPriority::kNormal);
   ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->SetCallBack(
       "BackupEngineImpl::Initialize:SetCpuPriority", [&](void* new_priority) {
-        priority.store(*reinterpret_cast<CpuPriority*>(new_priority));
+        priority.store(*reinterpret_cast<rs::port_defs::CpuPriority*>(new_priority));
       });
   ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->EnableProcessing();
 
@@ -3918,7 +3918,7 @@ TEST_F(BackupEngineTest, BackgroundThreadCpuPriority) {
     CreateBackupOptions options;
     ASSERT_OK(backup_engine_->CreateNewBackup(options, db_.get()));
 
-    ASSERT_EQ(priority, CpuPriority::kNormal);
+    ASSERT_EQ(priority, rs::port_defs::CpuPriority::kNormal);
   }
 
   {
@@ -3927,10 +3927,10 @@ TEST_F(BackupEngineTest, BackgroundThreadCpuPriority) {
     // decrease cpu priority from normal to low.
     CreateBackupOptions options;
     options.decrease_background_thread_cpu_priority = true;
-    options.background_thread_cpu_priority = CpuPriority::kLow;
+    options.background_thread_cpu_priority = rs::port_defs::CpuPriority::kLow;
     ASSERT_OK(backup_engine_->CreateNewBackup(options, db_.get()));
 
-    ASSERT_EQ(priority, CpuPriority::kLow);
+    ASSERT_EQ(priority, rs::port_defs::CpuPriority::kLow);
   }
 
   {
@@ -3940,10 +3940,10 @@ TEST_F(BackupEngineTest, BackgroundThreadCpuPriority) {
     // the priority should still low.
     CreateBackupOptions options;
     options.decrease_background_thread_cpu_priority = true;
-    options.background_thread_cpu_priority = CpuPriority::kNormal;
+    options.background_thread_cpu_priority = rs::port_defs::CpuPriority::kNormal;
     ASSERT_OK(backup_engine_->CreateNewBackup(options, db_.get()));
 
-    ASSERT_EQ(priority, CpuPriority::kLow);
+    ASSERT_EQ(priority, rs::port_defs::CpuPriority::kLow);
   }
 
   {
@@ -3952,29 +3952,29 @@ TEST_F(BackupEngineTest, BackgroundThreadCpuPriority) {
     // decrease cpu priority from low to idle.
     CreateBackupOptions options;
     options.decrease_background_thread_cpu_priority = true;
-    options.background_thread_cpu_priority = CpuPriority::kIdle;
+    options.background_thread_cpu_priority = rs::port_defs::CpuPriority::kIdle;
     ASSERT_OK(backup_engine_->CreateNewBackup(options, db_.get()));
 
-    ASSERT_EQ(priority, CpuPriority::kIdle);
+    ASSERT_EQ(priority, rs::port_defs::CpuPriority::kIdle);
   }
 
   {
     FillDB(db_.get(), 301, 400);
 
     // reset priority to later verify that it's not updated by SetCpuPriority.
-    priority = CpuPriority::kNormal;
+    priority = rs::port_defs::CpuPriority::kNormal;
 
     // setting the same cpu priority won't call SetCpuPriority.
     CreateBackupOptions options;
     options.decrease_background_thread_cpu_priority = true;
-    options.background_thread_cpu_priority = CpuPriority::kIdle;
+    options.background_thread_cpu_priority = rs::port_defs::CpuPriority::kIdle;
 
     // Also check output backup_id with CreateNewBackup
     BackupID new_id = 0;
     ASSERT_OK(backup_engine_->CreateNewBackup(options, db_.get(), &new_id));
     ASSERT_EQ(new_id, 5U);
 
-    ASSERT_EQ(priority, CpuPriority::kNormal);
+    ASSERT_EQ(priority, rs::port_defs::CpuPriority::kNormal);
   }
 
   ROCKSDB_NAMESPACE::SyncPoint::GetInstance()->DisableProcessing();

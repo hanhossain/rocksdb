@@ -27,7 +27,6 @@
 
 #include "rocksdb/customizable.h"
 #include "rocksdb/functor_wrapper.h"
-#include "rocksdb/port_defs.h"
 #include "rocksdb/status.h"
 #include "rocksdb/thread_status.h"
 
@@ -567,7 +566,7 @@ class Env : public Customizable {
 
   // Lower CPU priority for threads from the specified pool.
   virtual Status LowerThreadPoolCPUPriority(Priority /*pool*/,
-                                            CpuPriority /*pri*/) {
+                                            rs::port_defs::CpuPriority /*pri*/) {
     return Status::NotSupported(
         "Env::LowerThreadPoolCPUPriority(Priority, CpuPriority) not supported");
   }
@@ -1591,7 +1590,7 @@ class EnvWrapper : public Env {
     target_.env->LowerThreadPoolCPUPriority(pool);
   }
 
-  Status LowerThreadPoolCPUPriority(Priority pool, CpuPriority pri) override {
+  Status LowerThreadPoolCPUPriority(Priority pool, rs::port_defs::CpuPriority pri) override {
     return target_.env->LowerThreadPoolCPUPriority(pool, pri);
   }
 

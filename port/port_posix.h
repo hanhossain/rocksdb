@@ -13,8 +13,8 @@
 
 #include <thread>
 
-#include "rocksdb/port_defs.h"
 #include "rocksdb/rocksdb_namespace.h"
+#include "rocksdb-sys-cxx/lib.h"
 
 // size_t printf formatting named in the manner of C99 standard formatting
 // strings such as PRIu64
@@ -231,7 +231,7 @@ extern const size_t kPageSize;
 
 using ThreadId = pid_t;
 
-extern void SetCpuPriority(ThreadId id, CpuPriority priority);
+extern void SetCpuPriority(ThreadId id, rs::port_defs::CpuPriority priority);
 
 int64_t GetProcessID();
 

@@ -251,7 +251,7 @@ static size_t GetPageSize() {
 
 const size_t kPageSize = GetPageSize();
 
-void SetCpuPriority(ThreadId id, CpuPriority priority) {
+void SetCpuPriority(ThreadId id, rs::port_defs::CpuPriority priority) {
 #ifdef OS_LINUX
   sched_param param;
   param.sched_priority = 0;
