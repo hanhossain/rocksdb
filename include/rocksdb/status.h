@@ -47,9 +47,12 @@ class Status final {
   // In case of intentionally swallowing an error, user must explicitly call
   // this function. That way we are easily able to search the code to find where
   // error swallowing occurs.
-  inline void PermitUncheckedError() const {  }
+  inline void PermitUncheckedError() const {
+    // leaving as a no-op to denote which methods we can discard the result in once more is moved to rust
+  }
 
   inline void MustCheck() const {
+    // leaving as a no-op to denote which methods we need to check the result for once more is moved to rust
   }
 
   rs::status::Code code() const {
