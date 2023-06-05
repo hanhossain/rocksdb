@@ -35,8 +35,6 @@ class Status final {
         data_loss_(false),
         scope_(0),
         state_(nullptr) {}
-  ~Status() {
-  }
 
   // Copy the specified status.
   Status(const Status& s);
