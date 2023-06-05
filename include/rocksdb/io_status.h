@@ -172,9 +172,6 @@ inline IOStatus::IOStatus(rs::status::Code _code, rs::status::SubCode _subcode, 
 
 inline IOStatus::IOStatus(const IOStatus& s)
     : inner_status(s.inner_status.code_, s.inner_status.subcode_) {
-#ifdef ROCKSDB_ASSERT_STATUS_CHECKED
-    s.inner_status.checked_ = true;
-#endif  // ROCKSDB_ASSERT_STATUS_CHECKED
   inner_status.retryable_ = s.inner_status.retryable_;
   inner_status.data_loss_ = s.inner_status.data_loss_;
   inner_status.scope_ = s.inner_status.scope_;
@@ -184,10 +181,6 @@ inline IOStatus& IOStatus::operator=(const IOStatus& s) {
   // The following condition catches both aliasing (when this == &s),
   // and the common case where both s and *this are ok.
   if (this != &s) {
-#ifdef ROCKSDB_ASSERT_STATUS_CHECKED
-    s.inner_status.checked_ = true;
-    inner_status.checked_ = false;
-#endif  // ROCKSDB_ASSERT_STATUS_CHECKED
     inner_status.code_ = s.inner_status.code_;
     inner_status.subcode_ = s.inner_status.subcode_;
     inner_status.retryable_ = s.inner_status.retryable_;
@@ -204,10 +197,6 @@ inline IOStatus::IOStatus(IOStatus&& s) noexcept : IOStatus() {
 
 inline IOStatus& IOStatus::operator=(IOStatus&& s) noexcept {
   if (this != &s) {
-#ifdef ROCKSDB_ASSERT_STATUS_CHECKED
-    s.inner_status.checked_ = true;
-    inner_status.checked_ = false;
-#endif  // ROCKSDB_ASSERT_STATUS_CHECKED
     inner_status.code_ = std::move(s.inner_status.code_);
     s.inner_status.code_ = rs::status::Code::Ok;
     inner_status.subcode_ = std::move(s.inner_status.subcode_);
@@ -222,18 +211,10 @@ inline IOStatus& IOStatus::operator=(IOStatus&& s) noexcept {
 }
 
 inline bool IOStatus::operator==(const IOStatus& rhs) const {
-#ifdef ROCKSDB_ASSERT_STATUS_CHECKED
-  inner_status.checked_ = true;
-  rhs.inner_status.checked_ = true;
-#endif  // ROCKSDB_ASSERT_STATUS_CHECKED
   return (inner_status.code_ == rhs.inner_status.code_);
 }
 
 inline bool IOStatus::operator!=(const IOStatus& rhs) const {
-#ifdef ROCKSDB_ASSERT_STATUS_CHECKED
-  inner_status.checked_ = true;
-  rhs.inner_status.checked_ = true;
-#endif  // ROCKSDB_ASSERT_STATUS_CHECKED
   return !(*this == rhs);
 }
 

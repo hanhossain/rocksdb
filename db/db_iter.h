@@ -142,11 +142,6 @@ class DBIter final : public Iterator {
   }
 
   bool Valid() const override {
-#ifdef ROCKSDB_ASSERT_STATUS_CHECKED
-    if (valid_) {
-      status_.PermitUncheckedError();
-    }
-#endif  // ROCKSDB_ASSERT_STATUS_CHECKED
     return valid_;
   }
   Slice key() const override {

@@ -741,12 +741,6 @@ DEFINE_SYNC_AND_ASYNC(void, BlockBasedTable::MultiGet)
       }
       *(miter->s) = s;
     }
-#ifdef ROCKSDB_ASSERT_STATUS_CHECKED
-    // Not sure why we need to do it. Should investigate more.
-    for (auto& st : statuses) {
-      st.PermitUncheckedError();
-    }
-#endif  // ROCKSDB_ASSERT_STATUS_CHECKED
   }
 }
 }  // namespace ROCKSDB_NAMESPACE

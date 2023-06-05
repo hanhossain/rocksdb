@@ -350,13 +350,6 @@ if(NOT WITH_DYNAMIC_EXTENSION)
   add_definitions(-DROCKSDB_NO_DYNAMIC_EXTENSION)
 endif()
 
-option(ASSERT_STATUS_CHECKED "build with assert status checked" OFF)
-if (ASSERT_STATUS_CHECKED)
-  message(STATUS "Build with assert status checked")
-  add_definitions(-DROCKSDB_ASSERT_STATUS_CHECKED)
-endif()
-
-
 # RTTI is by default AUTO which enables it in debug and disables it in release.
 set(USE_RTTI AUTO CACHE STRING "Enable RTTI in builds")
 set_property(CACHE USE_RTTI PROPERTY STRINGS AUTO ON OFF)

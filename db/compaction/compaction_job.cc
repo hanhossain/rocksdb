@@ -1407,16 +1407,6 @@ void CompactionJob::ProcessKeyValueCompaction(SubcompactionState* sub_compact) {
       SetPerfLevel(prev_perf_level);
     }
   }
-#ifdef ROCKSDB_ASSERT_STATUS_CHECKED
-  if (!status.ok()) {
-    if (c_iter) {
-      c_iter->status().PermitUncheckedError();
-    }
-    if (input) {
-      input->status().PermitUncheckedError();
-    }
-  }
-#endif  // ROCKSDB_ASSERT_STATUS_CHECKED
 
   blob_counter.reset();
   clip.reset();

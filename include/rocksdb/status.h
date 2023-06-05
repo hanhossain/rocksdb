@@ -16,11 +16,6 @@
 
 #pragma once
 
-#ifdef ROCKSDB_ASSERT_STATUS_CHECKED
-#include <stdio.h>
-#include <stdlib.h>
-#endif
-
 #include <memory>
 #include <string>
 
@@ -29,7 +24,7 @@
 
 namespace ROCKSDB_NAMESPACE {
 
-class Status {
+class Status final {
  public:
   // Create a success status.
   Status()
@@ -41,12 +36,6 @@ class Status {
         scope_(0),
         state_(nullptr) {}
   ~Status() {
-#ifdef ROCKSDB_ASSERT_STATUS_CHECKED
-    if (!checked_) {
-      fprintf(stderr, "Failed to check Status %p\n", this);
-      std::abort();
-    }
-#endif  // ROCKSDB_ASSERT_STATUS_CHECKED
   }
 
   // Copy the specified status.
@@ -63,9 +52,6 @@ class Status {
   inline void PermitUncheckedError() const { MarkChecked(); }
 
   inline void MustCheck() const {
-#ifdef ROCKSDB_ASSERT_STATUS_CHECKED
-    checked_ = false;
-#endif  // ROCKSDB_ASSERT_STATUS_CHECKED
   }
 
   rs::status::Code code() const {
@@ -412,17 +398,10 @@ class Status {
     // A nullptr state_ (which is at least the case for OK) means the extra
   // message is empty.
   std::unique_ptr<const char[]> state_;
-#ifdef ROCKSDB_ASSERT_STATUS_CHECKED
-        mutable bool checked_ = false;
-
-#endif  // ROCKSDB_ASSERT_STATUS_CHECKED
 
   static std::unique_ptr<const char[]> CopyState(const char* s);
 
   inline void MarkChecked() const {
-#ifdef ROCKSDB_ASSERT_STATUS_CHECKED
-    checked_ = true;
-#endif  // ROCKSDB_ASSERT_STATUS_CHECKED
   }
 };
 

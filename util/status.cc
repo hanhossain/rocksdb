@@ -78,9 +78,6 @@ Status Status::CopyAppendMessage(const Status& s, const Slice& delim,
 }
 
 std::string Status::ToString() const {
-#ifdef ROCKSDB_ASSERT_STATUS_CHECKED
-  checked_ = true;
-#endif  // ROCKSDB_ASSERT_STATUS_CHECKED
   const char* type = nullptr;
   switch (code_) {
     case rs::status::Code::Ok:
