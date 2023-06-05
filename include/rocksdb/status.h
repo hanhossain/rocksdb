@@ -49,18 +49,16 @@ class Status final {
   // In case of intentionally swallowing an error, user must explicitly call
   // this function. That way we are easily able to search the code to find where
   // error swallowing occurs.
-  inline void PermitUncheckedError() const { MarkChecked(); }
+  inline void PermitUncheckedError() const {  }
 
   inline void MustCheck() const {
   }
 
   rs::status::Code code() const {
-    MarkChecked();
     return code_;
   }
 
   rs::status::SubCode subcode() const {
-    MarkChecked();
     return subcode_;
   }
 
@@ -73,13 +71,11 @@ class Status final {
                                   const Slice& msg);
 
   rs::status::Severity severity() const {
-    MarkChecked();
     return sev_;
   }
 
   // Returns a C style string indicating the message of the Status
   const char* getState() const {
-    MarkChecked();
     return state_.get();
   }
 
@@ -208,90 +204,75 @@ class Status final {
 
   // Returns true iff the status indicates success.
   bool ok() const {
-    MarkChecked();
     return code() == rs::status::Code::Ok;
   }
 
   // Returns true iff the status indicates success *with* something
   // overwritten
   bool IsOkOverwritten() const {
-    MarkChecked();
     return code() == rs::status::Code::Ok && subcode() == rs::status::SubCode::Overwritten;
   }
 
   // Returns true iff the status indicates a NotFound error.
   bool IsNotFound() const {
-    MarkChecked();
     return code() == rs::status::Code::NotFound;
   }
 
   // Returns true iff the status indicates a Corruption error.
   bool IsCorruption() const {
-    MarkChecked();
     return code() == rs::status::Code::Corruption;
   }
 
   // Returns true iff the status indicates a NotSupported error.
   bool IsNotSupported() const {
-    MarkChecked();
     return code() == rs::status::Code::NotSupported;
   }
 
   // Returns true iff the status indicates an InvalidArgument error.
   bool IsInvalidArgument() const {
-    MarkChecked();
     return code() == rs::status::Code::InvalidArgument;
   }
 
   // Returns true iff the status indicates an IOError.
   bool IsIOError() const {
-    MarkChecked();
     return code() == rs::status::Code::IOError;
   }
 
   // Returns true iff the status indicates an MergeInProgress.
   bool IsMergeInProgress() const {
-    MarkChecked();
     return code() == rs::status::Code::MergeInProgress;
   }
 
   // Returns true iff the status indicates Incomplete
   bool IsIncomplete() const {
-    MarkChecked();
     return code() == rs::status::Code::Incomplete;
   }
 
   // Returns true iff the status indicates Shutdown In progress
   bool IsShutdownInProgress() const {
-    MarkChecked();
     return code() == rs::status::Code::ShutdownInProgress;
   }
 
   bool IsTimedOut() const {
-    MarkChecked();
     return code() == rs::status::Code::TimedOut;
   }
 
   bool IsAborted() const {
-    MarkChecked();
     return code() == rs::status::Code::Aborted;
   }
 
   // Returns true iff the status indicates that a resource is Busy and
   // temporarily could not be acquired.
   bool IsBusy() const {
-    MarkChecked();
     return code() == rs::status::Code::Busy;
   }
 
   bool IsDeadlock() const {
-    MarkChecked();
     return code() == rs::status::Code::Busy && subcode() == rs::status::SubCode::Deadlock;
   }
 
   // Returns true iff the status indicated that the operation has Expired.
   bool IsExpired() const {
-    MarkChecked();
     return code() == rs::status::Code::Expired;
   }
 
@@ -299,19 +280,16 @@ class Status final {
   // This usually means that the operation failed, but may succeed if
   // re-attempted.
   bool IsTryAgain() const {
-    MarkChecked();
     return code() == rs::status::Code::TryAgain;
   }
 
   // Returns true iff the status indicates the proposed compaction is too large
   bool IsCompactionTooLarge() const {
-    MarkChecked();
     return code() == rs::status::Code::CompactionTooLarge;
   }
 
   // Returns true iff the status indicates Column Family Dropped
   bool IsColumnFamilyDropped() const {
-    MarkChecked();
     return code() == rs::status::Code::ColumnFamilyDropped;
   }
 
@@ -321,7 +299,6 @@ class Status final {
   // with a specific subcode, enabling users to take the appropriate action
   // if needed
   bool IsNoSpace() const {
-    MarkChecked();
     return (code() == rs::status::Code::IOError) && (subcode() == rs::status::SubCode::NoSpace);
   }
 
@@ -329,7 +306,6 @@ class Status final {
   // cases where we limit the memory used in certain operations (eg. the size
   // of a write batch) in order to avoid out of memory exceptions.
   bool IsMemoryLimit() const {
-    MarkChecked();
     return (code() == rs::status::Code::Aborted) && (subcode() == rs::status::SubCode::MemoryLimit);
   }
 
@@ -338,7 +314,6 @@ class Status final {
   // directory" error condition. A PathNotFound error is an I/O error with
   // a specific subcode, enabling users to take appropriate action if necessary
   bool IsPathNotFound() const {
-    MarkChecked();
     return (code() == rs::status::Code::IOError || code() == rs::status::Code::NotFound) &&
            (subcode() == rs::status::SubCode::PathNotFound);
   }
@@ -346,19 +321,16 @@ class Status final {
   // Returns true iff the status indicates manual compaction paused. This
   // is caused by a call to PauseManualCompaction
   bool IsManualCompactionPaused() const {
-    MarkChecked();
     return (code() == rs::status::Code::Incomplete) && (subcode() == rs::status::SubCode::ManualCompactionPaused);
   }
 
   // Returns true iff the status indicates a TxnNotPrepared error.
   bool IsTxnNotPrepared() const {
-    MarkChecked();
     return (code() == rs::status::Code::InvalidArgument) && (subcode() == rs::status::SubCode::TxnNotPrepared);
   }
 
   // Returns true iff the status indicates a IOFenced error.
   bool IsIOFenced() const {
-    MarkChecked();
     return (code() == rs::status::Code::IOError) && (subcode() == rs::status::SubCode::IOFenced);
   }
 
@@ -400,9 +372,6 @@ class Status final {
   std::unique_ptr<const char[]> state_;
 
   static std::unique_ptr<const char[]> CopyState(const char* s);
-
-  inline void MarkChecked() const {
-  }
 };
 
 inline Status::Status(const Status& s)
@@ -412,7 +381,6 @@ inline Status::Status(const Status& s)
       retryable_(s.retryable_),
       data_loss_(s.data_loss_),
       scope_(s.scope_) {
-  s.MarkChecked();
   state_ = (s.state_ == nullptr) ? nullptr : CopyState(s.state_.get());
 }
 inline Status::Status(const Status& s, rs::status::Severity sev)
@@ -422,12 +390,10 @@ inline Status::Status(const Status& s, rs::status::Severity sev)
       retryable_(s.retryable_),
       data_loss_(s.data_loss_),
       scope_(s.scope_) {
-  s.MarkChecked();
   state_ = (s.state_ == nullptr) ? nullptr : CopyState(s.state_.get());
 }
 inline Status& Status::operator=(const Status& s) {
   if (this != &s) {
-    s.MarkChecked();
     MustCheck();
     code_ = s.code_;
     subcode_ = s.subcode_;
@@ -441,13 +407,11 @@ inline Status& Status::operator=(const Status& s) {
 }
 
 inline Status::Status(Status&& s) noexcept : Status() {
-  s.MarkChecked();
   *this = std::move(s);
 }
 
 inline Status& Status::operator=(Status&& s) noexcept {
   if (this != &s) {
-    s.MarkChecked();
     MustCheck();
     code_ = s.code_;
     s.code_ = rs::status::Code::Ok;
@@ -467,14 +431,10 @@ inline Status& Status::operator=(Status&& s) noexcept {
 }
 
 inline bool Status::operator==(const Status& rhs) const {
-  MarkChecked();
-  rhs.MarkChecked();
   return (code_ == rhs.code_);
 }
 
 inline bool Status::operator!=(const Status& rhs) const {
-  MarkChecked();
-  rhs.MarkChecked();
   return !(*this == rhs);
 }
 
