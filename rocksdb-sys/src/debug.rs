@@ -1,15 +1,17 @@
 use crate::ffi::{KeyVersion, ValueType};
+use cxx::CxxString;
+use std::ffi::{c_char, CStr};
 
 impl KeyVersion {
-    pub(crate) fn new(
-        user_key: String,
-        value: String,
+    pub(crate) fn new<T: Into<Vec<u8>>>(
+        user_key: T,
+        value: T,
         sequence: u64,
         value_type: ValueType,
     ) -> KeyVersion {
         KeyVersion {
-            user_key,
-            value,
+            user_key: user_key.into(),
+            value: value.into(),
             sequence,
             value_type,
         }
@@ -57,21 +59,49 @@ impl KeyVersion {
 impl Default for KeyVersion {
     fn default() -> Self {
         KeyVersion {
-            user_key: String::new(),
-            value: String::new(),
+            user_key: Vec::new(),
+            value: Vec::new(),
             sequence: 0,
             value_type: ValueType::TypeDeletion,
         }
     }
 }
 
-pub(crate) fn new_key_version(
-    user_key: String,
-    value: String,
+pub(crate) unsafe fn new_key_version(
+    user_key: *const c_char,
+    value: *const c_char,
     sequence: u64,
     value_type: ValueType,
 ) -> KeyVersion {
-    KeyVersion::new(user_key, value, sequence, value_type)
+    assert!(!user_key.is_null());
+    assert!(!value.is_null());
+
+    let user_key = CStr::from_ptr(user_key);
+    let value = CStr::from_ptr(value);
+
+    KeyVersion::new(
+        user_key.to_bytes_with_nul().to_vec(),
+        value.to_bytes_with_nul().to_vec(),
+        sequence,
+        value_type,
+    )
+}
+
+pub(crate) fn new_key_version_from_cstrings(
+    user_key: &CxxString,
+    value: &CxxString,
+    sequence: u64,
+    value_type: ValueType,
+) -> KeyVersion {
+    unsafe {
+        // SAFETY: CxxString will always produce a valid *const c_char ptr
+        new_key_version(
+            user_key.as_ptr() as *const c_char,
+            value.as_ptr() as *const c_char,
+            sequence,
+            value_type,
+        )
+    }
 }
 
 pub(crate) fn default_key_version() -> KeyVersion {

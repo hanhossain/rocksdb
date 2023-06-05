@@ -42,7 +42,9 @@ class Slice {
   /* implicit */
   Slice(const std::string& s) : data_(s.data()), size_(s.size()) {}
 
-  Slice(const rust::String& s) : Slice(std::string(s)) {}
+  Slice(const rust::Vec<uint8_t>& v) : data_((const char*)(v.data())), size_(v.size()) {}
+
+  Slice(const rust::Vec<char>& v) : data_(v.data()), size_(v.size()) {}
 
   // Create a slice that refers to the same contents as "sv"
   /* implicit */

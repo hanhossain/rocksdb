@@ -65,8 +65,8 @@ Status GetAllKeyVersions(DB* db, ColumnFamilyHandle* cfh, Slice begin_key,
     }
 
     key_versions->push_back(rs::debug::KeyVersion_new(
-        ikey.user_key.ToString(),
-        iter->value().ToString(),
+        ikey.user_key.ToString().data(),
+        iter->value().ToString().data(),
         ikey.sequence,
         ikey.type));
     if (++num_keys >= max_num_ikeys) {
