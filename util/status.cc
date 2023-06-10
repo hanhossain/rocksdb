@@ -19,27 +19,6 @@
 
 namespace ROCKSDB_NAMESPACE {
 
-static const char* msgs[static_cast<int>(rs::status::SubCode::MaxSubCode)] = {
-    "",                                                   // kNone
-    "Timeout Acquiring Mutex",                            // kMutexTimeout
-    "Timeout waiting to lock key",                        // kLockTimeout
-    "Failed to acquire lock due to max_num_locks limit",  // kLockLimit
-    "No space left on device",                            // kNoSpace
-    "Deadlock",                                           // kDeadlock
-    "Stale file handle",                                  // kStaleFile
-    "Memory limit reached",                               // kMemoryLimit
-    "Space limit reached",                                // kSpaceLimit
-    "No such file or directory",                          // kPathNotFound
-    // KMergeOperandsInsufficientCapacity
-    "Insufficient capacity for merge operands",
-    // kManualCompactionPaused
-    "Manual compaction paused",
-    " (overwritten)",         // kOverwritten, subcode of OK
-    "Txn not prepared",       // kTxnNotPrepared
-    "IO fenced off",          // kIOFenced
-    "Merge operator failed",  // kMergeOperatorFailed
-};
-
 Status::Status(rs::status::Code _code, rs::status::SubCode _subcode, const Slice& msg,
                const Slice& msg2, rs::status::Severity sev)
     : status_(rs::status::Status_new(_code, _subcode, false, false, 0)) {
