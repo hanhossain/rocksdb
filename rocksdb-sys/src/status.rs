@@ -247,6 +247,9 @@ impl Status {
         result
     }
 
+    /// # Safety
+    ///
+    /// This has the same safety constraints as [`CStr::from_ptr`]
     pub(crate) unsafe fn set_state_unsafe(&mut self, state_: *const c_char) {
         let state = if state_.is_null() {
             vec![0]
@@ -294,4 +297,16 @@ pub(crate) fn new_status_with_code(code: Code) -> Status {
 
 pub(crate) fn new_status_with_code_and_subcode(code: Code, subcode: SubCode) -> Status {
     Status::new_with_code_and_subcode(code, subcode)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn  status_to_string() {
+        let mut status = Status::new_with_code(Code::TryAgain);
+        unsafe { status.set_state_unsafe(b"Oops I did it again\0".as_ptr().cast())}
+        assert_eq!(status.to_string(), "Operation failed. Try again.: Oops I did it again");
+    }
 }
