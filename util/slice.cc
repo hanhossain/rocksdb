@@ -341,19 +341,19 @@ PinnableSlice& PinnableSlice::operator=(PinnableSlice&& other) {
   if (this != &other) {
     Cleanable::Reset();
     Cleanable::operator=(std::move(other));
-    size_ = other.size_;
+    set_size(other.size());
     pinned_ = other.pinned_;
     if (pinned_) {
-      data_ = other.data_;
+      set_data(other.data());
       // When it's pinned, buf should no longer be of use.
     } else {
       if (other.buf_ == &other.self_space_) {
         self_space_ = std::move(other.self_space_);
         buf_ = &self_space_;
-        data_ = buf_->data();
+        set_data(buf_->data());
       } else {
         buf_ = other.buf_;
-        data_ = other.data_;
+        set_data(other.data());
       }
     }
     other.self_space_.clear();

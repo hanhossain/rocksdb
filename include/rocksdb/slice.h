@@ -133,7 +133,6 @@ class Slice {
 
   // private: make these public for rocksdbjni access
 private:
-  friend class PinnableSlice;
   const char* data_;
   size_t size_;
 
@@ -162,8 +161,8 @@ class PinnableSlice : public Slice, public Cleanable {
                        void* arg2) {
     assert(!pinned_);
     pinned_ = true;
-    data_ = s.data();
-    size_ = s.size();
+    set_data(s.data());
+    set_size(s.size());
     RegisterCleanup(f, arg1, arg2);
     assert(pinned_);
   }
@@ -171,8 +170,8 @@ class PinnableSlice : public Slice, public Cleanable {
   inline void PinSlice(const Slice& s, Cleanable* cleanable) {
     assert(!pinned_);
     pinned_ = true;
-    data_ = s.data();
-    size_ = s.size();
+    set_data(s.data());
+    set_size(s.size());
     if (cleanable != nullptr) {
       cleanable->DelegateCleanupsTo(this);
     }
@@ -182,22 +181,22 @@ class PinnableSlice : public Slice, public Cleanable {
   inline void PinSelf(const Slice& slice) {
     assert(!pinned_);
     buf_->assign(slice.data(), slice.size());
-    data_ = buf_->data();
-    size_ = buf_->size();
+    set_data(buf_->data());
+    set_size(buf_->size());
     assert(!pinned_);
   }
 
   inline void PinSelf() {
     assert(!pinned_);
-    data_ = buf_->data();
-    size_ = buf_->size();
+    set_data(buf_->data());
+    set_size(buf_->size());
     assert(!pinned_);
   }
 
   void remove_suffix(size_t n) {
     assert(n <= size());
     if (pinned_) {
-      size_ -= n;
+      set_size(size() - n);
     } else {
       buf_->erase(size() - n, n);
       PinSelf();
@@ -207,8 +206,8 @@ class PinnableSlice : public Slice, public Cleanable {
   void remove_prefix(size_t n) {
     assert(n <= size());
     if (pinned_) {
-      data_ += n;
-      size_ -= n;
+      set_data(data() + n);
+      set_size(size() - n);
     } else {
       buf_->erase(0, n);
       PinSelf();
@@ -218,7 +217,7 @@ class PinnableSlice : public Slice, public Cleanable {
   void Reset() {
     Cleanable::Reset();
     pinned_ = false;
-    size_ = 0;
+    set_size(0);
   }
 
   inline std::string* GetSelf() { return buf_; }
