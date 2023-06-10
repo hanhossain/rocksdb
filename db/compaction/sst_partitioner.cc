@@ -29,11 +29,11 @@ PartitionerResult SstPartitionerFixedPrefix::ShouldPartition(
     const PartitionerRequest& request) {
   Slice last_key_fixed(*request.prev_user_key);
   if (last_key_fixed.size() > len_) {
-    last_key_fixed.size_ = len_;
+    last_key_fixed.set_size(len_);
   }
   Slice current_key_fixed(*request.current_user_key);
   if (current_key_fixed.size() > len_) {
-    current_key_fixed.size_ = len_;
+    current_key_fixed.set_size(len_);
   }
   return last_key_fixed.compare(current_key_fixed) != 0 ? kRequired
                                                         : kNotRequired;

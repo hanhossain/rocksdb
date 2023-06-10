@@ -393,8 +393,8 @@ Status CompactionOutputs::AddToOutput(
   // c_iter may emit range deletion keys, so update `last_key_for_partitioner_`
   // here before returning below when `is_range_del` is true
   if (partitioner_) {
-    last_key_for_partitioner_.assign(c_iter.user_key().data_,
-                                     c_iter.user_key().size_);
+    last_key_for_partitioner_.assign(c_iter.user_key().data(),
+                                     c_iter.user_key().size());
   }
 
   if (UNLIKELY(is_range_del)) {

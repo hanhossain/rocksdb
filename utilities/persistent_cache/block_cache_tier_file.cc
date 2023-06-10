@@ -176,8 +176,8 @@ bool CacheRecord::Deserialize(const Slice& data) {
     return false;
   }
 
-  key_ = Slice(data.data_ + sizeof(hdr_), hdr_.key_size_);
-  val_ = Slice(key_.data_ + hdr_.key_size_, hdr_.val_size_);
+  key_ = Slice(data.data() + sizeof(hdr_), hdr_.key_size_);
+  val_ = Slice(key_.data() + hdr_.key_size_, hdr_.val_size_);
 
   if (!(hdr_.magic_ == MAGIC && ComputeCRC() == hdr_.crc_)) {
     fprintf(stderr, "** magic %d ** \n", hdr_.magic_);

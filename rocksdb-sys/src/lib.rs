@@ -2,6 +2,7 @@ pub mod advanced_options;
 pub mod debug;
 pub mod math;
 pub mod options;
+pub mod slice;
 pub mod status;
 
 use crate::advanced_options::{
@@ -900,5 +901,12 @@ mod ffi {
         Low = 1,
         Normal = 2,
         High = 3,
+    }
+
+    #[namespace = "rs::slice"]
+    pub(crate) struct Slice {
+        pub(crate) data: Vec<u8>,
+        // TODO: Not sure if we need this since Vec holds it's own size
+        pub(crate) size: usize,
     }
 }

@@ -58,11 +58,15 @@ class Slice {
   // buf must exist as long as the returned Slice exists.
   Slice(const struct SliceParts& parts, std::string* buf);
 
+  void set_data(const char* data) { data_ = data; }
+
   // Return a pointer to the beginning of the referenced data
   const char* data() const { return data_; }
 
   // Return the length (in bytes) of the referenced data
   size_t size() const { return size_; }
+
+  void set_size(size_t size) { size_ = size; }
 
   // Return true iff the length of the referenced data is zero
   bool empty() const { return size_ == 0; }
@@ -128,6 +132,8 @@ class Slice {
   size_t difference_offset(const Slice& b) const;
 
   // private: make these public for rocksdbjni access
+private:
+  friend class PinnableSlice;
   const char* data_;
   size_t size_;
 

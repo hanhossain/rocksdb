@@ -140,7 +140,7 @@ class TtlIterator : public Iterator {
     // TODO: handle timestamp corruption like in general iterator semantics
     assert(DBWithTTLImpl::SanityCheckTimestamp(iter_->value()).ok());
     Slice trimmed_value = iter_->value();
-    trimmed_value.size_ -= DBWithTTLImpl::kTSLength;
+    trimmed_value.set_size(trimmed_value.size() - DBWithTTLImpl::kTSLength);
     return trimmed_value;
   }
 
