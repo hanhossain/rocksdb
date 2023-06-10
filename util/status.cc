@@ -19,13 +19,6 @@
 
 namespace ROCKSDB_NAMESPACE {
 
-std::unique_ptr<const char[]> Status::CopyState(const char* s) {
-  const size_t cch = std::strlen(s) + 1;  // +1 for the null terminator
-  char* rv = new char[cch];
-  std::strncpy(rv, s, cch);
-  return std::unique_ptr<const char[]>(rv);
-}
-
 static const char* msgs[static_cast<int>(rs::status::SubCode::MaxSubCode)] = {
     "",                                                   // kNone
     "Timeout Acquiring Mutex",                            // kMutexTimeout

@@ -346,8 +346,6 @@ class Status final {
     Status(rs::status::Code _code, const Slice& msg, const Slice& msg2)
             : Status(_code, rs::status::SubCode::None, msg, msg2) {}
     rs::status::Status status_;
-
-  static std::unique_ptr<const char[]> CopyState(const char* s);
 };
 
 inline Status::Status(const Status& s)
