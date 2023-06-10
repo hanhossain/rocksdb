@@ -27,14 +27,7 @@ namespace ROCKSDB_NAMESPACE {
 class Status final {
  public:
   // Create a success status.
-  Status()
-      : code_(rs::status::Code::Ok),
-        subcode_(rs::status::SubCode::None),
-        sev_(rs::status::Severity::NoError),
-        retryable_(false),
-        data_loss_(false),
-        scope_(0),
-        state_(nullptr) {}
+  Status() : status_(rs::status::Status_new()) {}
 
   // Copy the specified status.
   Status(const Status& s);
@@ -56,11 +49,11 @@ class Status final {
   }
 
   rs::status::Code code() const {
-    return code_;
+    return status_.code();
   }
 
   rs::status::SubCode subcode() const {
-    return subcode_;
+    return status_.subcode();
   }
 
   Status(const Status& s, rs::status::Severity sev);
@@ -72,12 +65,12 @@ class Status final {
                                   const Slice& msg);
 
   rs::status::Severity severity() const {
-    return sev_;
+    return status_.severity();
   }
 
   // Returns a C style string indicating the message of the Status
   const char* getState() const {
-    return state_.get();
+    return status_.getState();
   }
 
   // Return a success status.
@@ -342,67 +335,38 @@ class Status final {
  protected:
     friend class IOStatus;
     explicit Status(rs::status::Code _code, rs::status::SubCode _subcode = rs::status::SubCode::None)
-            : code_(_code),
-              subcode_(_subcode),
-              sev_(rs::status::Severity::NoError),
-              retryable_(false),
-              data_loss_(false),
-              scope_(0) {}
+            : status_(rs::status::Status_new(_code, _subcode)) {}
 
     explicit Status(rs::status::Code _code, rs::status::SubCode _subcode, bool retryable, bool data_loss,
                     unsigned char scope)
-            : code_(_code),
-              subcode_(_subcode),
-              sev_(rs::status::Severity::NoError),
-              retryable_(retryable),
-              data_loss_(data_loss),
-              scope_(scope) {}
+            : status_(rs::status::Status_new(_code, _subcode, retryable, data_loss, scope)) {}
 
     Status(rs::status::Code _code, rs::status::SubCode _subcode, const Slice& msg, const Slice& msg2,
            rs::status::Severity sev = rs::status::Severity::NoError);
     Status(rs::status::Code _code, const Slice& msg, const Slice& msg2)
             : Status(_code, rs::status::SubCode::None, msg, msg2) {}
-    rs::status::Code code_;
-    rs::status::SubCode subcode_;
-    rs::status::Severity sev_;
-    bool retryable_;
-    bool data_loss_;
-    unsigned char scope_;
-    // A nullptr state_ (which is at least the case for OK) means the extra
-  // message is empty.
-  std::unique_ptr<const char[]> state_;
+    rs::status::Status status_;
 
   static std::unique_ptr<const char[]> CopyState(const char* s);
 };
 
 inline Status::Status(const Status& s)
-    : code_(s.code_),
-      subcode_(s.subcode_),
-      sev_(s.sev_),
-      retryable_(s.retryable_),
-      data_loss_(s.data_loss_),
-      scope_(s.scope_) {
-  state_ = (s.state_ == nullptr) ? nullptr : CopyState(s.state_.get());
-}
+    : status_(s.status_) {}
+
 inline Status::Status(const Status& s, rs::status::Severity sev)
-    : code_(s.code_),
-      subcode_(s.subcode_),
-      sev_(sev),
-      retryable_(s.retryable_),
-      data_loss_(s.data_loss_),
-      scope_(s.scope_) {
-  state_ = (s.state_ == nullptr) ? nullptr : CopyState(s.state_.get());
+    : status_(s.status_) {
+  status_.sev = sev;
 }
 inline Status& Status::operator=(const Status& s) {
   if (this != &s) {
     MustCheck();
-    code_ = s.code_;
-    subcode_ = s.subcode_;
-    sev_ = s.sev_;
-    retryable_ = s.retryable_;
-    data_loss_ = s.data_loss_;
-    scope_ = s.scope_;
-    state_ = (s.state_ == nullptr) ? nullptr : CopyState(s.state_.get());
+    status_.code_ = s.status_.code();
+    status_.subcode_ = s.status_.subcode();
+    status_.sev = s.status_.severity();
+    status_.retryable = s.status_.retryable;
+    status_.data_loss = s.status_.data_loss;
+    status_.scope = s.status_.scope;
+    status_.state = s.status_.state;
   }
   return *this;
 }
@@ -414,25 +378,25 @@ inline Status::Status(Status&& s) noexcept : Status() {
 inline Status& Status::operator=(Status&& s) noexcept {
   if (this != &s) {
     MustCheck();
-    code_ = s.code_;
-    s.code_ = rs::status::Code::Ok;
-    subcode_ = s.subcode_;
-    s.subcode_ = rs::status::SubCode::None;
-    sev_ = s.sev_;
-    s.sev_ = rs::status::Severity::NoError;
-    retryable_ = s.retryable_;
-    s.retryable_ = false;
-    data_loss_ = s.data_loss_;
-    s.data_loss_ = false;
-    scope_ = s.scope_;
-    s.scope_ = 0;
-    state_ = std::move(s.state_);
+    status_.code_ = s.status_.code_;
+    s.status_.code_ = rs::status::Code::Ok;
+    status_.subcode_ = s.status_.subcode_;
+    s.status_.subcode_ = rs::status::SubCode::None;
+    status_.sev = s.status_.sev;
+    s.status_.sev = rs::status::Severity::NoError;
+    status_.retryable = s.status_.retryable;
+    s.status_.retryable = false;
+    status_.data_loss = s.status_.data_loss;
+    s.status_.data_loss = false;
+    status_.scope = s.status_.scope;
+    s.status_.scope = 0;
+    status_.state = std::move(s.status_.state);
   }
   return *this;
 }
 
 inline bool Status::operator==(const Status& rhs) const {
-  return (code_ == rhs.code_);
+  return (status_.code_ == rhs.status_.code_);
 }
 
 inline bool Status::operator!=(const Status& rhs) const {

@@ -49,13 +49,9 @@ static const char* msgs[static_cast<int>(rs::status::SubCode::MaxSubCode)] = {
 
 Status::Status(rs::status::Code _code, rs::status::SubCode _subcode, const Slice& msg,
                const Slice& msg2, rs::status::Severity sev)
-    : code_(_code),
-      subcode_(_subcode),
-      sev_(sev),
-      retryable_(false),
-      data_loss_(false),
-      scope_(0) {
-  assert(subcode_ != rs::status::SubCode::MaxSubCode);
+    : status_(rs::status::Status_new(_code, _subcode, false, false, 0)) {
+  assert(status_.subcode_ != rs::status::SubCode::MaxSubCode);
+  status_.sev = sev;
   const size_t len1 = msg.size();
   const size_t len2 = msg2.size();
   const size_t size = len1 + (len2 ? (2 + len2) : 0);
@@ -67,7 +63,7 @@ Status::Status(rs::status::Code _code, rs::status::SubCode _subcode, const Slice
     memcpy(result + len1 + 2, msg2.data(), len2);
   }
   result[size] = '\0';  // null terminator for C style string
-  state_.reset(result);
+  status_.set_state_unsafe(result);
 }
 
 Status Status::CopyAppendMessage(const Status& s, const Slice& delim,
@@ -78,82 +74,7 @@ Status Status::CopyAppendMessage(const Status& s, const Slice& delim,
 }
 
 std::string Status::ToString() const {
-  const char* type = nullptr;
-  switch (code_) {
-    case rs::status::Code::Ok:
-      return "OK";
-    case rs::status::Code::NotFound:
-      type = "NotFound: ";
-      break;
-    case rs::status::Code::Corruption:
-      type = "Corruption: ";
-      break;
-    case rs::status::Code::NotSupported:
-      type = "Not implemented: ";
-      break;
-    case rs::status::Code::InvalidArgument:
-      type = "Invalid argument: ";
-      break;
-    case rs::status::Code::IOError:
-      type = "IO error: ";
-      break;
-    case rs::status::Code::MergeInProgress:
-      type = "Merge in progress: ";
-      break;
-    case rs::status::Code::Incomplete:
-      type = "Result incomplete: ";
-      break;
-    case rs::status::Code::ShutdownInProgress:
-      type = "Shutdown in progress: ";
-      break;
-    case rs::status::Code::TimedOut:
-      type = "Operation timed out: ";
-      break;
-    case rs::status::Code::Aborted:
-      type = "Operation aborted: ";
-      break;
-    case rs::status::Code::Busy:
-      type = "Resource busy: ";
-      break;
-    case rs::status::Code::Expired:
-      type = "Operation expired: ";
-      break;
-    case rs::status::Code::TryAgain:
-      type = "Operation failed. Try again.: ";
-      break;
-    case rs::status::Code::CompactionTooLarge:
-      type = "Compaction too large: ";
-      break;
-    case rs::status::Code::ColumnFamilyDropped:
-      type = "Column family dropped: ";
-      break;
-    case rs::status::Code::MaxCode:
-      assert(false);
-      break;
-  }
-  char tmp[30];
-  if (type == nullptr) {
-    // This should not happen since `code_` should be a valid non-`kMaxCode`
-    // member of the `Code` enum. The above switch-statement should have had a
-    // case assigning `type` to a corresponding string.
-    assert(false);
-    snprintf(tmp, sizeof(tmp), "Unknown code(%d): ", static_cast<int>(code()));
-    type = tmp;
-  }
-  std::string result(type);
-  if (subcode_ != rs::status::SubCode::None) {
-    uint32_t index = static_cast<int32_t>(subcode_);
-    assert(sizeof(msgs) / sizeof(msgs[0]) > index);
-    result.append(msgs[index]);
-  }
-
-  if (state_ != nullptr) {
-    if (subcode_ != rs::status::SubCode::None) {
-      result.append(": ");
-    }
-    result.append(state_.get());
-  }
-  return result;
+  return std::string(status_.ToString());
 }
 
 }  // namespace ROCKSDB_NAMESPACE

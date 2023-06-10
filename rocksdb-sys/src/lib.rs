@@ -2,6 +2,7 @@ pub mod advanced_options;
 pub mod debug;
 pub mod math;
 pub mod options;
+pub mod status;
 
 use crate::advanced_options::{
     new_compaction_options_fifo, new_configurable_compaction_options_fifo,
@@ -9,6 +10,10 @@ use crate::advanced_options::{
 use crate::debug::{default_key_version, new_key_version, new_key_version_from_cstrings};
 use crate::math::*;
 use crate::options::new_live_files_storage_info_options;
+use crate::status::{
+    default_status, new_status_with_code, new_status_with_code_and_subcode,
+    new_status_with_code_subcode_retryable_data_loss_scope,
+};
 
 #[cxx::bridge]
 mod ffi {
@@ -532,8 +537,8 @@ mod ffi {
     }
 
     #[namespace = "rs::status"]
-    #[derive(Debug)]
-    enum Severity {
+    #[derive(Debug, Copy, Clone)]
+    pub(crate) enum Severity {
         NoError = 0,
         SoftError = 1,
         HardError = 2,
@@ -543,8 +548,8 @@ mod ffi {
     }
 
     #[namespace = "rs::status"]
-    #[derive(Debug)]
-    enum Code {
+    #[derive(Debug, Copy, Clone)]
+    pub(crate) enum Code {
         Ok = 0,
         NotFound = 1,
         Corruption = 2,
@@ -565,8 +570,8 @@ mod ffi {
     }
 
     #[namespace = "rs::status"]
-    #[derive(Debug)]
-    enum SubCode {
+    #[derive(Debug, Copy, Clone)]
+    pub(crate) enum SubCode {
         None = 0,
         MutexTimeout = 1,
         LockTimeout = 2,
@@ -584,6 +589,98 @@ mod ffi {
         IOFenced = 14,
         MergeOperatorFailed = 15,
         MaxSubCode,
+    }
+
+    #[namespace = "rs::status"]
+    #[derive(Debug, Clone, Eq, PartialEq)]
+    pub(crate) struct Status {
+        #[cxx_name = "code_"]
+        pub(crate) code: Code,
+        #[cxx_name = "subcode_"]
+        pub(crate) subcode: SubCode,
+        pub(crate) sev: Severity,
+        pub(crate) retryable: bool,
+        pub(crate) data_loss: bool,
+        pub(crate) scope: u8,
+        // TODO: should be a string
+        pub(crate) state: Vec<u8>,
+    }
+
+    #[namespace = "rs::status"]
+    extern "Rust" {
+        #[cxx_name = "Status_new"]
+        fn default_status() -> Status;
+        #[cxx_name = "Status_new"]
+        fn new_status_with_code(code: Code) -> Status;
+        #[cxx_name = "Status_new"]
+        fn new_status_with_code_and_subcode(code: Code, subcode: SubCode) -> Status;
+        #[cxx_name = "Status_new"]
+        fn new_status_with_code_subcode_retryable_data_loss_scope(
+            code: Code,
+            subcode: SubCode,
+            retryable: bool,
+            data_loss: bool,
+            scope: u8,
+        ) -> Status;
+        #[cxx_name = "PermitUncheckedError"]
+        fn permit_unchecked_error(self: &Status);
+        #[cxx_name = "MustCheck"]
+        fn must_check(self: &Status);
+        fn code(self: &Status) -> Code;
+        fn subcode(self: &Status) -> SubCode;
+        fn severity(self: &Status) -> Severity;
+        #[cxx_name = "getState"]
+        fn get_state(self: &Status) -> *const c_char;
+        fn ok(self: &Status) -> bool;
+        #[cxx_name = "IsOkOverwritten"]
+        fn is_ok_overwritten(self: &Status) -> bool;
+        #[cxx_name = "IsNotFound"]
+        fn is_not_found(self: &Status) -> bool;
+        #[cxx_name = "IsCorruption"]
+        fn is_corruption(self: &Status) -> bool;
+        #[cxx_name = "IsNotSupported"]
+        fn is_not_supported(self: &Status) -> bool;
+        #[cxx_name = "IsInvalidArgument"]
+        fn is_invalid_argument(self: &Status) -> bool;
+        #[cxx_name = "IsIOError"]
+        fn is_io_error(self: &Status) -> bool;
+        #[cxx_name = "IsMergeInProgress"]
+        fn is_merge_in_progress(self: &Status) -> bool;
+        #[cxx_name = "IsIncomplete"]
+        fn is_incomplete(self: &Status) -> bool;
+        #[cxx_name = "IsShutdownInProgress"]
+        fn is_shutdown_in_progress(self: &Status) -> bool;
+        #[cxx_name = "IsTimedOut"]
+        fn is_timed_out(self: &Status) -> bool;
+        #[cxx_name = "IsAborted"]
+        fn is_aborted(self: &Status) -> bool;
+        #[cxx_name = "IsBusy"]
+        fn is_busy(self: &Status) -> bool;
+        #[cxx_name = "IsDeadlock"]
+        fn is_deadlock(self: &Status) -> bool;
+        #[cxx_name = "IsExpired"]
+        fn is_expired(self: &Status) -> bool;
+        #[cxx_name = "IsTryAgain"]
+        fn is_try_again(self: &Status) -> bool;
+        #[cxx_name = "IsCompactionTooLarge"]
+        fn is_compaction_too_large(self: &Status) -> bool;
+        #[cxx_name = "IsColumnFamilyDropped"]
+        fn is_column_family_dropped(self: &Status) -> bool;
+        #[cxx_name = "IsNoSpace"]
+        fn is_no_space(self: &Status) -> bool;
+        #[cxx_name = "IsMemoryLimit"]
+        fn is_memory_limit(self: &Status) -> bool;
+        #[cxx_name = "IsPathNotFound"]
+        fn is_path_not_found(self: &Status) -> bool;
+        #[cxx_name = "IsManualCompactionPaused"]
+        fn is_manual_compaction_paused(self: &Status) -> bool;
+        #[cxx_name = "IsTxnNotPrepared"]
+        fn is_txn_not_prepared(self: &Status) -> bool;
+        #[cxx_name = "IsIOFenced"]
+        fn is_io_fenced(self: &Status) -> bool;
+        #[cxx_name = "ToString"]
+        fn to_string(self: &Status) -> String;
+        unsafe fn set_state_unsafe(self: &mut Status, state_: *const c_char);
     }
 
     #[namespace = "rs::math"]
@@ -763,7 +860,9 @@ mod ffi {
     #[namespace = "rs::debug"]
     #[derive(Debug, Eq, PartialEq)]
     pub(crate) struct KeyVersion {
+        // TODO: should be a string
         pub(crate) user_key: Vec<u8>,
+        // TODO: should be a string
         pub(crate) value: Vec<u8>,
         pub(crate) sequence: u64,
         #[cxx_name = "type"]
