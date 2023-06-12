@@ -25,6 +25,7 @@
 #include <string>
 #include <string_view>  // RocksDB now requires C++17 support
 
+#include "rocksdb-sys-cxx/lib.h"
 #include "rocksdb/cleanable.h"
 #include "rust/cxx.h"
 
@@ -33,26 +34,26 @@ namespace ROCKSDB_NAMESPACE {
 class Slice {
  public:
   // Create an empty slice.
-  Slice() : data_(""), size_(0) {}
+  Slice() : slice_(rs::slice::Slice_new()) {}
 
   // Create a slice that refers to d[0,n-1].
-  Slice(const char* d, size_t n) : data_(d), size_(n) {}
+  Slice(const char* d, size_t n) : slice_(rs::slice::Slice_new(d, n)) {}
 
   // Create a slice that refers to the contents of "s"
   /* implicit */
-  Slice(const std::string& s) : data_(s.data()), size_(s.size()) {}
+  Slice(const std::string& s) : Slice(s.data(), s.size()) {}
 
-  Slice(const rust::Vec<uint8_t>& v) : data_((const char*)(v.data())), size_(v.size()) {}
+  Slice(const rust::Vec<uint8_t>& v) : Slice((const char*)v.data(), v.size()) {}
 
-  Slice(const rust::Vec<char>& v) : data_(v.data()), size_(v.size()) {}
+  Slice(const rust::Vec<char>& v) : Slice(v.data(), v.size()) {}
 
   // Create a slice that refers to the same contents as "sv"
   /* implicit */
-  Slice(const std::string_view& sv) : data_(sv.data()), size_(sv.size()) {}
+  Slice(const std::string_view& sv) : Slice(sv.data(), sv.size()) {}
 
   // Create a slice that refers to s[0,strlen(s)-1]
   /* implicit */
-  Slice(const char* s) : data_(s) { size_ = (s == nullptr) ? 0 : strlen(s); }
+  Slice(const char* s) : slice_(rs::slice::Slice_new(s)) {}
 
   // Create a single slice from SliceParts using buf as storage.
   // buf must exist as long as the returned Slice exists.
@@ -133,8 +134,7 @@ class Slice {
 
   // private: make these public for rocksdbjni access
 private:
-  const char* data_;
-  size_t size_;
+  rs::slice::Slice slice_;
 
   // Intentionally copyable
 };

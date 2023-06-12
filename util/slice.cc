@@ -285,8 +285,8 @@ Slice::Slice(const SliceParts& parts, std::string* buf) {
   for (int i = 0; i < parts.num_parts; ++i) {
     buf->append(parts.parts[i].data(), parts.parts[i].size());
   }
-  data_ = buf->data();
-  size_ = buf->size();
+
+  slice_ = rs::slice::Slice_new(buf->data(), buf->size());
 }
 
 // Return a string that contains the copy of the referenced data.

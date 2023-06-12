@@ -11,6 +11,7 @@ use crate::advanced_options::{
 use crate::debug::{default_key_version, new_key_version, new_key_version_from_cstrings};
 use crate::math::*;
 use crate::options::new_live_files_storage_info_options;
+use crate::slice::{default_slice, slice_from_raw, slice_from_raw_with_size};
 use crate::status::{
     default_status, new_status_with_code, new_status_with_code_and_subcode,
     new_status_with_code_subcode_retryable_data_loss_scope,
@@ -904,9 +905,22 @@ mod ffi {
     }
 
     #[namespace = "rs::slice"]
+    #[derive(Debug, Clone)]
     pub(crate) struct Slice {
+        #[cxx_name = "data_"]
         pub(crate) data: Vec<u8>,
         // TODO: Not sure if we need this since Vec holds it's own size
+        #[cxx_name = "size_"]
         pub(crate) size: usize,
+    }
+
+    #[namespace = "rs::slice"]
+    extern "Rust" {
+        #[cxx_name = "Slice_new"]
+        fn default_slice() -> Slice;
+        #[cxx_name = "Slice_new"]
+        unsafe fn slice_from_raw_with_size(d: *const c_char, n: usize) -> Slice;
+        #[cxx_name = "Slice_new"]
+        unsafe fn slice_from_raw(d: *const c_char) -> Slice;
     }
 }
