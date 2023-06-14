@@ -1,19 +1,36 @@
+use crate::common::{char_ptr_to_bytes, char_ptr_to_bytes_and_size};
 use crate::ffi::Slice;
-use std::ffi::{c_char, CStr};
+use std::ffi::c_char;
 
 impl Slice {
     pub(crate) unsafe fn from_raw_with_size(d: *const c_char, n: usize) -> Slice {
         assert!(!d.is_null());
-        let data = CStr::from_ptr(d).to_bytes_with_nul().to_vec();
+        let data = char_ptr_to_bytes(d);
         Slice { data, size: n }
     }
 
     pub(crate) unsafe fn from_raw(d: *const c_char) -> Slice {
         assert!(!d.is_null());
-        let data = CStr::from_ptr(d).to_bytes_with_nul().to_vec();
-        // size without nul terminator
-        let size = data.len() - 1;
+        let (data, size) = char_ptr_to_bytes_and_size(d);
         Slice { data, size }
+    }
+
+    pub(crate) fn set_size(&mut self, size: usize) {
+        self.size = size;
+    }
+
+    pub(crate) fn size(&self) -> usize {
+        self.size
+    }
+
+    pub(crate) unsafe fn set_data_ptr(&mut self, d: *const c_char) {
+        assert!(!d.is_null());
+        let data = char_ptr_to_bytes(d);
+        self.data = data;
+    }
+
+    pub(crate) fn data_ptr(&self) -> *const c_char {
+        self.data.as_ptr() as *const _
     }
 }
 

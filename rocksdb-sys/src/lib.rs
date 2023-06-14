@@ -1,4 +1,5 @@
 pub mod advanced_options;
+mod common;
 pub mod debug;
 pub mod math;
 pub mod options;
@@ -922,5 +923,11 @@ mod ffi {
         unsafe fn slice_from_raw_with_size(d: *const c_char, n: usize) -> Slice;
         #[cxx_name = "Slice_new"]
         unsafe fn slice_from_raw(d: *const c_char) -> Slice;
+        fn set_size(self: &mut Slice, size: usize);
+        fn size(self: &Slice) -> usize;
+        #[cxx_name = "set_data"]
+        unsafe fn set_data_ptr(self: &mut Slice, d: *const c_char);
+        #[cxx_name = "data"]
+        fn data_ptr(self: &Slice) -> *const c_char;
     }
 }

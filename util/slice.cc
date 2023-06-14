@@ -293,22 +293,22 @@ Slice::Slice(const SliceParts& parts, std::string* buf) {
 std::string Slice::ToString(bool hex) const {
   std::string result;  // RVO/NRVO/move
   if (hex) {
-    result.reserve(2 * size_);
-    for (size_t i = 0; i < size_; ++i) {
-      unsigned char c = data_[i];
+    result.reserve(2 * slice_.size());
+    for (size_t i = 0; i < slice_.size(); ++i) {
+      unsigned char c = slice_.data()[i];
       result.push_back(toHex(c >> 4));
       result.push_back(toHex(c & 0xf));
     }
     return result;
   } else {
-    result.assign(data_, size_);
+    result.assign(slice_.data(), slice_.size());
     return result;
   }
 }
 
 // Originally from rocksdb/utilities/ldb_cmd.h
 bool Slice::DecodeHex(std::string* result) const {
-  std::string::size_type len = size_;
+  std::string::size_type len = slice_.size();
   if (len % 2) {
     // Hex string must be even number of hex digits to get complete bytes back
     return false;
@@ -320,11 +320,11 @@ bool Slice::DecodeHex(std::string* result) const {
   result->reserve(len / 2);
 
   for (size_t i = 0; i < len;) {
-    int h1 = fromHex(data_[i++]);
+    int h1 = fromHex(slice_.data()[i++]);
     if (h1 < 0) {
       return false;
     }
-    int h2 = fromHex(data_[i++]);
+    int h2 = fromHex(slice_.data()[i++]);
     if (h2 < 0) {
       return false;
     }

@@ -59,42 +59,42 @@ class Slice {
   // buf must exist as long as the returned Slice exists.
   Slice(const struct SliceParts& parts, std::string* buf);
 
-  void set_data(const char* data) { data_ = data; }
+  void set_data(const char* data) { slice_.set_data(data); }
 
   // Return a pointer to the beginning of the referenced data
-  const char* data() const { return data_; }
+  const char* data() const { return slice_.data(); }
 
   // Return the length (in bytes) of the referenced data
-  size_t size() const { return size_; }
+  size_t size() const { return slice_.size(); }
 
-  void set_size(size_t size) { size_ = size; }
+  void set_size(size_t size) { slice_.set_size(size); }
 
   // Return true iff the length of the referenced data is zero
-  bool empty() const { return size_ == 0; }
+  bool empty() const { return slice_.size() == 0; }
 
   // Return the ith byte in the referenced data.
   // REQUIRES: n < size()
   char operator[](size_t n) const {
     assert(n < size());
-    return data_[n];
+    return slice_.data()[n];
   }
 
   // Change this slice to refer to an empty array
   void clear() {
-    data_ = "";
-    size_ = 0;
+    slice_.set_data("");
+    slice_.set_size(0);
   }
 
   // Drop the first "n" bytes from this slice.
   void remove_prefix(size_t n) {
     assert(n <= size());
-    data_ += n;
-    size_ -= n;
+    slice_.set_data(slice_.data() + n);
+    slice_.set_size(slice_.size() - n);
   }
 
   void remove_suffix(size_t n) {
     assert(n <= size());
-    size_ -= n;
+    slice_.set_size(slice_.size() - n);
   }
 
   // Return a string that contains the copy of the referenced data.
@@ -103,7 +103,7 @@ class Slice {
 
   // Return a string_view that references the same data as this slice.
   std::string_view ToStringView() const {
-    return std::string_view(data_, size_);
+    return std::string_view(slice_.data(), slice_.size());
   }
 
   // Decodes the current slice interpreted as an hexadecimal string into result,
@@ -121,12 +121,12 @@ class Slice {
 
   // Return true iff "x" is a prefix of "*this"
   bool starts_with(const Slice& x) const {
-    return ((size_ >= x.size_) && (memcmp(data_, x.data_, x.size_) == 0));
+    return ((slice_.size() >= x.slice_.size()) && (memcmp(slice_.data(), x.slice_.data(), x.slice_.size()) == 0));
   }
 
   bool ends_with(const Slice& x) const {
-    return ((size_ >= x.size_) &&
-            (memcmp(data_ + size_ - x.size_, x.data_, x.size_) == 0));
+    return ((slice_.size() >= x.slice_.size()) &&
+            (memcmp(slice_.data() + slice_.size() - x.slice_.size(), x.slice_.data(), x.slice_.size()) == 0));
   }
 
   // Compare two slices and returns the first byte where they differ
@@ -250,13 +250,13 @@ inline bool operator==(const Slice& x, const Slice& y) {
 inline bool operator!=(const Slice& x, const Slice& y) { return !(x == y); }
 
 inline int Slice::compare(const Slice& b) const {
-  assert(data_ != nullptr && b.data_ != nullptr);
-  const size_t min_len = (size_ < b.size_) ? size_ : b.size_;
-  int r = memcmp(data_, b.data_, min_len);
+  assert(slice_.data() != nullptr && b.slice_.data() != nullptr);
+  const size_t min_len = (slice_.size() < b.slice_.size()) ? slice_.size() : b.slice_.size();
+  int r = memcmp(slice_.data(), b.slice_.data(), min_len);
   if (r == 0) {
-    if (size_ < b.size_)
+    if (slice_.size() < b.slice_.size())
       r = -1;
-    else if (size_ > b.size_)
+    else if (slice_.size() > b.slice_.size())
       r = +1;
   }
   return r;
@@ -264,9 +264,9 @@ inline int Slice::compare(const Slice& b) const {
 
 inline size_t Slice::difference_offset(const Slice& b) const {
   size_t off = 0;
-  const size_t len = (size_ < b.size_) ? size_ : b.size_;
+  const size_t len = (slice_.size() < b.slice_.size()) ? slice_.size() : b.slice_.size();
   for (; off < len; off++) {
-    if (data_[off] != b.data_[off]) break;
+    if (slice_.data()[off] != b.slice_.data()[off]) break;
   }
   return off;
 }
