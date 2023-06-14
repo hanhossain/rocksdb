@@ -46,12 +46,12 @@ TEST_F(PinnableSliceTest, MoveExternalBuffer) {
   v1.PinSelf(s);
 
   PinnableSlice v2(std::move(v1));
-  ASSERT_EQ(buf.data(), v2.data());
+  ASSERT_EQ(buf, v2.ToString());
   ASSERT_EQ(&buf, v2.GetSelf());
 
   PinnableSlice v3;
   v3 = std::move(v2);
-  ASSERT_EQ(buf.data(), v3.data());
+  ASSERT_EQ(buf, v3.ToString());
   ASSERT_EQ(&buf, v3.GetSelf());
 }
 
