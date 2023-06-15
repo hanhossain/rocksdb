@@ -4,13 +4,11 @@ use std::ffi::c_char;
 
 impl Slice {
     pub(crate) unsafe fn from_raw_with_size(d: *const c_char, n: usize) -> Slice {
-        assert!(!d.is_null());
         let data = char_ptr_to_bytes(d);
         Slice { data, size: n }
     }
 
     pub(crate) unsafe fn from_raw(d: *const c_char) -> Slice {
-        assert!(!d.is_null());
         let (data, size) = char_ptr_to_bytes_and_size(d);
         Slice { data, size }
     }
