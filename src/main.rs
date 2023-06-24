@@ -1,4 +1,4 @@
 fn main() {
     println!("Hello, world!");
-    rocksdb_rs::ffi::PrintHelloWorld();
+    rocksdb_rs::ffi::print_hello_world();
 }

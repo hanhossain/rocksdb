@@ -2,6 +2,8 @@ use cmake::Config;
 
 fn main() {
     println!("cargo:rerun-if-changed=rocksdb-cxx");
+    println!("cargo:rerun-if-changed=src/lib.rs");
+
     let dst = Config::new("rocksdb-cxx")
         .define("WITH_GFLAGS", "OFF")
         .generator("Ninja")
