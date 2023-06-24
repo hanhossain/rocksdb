@@ -105,7 +105,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "rocksdb"
+name = "rocksdb-rs"
 version = "0.1.0"
 dependencies = [
  "cmake",

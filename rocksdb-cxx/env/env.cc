@@ -9,6 +9,7 @@
 
 #include "rocksdb/env.h"
 
+#include <iostream>
 #include <thread>
 
 #include "env/composite_env_wrapper.h"
@@ -606,6 +607,7 @@ class LegacyFileSystemWrapper : public FileSystem {
     // would be part of the Env.  As such, do not serialize it here.
     return "";
   }
+
  private:
   Env* target_;
 };
@@ -1230,4 +1232,9 @@ Status SystemClock::CreateFromString(const ConfigOptions& config_options,
     return LoadSharedObject<SystemClock>(config_options, value, result);
   }
 }
+
+int Multiply(int a, int b) { return a * b; }
+
+void PrintHelloWorld() { std::cout << "Hello world from c++!" << std::endl; }
+
 }  // namespace ROCKSDB_NAMESPACE
