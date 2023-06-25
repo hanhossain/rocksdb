@@ -1,5 +1,5 @@
 #[cxx::bridge(namespace = "rocksdb")]
-pub mod ffi {
+pub mod cxx_ffi {
     unsafe extern "C++" {
         include!("rocksdb/env.h");
 
@@ -16,7 +16,7 @@ mod tests {
 
     #[test]
     fn test_multiply() {
-        let res = ffi::multiply(3, 4);
+        let res = cxx_ffi::multiply(3, 4);
         assert_eq!(res, 12);
     }
 }
