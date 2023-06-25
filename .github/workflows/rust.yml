@@ -1,0 +1,31 @@
+name: Rust
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+    - name: Check disk space (before cleaning)
+      run: df -h
+    - name: Free disk space
+      run: |
+        sudo docker rmi $(docker image ls -aq) || true
+        sudo rm -rf /usr/share/dotnet
+        sudo rm -rf /usr/local/lib/android
+    - name: Check disk space (after cleaning)
+      run: df -h
+    - uses: actions/checkout@v3
+    - name: Setup dependencies
+      run: brew install gflags ninja
+    - name: Build
+      run: cargo build --tests -vv
+    - name: Run tests
+      run: cargo test --verbose
