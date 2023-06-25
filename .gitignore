@@ -1,3 +1,7 @@
-/target
+# ide files
 .idea
 .vscode
+
+# build output
+target
+cmake-build-debug
