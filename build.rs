@@ -7,7 +7,7 @@ fn main() -> miette::Result<()> {
         .build_target("rocksdb")
         .build();
 
-    autocxx_build::Builder::new("src/lib.rs", &["rocksdb-cxx"])
+    autocxx_build::Builder::new("src/lib.rs", &["rocksdb-cxx/include"])
         .build()?
         .include("rocksdb-cxx/include")
         .flag_if_supported("-std=c++17")
