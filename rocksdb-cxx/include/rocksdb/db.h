@@ -139,6 +139,21 @@ struct GetMergeOperandsOptions {
 using TablePropertiesCollection =
     std::unordered_map<std::string, std::shared_ptr<const TableProperties>>;
 
+struct DBResult {
+    std::unique_ptr<DB> db;
+    Status status;
+
+    std::unique_ptr<DB> get_db() {
+        return std::move(db);
+    }
+
+    Status get_status() {
+        return status;
+    }
+};
+
+DBResult DB_Open(const Options& options, const std::string& name);
+
 // A DB is a persistent, versioned ordered map from keys to values.
 // A DB is safe for concurrent access from multiple threads without
 // any external synchronization.

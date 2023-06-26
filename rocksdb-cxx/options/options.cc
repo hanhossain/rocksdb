@@ -682,6 +682,11 @@ DBOptions* DBOptions::IncreaseParallelism(int total_threads) {
   env->SetBackgroundThreads(1, Env::HIGH);
   return this;
 }
+
+void DBOptions::SetCreateIfMissing(bool value) {
+    create_if_missing = value;
+}
+
 ReadOptions::ReadOptions()
     : snapshot(nullptr),
       iterate_lower_bound(nullptr),

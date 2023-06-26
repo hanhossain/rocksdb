@@ -468,6 +468,8 @@ struct DBOptions {
   // bottlenecked by RocksDB.
   DBOptions* IncreaseParallelism(int total_threads = 16);
 
+  void SetCreateIfMissing(bool value);
+
   // If true, the database will be created if it is missing.
   // Default: false
   bool create_if_missing = false;

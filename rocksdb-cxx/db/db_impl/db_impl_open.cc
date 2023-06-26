@@ -1710,6 +1710,12 @@ Status DBImpl::WriteLevel0TableForRecovery(int job_id, ColumnFamilyData* cfd,
   return s;
 }
 
+DBResult DB_Open(const Options& options, const std::string& name) {
+  DB* db;
+  Status status = DB::Open(options, name, &db);
+  return DBResult { std::unique_ptr<DB>(db), status };
+}
+
 Status DB::Open(const Options& options, const std::string& dbname, DB** dbptr) {
   DBOptions db_options(options);
   ColumnFamilyOptions cf_options(options);
