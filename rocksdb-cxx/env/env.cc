@@ -1232,7 +1232,8 @@ Status SystemClock::CreateFromString(const ConfigOptions& config_options,
     return LoadSharedObject<SystemClock>(config_options, value, result);
   }
 }
-
-void PrintHelloWorld() { std::cout << "Hello world from c++!" << std::endl; }
-
 }  // namespace ROCKSDB_NAMESPACE
+
+namespace rocksdb_test {
+    void PrintHelloWorld() { std::cout << "Hello world from c++!" << std::endl; }
+}

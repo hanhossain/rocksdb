@@ -1,7 +1,6 @@
 use autocxx::prelude::*;
 
 include_cpp! {
-    #include "rocksdb/env.h"
     #include "rocksdb/db.h"
     #include "rocksdb/options.h"
     #include "rocksdb/status.h"
@@ -15,7 +14,7 @@ include_cpp! {
     generate!("rocksdb::Status")
 }
 
-#[cxx::bridge(namespace = "rocksdb")]
+#[cxx::bridge(namespace = "rocksdb_test")]
 pub mod cxx_ffi {
     unsafe extern "C++" {
         include!("rocksdb/env.h");

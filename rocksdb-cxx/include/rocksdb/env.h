@@ -1879,6 +1879,8 @@ Status NewEnvLogger(const std::string& fname, Env* env,
 // FileSystem.
 std::unique_ptr<Env> NewCompositeEnv(const std::shared_ptr<FileSystem>& fs);
 
-void PrintHelloWorld();
-
 }  // namespace ROCKSDB_NAMESPACE
+
+namespace rocksdb_test {
+    void PrintHelloWorld();
+}
