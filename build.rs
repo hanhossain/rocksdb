@@ -1,6 +1,6 @@
 use cmake::Config;
 
-fn main() -> miette::Result<()> {
+fn main() {
     let dst = Config::new("rocksdb-cxx")
         .define("WITH_GFLAGS", "OFF")
         .generator("Ninja")
@@ -9,7 +9,8 @@ fn main() -> miette::Result<()> {
 
     autocxx_build::Builder::new("src/lib.rs", &["rocksdb-cxx/include"])
         .extra_clang_args(&["-std=c++17"])
-        .build()?
+        .build()
+        .unwrap()
         .include("rocksdb-cxx/include")
         .flag_if_supported("-std=c++17")
         .compile("rocksdb-cxx-cxx");
@@ -19,5 +20,4 @@ fn main() -> miette::Result<()> {
 
     println!("cargo:rustc-link-search=native={}/build", dst.display());
     println!("cargo:rustc-link-lib=static=rocksdb");
-    Ok(())
 }
