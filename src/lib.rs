@@ -6,7 +6,6 @@ include_cpp! {
     #include "rocksdb/options.h"
     #include "rocksdb/status.h"
     safety!(unsafe)
-    generate!("rocksdb::Multiply")
     generate!("rocksdb::DB")
     generate!("rocksdb::DB_Open")
     generate!("rocksdb::DBResult")
@@ -95,11 +94,5 @@ mod tests {
         moveit! { let status = res.pin_mut().get_status(); }
         println!("status: {}", status.ToString().to_string());
         assert!(status.ok());
-    }
-
-    #[test]
-    fn test_multiply() {
-        let res = ffi::rocksdb::Multiply(c_int(3), c_int(4));
-        assert_eq!(res, c_int(12));
     }
 }

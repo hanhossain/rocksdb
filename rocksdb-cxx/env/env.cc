@@ -1233,8 +1233,6 @@ Status SystemClock::CreateFromString(const ConfigOptions& config_options,
   }
 }
 
-int Multiply(int a, int b) { return a * b; }
-
 void PrintHelloWorld() { std::cout << "Hello world from c++!" << std::endl; }
 
 }  // namespace ROCKSDB_NAMESPACE
