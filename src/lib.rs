@@ -1,3 +1,7 @@
+pub mod db;
+pub mod error;
+pub mod options;
+
 use autocxx::prelude::*;
 
 include_cpp! {
@@ -25,41 +29,28 @@ pub mod cxx_ffi {
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
+pub(crate) mod test_common {
     use std::fs;
     use std::io;
     use std::path::PathBuf;
     use uuid::Uuid;
 
-    fn new_temp_path() -> io::Result<PathBuf> {
+    pub(crate) fn new_temp_path() -> io::Result<PathBuf> {
         let mut dir = std::env::temp_dir();
         dir.push("rocksdb-rs-tests");
         fs::create_dir_all(&dir)?;
         dir.push(Uuid::new_v4().to_string());
         Ok(dir)
     }
+}
 
-    #[test]
-    fn db_open_does_not_create() {
-        let path = new_temp_path().unwrap();
-        moveit! { let options = ffi::rocksdb::Options::new(); }
-        let db_path = ffi::make_string(path.to_str().unwrap());
-        let mut res = ffi::rocksdb::DB_Open(&options, &db_path).within_unique_ptr();
-        moveit! { let status = res.pin_mut().get_status(); }
-        let status = status.ToString();
-        assert_eq!(
-            status.to_string(),
-            format!(
-                "Invalid argument: {}/CURRENT: does not exist (create_if_missing is false)",
-                path.display()
-            )
-        );
-    }
+#[cfg(test)]
+mod tests {
+    use super::*;
 
     #[test]
     fn db_open_does_not_create_with_options_override() {
-        let path = new_temp_path().unwrap();
+        let path = test_common::new_temp_path().unwrap();
         let mut db_options = ffi::rocksdb::DBOptions::new().within_unique_ptr();
         db_options.pin_mut().SetCreateIfMissing(false);
         moveit! {
@@ -81,7 +72,7 @@ mod tests {
 
     #[test]
     fn db_open_create() {
-        let path = new_temp_path().unwrap();
+        let path = test_common::new_temp_path().unwrap();
         let mut db_options = ffi::rocksdb::DBOptions::new().within_unique_ptr();
         db_options.pin_mut().SetCreateIfMissing(true);
         moveit! {
