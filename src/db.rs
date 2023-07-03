@@ -70,4 +70,15 @@ mod tests {
 
         assert_eq!(result.err().unwrap(), expected);
     }
+
+    #[test]
+    fn open_create() {
+        let mut db_options = DBOptions::default();
+        db_options.set_create_if_missing(true);
+
+        let column_family_options = ColumnFamilyOptions::default();
+        let options = Options::new(&db_options, &column_family_options);
+        let path = new_temp_path().unwrap();
+        let _db = DB::open(&options, &path).unwrap();
+    }
 }
