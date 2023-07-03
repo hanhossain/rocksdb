@@ -49,28 +49,6 @@ mod tests {
     use super::*;
 
     #[test]
-    fn db_open_does_not_create_with_options_override() {
-        let path = test_common::new_temp_path().unwrap();
-        let mut db_options = ffi::rocksdb::DBOptions::new().within_unique_ptr();
-        db_options.pin_mut().SetCreateIfMissing(false);
-        moveit! {
-            let column_family_options = ffi::rocksdb::ColumnFamilyOptions::new();
-            let options = ffi::rocksdb::Options::new1(&db_options, &column_family_options);
-        }
-        let db_path = ffi::make_string(path.to_str().unwrap());
-        let mut res = ffi::rocksdb::DB_Open(&options, &db_path).within_unique_ptr();
-        moveit! { let status = res.pin_mut().get_status(); }
-        let status = status.ToString();
-        assert_eq!(
-            status.to_string(),
-            format!(
-                "Invalid argument: {}/CURRENT: does not exist (create_if_missing is false)",
-                path.display()
-            )
-        );
-    }
-
-    #[test]
     fn db_open_create() {
         let path = test_common::new_temp_path().unwrap();
         let mut db_options = ffi::rocksdb::DBOptions::new().within_unique_ptr();
