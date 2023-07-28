@@ -7,12 +7,12 @@ edition = "2021"
 
 [dependencies]
 autocxx = "0.26.0"
-cxx = "1.0.97"
+cxx = "1.0.102"
 
 [build-dependencies]
 autocxx-build = "0.26.0"
 cmake = "0.1.50"
-cxx-build = "1.0.97"
+cxx-build = "1.0.102"
 
 [dev-dependencies]
-uuid = { version = "1.4.0", features = ["v4"] }
+uuid = { version = "1.4.1", features = ["v4"] }
