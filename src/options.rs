@@ -32,6 +32,13 @@ impl DBOptions {
     pub fn set_create_if_missing(&mut self, value: bool) {
         self.ffi_db_options.as_mut().SetCreateIfMissing(value);
     }
+
+    pub fn increase_parallelism(&mut self, total_threads: i32) -> &mut Self {
+        self.ffi_db_options
+            .as_mut()
+            .IncreaseParallelism(c_int(total_threads));
+        self
+    }
 }
 
 impl Default for DBOptions {
@@ -45,6 +52,15 @@ impl Default for DBOptions {
 
 pub struct ColumnFamilyOptions {
     pub(crate) ffi_column_family_options: Pin<Box<rocksdb::ColumnFamilyOptions>>,
+}
+
+impl ColumnFamilyOptions {
+    pub fn optimize_level_style_compaction(&mut self, memtable_memory_budget: u64) -> &mut Self {
+        self.ffi_column_family_options
+            .as_mut()
+            .OptimizeLevelStyleCompaction(memtable_memory_budget);
+        self
+    }
 }
 
 impl Default for ColumnFamilyOptions {
