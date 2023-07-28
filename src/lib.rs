@@ -15,7 +15,10 @@ include_cpp! {
     generate!("rocksdb::DBOptions")
     generate!("rocksdb::ColumnFamilyOptions")
     generate!("rocksdb::Options")
+    generate!("rocksdb::ReadOptions")
+    generate!("rocksdb::Slice")
     generate!("rocksdb::Status")
+    generate!("rocksdb::WriteOptions")
 }
 
 #[cxx::bridge(namespace = "rocksdb_test")]

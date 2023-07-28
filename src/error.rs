@@ -24,6 +24,7 @@ pub enum Code {
 impl From<Status_Code> for Code {
     fn from(value: Status_Code) -> Self {
         match value {
+            Status_Code::kOk => panic!("Expected failure but found Status_Code::kOk"),
             Status_Code::kNotFound => Code::NotFound,
             Status_Code::kCorruption => Code::Corruption,
             Status_Code::kNotSupported => Code::NotSupported,
@@ -113,6 +114,12 @@ impl From<&Status> for Error {
             subcode: value.subcode().into(),
             state,
         }
+    }
+}
+
+impl From<&cxx::UniquePtr<Status>> for Error {
+    fn from(value: &cxx::UniquePtr<Status>) -> Self {
+        Error::from(value.as_ref().unwrap())
     }
 }
 

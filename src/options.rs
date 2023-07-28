@@ -71,3 +71,29 @@ impl Default for ColumnFamilyOptions {
         }
     }
 }
+
+pub struct WriteOptions {
+    pub(crate) ffi_write_options: Pin<Box<rocksdb::WriteOptions>>,
+}
+
+impl Default for WriteOptions {
+    fn default() -> Self {
+        let value = rocksdb::WriteOptions::new().within_box();
+        WriteOptions {
+            ffi_write_options: value,
+        }
+    }
+}
+
+pub struct ReadOptions {
+    pub(crate) ffi_read_options: Pin<Box<rocksdb::ReadOptions>>,
+}
+
+impl Default for ReadOptions {
+    fn default() -> Self {
+        let value = rocksdb::ReadOptions::new().within_box();
+        ReadOptions {
+            ffi_read_options: value,
+        }
+    }
+}

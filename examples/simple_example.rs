@@ -1,5 +1,5 @@
 use rocksdb_rs::db::DB;
-use rocksdb_rs::options::{ColumnFamilyOptions, DBOptions, Options};
+use rocksdb_rs::options::{ColumnFamilyOptions, DBOptions, Options, ReadOptions, WriteOptions};
 
 const DB_PATH: &str = "/tmp/rocksdb_simple_example";
 
@@ -16,21 +16,18 @@ fn main() {
     column_family_options.optimize_level_style_compaction(512 * 1024 * 1024);
     let options = Options::new(&db_options, &column_family_options);
 
-    //   // open DB
-    //   Status s = DB::Open(options, kDBPath, &db);
-    //   assert(s.ok());
-    let _db = DB::open(&options, DB_PATH).unwrap();
+    // open DB
+    let mut db = DB::open(&options, DB_PATH).unwrap();
 
-    //
-    //   // Put key-value
-    //   s = db->Put(WriteOptions(), "key1", "value");
-    //   assert(s.ok());
-    //   std::string value;
-    //   // get value
-    //   s = db->Get(ReadOptions(), "key1", &value);
-    //   assert(s.ok());
-    //   assert(value == "value");
-    //
+    // Put key-value
+    let write_options = WriteOptions::default();
+    db.put(&write_options, "key1", "value").unwrap();
+
+    // get value
+    let read_options = ReadOptions::default();
+    let value = db.get(&read_options, "key1").unwrap();
+    assert_eq!(value, "value");
+
     //   // atomically apply a set of updates
     //   {
     //     WriteBatch batch;
