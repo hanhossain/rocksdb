@@ -1,7 +1,6 @@
 use crate::error::Error;
 use crate::ffi;
 use crate::ffi::rocksdb;
-use crate::ffi::rocksdb::Slice;
 use crate::options::{Options, ReadOptions, WriteOptions};
 use autocxx::WithinUniquePtr;
 use cxx::{let_cxx_string, UniquePtr};
@@ -32,8 +31,8 @@ impl DB {
     ) -> Result<(), Error> {
         let_cxx_string!(k = key);
         let_cxx_string!(v = value);
-        let k = Slice::new2(&k).within_unique_ptr();
-        let v = Slice::new2(&v).within_unique_ptr();
+        let k = rocksdb::Slice::new2(&k).within_unique_ptr();
+        let v = rocksdb::Slice::new2(&v).within_unique_ptr();
         let status = self
             .ffi_db
             .pin_mut()
@@ -49,7 +48,7 @@ impl DB {
 
     pub fn get(&mut self, read_options: &ReadOptions, key: &str) -> Result<String, Error> {
         let_cxx_string!(k = key);
-        let k = Slice::new2(&k).within_unique_ptr();
+        let k = rocksdb::Slice::new2(&k).within_unique_ptr();
         let value = ffi::make_string("");
         let string_ptr = value.into_raw();
         let status = unsafe {
