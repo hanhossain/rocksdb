@@ -95,9 +95,27 @@ impl From<Status_SubCode> for Option<SubCode> {
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Error {
-    pub code: Code,
-    pub subcode: Option<SubCode>,
-    pub state: Option<String>,
+    pub(crate) code: Code,
+    pub(crate) subcode: Option<SubCode>,
+    pub(crate) state: Option<String>,
+}
+
+impl Error {
+    pub fn code(&self) -> Code {
+        self.code
+    }
+
+    pub fn subcode(&self) -> Option<SubCode> {
+        self.subcode
+    }
+
+    pub fn state(&self) -> Option<&str> {
+        self.state.as_ref().map(|x| x.as_str())
+    }
+
+    pub fn is_not_found(&self) -> bool {
+        self.code == Code::NotFound
+    }
 }
 
 impl From<&Status> for Error {

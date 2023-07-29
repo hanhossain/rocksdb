@@ -1,6 +1,5 @@
 use rocksdb_rs::batch::WriteBatch;
 use rocksdb_rs::db::DB;
-use rocksdb_rs::error::Code;
 use rocksdb_rs::options::{Options, ReadOptions, WriteOptions};
 
 const DB_PATH: &str = "/tmp/rocksdb_simple_example";
@@ -38,7 +37,7 @@ fn main() {
     }
 
     let error = db.get(&read_options, "key1").unwrap_err();
-    assert_eq!(error.code, Code::NotFound);
+    assert!(error.is_not_found());
 
     let value = db.get(&read_options, "key2").unwrap();
     assert_eq!(value, "value");
