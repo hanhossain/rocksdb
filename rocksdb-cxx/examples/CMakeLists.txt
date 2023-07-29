@@ -1,8 +1,3 @@
-add_executable(simple_example
-  simple_example.cc)
-target_link_libraries(simple_example
-  ${ROCKSDB_LIB})
-
 add_executable(column_families_example
   column_families_example.cc)
 target_link_libraries(column_families_example
