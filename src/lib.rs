@@ -1,3 +1,4 @@
+pub mod batch;
 pub mod db;
 pub mod error;
 pub mod options;
@@ -18,6 +19,7 @@ include_cpp! {
     generate!("rocksdb::ReadOptions")
     generate!("rocksdb::Slice")
     generate!("rocksdb::Status")
+    generate!("rocksdb::WriteBatch")
     generate!("rocksdb::WriteOptions")
 }
 

@@ -1,4 +1,6 @@
+use rocksdb_rs::batch::WriteBatch;
 use rocksdb_rs::db::DB;
+use rocksdb_rs::error::Code;
 use rocksdb_rs::options::{Options, ReadOptions, WriteOptions};
 
 const DB_PATH: &str = "/tmp/rocksdb_simple_example";
@@ -27,20 +29,20 @@ fn main() {
     let value = db.get(&read_options, "key1").unwrap();
     assert_eq!(value, "value");
 
-    //   // atomically apply a set of updates
-    //   {
-    //     WriteBatch batch;
-    //     batch.Delete("key1");
-    //     batch.Put("key2", value);
-    //     s = db->Write(WriteOptions(), &batch);
-    //   }
-    //
-    //   s = db->Get(ReadOptions(), "key1", &value);
-    //   assert(s.IsNotFound());
-    //
-    //   db->Get(ReadOptions(), "key2", &value);
-    //   assert(value == "value");
-    //
+    // atomically apply a set of updates
+    {
+        let mut batch = WriteBatch::default();
+        batch.delete("key1").unwrap();
+        batch.put("key2", &value).unwrap();
+        db.write_batch(&write_options, &mut batch).unwrap();
+    }
+
+    let error = db.get(&read_options, "key1").unwrap_err();
+    assert_eq!(error.code, Code::NotFound);
+
+    let value = db.get(&read_options, "key2").unwrap();
+    assert_eq!(value, "value");
+
     //   {
     //     PinnableSlice pinnable_val;
     //     db->Get(ReadOptions(), db->DefaultColumnFamily(), "key2", &pinnable_val);

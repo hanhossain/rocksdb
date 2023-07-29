@@ -95,9 +95,9 @@ impl From<Status_SubCode> for Option<SubCode> {
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Error {
-    pub(crate) code: Code,
-    pub(crate) subcode: Option<SubCode>,
-    pub(crate) state: Option<String>,
+    pub code: Code,
+    pub subcode: Option<SubCode>,
+    pub state: Option<String>,
 }
 
 impl From<&Status> for Error {

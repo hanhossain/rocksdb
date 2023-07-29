@@ -1,3 +1,4 @@
+use crate::batch::WriteBatch;
 use crate::error::Error;
 use crate::ffi;
 use crate::ffi::rocksdb;
@@ -62,6 +63,26 @@ impl DB {
 
         if status.ok() {
             return Ok(string.pin_mut().to_str().unwrap().to_string());
+        }
+
+        Err(Error::from(&status))
+    }
+
+    pub fn write_batch(
+        &mut self,
+        write_options: &WriteOptions,
+        write_batch: &mut WriteBatch,
+    ) -> Result<(), Error> {
+        let write_batch = write_batch.ffi_write_batch.pin_mut().GetWriteBatch();
+        let status = unsafe {
+            self.ffi_db
+                .pin_mut()
+                .Write(&write_options.ffi_write_options, write_batch)
+                .within_unique_ptr()
+        };
+
+        if status.ok() {
+            return Ok(());
         }
 
         Err(Error::from(&status))
@@ -135,5 +156,31 @@ mod tests {
         let read_options = ReadOptions::default();
         let value = db.get(&read_options, "key1").unwrap();
         assert_eq!(value, "value1");
+    }
+
+    #[test]
+    fn batch_put_and_delete() {
+        let mut options = Options::default();
+        options.as_db_options().set_create_if_missing(true);
+
+        let path = new_temp_path().unwrap();
+        let mut db = DB::open(&options, &path).unwrap();
+
+        let write_options = WriteOptions::default();
+        db.put(&write_options, "key1", "value1").unwrap();
+
+        {
+            let mut batch = WriteBatch::default();
+            batch.delete("key1").unwrap();
+            batch.put("key2", "value2").unwrap();
+            db.write_batch(&write_options, &mut batch).unwrap();
+        }
+
+        let read_options = ReadOptions::default();
+        let error = db.get(&read_options, "key1").unwrap_err();
+        assert_eq!(error.code, Code::NotFound);
+
+        let value = db.get(&read_options, "key2").unwrap();
+        assert_eq!(value, "value2");
     }
 }
