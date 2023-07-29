@@ -1439,6 +1439,14 @@ struct Options : public DBOptions, public ColumnFamilyOptions {
   // write speeds but is only recommended for temporary use. Does not
   // change protection against corrupt storage (e.g. verify_checksums).
   Options* DisableExtraChecks();
+
+  DBOptions& AsDBOptions() {
+      return *this;
+  }
+
+  ColumnFamilyOptions& AsColumnFamilyOptions() {
+      return *this;
+  }
 };
 
 // An application can issue a read request (via Get/Iterators) and specify

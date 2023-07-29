@@ -15,6 +15,20 @@ impl Options {
         .within_box();
         Options { ffi_options }
     }
+
+    pub fn as_db_options(&mut self) -> DBOptionsRef<'_> {
+        let db_options = self.ffi_options.as_mut().AsDBOptions();
+        DBOptionsRef {
+            ffi_db_options: db_options,
+        }
+    }
+
+    pub fn as_column_family_options(&mut self) -> ColumnFamilyOptionsRef<'_> {
+        let cf_options = self.ffi_options.as_mut().AsColumnFamilyOptions();
+        ColumnFamilyOptionsRef {
+            ffi_column_family_options: cf_options,
+        }
+    }
 }
 
 impl Default for Options {
@@ -33,11 +47,10 @@ impl DBOptions {
         self.ffi_db_options.as_mut().SetCreateIfMissing(value);
     }
 
-    pub fn increase_parallelism(&mut self, total_threads: i32) -> &mut Self {
+    pub fn increase_parallelism(&mut self, total_threads: i32) {
         self.ffi_db_options
             .as_mut()
             .IncreaseParallelism(c_int(total_threads));
-        self
     }
 }
 
@@ -47,6 +60,22 @@ impl Default for DBOptions {
         DBOptions {
             ffi_db_options: value,
         }
+    }
+}
+
+pub struct DBOptionsRef<'a> {
+    pub(crate) ffi_db_options: Pin<&'a mut rocksdb::DBOptions>,
+}
+
+impl<'a> DBOptionsRef<'a> {
+    pub fn set_create_if_missing(&mut self, value: bool) {
+        self.ffi_db_options.as_mut().SetCreateIfMissing(value);
+    }
+
+    pub fn increase_parallelism(&mut self, total_threads: i32) {
+        self.ffi_db_options
+            .as_mut()
+            .IncreaseParallelism(c_int(total_threads));
     }
 }
 
@@ -69,6 +98,18 @@ impl Default for ColumnFamilyOptions {
         ColumnFamilyOptions {
             ffi_column_family_options: value,
         }
+    }
+}
+
+pub struct ColumnFamilyOptionsRef<'a> {
+    pub(crate) ffi_column_family_options: Pin<&'a mut rocksdb::ColumnFamilyOptions>,
+}
+
+impl<'a> ColumnFamilyOptionsRef<'a> {
+    pub fn optimize_level_style_compaction(&mut self, memtable_memory_budget: u64) {
+        self.ffi_column_family_options
+            .as_mut()
+            .OptimizeLevelStyleCompaction(memtable_memory_budget);
     }
 }
 

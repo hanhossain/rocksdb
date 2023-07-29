@@ -73,7 +73,6 @@ impl DB {
 mod tests {
     use super::*;
     use crate::error::Code;
-    use crate::options::{ColumnFamilyOptions, DBOptions};
     use crate::test_common::new_temp_path;
 
     #[test]
@@ -96,11 +95,9 @@ mod tests {
 
     #[test]
     fn open_with_options_override_without_creating() {
-        let mut db_options = DBOptions::default();
-        db_options.set_create_if_missing(false);
+        let mut options = Options::default();
+        options.as_db_options().set_create_if_missing(false);
 
-        let column_family_options = ColumnFamilyOptions::default();
-        let options = Options::new(&db_options, &column_family_options);
         let path = new_temp_path().unwrap();
         let result = DB::open(&options, &path);
 
@@ -118,22 +115,17 @@ mod tests {
 
     #[test]
     fn open_create() {
-        let mut db_options = DBOptions::default();
-        db_options.set_create_if_missing(true);
+        let mut options = Options::default();
+        options.as_db_options().set_create_if_missing(true);
 
-        let column_family_options = ColumnFamilyOptions::default();
-        let options = Options::new(&db_options, &column_family_options);
         let path = new_temp_path().unwrap();
         let _db = DB::open(&options, &path).unwrap();
     }
 
     #[test]
     fn put_and_get() {
-        let mut db_options = DBOptions::default();
-        db_options.set_create_if_missing(true);
-
-        let column_family_options = ColumnFamilyOptions::default();
-        let options = Options::new(&db_options, &column_family_options);
+        let mut options = Options::default();
+        options.as_db_options().set_create_if_missing(true);
 
         let path = new_temp_path().unwrap();
         let mut db = DB::open(&options, &path).unwrap();
