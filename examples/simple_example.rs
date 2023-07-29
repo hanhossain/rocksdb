@@ -1,20 +1,19 @@
 use rocksdb_rs::db::DB;
-use rocksdb_rs::options::{ColumnFamilyOptions, DBOptions, Options, ReadOptions, WriteOptions};
+use rocksdb_rs::options::{Options, ReadOptions, WriteOptions};
 
 const DB_PATH: &str = "/tmp/rocksdb_simple_example";
 
 fn main() {
-    let mut db_options = DBOptions::default();
-
-    // Optimize RocksDB. This is the easiest way to get RocksDB to perform well
-    db_options.increase_parallelism(16);
+    let mut options = Options::default();
 
     // create the DB if it's not already present
-    db_options.set_create_if_missing(true);
+    options.as_db_options().set_create_if_missing(true);
 
-    let mut column_family_options = ColumnFamilyOptions::default();
-    column_family_options.optimize_level_style_compaction(512 * 1024 * 1024);
-    let options = Options::new(&db_options, &column_family_options);
+    // Optimize RocksDB. This is the easiest way to get RocksDB to perform well
+    options.as_db_options().increase_parallelism(16);
+    options
+        .as_column_family_options()
+        .optimize_level_style_compaction(512 * 1024 * 1024);
 
     // open DB
     let mut db = DB::open(&options, DB_PATH).unwrap();
