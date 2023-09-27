@@ -21,6 +21,8 @@ include_cpp! {
     generate!("rocksdb::Status")
     generate!("rocksdb::WriteBatch")
     generate!("rocksdb::WriteOptions")
+    generate!("rocksdb::ColumnFamilyHandle")
+    generate!("rocksdb::ColumnFamilyHandleResult")
 }
 
 #[cxx::bridge(namespace = "rocksdb_test")]

@@ -1,8 +1,8 @@
 use crate::batch::WriteBatch;
 use crate::error::Error;
 use crate::ffi;
-use crate::ffi::rocksdb;
-use crate::options::{Options, ReadOptions, WriteOptions};
+use crate::ffi::{rocksdb, ToCppString};
+use crate::options::{ColumnFamilyOptionsRef, Options, ReadOptions, WriteOptions};
 use autocxx::WithinUniquePtr;
 use cxx::{let_cxx_string, UniquePtr};
 use std::path::Path;
@@ -87,6 +87,53 @@ impl DB {
 
         Err(Error::from(&status))
     }
+
+    pub fn create_column_family<'a>(
+        &'a mut self,
+        column_family_options: ColumnFamilyOptionsRef<'a>,
+        column_family_name: &str,
+    ) -> Result<ColumnFamilyHandle, Error> {
+        let column_family_name = column_family_name.into_cpp();
+
+        let mut cf_result = self
+            .ffi_db
+            .pin_mut()
+            .CreateColumnFamily1(
+                &column_family_options.ffi_column_family_options,
+                &column_family_name,
+            )
+            .within_unique_ptr();
+
+        let status = cf_result.pin_mut().get_status().within_unique_ptr();
+        if status.ok() {
+            let cf_handle = cf_result.pin_mut().get_column_family_handle();
+            return Ok(ColumnFamilyHandle {
+                ffi_column_family_handle: cf_handle,
+            });
+        }
+
+        Err(Error::from(&status))
+    }
+
+    pub fn destroy_column_family_handle(
+        &mut self,
+        cf_handle: ColumnFamilyHandle,
+    ) -> Result<(), Error> {
+        let cf_handle = cf_handle.ffi_column_family_handle.into_raw();
+        // SAFETY: This guaranteed to be a valid pointer as the column family handle can only get created through `create_column_family`.
+        let status = unsafe { self.ffi_db.pin_mut().DestroyColumnFamilyHandle(cf_handle) }
+            .within_unique_ptr();
+
+        if status.ok() {
+            Ok(())
+        } else {
+            Err(Error::from(&status))
+        }
+    }
+}
+
+pub struct ColumnFamilyHandle {
+    ffi_column_family_handle: UniquePtr<rocksdb::ColumnFamilyHandle>,
 }
 
 #[cfg(test)]
@@ -182,5 +229,28 @@ mod tests {
 
         let value = db.get(&read_options, "key2").unwrap();
         assert_eq!(value, "value2");
+    }
+
+    #[test]
+    fn create_and_destroy_column_family() {
+        let mut options = Options::default();
+        options.as_db_options().set_create_if_missing(true);
+
+        let path = new_temp_path().unwrap();
+        let mut db = DB::open(&options, &path).unwrap();
+
+        let mut cf_handle = db
+            .create_column_family(options.as_column_family_options(), "test_cf")
+            .unwrap();
+
+        let actual = cf_handle
+            .ffi_column_family_handle
+            .pin_mut()
+            .GetName()
+            .to_string();
+
+        db.destroy_column_family_handle(cf_handle).unwrap();
+
+        assert_eq!(actual, "test_cf");
     }
 }

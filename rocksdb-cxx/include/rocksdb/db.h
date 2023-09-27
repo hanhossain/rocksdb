@@ -74,6 +74,19 @@ struct ColumnFamilyDescriptor {
       : name(_name), options(_options) {}
 };
 
+struct ColumnFamilyHandleResult {
+    std::unique_ptr<ColumnFamilyHandle> column_family_handle;
+    Status status;
+
+    std::unique_ptr<ColumnFamilyHandle> get_column_family_handle() {
+        return std::move(column_family_handle);
+    }
+
+    Status get_status() {
+        return status;
+    }
+};
+
 class ColumnFamilyHandle {
  public:
   virtual ~ColumnFamilyHandle() {}
@@ -365,6 +378,14 @@ class DB {
   virtual Status CreateColumnFamily(const ColumnFamilyOptions& options,
                                     const std::string& column_family_name,
                                     ColumnFamilyHandle** handle);
+
+  virtual ColumnFamilyHandleResult CreateColumnFamily(
+          const ColumnFamilyOptions& options,
+          const std::string& column_family_name) {
+      ColumnFamilyHandle* cf;
+      Status status = CreateColumnFamily(options, column_family_name, &cf);
+      return ColumnFamilyHandleResult { std::unique_ptr<ColumnFamilyHandle>(cf), status };
+  }
 
   // Bulk create column families with the same column family options.
   // Return the handles of the column families through the argument handles.
