@@ -13,7 +13,7 @@ pub struct DB {
 
 impl DB {
     pub fn open<P: AsRef<Path>>(options: &Options, path: P) -> Result<DB, Error> {
-        let db_path = ffi::make_string(path.as_ref().to_str().unwrap());
+        let db_path = path.as_ref().to_str().unwrap().into_cpp();
         let mut db_result = rocksdb::DB_Open(&options.ffi_options, &db_path).within_unique_ptr();
         let status = db_result.pin_mut().get_status().within_unique_ptr();
         if status.ok() {
