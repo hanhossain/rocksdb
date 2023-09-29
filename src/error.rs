@@ -194,3 +194,29 @@ impl Display for Error {
         Ok(())
     }
 }
+
+pub trait IntoResult<T> {
+    fn status(&self) -> &Status;
+    fn get_value(&mut self) -> T;
+    fn into_result(mut self) -> Result<T, Error>
+    where
+        Self: Sized,
+    {
+        let status = self.status();
+        if status.ok() {
+            Ok(self.get_value())
+        } else {
+            Err(Error::from(status))
+        }
+    }
+}
+
+impl IntoResult<()> for &Status {
+    fn status(&self) -> &Status {
+        self
+    }
+
+    fn get_value(&mut self) -> () {
+        ()
+    }
+}

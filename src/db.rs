@@ -1,6 +1,7 @@
 use crate::batch::WriteBatch;
-use crate::error::Error;
+use crate::error::{Error, IntoResult};
 use crate::ffi;
+use crate::ffi::rocksdb::Status;
 use crate::ffi::{rocksdb, ToCppString};
 use crate::options::{ColumnFamilyOptionsRef, Options, ReadOptions, WriteOptions};
 use autocxx::WithinUniquePtr;
@@ -14,14 +15,9 @@ pub struct DB {
 impl DB {
     pub fn open<P: AsRef<Path>>(options: &Options, path: P) -> Result<DB, Error> {
         let db_path = path.as_ref().to_str().unwrap().into_cpp();
-        let mut db_result = rocksdb::DB_Open(&options.ffi_options, &db_path).within_unique_ptr();
-        let status = db_result.pin_mut().get_status().within_unique_ptr();
-        if status.ok() {
-            let db = db_result.pin_mut().get_db();
-            return Ok(DB { ffi_db: db });
-        }
-
-        Err(Error::from(&status))
+        rocksdb::DB_Open(&options.ffi_options, &db_path)
+            .within_unique_ptr()
+            .into_result()
     }
 
     pub fn put(
@@ -34,17 +30,11 @@ impl DB {
         let_cxx_string!(v = value);
         let k = rocksdb::Slice::new2(&k).within_unique_ptr();
         let v = rocksdb::Slice::new2(&v).within_unique_ptr();
-        let status = self
-            .ffi_db
+        self.ffi_db
             .pin_mut()
             .Put2(&write_options.ffi_write_options, &k, &v)
-            .within_unique_ptr();
-
-        if status.ok() {
-            return Ok(());
-        }
-
-        Err(Error::from(&status))
+            .within_unique_ptr()
+            .into_result()
     }
 
     pub fn get(&mut self, read_options: &ReadOptions, key: &str) -> Result<String, Error> {
@@ -52,20 +42,18 @@ impl DB {
         let k = rocksdb::Slice::new2(&k).within_unique_ptr();
         let value = ffi::make_string("");
         let string_ptr = value.into_raw();
-        let status = unsafe {
+
+        // SAFETY: We guarantee `string_ptr` is a valid empty string since we create it.
+        unsafe {
             self.ffi_db
                 .pin_mut()
                 .Get2(&read_options.ffi_read_options, &k, string_ptr)
                 .within_unique_ptr()
-        };
-
-        let mut string = unsafe { UniquePtr::from_raw(string_ptr) };
-
-        if status.ok() {
-            return Ok(string.pin_mut().to_str().unwrap().to_string());
+                .into_result()?;
         }
 
-        Err(Error::from(&status))
+        let string = unsafe { UniquePtr::from_raw(string_ptr) };
+        Ok(string.to_str().unwrap().to_string())
     }
 
     pub fn write_batch(
@@ -74,18 +62,13 @@ impl DB {
         write_batch: &mut WriteBatch,
     ) -> Result<(), Error> {
         let write_batch = write_batch.ffi_write_batch.pin_mut().GetWriteBatch();
-        let status = unsafe {
+        unsafe {
             self.ffi_db
                 .pin_mut()
                 .Write(&write_options.ffi_write_options, write_batch)
                 .within_unique_ptr()
-        };
-
-        if status.ok() {
-            return Ok(());
+                .into_result()
         }
-
-        Err(Error::from(&status))
     }
 
     pub fn create_column_family<'a>(
@@ -95,24 +78,14 @@ impl DB {
     ) -> Result<ColumnFamilyHandle, Error> {
         let column_family_name = column_family_name.into_cpp();
 
-        let mut cf_result = self
-            .ffi_db
+        self.ffi_db
             .pin_mut()
             .CreateColumnFamily1(
                 &column_family_options.ffi_column_family_options,
                 &column_family_name,
             )
-            .within_unique_ptr();
-
-        let status = cf_result.pin_mut().get_status().within_unique_ptr();
-        if status.ok() {
-            let cf_handle = cf_result.pin_mut().get_column_family_handle();
-            return Ok(ColumnFamilyHandle {
-                ffi_column_family_handle: cf_handle,
-            });
-        }
-
-        Err(Error::from(&status))
+            .within_unique_ptr()
+            .into_result()
     }
 
     pub fn destroy_column_family_handle(
@@ -121,13 +94,32 @@ impl DB {
     ) -> Result<(), Error> {
         let cf_handle = cf_handle.ffi_column_family_handle.into_raw();
         // SAFETY: This guaranteed to be a valid pointer as the column family handle can only get created through `create_column_family`.
-        let status = unsafe { self.ffi_db.pin_mut().DestroyColumnFamilyHandle(cf_handle) }
-            .within_unique_ptr();
+        unsafe { self.ffi_db.pin_mut().DestroyColumnFamilyHandle(cf_handle) }
+            .within_unique_ptr()
+            .into_result()
+    }
+}
 
-        if status.ok() {
-            Ok(())
-        } else {
-            Err(Error::from(&status))
+impl IntoResult<DB> for UniquePtr<rocksdb::DBResult> {
+    fn status(&self) -> &Status {
+        self.get_status()
+    }
+
+    fn get_value(&mut self) -> DB {
+        let db = self.pin_mut().get_db();
+        DB { ffi_db: db }
+    }
+}
+
+impl IntoResult<ColumnFamilyHandle> for UniquePtr<rocksdb::ColumnFamilyHandleResult> {
+    fn status(&self) -> &Status {
+        self.get_status()
+    }
+
+    fn get_value(&mut self) -> ColumnFamilyHandle {
+        let cf_handle = self.pin_mut().get_column_family_handle();
+        ColumnFamilyHandle {
+            ffi_column_family_handle: cf_handle,
         }
     }
 }

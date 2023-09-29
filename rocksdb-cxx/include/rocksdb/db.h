@@ -82,7 +82,7 @@ struct ColumnFamilyHandleResult {
         return std::move(column_family_handle);
     }
 
-    Status get_status() {
+    const Status& get_status() const {
         return status;
     }
 };
@@ -160,7 +160,7 @@ struct DBResult {
         return std::move(db);
     }
 
-    Status get_status() {
+    const Status& get_status() const {
         return status;
     }
 };
